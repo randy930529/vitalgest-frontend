@@ -3,21 +3,27 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
   ShieldCheckIcon,
+  BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 
 const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
+  { name: "Inicio", href: "/dashboard", icon: HomeIcon },
+  { name: "Personal", href: "/dashboard/users", icon: UserGroupIcon },
   {
     name: "Vehículos",
-    href: "/dashboard/vehiculos",
+    href: "/dashboard/vehicles",
     icon: ShieldCheckIcon,
   },
   {
     name: "Inventario",
-    href: "/dashboard/inventario",
+    href: "/dashboard/inventory",
     icon: DocumentDuplicateIcon,
   },
-  { name: "Personal", href: "/dashboard/personal", icon: UserGroupIcon },
+  {
+    name: "Delegaciones",
+    href: "/dashboard/delegations",
+    icon: BuildingOffice2Icon,
+  },
 ];
 
 export default function NavLinks() {
