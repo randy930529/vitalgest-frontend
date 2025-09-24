@@ -11,7 +11,7 @@ export type UserType = {
     | "head_guard"
     | "general_admin"
     | string;
-  // position: 'developer',
+  position: string;
   state?: boolean;
 };
 
@@ -25,4 +25,11 @@ export type ResponseAPIType = {
 export type StateType<T> = {
   errors?: T;
   message?: string | null;
+};
+
+export type SessionPayload = {
+  user: UserType;
+  expiresAt: Date;
+  accessToken: string;
+  refreshToken: string;
 };

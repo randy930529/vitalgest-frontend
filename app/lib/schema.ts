@@ -27,7 +27,10 @@ const FormUserSchema = z.object({
   state: z.boolean({
     invalid_type_error: "Please select an user state.",
   }),
+  position: z.string({
+    invalid_type_error: "Please enter an user position.",
+  }),
 });
 
 export const CreateUser = FormUserSchema.omit({ id: true, state: true });
-export const UpdateUser = FormUserSchema.omit({ id: true });
+export const UpdateUser = FormUserSchema.omit({ id: true, password: true });

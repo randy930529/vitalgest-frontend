@@ -7,9 +7,9 @@ export default function VitalGestLogo() {
       className={`${openSans.className} flex flex-row items-center leading-none text-white`}
     >
       <Image
-        src="/images/logo-cruz-roja_red.jpg"
-        width={290}
-        height={76}
+        src="/images/logo-cruz-roja_red.svg"
+        width={185}
+        height={261}
         className="hidden md:block"
         alt="Logo de la Cruz Roja, cruz blanca sobre fondo rojo"
       />

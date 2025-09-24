@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CreateUser, UpdateUser } from "./schema";
-import { ResponseAPIType, StateType } from "./definitions";
+import { StateType } from "./definitions";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { verifySession } from "./dal";
 
 export type UserState = StateType<{
   name?: string[];
@@ -20,12 +21,12 @@ export async function createUser(
   prevState: UserState,
   formUserData: FormData
 ): Promise<UserState> {
-  console.log(formUserData);
   const validatedUserFields = CreateUser.safeParse({
     name: formUserData.get("name"),
     lastname: formUserData.get("lastname"),
     email: formUserData.get("email"),
     password: formUserData.get("password"),
+    position: formUserData.get("position"),
     role: formUserData.get("role"),
   });
 
@@ -36,35 +37,39 @@ export async function createUser(
     };
   }
 
-  const { name, lastname, email, password, role } = validatedUserFields.data;
+  const { name, lastname, email, password, position, role } =
+    validatedUserFields.data;
   try {
     // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
     // const apiToken = (await cookies()).get("apiToken")?.value;
-    const apiToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkM2JkMTlhLWE1NjQtNDA1NC1iZTNmLTRkYjk5ZTExNjcwMyIsIm5hbWUiOiJEYW5pZWwiLCJsYXN0bmFtZSI6IlppcGEiLCJlbWFpbCI6ImRhbmllbHppcGFAb3V0bG9vay5jb20iLCJyb2xlIjoiZ2VuZXJhbF9hZG1pbiIsInBvc2l0aW9uIjoiZGV2ZWxvcGVyIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc1NzQ4MTU4NywiZXhwIjoxNzU3NDg4Nzg3fQ.0k2oDMgIUMQopFts9ZNFcymJmzxvMH6v6T1NL3ZwNk4";
-
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
     // if (!apiUrl /* || !apiToken*/) {
     //   throw new Error(
     //     "Las variables de conexión a la API no están configuradas."
     //   );
     // }
     const endPoint = `${process.env.API_URL}/api/adm/create/user`;
+    const bodyContent = {
+      name,
+      lastname,
+      email,
+      password,
+      role,
+      position,
+    };
 
-    const response = await fetch(endPoint, {
+    const config = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name,
-        lastname,
-        email,
-        password,
-        role,
-        position: "employet",
-      }),
-    });
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
 
     if (!response.ok) {
       console.log((await response.json())["error"]);
@@ -97,55 +102,61 @@ export async function updateUser(
     email: formUserData.get("email"),
     password: formUserData.get("password"),
     role: formUserData.get("role"),
+    position: formUserData.get("position"),
     state: formUserData.get("state") === "true",
   });
 
   if (!validatedUserFields.success) {
+    console.log("Validation Error:", validatedUserFields.error);
     return {
       errors: validatedUserFields.error.flatten().fieldErrors,
       message: "Missing Fields. Failed to Update User.",
     };
   }
 
-  const { name, lastname, email, password, role, state } =
+  const { name, lastname, email, role, position, state } =
     validatedUserFields.data;
 
   try {
     // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
     // const apiToken = (await cookies()).get("apiToken")?.value;
-    const apiToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkM2JkMTlhLWE1NjQtNDA1NC1iZTNmLTRkYjk5ZTExNjcwMyIsIm5hbWUiOiJEYW5pZWwiLCJsYXN0bmFtZSI6IlppcGEiLCJlbWFpbCI6ImRhbmllbHppcGFAb3V0bG9vay5jb20iLCJyb2xlIjoiZ2VuZXJhbF9hZG1pbiIsInBvc2l0aW9uIjoiZGV2ZWxvcGVyIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc1NzQ4MTU4NywiZXhwIjoxNzU3NDg4Nzg3fQ.0k2oDMgIUMQopFts9ZNFcymJmzxvMH6v6T1NL3ZwNk4";
-
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
     // if (!apiUrl /* || !apiToken*/) {
     //   throw new Error(
     //     "Las variables de conexión a la API no están configuradas."
     //   );
     // }
     const endPoint = `${process.env.API_URL}/api/adm/edit/user/${id}`;
+    const bodyContent = {
+      name,
+      lastname,
+      email,
+      role,
+      state,
+      position,
+    };
 
-    const response = await fetch(endPoint, {
+    const config = {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name,
-        lastname,
-        email,
-        password,
-        role,
-        state,
-        position: "employ",
-      }),
-    });
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
 
     if (!response.ok) {
+      console.log("Response Error:", await response.json());
       return {
         message: (await response.json())["error"],
       };
     }
   } catch (error) {
+    console.log("Try Error:", error);
     return { message: "Database Error: Failed to Update User." };
   }
 
@@ -157,9 +168,9 @@ export async function deleteUser(id: string) {
   try {
     // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
     // const apiToken = (await cookies()).get("apiToken")?.value;
-    const apiToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkM2JkMTlhLWE1NjQtNDA1NC1iZTNmLTRkYjk5ZTExNjcwMyIsIm5hbWUiOiJEYW5pZWwiLCJsYXN0bmFtZSI6IlppcGEiLCJlbWFpbCI6ImRhbmllbHppcGFAb3V0bG9vay5jb20iLCJyb2xlIjoiZ2VuZXJhbF9hZG1pbiIsInBvc2l0aW9uIjoiZGV2ZWxvcGVyIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc1NzQ4MTU4NywiZXhwIjoxNzU3NDg4Nzg3fQ.0k2oDMgIUMQopFts9ZNFcymJmzxvMH6v6T1NL3ZwNk4";
-
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
     // if (!apiUrl /* || !apiToken*/) {
     //   throw new Error(
     //     "Las variables de conexión a la API no están configuradas."

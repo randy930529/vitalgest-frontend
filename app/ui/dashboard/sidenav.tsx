@@ -3,12 +3,13 @@ import NavLinks from "@/app/ui/dashboard/nav-links";
 import VitalGestLogo from "@/app/ui/vitalgest-logo";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { signOut } from "@/auth";
+import { deleteSession } from "@/app/lib/session";
 
 export default function SideNav() {
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
-        className="mb-2 flex items-end justify-start rounded-md p-4 border-b border-gray-200 md:h-20"
+        className="mb-2 flex items-center justify-start rounded-md p-4 border-b border-gray-200 md:h-24"
         href="/"
       >
         <div className="w-32 text-white md:w-40">
@@ -21,6 +22,7 @@ export default function SideNav() {
         <form
           action={async () => {
             "use server";
+            await deleteSession();
             await signOut({ redirectTo: "/" });
           }}
         >
