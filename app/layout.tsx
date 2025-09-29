@@ -4,8 +4,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | VitalGear - Cruz Roja",
-    default: "VitalGear - Cruz Roja",
+    template: "%s | VitalGest - Cruz Roja",
+    default: "VitalGest - Cruz Roja",
   },
   description: "Dashboard de gestión de inventario para Cruz Roja",
 };
