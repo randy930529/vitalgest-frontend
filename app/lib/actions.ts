@@ -219,3 +219,79 @@ export async function authenticate(
     throw error;
   }
 }
+
+export async function deleteDelegation(id: string) {
+  try {
+    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
+    // const apiToken = (await cookies()).get("apiToken")?.value;
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
+
+    if (!process.env.API_URL || !apiToken) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+    const endPoint = `${process.env.API_URL}/api/adm/delete/delegation/${id}`;
+
+    const response = await fetch(endPoint, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // if (!response.ok) {
+    //   return {
+    //     errors: {},
+    //     message: (await response.json())["error"],
+    //   };
+    // }
+    console.log(id, await response.json());
+  } catch (error) {
+    // return { errors: {}, message: "Database Error: Failed to Delete User." };
+  }
+
+  revalidatePath("/dashboard/delegations");
+  // return { errors: {}, message: "User deleted successfully." };
+}
+
+export async function deleteGuard(id: string) {
+  try {
+    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
+    // const apiToken = (await cookies()).get("apiToken")?.value;
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
+
+    if (!process.env.API_URL || !apiToken) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+    const endPoint = `${process.env.API_URL}/api/adm/delete/guard/${id}`;
+
+    const response = await fetch(endPoint, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // if (!response.ok) {
+    //   return {
+    //     errors: {},
+    //     message: (await response.json())["error"],
+    //   };
+    // }
+    console.log(id, await response.json());
+  } catch (error) {
+    // return { errors: {}, message: "Database Error: Failed to Delete User." };
+  }
+
+  revalidatePath("/dashboard/guards");
+  // return { errors: {}, message: "User deleted successfully." };
+}

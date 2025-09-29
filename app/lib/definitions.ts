@@ -15,11 +15,9 @@ export type UserType = {
   state?: boolean;
 };
 
-export type DataType = UserType | UserType[];
-
-export type ResponseAPIType = {
+export type ResponseAPIType<T> = {
   success: boolean;
-  data: DataType;
+  data: T;
 };
 
 export type StateType<T> = {
@@ -32,4 +30,21 @@ export type SessionPayload = {
   expiresAt: Date;
   accessToken: string;
   refreshToken: string;
+};
+
+export type DelegationType = {
+  id: string;
+  name: string;
+  stateId: number;
+  municipalityId: number;
+  pharmacyId: string;
+};
+
+export type GuardType = {
+  id: string;
+  guardChief: string;
+  date: string;
+  ambulance: string;
+  state: string;
+  createdAt: string;
 };
