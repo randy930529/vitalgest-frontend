@@ -1,7 +1,10 @@
 import { fetchUsers } from "@/app/lib/data";
 import Filters from "@/app/ui/dashboard/table-filters";
-import TableActions from "@/app/ui/dashboard/users/tabla-actions";
-import TablePagination from "@/app/ui/dashboard/users/pagination";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
+import TablePagination from "@/app/ui/dashboard/pagination";
+import TableActionEdit from "../botton-edit";
+import TableActionDelete from "../button-delete";
+import { deleteUser } from "@/app/lib/actions";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
@@ -11,11 +14,17 @@ const customRoles = [
   { id: 4, value: "head_guard", label: "Jefe de Seguridad" },
   { id: 5, value: "general_admin", label: "Administrador General" },
 ];
-const ITEMS_PER_PAGE = 6;
+
+const customHeaders = [
+  { id: 0, label: "Nombre" },
+  { id: 1, label: "Apellidos" },
+  { id: 2, label: "Correo" },
+  { id: 3, label: "Rol" },
+  { id: 4, label: "Estado" },
+];
 
 export default async function UserTable() {
   const users = await fetchUsers();
-  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
 
   {
     /* <div>(Component) Tabla interactiva de usuarios - [CSR]</div> */
@@ -40,21 +49,11 @@ export default async function UserTable() {
                   </label>
                 </div>
               </th>
-              <th scope="col" className="px-4 py-3">
-                Nombre
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Apellidos
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Correo
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Rol
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Estado
-              </th>
+              {customHeaders.map((header) => (
+                <th key={header.id} scope="col" className="px-4 py-3">
+                  {header.label}
+                </th>
+              ))}
               <th
                 scope="col"
                 className="px-4 py-3 flex items-center justify-end"
@@ -95,15 +94,18 @@ export default async function UserTable() {
                 <td className="px-4 py-3">
                   <UserActive active={user.state} />
                 </td>
-                <td className="px-4 py-3 flex items-center justify-end">
-                  <TableActions userId={user.id} />
-                </td>
+                <TableActions>
+                  <TableActionEdit
+                    editLink={`/dashboard/users/${user.id}/edit`}
+                  />
+                  <TableActionDelete id={user.id} actionDelete={deleteUser} />
+                </TableActions>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <TablePagination totalPages={totalPages} totalItems={users.length} />
+      <TablePagination totalItems={users.length} />
     </div>
   );
 }

@@ -6,13 +6,14 @@ import Link from "next/link";
 import { generatePagination } from "@/app/lib/utils";
 import { usePathname, useSearchParams } from "next/navigation";
 
+const ITEMS_PER_PAGE = parseInt(process.env.ITEMS_PER_PAGE || "5");
+
 export default function TablePagination({
-  totalPages,
   totalItems,
 }: {
-  totalPages: number;
   totalItems: number;
 }) {
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -57,7 +58,7 @@ export default function TablePagination({
           if (page === "...") position = "middle";
 
           return (
-            <li>
+            <li key={`item-${page}-${index}`}>
               <PaginationNumber
                 key={`${page}-${index}`}
                 href={createPageURL(page)}
