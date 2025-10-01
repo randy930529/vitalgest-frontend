@@ -2,7 +2,6 @@
 
 import { createUser, UserState } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import { useActionState } from "react";
 
 const customRoles = [
@@ -14,7 +13,7 @@ const customRoles = [
   { id: 5, value: "general_admin", label: "Administrador General" },
 ];
 
-export default function UserForm() {
+export default function UserForm({ onClose }: { onClose?: () => void }) {
   // <div>(Component) Formulario de usuario - [CSR]</div>
 
   const initialState: UserState = { errors: {}, message: null };
@@ -155,12 +154,18 @@ export default function UserForm() {
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end gap-4">
+        <Button
+          type="reset"
+          onClick={onClose}
+          className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+        >
+          Cancelar
+        </Button>
         <Button
           type="submit"
           className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
-          {/* <PlusIcon className="w-5 h-5 me-2" /> */}
           Guardar
         </Button>
       </div>

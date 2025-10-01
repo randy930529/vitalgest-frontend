@@ -5,6 +5,8 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActionEdit from "../botton-edit";
 import TableActionDelete from "../button-delete";
 import { deleteUser } from "@/app/lib/actions";
+import ModalTrigger from "../../button-modal";
+import UserForm from "./create/user-form";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
@@ -32,7 +34,9 @@ export default async function UserTable() {
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-      <Filters />
+      <Filters>
+        <ModalTrigger title="Crear Usuario" modelContent={<UserForm />} />
+      </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
