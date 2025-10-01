@@ -1,9 +1,9 @@
-import DelegationForm from "@/app/ui/dashboard/delegations/delegation-form";
 import DelegationTable from "@/app/ui/dashboard/delegations/delegation-table";
 import Breadcrumbs from "@/app/ui/dashboard/users/breadcrumbs";
 
 export default async function Page() {
   // <div>(Página) Gestionar delegaciones - [SSR]</div>
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <Breadcrumbs
@@ -18,7 +18,6 @@ export default async function Page() {
         Administrar delegaciones en el sistema
       </p>
       <DelegationTable />
-      <DelegationForm />
     </section>
   );
 }

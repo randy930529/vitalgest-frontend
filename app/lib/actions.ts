@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CreateUser, UpdateUser } from "./schema";
+import { CreateUser, UpdateDelegation, UpdateUser } from "./schema";
 import { StateType } from "./definitions";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
@@ -15,6 +15,11 @@ export type UserState = StateType<{
   password?: string[];
   role?: string[];
   state?: string[];
+}>;
+export type DelegationState = StateType<{
+  name?: string[];
+  state?: string[];
+  municipality?: string[];
 }>;
 
 export async function createUser(
@@ -218,6 +223,139 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function createDelegation(
+  prevState: DelegationState,
+  formDelegationData: FormData
+): Promise<DelegationState> {
+  const validatedDelegationFields = UpdateDelegation.safeParse({
+    name: formDelegationData.get("name"),
+    state: Number(formDelegationData.get("state")),
+    municipality: Number(formDelegationData.get("municipality")),
+  });
+
+  if (!validatedDelegationFields.success) {
+    return {
+      errors: validatedDelegationFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Delegation.",
+    };
+  }
+
+  const { name, state, municipality } = validatedDelegationFields.data;
+  try {
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
+
+    if (!process.env.API_URL || !apiToken) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    const endPoint = `${process.env.API_URL}/api/delegations/create`;
+    const bodyContent = {
+      stateName: name,
+      stateId: state,
+      municipalityId: municipality,
+    };
+
+    const config = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      console.log((await response.json())["error"]);
+      return {
+        errors: {},
+        message: (await response.json())["error"],
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      errors: {},
+      message: "Failed to Create Delegation.",
+    };
+  }
+
+  revalidatePath("/dashboard/users");
+  console.log("Delegation created successfully.");
+  return { errors: {}, message: "Delegation created successfully." };
+}
+
+export async function updateDelegation(
+  id: string,
+  prevState: DelegationState,
+  formDelegationData: FormData
+): Promise<DelegationState> {
+  const validatedDelegationFields = UpdateDelegation.safeParse({
+    name: formDelegationData.get("name"),
+    state: Number(formDelegationData.get("state")),
+    municipality: Number(formDelegationData.get("municipality")),
+  });
+
+  if (!validatedDelegationFields.success) {
+    console.log("Validation Error:", validatedDelegationFields.error);
+    return {
+      errors: validatedDelegationFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Delegation.",
+    };
+  }
+
+  const { name, state, municipality } = validatedDelegationFields.data;
+
+  try {
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!session?.isAuth) redirect("/");
+    const apiToken = session?.accessToken;
+
+    if (!process.env.API_URL || !apiToken) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+    const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
+    const bodyContent = {
+      name,
+      stateId: state,
+      municipalityId: municipality,
+    };
+
+    const config = {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      console.log("Response Error:", await response.json());
+      return {
+        message: (await response.json())["error"],
+      };
+    }
+  } catch (error) {
+    console.log("Try Error:", error);
+    return { message: "Database Error: Failed to Update Delegation." };
+  }
+
+  revalidatePath("/dashboard/delegations");
+  redirect("/dashboard/delegations");
 }
 
 export async function deleteDelegation(id: string) {

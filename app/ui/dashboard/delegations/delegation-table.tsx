@@ -1,10 +1,12 @@
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations, fetchStates } from "@/app/lib/data";
 import TableActions from "../tabla-actions";
 import TablePagination from "../pagination";
 import Filters from "../table-filters";
 import TableActionDelete from "../button-delete";
 import { deleteDelegation } from "@/app/lib/actions";
 import TableActionEdit from "../botton-edit";
+import ModalTrigger from "../../button-modal";
+import DelegationForm from "./create/delegation-form";
 
 const customHeaders = [
   { id: 0, label: "Estado" },
@@ -16,10 +18,16 @@ const customHeaders = [
 export default async function DelegationTable() {
   // <div>(Component) Lista de delegaciones existentes - [CSR]</div>;
   const delegations = await fetchDelegations();
+  const customStates = await fetchStates();
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-      <Filters />
+      <Filters>
+        <ModalTrigger
+          title="Crear Delegación"
+          modelContent={<DelegationForm customStates={customStates} />}
+        />
+      </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -71,9 +79,9 @@ export default async function DelegationTable() {
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {delegation.name?.split(", ")[1]}
+                  {delegation.state?.name}
                 </th>
-                <td className="px-4 py-3">{delegation.name?.split(", ")[0]}</td>
+                <td className="px-4 py-3">{delegation.municipality?.name}</td>
                 <td className="px-4 py-3">{/*delegation.userToRegister*/}</td>
                 <td className="px-4 py-3">{/*delegation.createdAt*/}</td>
                 <TableActions>

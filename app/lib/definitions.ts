@@ -35,8 +35,14 @@ export type SessionPayload = {
 export type DelegationType = {
   id: string;
   name: string;
-  stateId: number;
-  municipalityId: number;
+  state: {
+    id: number;
+    name: string;
+  };
+  municipality: {
+    id: number;
+    name: string;
+  };
   pharmacyId: string;
 };
 
