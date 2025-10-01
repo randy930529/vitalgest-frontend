@@ -3,7 +3,7 @@ import { z } from "zod";
 const FormUserSchema = z.object({
   id: z.string().uuid(),
   name: z.string({
-    invalid_type_error: "Please enter an user nombre.",
+    invalid_type_error: "Please enter an user name.",
   }),
   lastname: z.string({
     invalid_type_error: "Please enter an user last name.",
@@ -32,5 +32,19 @@ const FormUserSchema = z.object({
   }),
 });
 
+const FormDelegationSchema = z.object({
+  name: z.string({
+    invalid_type_error: "Por favor ingrese el nombre de la delegación.",
+  }),
+  state: z.number({
+    invalid_type_error: "Por favor seleccione un estado.",
+  }),
+  municipality: z.number({
+    invalid_type_error: "Por favor seleccione un municipio.",
+  }),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, state: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
+
+export const UpdateDelegation = FormDelegationSchema.omit({});

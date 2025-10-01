@@ -1,9 +1,6 @@
-"use client";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
-import OpenCreateUser from "@/app/ui/dashboard/users/create/open-create-user";
-
-export default function Filters() {
+export default function Filters({ children }: { children?: React.ReactNode }) {
   // <div>(Component) Barra de búsqueda y filtros - [CSR]</div>
   return (
     <div className="flex flex-col md:flex-row items-center justify-between md:space-y-0 p-4">
@@ -27,7 +24,8 @@ export default function Filters() {
         </form>
       </div>
       {/* <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end flex-shrink-0"> */}
-      <OpenCreateUser />
+      {/* <OpenCreateUser /> */}
+      {children}
       {/* <div className="flex items-center space-x-3 w-full md:w-auto">
           <button
             type="button"
