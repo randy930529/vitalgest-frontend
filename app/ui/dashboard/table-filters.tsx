@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 export default function Filters({ children }: { children?: React.ReactNode }) {
   // <div>(Component) Barra de búsqueda y filtros - [CSR]</div>
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between md:space-y-0 p-4">
+    <div className="flex flex-col bg-blue-800 md:flex-row items-center justify-between md:space-y-0 p-4">
       <div className="w-full mb-4 md:mb-0 md:w-1/2">
         <form className="flex items-center">
           <label htmlFor="simple-search" className="sr-only">
