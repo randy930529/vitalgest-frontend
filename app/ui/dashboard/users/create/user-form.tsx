@@ -3,7 +3,7 @@
 import { createUser, UserState } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
 import { InlineErrors } from "@/app/ui/custom-errors";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
@@ -19,6 +19,10 @@ export default function UserForm({ onClose }: { onClose?: () => void }) {
 
   const initialState: UserState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createUser, initialState);
+
+  useEffect(() => {
+    state.message && onClose && onClose();
+  }, [state.message]);
 
   return (
     <form action={formAction}>

@@ -33,6 +33,25 @@ export type SessionPayload = {
   refreshToken: string;
 };
 
+export type MxState = {
+  id: number;
+  name: string;
+  municipalities: {
+    id: number;
+    name: string;
+  }[];
+};
+
+export type CustomOptions = {
+  id: number | string;
+  value: string;
+  label: string;
+};
+
+export type CustomMxState = CustomOptions & {
+  municipalities?: CustomOptions[];
+};
+
 export type DelegationType = {
   id: string;
   name: string;

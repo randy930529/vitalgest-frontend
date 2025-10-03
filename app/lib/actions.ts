@@ -23,6 +23,7 @@ export type DelegationState = StateType<{
   name?: string[];
   state?: string[];
   municipality?: string[];
+  success?: string[];
 }>;
 
 export async function createUser(
@@ -243,11 +244,10 @@ export async function createDelegation(
   if (!validatedDelegationFields.success) {
     return {
       errors: validatedDelegationFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create Delegation.",
     };
   }
 
-  const { name, state, municipality } = validatedDelegationFields.data;
+  const { state, municipality } = validatedDelegationFields.data;
   try {
     // Obtener el token desde la cache usando cookies
     const session = await verifySession();
@@ -262,7 +262,8 @@ export async function createDelegation(
 
     const endPoint = `${process.env.API_URL}/api/delegations/create`;
     const bodyContent = {
-      stateName: name,
+      stateName: " ",
+      municipalityName: " ",
       stateId: state,
       municipalityId: municipality,
     };
@@ -279,23 +280,23 @@ export async function createDelegation(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log((await response.json())["error"]);
-      return {
-        errors: {},
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log(error);
     return {
-      errors: {},
-      message: "Failed to Create Delegation.",
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
     };
   }
 
   revalidatePath("/dashboard/users");
-  console.log("Delegation created successfully.");
-  return { errors: {}, message: "Delegation created successfully." };
+  return { errors: {}, message: "Delegación creada exitosamente." };
 }
 
 export async function updateDelegation(
@@ -317,7 +318,7 @@ export async function updateDelegation(
     };
   }
 
-  const { name, state, municipality } = validatedDelegationFields.data;
+  const { state, municipality } = validatedDelegationFields.data;
 
   try {
     // Obtener el token desde la cache usando cookies
@@ -332,7 +333,7 @@ export async function updateDelegation(
     }
     const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
     const bodyContent = {
-      name,
+      name: " ",
       stateId: state,
       municipalityId: municipality,
     };

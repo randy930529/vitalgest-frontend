@@ -1,18 +1,16 @@
 "use client";
 
 import { createDelegation, DelegationState } from "@/app/lib/actions";
+import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
-import { useActionState } from "react";
+import { InlineErrors } from "@/app/ui/custom-errors";
+import { useActionState, useEffect, useState } from "react";
 
 export default function DelegationForm({
-  customStates,
+  customMxStates,
   onClose,
 }: {
-  customStates: {
-    id: string;
-    value: string;
-    label: string;
-  }[];
+  customMxStates: CustomMxState[];
   onClose?: () => void;
 }) {
   // <div>(Component) Formulario de delegacion - [CSR]</div>
@@ -20,25 +18,38 @@ export default function DelegationForm({
   const initialState: DelegationState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createDelegation, initialState);
 
+  const [mxStateId, setmxStateId] = useState(0);
+
+  const [customMunicipalities, setCustomMunicipalities] = useState<
+    CustomOptions[]
+  >([]);
+
+  useEffect(() => {
+    console.log("Cambio algo", mxStateId);
+    const municipalities =
+      customMxStates.find(({ id }) => id === mxStateId)?.municipalities || [];
+    setCustomMunicipalities(municipalities);
+  }, [mxStateId]);
+
+  useEffect(() => {
+    state.message && onClose && onClose();
+  }, [state.message]);
+
+  const handleOption = (name: string, id: string) => {
+    console.log(`Options... ${name} ${id}`);
+    setmxStateId(Number(id));
+  };
+
   return (
     <form action={formAction}>
+      {state.errors?.success && (
+        <InlineErrors
+          key="success-error"
+          errorId="success-error"
+          errors={state.errors?.success}
+        />
+      )}
       <div className="grid gap-4 mb-4 sm:grid-cols-1">
-        <div>
-          <label
-            htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Nombre
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Delegación Ameca, Jalisco"
-            required
-          />
-        </div>
         <div>
           <label
             htmlFor="role"
@@ -50,26 +61,28 @@ export default function DelegationForm({
             id="state"
             name="state"
             defaultValue={""}
+            onChange={(e) => {
+              handleOption(e.target.name, e.target.value);
+            }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             required
           >
             <option key={"state-select"} value="">
               Seleccione el Estado
             </option>
-            {customStates.map((state) => (
+            {customMxStates.map((state) => (
               <option key={state.id} value={state.value}>
                 {state.label}
               </option>
             ))}
           </select>
-          <div id="rol-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.state &&
-              state.errors.state.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+          {state.errors?.state && (
+            <InlineErrors
+              key="state-error"
+              errorId="state-error"
+              errors={state.errors?.state}
+            />
+          )}
         </div>
         <div>
           <label
@@ -84,24 +97,24 @@ export default function DelegationForm({
             defaultValue={""}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             required
+            disabled={!mxStateId}
           >
             <option key={"state-select"} value="">
-              Seleccione el Municipio
+              {`Seleccione ${!mxStateId ? "un Estado" : "el Municipio"}`}
             </option>
-            {/* {customMunicipalities.map((state) => (
-                  <option key={state.id} value={state.value}>
-                    {state.label}
-                  </option>
-                ))} */}
+            {customMunicipalities.map((state) => (
+              <option key={state.id} value={state.value}>
+                {state.label}
+              </option>
+            ))}
           </select>
-          <div id="rol-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.municipality &&
-              state.errors.municipality.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+          {state.errors?.municipality && (
+            <InlineErrors
+              key="municipality-error"
+              errorId="municipality-error"
+              errors={state.errors?.municipality}
+            />
+          )}
         </div>
       </div>
       <div className="w-full flex justify-end gap-4">

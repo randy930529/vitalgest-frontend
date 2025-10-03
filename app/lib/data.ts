@@ -1,5 +1,11 @@
 import { cache } from "react";
-import { DelegationType, ResponseAPIType, UserType } from "./definitions";
+import {
+  CustomMxState,
+  DelegationType,
+  MxState,
+  ResponseAPIType,
+  UserType,
+} from "./definitions";
 import { verifySession } from "./dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
@@ -238,13 +244,7 @@ export async function fetchGuards(): Promise<any[]> {
   }
 }
 
-export async function fetchStates(): Promise<
-  {
-    id: string;
-    value: string;
-    label: string;
-  }[]
-> {
+export async function fetchStates(): Promise<CustomMxState[]> {
   try {
     const session = await verifySession();
     const apiToken = session?.accessToken;
@@ -257,14 +257,7 @@ export async function fetchStates(): Promise<
     const endPoint = `${process.env.API_URL}/api/delegations/states`;
 
     const fetchStatesFromApi = cache(
-      async (): Promise<
-        ResponseAPIType<
-          {
-            id: string;
-            name: string;
-          }[]
-        >
-      > => {
+      async (): Promise<ResponseAPIType<MxState[]>> => {
         const response = await fetch(endPoint, {
           headers: {
             Authorization: `Bearer ${apiToken}`,
@@ -274,8 +267,11 @@ export async function fetchStates(): Promise<
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener las delegaciones desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
         }
 
         return response.json();
@@ -285,11 +281,23 @@ export async function fetchStates(): Promise<
     const res = await fetchStatesFromApi();
     console.log(res);
 
-    const customStates = res.data?.map(({ id, name }) => ({
-      id,
-      value: id,
-      label: name,
-    })) || { id: "0", value: "", label: "No se encontraron estados" };
+    const customStates = res.data?.map<CustomMxState>(
+      ({ id, name, municipalities }) => ({
+        id,
+        value: String(id),
+        label: name,
+        municipalities: municipalities.map(({ id, name }) => ({
+          id,
+          value: String(id),
+          label: name,
+        })),
+      })
+    ) || {
+      id: 0,
+      value: "",
+      label: "No se encontraron estados",
+      municipalities: [],
+    };
 
     return customStates;
   } catch (err) {

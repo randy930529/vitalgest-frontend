@@ -65,4 +65,4 @@ const FormDelegationSchema = z.object({
 export const CreateUser = FormUserSchema.omit({ id: true, state: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
-export const UpdateDelegation = FormDelegationSchema.omit({});
+export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
