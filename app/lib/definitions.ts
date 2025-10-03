@@ -18,6 +18,7 @@ export type UserType = {
 export type ResponseAPIType<T> = {
   success: boolean;
   data: T;
+  error?: string;
 };
 
 export type StateType<T> = {

@@ -4,8 +4,10 @@ import { verifySession } from "./dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
   try {
+    // Obtener el token desde la cache usando cookies
     const session = await verifySession();
     const apiToken = session?.accessToken;
+
     if (!process.env.API_URL || !apiToken) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
@@ -24,8 +26,11 @@ export async function fetchUsers(): Promise<UserType[]> {
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener los usuarios desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
         }
 
         return response.json();
@@ -34,10 +39,14 @@ export async function fetchUsers(): Promise<UserType[]> {
 
     const res = await fetchUsersFromApi();
     console.log(res);
-    return res.data as UserType[];
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+    return res.data;
   } catch (err) {
-    console.error("API Error[GET USERS]:", err);
-    throw new Error("No se pudo obtener todos los usuarios.");
+    console.log("API Error[GET USERS]:", err);
+    return [];
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { createUser, UserState } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
+import { InlineErrors } from "@/app/ui/custom-errors";
 import { useActionState } from "react";
 
 const customRoles = [
@@ -21,104 +22,50 @@ export default function UserForm({ onClose }: { onClose?: () => void }) {
 
   return (
     <form action={formAction}>
+      {state.errors?.success && (
+        <InlineErrors
+          key={`${"success"}-error`}
+          errorId={`${"success"}-error`}
+          errors={state.errors?.success}
+        />
+      )}
       <div className="grid gap-4 mb-4 sm:grid-cols-2">
-        <div>
-          <label
-            htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Nombre
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="José Luis"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="last-name"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Apellidos
-          </label>
-          <input
-            type="text"
-            name="lastname"
-            id="lastname"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Hernández García"
-            required
-          />
-        </div>
+        <FormInput
+          key="name"
+          name="name"
+          placeholder="José Luis"
+          errors={state.errors?.name}
+        />
+
+        <FormInput
+          key="lastname"
+          name="lastname"
+          placeholder="Hernández García"
+          errors={state.errors?.lastname}
+        />
+
         <div className="sm:col-span-2">
-          <div>
-            <label
-              htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Correo Electrónico
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="mycorreo@correos.mx"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Contraseña
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="••••••••"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="confirm-password"
-              className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Confirmar Contraseña
-            </label>
-            <input
-              type="password"
-              name="confirm_password"
-              id="confirm_password"
-              placeholder="••••••••"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="position"
-              className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Posición
-            </label>
-            <input
-              type="text"
-              name="position"
-              id="position"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Empleado"
-              required
-            />
-          </div>
+          <FormInput
+            key="email"
+            name="email"
+            placeholder="mycorreo@correos.mx"
+            errors={state.errors?.email}
+          />
+
+          <FormInput
+            key="password"
+            name="password"
+            placeholder="••••••••"
+            errors={state.errors?.password}
+          />
+
+          <FormInput
+            key="position"
+            name="position"
+            placeholder="Empleado"
+            errors={state.errors?.position}
+          />
+
           <div>
             <label
               htmlFor="role"
@@ -143,14 +90,13 @@ export default function UserForm({ onClose }: { onClose?: () => void }) {
                 </option>
               ))}
             </select>
-            <div id="rol-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.role &&
-                state.errors.role.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
+            {state.errors?.role && (
+              <InlineErrors
+                key="rol-error"
+                errorId="rol-error"
+                errors={state.errors?.role}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -170,5 +116,50 @@ export default function UserForm({ onClose }: { onClose?: () => void }) {
         </Button>
       </div>
     </form>
+  );
+}
+
+function FormInput({
+  name,
+  placeholder,
+  errors,
+}: {
+  name: string;
+  placeholder: string;
+  errors?: string[];
+}) {
+  const customFormInputType: { [key: string]: string[] } = {
+    name: ["text", "Nombre"],
+    lastname: ["text", "Apellidos"],
+    email: ["email", "Correo Electrónico"],
+    password: ["password", "Contraseña"],
+    position: ["text", "Posición"],
+  };
+  const [inputType, inputTitle] = customFormInputType[name];
+
+  return (
+    <div>
+      <label
+        htmlFor={name}
+        className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >
+        {inputTitle}
+      </label>
+      <input
+        type={inputType}
+        name={name}
+        id={name}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        placeholder={placeholder}
+        required
+      />
+      {errors && (
+        <InlineErrors
+          key={`${name}-error`}
+          errorId={`${name}-error`}
+          errors={errors}
+        />
+      )}
+    </div>
   );
 }

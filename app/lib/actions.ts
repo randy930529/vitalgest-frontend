@@ -15,6 +15,9 @@ export type UserState = StateType<{
   password?: string[];
   role?: string[];
   state?: string[];
+  position?: string[];
+  // response?: string[];
+  success?: string[];
 }>;
 export type DelegationState = StateType<{
   name?: string[];
@@ -38,23 +41,23 @@ export async function createUser(
   if (!validatedUserFields.success) {
     return {
       errors: validatedUserFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create User.",
     };
   }
 
   const { name, lastname, email, password, position, role } =
     validatedUserFields.data;
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
+    // Obtener el token desde la cache usando cookies
     const session = await verifySession();
     if (!session?.isAuth) redirect("/");
     const apiToken = session?.accessToken;
-    // if (!apiUrl /* || !apiToken*/) {
-    //   throw new Error(
-    //     "Las variables de conexión a la API no están configuradas."
-    //   );
-    // }
+
+    if (!process.env.API_URL || !apiToken) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
     const endPoint = `${process.env.API_URL}/api/adm/create/user`;
     const bodyContent = {
       name,
@@ -77,23 +80,25 @@ export async function createUser(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log((await response.json())["error"]);
-      return {
-        errors: {},
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log(error);
     return {
-      errors: {},
-      message: "Failed to Create User.",
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
     };
   }
 
   revalidatePath("/dashboard/users");
   console.log("User created successfully.");
-  return { errors: {}, message: "User created successfully." };
+
+  return { message: "Usuario creado exitosamente." };
 }
 
 export async function updateUser(
