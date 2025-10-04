@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { UserType } from "./definitions";
+import { SessionType, UserType } from "./definitions";
 import { cookies } from "next/headers";
 import { decrypt } from "@/app/lib/session";
 import { signOut } from "@/auth";
@@ -12,9 +12,30 @@ export const verifySession = cache(async () => {
     await signOut({ redirectTo: "/" });
   }
 
-  const { user, accessToken, refreshToken } = session || {};
+  const { user, accessToken, refreshToken } = (session || {}) as SessionType;
 
   return { isAuth: true, user, accessToken, refreshToken };
+});
+
+export const verifyAuthorization = cache((session: SessionType) => {
+  if (!session?.isAuth && !session?.accessToken) {
+    console.log("User NO autorizado");
+    return false;
+  }
+
+  if (
+    session?.isAuth &&
+    session?.user &&
+    !(
+      session?.user?.role === "admin" || session?.user?.role === "general_admin"
+    )
+  ) {
+    console.log("User NO autorizado");
+    return false;
+  }
+
+  console.log("User autorizado");
+  return true;
 });
 
 export const getLoggedInUser = cache(
@@ -63,7 +84,7 @@ export const getLoggedInUser = cache(
       const result = await response.json();
       return [result.data, accessToken, refreshToken];
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      console.log("Failed to fetch user:", error);
       return;
     }
   }

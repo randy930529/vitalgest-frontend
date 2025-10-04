@@ -33,6 +33,13 @@ export type SessionPayload = {
   refreshToken: string;
 };
 
+export type SessionType = {
+  isAuth: boolean;
+  user: UserType;
+  accessToken: string;
+  refreshToken: string;
+};
+
 export type MxState = {
   id: number;
   name: string;

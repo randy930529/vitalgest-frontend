@@ -1,10 +1,10 @@
-import StatsCards from "@/app/ui/dashboard/stats-cards";
+import AdminDashboard from "@/app/ui/dashboard/stats-cards";
 
-export default function Page() {
+export default function DashboardPage() {
   return (
     <>
       <p>(Página) Resumen general del Dashboard - [SSR]</p>
-      <StatsCards />
+      <AdminDashboard />
     </>
   );
 }

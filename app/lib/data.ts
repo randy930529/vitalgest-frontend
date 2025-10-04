@@ -1,24 +1,27 @@
 import { cache } from "react";
 import {
   CustomMxState,
+  CustomOptions,
   DelegationType,
   MxState,
   ResponseAPIType,
   UserType,
 } from "./definitions";
-import { verifySession } from "./dal";
+import { verifyAuthorization, verifySession } from "./dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
   try {
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/adm/get-all/users/5`;
 
     const fetchUsersFromApi = cache(
@@ -57,17 +60,18 @@ export async function fetchUsers(): Promise<UserType[]> {
 }
 
 export async function fetchUserById(id: string) {
-  const session = await verifySession();
-  const apiToken = session?.accessToken;
-
-  if (!process.env.API_URL || !apiToken) {
-    throw new Error(
-      "Las variables de conexión a la API no están configuradas."
-    );
-  }
-
-  const endPoint = `${process.env.API_URL}/api/adm/get/user/${id}`;
   try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get/user/${id}`;
     const response = await fetch(endPoint, {
       headers: {
         Authorization: `Bearer ${apiToken}`,
@@ -90,14 +94,17 @@ export async function fetchUserById(id: string) {
 
 export async function fetchDelegations(): Promise<DelegationType[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/many/all`;
 
     const fetchDelegationsFromApi = cache(
@@ -147,17 +154,18 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
 export async function fetchDelegationById(
   id: string
 ): Promise<DelegationType | undefined> {
-  const session = await verifySession();
-  const apiToken = session?.accessToken;
-
-  if (!process.env.API_URL || !apiToken) {
-    throw new Error(
-      "Las variables de conexión a la API no están configuradas."
-    );
-  }
-
-  const endPoint = `${process.env.API_URL}/api/delegations/one/${id}`;
   try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/delegations/one/${id}`;
     const response = await fetch(endPoint, {
       headers: {
         Authorization: `Bearer ${apiToken}`,
@@ -180,14 +188,16 @@ export async function fetchDelegationById(
 
 export async function fetchGuards(): Promise<any[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/guards/many/all`;
 
     // const fetchGuardsFromApi = cache(
@@ -246,14 +256,16 @@ export async function fetchGuards(): Promise<any[]> {
 
 export async function fetchStates(): Promise<CustomMxState[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/states`;
 
     const fetchStatesFromApi = cache(
@@ -306,23 +318,22 @@ export async function fetchStates(): Promise<CustomMxState[]> {
   }
 }
 
-export async function fetchMunicipalityByStateId(id: number): Promise<
-  {
-    id: number;
-    value: number;
-    label: string;
-  }[]
-> {
+export async function fetchMunicipalityByStateId(
+  id: number
+): Promise<CustomOptions[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/state/${id}/municipalities`;
+
     const fetchMunicipalityFromApi = async (): Promise<
       ResponseAPIType<
         {
@@ -353,7 +364,7 @@ export async function fetchMunicipalityByStateId(id: number): Promise<
 
     const customStates = res.data?.map(({ id, name }) => ({
       id,
-      value: id,
+      value: String(id),
       label: name,
     })) || { id: "0", value: "", label: "No se encontraron estados" };
 

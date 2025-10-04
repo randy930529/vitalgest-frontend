@@ -222,9 +222,9 @@ export async function authenticate(
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return "Credenciales inválidas.";
         default:
-          return "Something went wrong.";
+          return "Ocurrió un error inesperado.";
       }
     }
     throw error;
