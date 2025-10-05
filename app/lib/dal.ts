@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 import { SessionType, UserType } from "./definitions";
 import { cookies } from "next/headers";

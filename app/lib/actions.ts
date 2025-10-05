@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CreateUser, UpdateDelegation, UpdateUser } from "./schema";
 import { StateType } from "./definitions";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { verifySession } from "./dal";
+import { deleteSession } from "./session";
 
 export type UserState = StateType<{
   name?: string[];
@@ -229,6 +230,11 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function unAuthenticate() {
+  await deleteSession();
+  await signOut({ redirectTo: "/" });
 }
 
 export async function createDelegation(

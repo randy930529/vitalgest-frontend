@@ -22,7 +22,7 @@ export default async function DashboardLayout({
           <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
               <SectionHeader />
-              <NavBar />
+              <NavBar session={session} />
             </div>
             {children}
           </section>
