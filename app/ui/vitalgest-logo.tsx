@@ -12,6 +12,7 @@ export default function VitalGestLogo() {
         height={261}
         className="hidden md:block"
         alt="Logo de la Cruz Roja, cruz blanca sobre fondo rojo"
+        priority
       />
     </div>
   );

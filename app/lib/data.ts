@@ -1,17 +1,29 @@
 import { cache } from "react";
-import { DelegationType, ResponseAPIType, UserType } from "./definitions";
-import { verifySession } from "./dal";
+import {
+  CustomMxState,
+  CustomOptions,
+  DelegationType,
+  GuardType,
+  MxState,
+  ResponseAPIType,
+  UserType,
+} from "./definitions";
+import { verifyAuthorization, verifySession } from "./dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
-    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/5`;
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
 
     const fetchUsersFromApi = cache(
       async (): Promise<ResponseAPIType<UserType[]>> => {
@@ -24,8 +36,11 @@ export async function fetchUsers(): Promise<UserType[]> {
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener los usuarios desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
         }
 
         return response.json();
@@ -34,25 +49,109 @@ export async function fetchUsers(): Promise<UserType[]> {
 
     const res = await fetchUsersFromApi();
     console.log(res);
-    return res.data as UserType[];
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+    return res.data;
   } catch (err) {
-    console.error("API Error[GET USERS]:", err);
-    throw new Error("No se pudo obtener todos los usuarios.");
+    console.log("API Error[GET USERS]:", err);
+    return [];
   }
 }
 
-export async function fetchUserById(id: string) {
-  const session = await verifySession();
-  const apiToken = session?.accessToken;
-
-  if (!process.env.API_URL || !apiToken) {
-    throw new Error(
-      "Las variables de conexión a la API no están configuradas."
-    );
-  }
-
-  const endPoint = `${process.env.API_URL}/api/adm/get/user/${id}`;
+export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
   try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (
+      !verifyAuthorization(session) &&
+      session?.user?.role !== "general_admin"
+    )
+      return [];
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
+
+    const fetchUsersFromApi = cache(
+      async (): Promise<ResponseAPIType<UserType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchUsersFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    if (!res.data?.length) return [];
+
+    const guardChiefs = res.data.filter(({ role, state }) => {
+      let active = false;
+      if (typeof state === "string") {
+        active = state === "true";
+      } else {
+        active = !!state;
+      }
+      return ["head_guard"].includes(role) && active;
+    });
+
+    const customUserGuardChief = guardChiefs.map<CustomOptions>(
+      ({ id, name, lastname }) => ({
+        id,
+        value: id,
+        label: `${name} ${lastname}`,
+      })
+    ) || {
+      id: 0,
+      value: "",
+      label: "No se encontraron jefes de guardia.",
+    };
+
+    return customUserGuardChief;
+  } catch (err) {
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
+  }
+}
+
+export async function fetchUserById(id: string): Promise<UserType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get/user/${id}`;
     const response = await fetch(endPoint, {
       headers: {
         Authorization: `Bearer ${apiToken}`,
@@ -66,23 +165,26 @@ export async function fetchUserById(id: string) {
 
     const result = await response.json();
     console.log(result);
-    return result.data[0];
+    return result.data[0] as UserType;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return;
   }
 }
 
 export async function fetchDelegations(): Promise<DelegationType[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/many/all`;
 
     const fetchDelegationsFromApi = cache(
@@ -96,8 +198,11 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener las delegaciones desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
         }
 
         return response.json();
@@ -105,44 +210,33 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
     );
 
     const res = await fetchDelegationsFromApi();
-    console.log(res);
-    return res.data as DelegationType[];
-    // return [
-    //   {
-    //     id: "uuid-1",
-    //     estado: "Jalisco",
-    //     municipio: "Guadalajara",
-    //     userToRegister: "userId-1",
-    //     createdAt: "2023-10-01",
-    //   },
-    //   {
-    //     id: "uuid-2",
-    //     estado: "Mexico D.F.",
-    //     municipio: "Cuauhtémoc",
-    //     userToRegister: "userId-2",
-    //     createdAt: "2023-10-02",
-    //   },
-    // ];
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    return res.data;
   } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
   }
 }
 
 export async function fetchDelegationById(
   id: string
 ): Promise<DelegationType | undefined> {
-  const session = await verifySession();
-  const apiToken = session?.accessToken;
-
-  if (!process.env.API_URL || !apiToken) {
-    throw new Error(
-      "Las variables de conexión a la API no están configuradas."
-    );
-  }
-
-  const endPoint = `${process.env.API_URL}/api/delegations/one/${id}`;
   try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/delegations/one/${id}`;
     const response = await fetch(endPoint, {
       headers: {
         Authorization: `Bearer ${apiToken}`,
@@ -158,104 +252,27 @@ export async function fetchDelegationById(
     console.log(result);
     return result.data;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return;
   }
 }
 
 export async function fetchGuards(): Promise<any[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/guards/many/all`;
 
-    // const fetchGuardsFromApi = cache(
-    //   async (): Promise<ResponseAPIType<GuardType[]>> => {
-    //     const response = await fetch(endPoint, {
-    //       headers: {
-    //         Authorization: `Bearer ${apiToken}`,
-    //         "Content-Type": "application/json",
-    //       },
-    //     });
-
-    //     if (!response.ok) {
-    //       console.log(await response.json());
-    //       // throw new Error("No se pudo obtener las delegaciones desde la API.");
-    //       return { success: false, data: [] };
-    //     }
-
-    //     return response.json();
-    //   }
-    // );
-
-    // const res = await fetchGuardsFromApi();
-    // console.log(res);
-    // return res.data as GuardType[];
-    return [
-      {
-        id: "uuid-1",
-        guardChief: "userId-1",
-        date: "2023-10-01",
-        ambulance: "Ambulancia 1",
-        state: "new",
-        createdAt: "2023-10-01",
-      },
-      {
-        id: "uuid-2",
-        guardChief: "userId-2",
-        date: "2023-10-02",
-        ambulance: "Ambulancia 2",
-        state: "ongoing",
-        createdAt: "2023-10-02",
-      },
-      {
-        id: "uuid-3",
-        guardChief: "userId-3",
-        date: "2023-10-03",
-        ambulance: "Ambulancia 3",
-        state: "closed",
-        createdAt: "2023-10-03",
-      },
-    ];
-  } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
-  }
-}
-
-export async function fetchStates(): Promise<
-  {
-    id: string;
-    value: string;
-    label: string;
-  }[]
-> {
-  try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-    const endPoint = `${process.env.API_URL}/api/delegations/states`;
-
-    const fetchStatesFromApi = cache(
-      async (): Promise<
-        ResponseAPIType<
-          {
-            id: string;
-            name: string;
-          }[]
-        >
-      > => {
+    const fetchGuardsFromApi = cache(
+      async (): Promise<ResponseAPIType<GuardType[]>> => {
         const response = await fetch(endPoint, {
           headers: {
             Authorization: `Bearer ${apiToken}`,
@@ -265,8 +282,60 @@ export async function fetchStates(): Promise<
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener las delegaciones desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchGuardsFromApi();
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    return res.data;
+  } catch (err) {
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
+  }
+}
+
+export async function fetchStates(): Promise<CustomMxState[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/delegations/states`;
+
+    const fetchStatesFromApi = cache(
+      async (): Promise<ResponseAPIType<MxState[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
         }
 
         return response.json();
@@ -276,36 +345,47 @@ export async function fetchStates(): Promise<
     const res = await fetchStatesFromApi();
     console.log(res);
 
-    const customStates = res.data?.map(({ id, name }) => ({
-      id,
-      value: id,
-      label: name,
-    })) || { id: "0", value: "", label: "No se encontraron estados" };
+    const customStates = res.data?.map<CustomMxState>(
+      ({ id, name, municipalities }) => ({
+        id,
+        value: String(id),
+        label: name,
+        municipalities: municipalities.map(({ id, name }) => ({
+          id,
+          value: String(id),
+          label: name,
+        })),
+      })
+    ) || {
+      id: 0,
+      value: "",
+      label: "No se encontraron estados",
+      municipalities: [],
+    };
 
     return customStates;
   } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
   }
 }
 
-export async function fetchMunicipalityByStateId(id: number): Promise<
-  {
-    id: number;
-    value: number;
-    label: string;
-  }[]
-> {
+export async function fetchMunicipalityByStateId(
+  id: number
+): Promise<CustomOptions[]> {
   try {
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/state/${id}/municipalities`;
+
     const fetchMunicipalityFromApi = async (): Promise<
       ResponseAPIType<
         {
@@ -336,13 +416,13 @@ export async function fetchMunicipalityByStateId(id: number): Promise<
 
     const customStates = res.data?.map(({ id, name }) => ({
       id,
-      value: id,
+      value: String(id),
       label: name,
     })) || { id: "0", value: "", label: "No se encontraron estados" };
 
     return customStates;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return [];
   }
 }

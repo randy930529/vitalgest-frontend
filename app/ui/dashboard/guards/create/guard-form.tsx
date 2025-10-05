@@ -1,44 +1,28 @@
 "use client";
 
-import { createDelegation, DelegationState } from "@/app/lib/actions";
-import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
+import { useActionState, useEffect } from "react";
+import { createGuard, GuardState } from "@/app/lib/actions";
+import { CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { InlineErrors } from "@/app/ui/custom-errors";
-import { useActionState, useEffect, useState } from "react";
 
-export default function DelegationForm({
-  customMxStates,
+export default function GuardForm({
+  customGuardChief,
   onClose,
 }: {
-  customMxStates: CustomMxState[];
+  customGuardChief: CustomOptions[];
   onClose?: () => void;
 }) {
-  // <div>(Component) Formulario de delegacion - [CSR]</div>
+  console.log(customGuardChief);
+  // <div>(Component) Formulario de guardia - [CSR]</div>
 
-  const initialState: DelegationState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(createDelegation, initialState);
-
-  const [mxStateId, setmxStateId] = useState(0);
-
-  const [customMunicipalities, setCustomMunicipalities] = useState<
-    CustomOptions[]
-  >([]);
-
-  useEffect(() => {
-    console.log("Cambio algo", mxStateId);
-    const municipalities =
-      customMxStates.find(({ id }) => id === mxStateId)?.municipalities || [];
-    setCustomMunicipalities(municipalities);
-  }, [mxStateId]);
+  const initialState: GuardState = { errors: {}, message: null };
+  const [state, formAction] = useActionState(createGuard, initialState);
+  console.log(state);
 
   useEffect(() => {
     state.message && onClose && onClose();
   }, [state.message]);
-
-  const handleOption = (name: string, id: string) => {
-    console.log(`Options... ${name} ${id}`);
-    setmxStateId(Number(id));
-  };
 
   return (
     <form action={formAction}>
@@ -52,67 +36,86 @@ export default function DelegationForm({
       <div className="grid gap-4 mb-4 sm:grid-cols-1">
         <div>
           <label
-            htmlFor="role"
+            htmlFor="guardChief"
             className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Estado
+            Jefe de Guardia
           </label>
           <select
-            id="state"
-            name="state"
+            id="guardChief"
+            name="guardChief"
             defaultValue={""}
-            onChange={(e) => {
-              handleOption(e.target.name, e.target.value);
-            }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             required
           >
-            <option key={"state-select"} value="">
-              Seleccione el Estado
+            <option key={"guardChief-select"} value="">
+              Seleccione Jefe de Guardia
             </option>
-            {customMxStates.map((state) => (
-              <option key={state.id} value={state.value}>
-                {state.label}
+            {customGuardChief.map((guardChief) => (
+              <option key={guardChief.id} value={guardChief.value}>
+                {guardChief.label}
               </option>
             ))}
           </select>
-          {state.errors?.state && (
+          {state.errors?.guardChief && (
             <InlineErrors
-              key="state-error"
-              errorId="state-error"
-              errors={state.errors?.state}
+              key="guardChief-error"
+              errorId="guardChief-error"
+              errors={state.errors?.guardChief}
+            />
+          )}
+        </div>
+        <div className="relative max-w-sm">
+          <label
+            htmlFor="date"
+            className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Fecha
+          </label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="dd/mm/aaaa"
+            required
+          />
+          {state.errors?.date && (
+            <InlineErrors
+              key="date-error"
+              errorId="date-error"
+              errors={state.errors?.date}
             />
           )}
         </div>
         <div>
           <label
-            htmlFor="role"
+            htmlFor="ambulance"
             className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Municipio
+            Ambulancia
           </label>
           <select
-            id="municipality"
-            name="municipality"
+            id="ambulance"
+            name="ambulance"
             defaultValue={""}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             required
-            disabled={!mxStateId}
           >
             <option key={"state-select"} value="">
-              {`Seleccione ${!mxStateId ? "un Estado" : "el Municipio"}`}
+              Seleccione la Ambulance
             </option>
-            {customMunicipalities.map((state) => (
-              <option key={state.id} value={state.value}>
-                {state.label}
+            {customGuardChief.map((guardChief) => (
+              <option key={guardChief.id} value={guardChief.value}>
+                {guardChief.label}
               </option>
             ))}
           </select>
-          {state.errors?.municipality && (
+          {state.errors?.ambulance && (
             <InlineErrors
-              key="municipality-error"
-              errorId="municipality-error"
-              errors={state.errors?.municipality}
+              key="ambulance-error"
+              errorId="ambulance-error"
+              errors={state.errors?.ambulance}
             />
           )}
         </div>

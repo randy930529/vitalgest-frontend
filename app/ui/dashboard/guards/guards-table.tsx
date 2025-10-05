@@ -1,10 +1,12 @@
-import { fetchGuards } from "@/app/lib/data";
-import TableActions from "../tabla-actions";
-import TablePagination from "../pagination";
-import Filters from "../table-filters";
-import TableActionDelete from "../button-delete";
+import { fetchGuards, fetchUsersGuardChief } from "@/app/lib/data";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
+import TablePagination from "@/app/ui/dashboard/pagination";
+import Filters from "@/app/ui/dashboard/table-filters";
+import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import { deleteGuard } from "@/app/lib/actions";
-import TableActionEdit from "../botton-edit";
+import TableActionEdit from "@/app/ui/dashboard/botton-edit";
+import ModalTrigger from "@/app/ui/button-modal";
+import GuardForm from "./create/guard-form";
 
 const customHeaders = [
   { id: 0, label: "Jefe de Guardia" },
@@ -21,11 +23,19 @@ const customGuardsStates = [
 
 export default async function GuardsTable() {
   // <div>(Component) Lista de guardias existentes - [CSR]</div>;
-  const guards = await fetchGuards();
+  const [guards, customGuardChief] = await Promise.all([
+    fetchGuards(),
+    fetchUsersGuardChief(),
+  ]);
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-      <Filters />
+      <Filters>
+        <ModalTrigger
+          title="Crear Guardia"
+          modelContent={<GuardForm customGuardChief={customGuardChief} />}
+        />
+      </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

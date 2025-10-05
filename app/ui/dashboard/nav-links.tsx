@@ -5,26 +5,26 @@ import {
   DocumentDuplicateIcon,
   ShieldCheckIcon,
   BuildingOfficeIcon,
-  ArrowsRightLeftIcon,
+  TruckIcon,
 } from "@heroicons/react/24/outline";
 
 const links = [
   { name: "Inicio", href: "/dashboard", icon: HomeIcon },
-  { name: "Personal", href: "/dashboard/users", icon: UserGroupIcon },
+  { name: "Usuarios", href: "/dashboard/users", icon: UserGroupIcon },
   {
     name: "Delegaciones",
     href: "/dashboard/delegations",
     icon: BuildingOfficeIcon,
   },
   {
-    name: "Vehículos",
-    href: "/dashboard/vehicles",
-    icon: ShieldCheckIcon,
+    name: "Ambulancias",
+    href: "/dashboard/ambulances",
+    icon: TruckIcon,
   },
   {
     name: "Guardias",
     href: "/dashboard/guards",
-    icon: ArrowsRightLeftIcon,
+    icon: ShieldCheckIcon,
   },
   {
     name: "Inventario",

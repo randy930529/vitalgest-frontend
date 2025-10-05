@@ -14,7 +14,7 @@ export default function TableActionDelete({
       <button
         type="submit"
         id={`user-${id}-delete`}
-        className="rounded-md border p-2 hover:bg-gray-100"
+        className="rounded-md border p-2 mr-2 bg-red-200 hover:bg-red-300"
       >
         <span className="sr-only">Eliminar</span>
         <TrashIcon className="w-5" />

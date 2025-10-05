@@ -17,15 +17,17 @@ const customHeaders = [
 
 export default async function DelegationTable() {
   // <div>(Component) Lista de delegaciones existentes - [CSR]</div>;
-  const delegations = await fetchDelegations();
-  const customStates = await fetchStates();
+  const [delegations, customMxStates] = await Promise.all([
+    fetchDelegations(),
+    fetchStates(),
+  ]);
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
         <ModalTrigger
           title="Crear Delegación"
-          modelContent={<DelegationForm customStates={customStates} />}
+          modelContent={<DelegationForm customMxStates={customMxStates} />}
         />
       </Filters>
       <div className="overflow-x-auto">

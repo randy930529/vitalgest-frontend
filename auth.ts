@@ -1,40 +1,29 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
-import type { UserType } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
 import { createSession } from "./app/lib/session";
 import { getLoggedInUser } from "./app/lib/dal";
 
-async function getUser(
-  email: string,
-  password: string
-): Promise<UserType | undefined> {
-  const endPoint = `${process.env.API_URL}/api/auth/login/user`;
-
-  try {
-    const response = await fetch(endPoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-    if (!response.ok) {
-      console.log((await response.json())["error"]);
-      return;
-    }
-
-    const result = await response.json();
-    return result.data;
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    return;
-  }
-}
+const userCredentials = {
+  email: z
+    .string()
+    .email({ message: "Por favor ingrese un correo electrónico válido." })
+    .trim(),
+  password: z
+    .string({
+      required_error: "La contraseña es obligatoria.",
+    })
+    .min(8, { message: "Debe tener al menos 8 caracteres." })
+    .regex(/[a-zA-Z]/, {
+      message: "Debe contener al menos una mayúscula y una minúscula.",
+    })
+    .regex(/[0-9]/, { message: "Debe contener al menos un número." })
+    .regex(/[@$!%#?&]/, {
+      message: "Debe contener al menos un carácter especial.",
+    })
+    .trim(),
+};
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -42,7 +31,7 @@ export const { auth, signIn, signOut } = NextAuth({
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
+          .object(userCredentials)
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
@@ -57,7 +46,6 @@ export const { auth, signIn, signOut } = NextAuth({
           return user;
         }
 
-        console.log("Invalid credentials");
         return null;
       },
     }),

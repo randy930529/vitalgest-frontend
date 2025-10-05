@@ -2,11 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CreateUser, UpdateDelegation, UpdateUser } from "./schema";
+import {
+  CreateGuard,
+  CreateUser,
+  UpdateDelegation,
+  UpdateUser,
+} from "./schema";
 import { StateType } from "./definitions";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { verifySession } from "./dal";
+import { deleteSession } from "./session";
 
 export type UserState = StateType<{
   name?: string[];
@@ -15,11 +21,21 @@ export type UserState = StateType<{
   password?: string[];
   role?: string[];
   state?: string[];
+  position?: string[];
+  // response?: string[];
+  success?: string[];
 }>;
 export type DelegationState = StateType<{
   name?: string[];
   state?: string[];
   municipality?: string[];
+  success?: string[];
+}>;
+export type GuardState = StateType<{
+  guardChief?: string[];
+  date?: string[];
+  ambulance?: string[];
+  success?: string[];
 }>;
 
 export async function createUser(
@@ -38,24 +54,25 @@ export async function createUser(
   if (!validatedUserFields.success) {
     return {
       errors: validatedUserFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create User.",
     };
   }
 
   const { name, lastname, email, password, position, role } =
     validatedUserFields.data;
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
     const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
     const apiToken = session?.accessToken;
-    // if (!apiUrl /* || !apiToken*/) {
-    //   throw new Error(
-    //     "Las variables de conexión a la API no están configuradas."
-    //   );
-    // }
+
     const endPoint = `${process.env.API_URL}/api/adm/create/user`;
+
     const bodyContent = {
       name,
       lastname,
@@ -77,23 +94,25 @@ export async function createUser(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log((await response.json())["error"]);
-      return {
-        errors: {},
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log(error);
     return {
-      errors: {},
-      message: "Failed to Create User.",
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
     };
   }
 
   revalidatePath("/dashboard/users");
   console.log("User created successfully.");
-  return { errors: {}, message: "User created successfully." };
+
+  return { message: "Usuario creado exitosamente." };
 }
 
 export async function updateUser(
@@ -216,13 +235,18 @@ export async function authenticate(
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return "Credenciales inválidas.";
         default:
-          return "Something went wrong.";
+          return "Ocurrió un error inesperado.";
       }
     }
     throw error;
   }
+}
+
+export async function unAuthenticate() {
+  await deleteSession();
+  await signOut({ redirectTo: "/" });
 }
 
 export async function createDelegation(
@@ -238,11 +262,10 @@ export async function createDelegation(
   if (!validatedDelegationFields.success) {
     return {
       errors: validatedDelegationFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create Delegation.",
     };
   }
 
-  const { name, state, municipality } = validatedDelegationFields.data;
+  const { state, municipality } = validatedDelegationFields.data;
   try {
     // Obtener el token desde la cache usando cookies
     const session = await verifySession();
@@ -257,7 +280,8 @@ export async function createDelegation(
 
     const endPoint = `${process.env.API_URL}/api/delegations/create`;
     const bodyContent = {
-      stateName: name,
+      stateName: " ",
+      municipalityName: " ",
       stateId: state,
       municipalityId: municipality,
     };
@@ -274,23 +298,23 @@ export async function createDelegation(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log((await response.json())["error"]);
-      return {
-        errors: {},
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log(error);
     return {
-      errors: {},
-      message: "Failed to Create Delegation.",
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
     };
   }
 
   revalidatePath("/dashboard/users");
-  console.log("Delegation created successfully.");
-  return { errors: {}, message: "Delegation created successfully." };
+  return { errors: {}, message: "Delegación creada exitosamente." };
 }
 
 export async function updateDelegation(
@@ -312,7 +336,7 @@ export async function updateDelegation(
     };
   }
 
-  const { name, state, municipality } = validatedDelegationFields.data;
+  const { state, municipality } = validatedDelegationFields.data;
 
   try {
     // Obtener el token desde la cache usando cookies
@@ -327,7 +351,7 @@ export async function updateDelegation(
     }
     const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
     const bodyContent = {
-      name,
+      name: " ",
       stateId: state,
       municipalityId: municipality,
     };
@@ -394,6 +418,76 @@ export async function deleteDelegation(id: string) {
 
   revalidatePath("/dashboard/delegations");
   // return { errors: {}, message: "User deleted successfully." };
+}
+
+export async function createGuard(
+  prevState: GuardState,
+  formGuarData: FormData
+): Promise<GuardState> {
+  const date = formGuarData.get("date") as string;
+
+  const validatedGuardFields = CreateGuard.safeParse({
+    guardChief: formGuarData.get("guardChief"),
+    date: new Date(date),
+  });
+
+  if (!validatedGuardFields.success) {
+    return {
+      errors: validatedGuardFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { guardChief } = validatedGuardFields.data;
+  try {
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/create`;
+
+    const bodyContent = {
+      guardChief,
+      date,
+    };
+
+    const config = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+
+  revalidatePath("/dashboard/guards");
+  console.log("Guard created successfully.");
+
+  return { message: "Guardia creada exitosamente." };
 }
 
 export async function deleteGuard(id: string) {

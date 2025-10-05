@@ -1,28 +1,21 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DelegationState, updateDelegation } from "@/app/lib/actions";
-import { DelegationType } from "@/app/lib/definitions";
+import {
+  CustomMxState,
+  CustomOptions,
+  DelegationType,
+} from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 
 export default function DelegationEditForm({
   delegation,
-  customStates,
-  customMunicipalities,
+  customMxStates,
 }: {
   delegation: DelegationType;
-  customStates: {
-    id: string;
-    value: string;
-    label: string;
-  }[];
-  customMunicipalities: {
-    id: number;
-    value: number;
-    label: string;
-  }[];
+  customMxStates: CustomMxState[];
 }) {
   // <div>(Component) Formulario de delegación - [CSR]</div>
 
@@ -35,24 +28,23 @@ export default function DelegationEditForm({
     updateDelegationWithId,
     initialState
   );
-  console.log(state.errors);
 
-  const searchParams = useSearchParams();
-  const { replace } = useRouter();
-  const pathname = usePathname();
-  const params = new URLSearchParams(searchParams);
+  const [mxStateId, setmxStateId] = useState(delegation?.state?.id);
 
-  const handleOption = (name: string, value: string) => {
-    console.log(`Options... ${name} ${value}`);
+  const [customMunicipalities, setCustomMunicipalities] = useState<
+    CustomOptions[]
+  >([]);
 
-    params.set(name, `${delegation?.id || ""}`);
+  useEffect(() => {
+    console.log("Cambio algo", mxStateId);
+    const municipalities =
+      customMxStates.find(({ id }) => id === mxStateId)?.municipalities || [];
+    setCustomMunicipalities(municipalities);
+  }, [mxStateId]);
 
-    if (value) {
-      params.set(name, value);
-    } else {
-      params.delete(name);
-    }
-    replace(`${pathname}?${params.toString()}`);
+  const handleOption = (name: string, id: string) => {
+    console.log(`Options... ${name} ${id}`);
+    setmxStateId(Number(id));
   };
 
   return (
@@ -61,23 +53,6 @@ export default function DelegationEditForm({
         <form action={formAction}>
           {state.message}
           <div className="grid gap-4 mb-4 sm:grid-cols-1">
-            <div>
-              <label
-                htmlFor="name"
-                className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Delegación
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                defaultValue={delegation?.name}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Delegación Ameca, Jalisco"
-                required
-              />
-            </div>
             <div>
               <label
                 htmlFor="role"
@@ -95,7 +70,7 @@ export default function DelegationEditForm({
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 required
               >
-                {customStates.map((state) => (
+                {customMxStates.map((state) => (
                   <option key={state.id} value={state.value}>
                     {state.label}
                   </option>
@@ -121,9 +96,6 @@ export default function DelegationEditForm({
                 id="municipality"
                 name="municipality"
                 defaultValue={delegation?.municipality?.id}
-                onChange={(e) => {
-                  handleOption(e.target.name, e.target.value);
-                }}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 required
               >
