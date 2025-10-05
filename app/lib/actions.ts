@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CreateUser, UpdateDelegation, UpdateUser } from "./schema";
+import {
+  CreateGuard,
+  CreateUser,
+  UpdateDelegation,
+  UpdateUser,
+} from "./schema";
 import { StateType } from "./definitions";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
@@ -24,6 +29,12 @@ export type DelegationState = StateType<{
   name?: string[];
   state?: string[];
   municipality?: string[];
+  success?: string[];
+}>;
+export type GuardState = StateType<{
+  guardChief?: string[];
+  date?: string[];
+  ambulance?: string[];
   success?: string[];
 }>;
 
@@ -50,17 +61,18 @@ export async function createUser(
     validatedUserFields.data;
   try {
     // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
 
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/adm/create/user`;
+
     const bodyContent = {
       name,
       lastname,
@@ -406,6 +418,76 @@ export async function deleteDelegation(id: string) {
 
   revalidatePath("/dashboard/delegations");
   // return { errors: {}, message: "User deleted successfully." };
+}
+
+export async function createGuard(
+  prevState: GuardState,
+  formGuarData: FormData
+): Promise<GuardState> {
+  const date = formGuarData.get("date") as string;
+
+  const validatedGuardFields = CreateGuard.safeParse({
+    guardChief: formGuarData.get("guardChief"),
+    date: new Date(date),
+  });
+
+  if (!validatedGuardFields.success) {
+    return {
+      errors: validatedGuardFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { guardChief } = validatedGuardFields.data;
+  try {
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/create`;
+
+    const bodyContent = {
+      guardChief,
+      date,
+    };
+
+    const config = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+
+  revalidatePath("/dashboard/guards");
+  console.log("Guard created successfully.");
+
+  return { message: "Guardia creada exitosamente." };
 }
 
 export async function deleteGuard(id: string) {

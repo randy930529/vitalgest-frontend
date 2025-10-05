@@ -3,6 +3,7 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export default async function GuardsPage() {
   // <div>(Página) Gestionar guardias - [SSR]</div>
+
   return (
     <>
       <Breadcrumbs
@@ -12,7 +13,6 @@ export default async function GuardsPage() {
         ]}
       />
       <GuardsTable />
-      {/* <GuardsForm /> */}
     </>
   );
 }

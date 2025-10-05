@@ -3,6 +3,7 @@ import {
   CustomMxState,
   CustomOptions,
   DelegationType,
+  GuardType,
   MxState,
   ResponseAPIType,
   UserType,
@@ -22,7 +23,7 @@ export async function fetchUsers(): Promise<UserType[]> {
     if (!verifyAuthorization(session)) return [];
     const apiToken = session.accessToken;
 
-    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/5`;
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
 
     const fetchUsersFromApi = cache(
       async (): Promise<ResponseAPIType<UserType[]>> => {
@@ -59,7 +60,86 @@ export async function fetchUsers(): Promise<UserType[]> {
   }
 }
 
-export async function fetchUserById(id: string) {
+export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (
+      !verifyAuthorization(session) &&
+      session?.user?.role !== "general_admin"
+    )
+      return [];
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
+
+    const fetchUsersFromApi = cache(
+      async (): Promise<ResponseAPIType<UserType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchUsersFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    if (!res.data?.length) return [];
+
+    const guardChiefs = res.data.filter(({ role, state }) => {
+      let active = false;
+      if (typeof state === "string") {
+        active = state === "true";
+      } else {
+        active = !!state;
+      }
+      return ["head_guard"].includes(role) && active;
+    });
+
+    const customUserGuardChief = guardChiefs.map<CustomOptions>(
+      ({ id, name, lastname }) => ({
+        id,
+        value: id,
+        label: `${name} ${lastname}`,
+      })
+    ) || {
+      id: 0,
+      value: "",
+      label: "No se encontraron jefes de guardia.",
+    };
+
+    return customUserGuardChief;
+  } catch (err) {
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
+  }
+}
+
+export async function fetchUserById(id: string): Promise<UserType | undefined> {
   try {
     if (!process.env.API_URL) {
       throw new Error(
@@ -85,10 +165,10 @@ export async function fetchUserById(id: string) {
 
     const result = await response.json();
     console.log(result);
-    return result.data[0];
+    return result.data[0] as UserType;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return;
   }
 }
 
@@ -118,8 +198,11 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
 
         if (!response.ok) {
           console.log(await response.json());
-          // throw new Error("No se pudo obtener las delegaciones desde la API.");
-          return { success: false, data: [] };
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
         }
 
         return response.json();
@@ -127,27 +210,15 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
     );
 
     const res = await fetchDelegationsFromApi();
-    console.log(res);
-    return res.data as DelegationType[];
-    // return [
-    //   {
-    //     id: "uuid-1",
-    //     estado: "Jalisco",
-    //     municipio: "Guadalajara",
-    //     userToRegister: "userId-1",
-    //     createdAt: "2023-10-01",
-    //   },
-    //   {
-    //     id: "uuid-2",
-    //     estado: "Mexico D.F.",
-    //     municipio: "Cuauhtémoc",
-    //     userToRegister: "userId-2",
-    //     createdAt: "2023-10-02",
-    //   },
-    // ];
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    return res.data;
   } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
   }
 }
 
@@ -181,8 +252,8 @@ export async function fetchDelegationById(
     console.log(result);
     return result.data;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return;
   }
 }
 
@@ -200,57 +271,38 @@ export async function fetchGuards(): Promise<any[]> {
 
     const endPoint = `${process.env.API_URL}/api/guards/many/all`;
 
-    // const fetchGuardsFromApi = cache(
-    //   async (): Promise<ResponseAPIType<GuardType[]>> => {
-    //     const response = await fetch(endPoint, {
-    //       headers: {
-    //         Authorization: `Bearer ${apiToken}`,
-    //         "Content-Type": "application/json",
-    //       },
-    //     });
+    const fetchGuardsFromApi = cache(
+      async (): Promise<ResponseAPIType<GuardType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-    //     if (!response.ok) {
-    //       console.log(await response.json());
-    //       // throw new Error("No se pudo obtener las delegaciones desde la API.");
-    //       return { success: false, data: [] };
-    //     }
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
+        }
 
-    //     return response.json();
-    //   }
-    // );
+        return response.json();
+      }
+    );
 
-    // const res = await fetchGuardsFromApi();
-    // console.log(res);
-    // return res.data as GuardType[];
-    return [
-      {
-        id: "uuid-1",
-        guardChief: "userId-1",
-        date: "2023-10-01",
-        ambulance: "Ambulancia 1",
-        state: "new",
-        createdAt: "2023-10-01",
-      },
-      {
-        id: "uuid-2",
-        guardChief: "userId-2",
-        date: "2023-10-02",
-        ambulance: "Ambulancia 2",
-        state: "ongoing",
-        createdAt: "2023-10-02",
-      },
-      {
-        id: "uuid-3",
-        guardChief: "userId-3",
-        date: "2023-10-03",
-        ambulance: "Ambulancia 3",
-        state: "closed",
-        createdAt: "2023-10-03",
-      },
-    ];
+    const res = await fetchGuardsFromApi();
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    return res.data;
   } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
   }
 }
 
@@ -313,8 +365,8 @@ export async function fetchStates(): Promise<CustomMxState[]> {
 
     return customStates;
   } catch (err) {
-    console.error("API Error[GET DELEGATIONS]:", err);
-    throw new Error("No se pudo obtener todas las delegaciones.");
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return [];
   }
 }
 
@@ -370,7 +422,7 @@ export async function fetchMunicipalityByStateId(
 
     return customStates;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user.");
+    console.log("Database Error:", error);
+    return [];
   }
 }

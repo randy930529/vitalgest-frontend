@@ -120,6 +120,8 @@ function UserActive(
   let userState = false;
   if (typeof active === "string") {
     userState = active === "true";
+  } else {
+    userState = !!active;
   }
   return (
     <div className="flex items-center">

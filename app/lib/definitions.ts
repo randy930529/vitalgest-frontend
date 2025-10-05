@@ -75,9 +75,10 @@ export type DelegationType = {
 
 export type GuardType = {
   id: string;
-  guardChief: string;
+  guardChief: UserType;
   date: string;
   ambulance: string;
-  state: string;
+  state: "En curso" | "Nueva" | "Cerrada";
+  delegation: DelegationType;
   createdAt: string;
 };
