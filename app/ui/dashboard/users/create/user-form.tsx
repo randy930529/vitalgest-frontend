@@ -137,7 +137,7 @@ function FormInput({
     lastname: ["text", "Apellidos"],
     email: ["email", "Correo Electrónico"],
     password: ["password", "Contraseña"],
-    position: ["text", "Posición"],
+    position: ["text", "Cargo Laboral"],
   };
   const [inputType, inputTitle] = customFormInputType[name];
 
