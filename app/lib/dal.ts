@@ -1,19 +1,35 @@
 import "server-only";
 import { cache } from "react";
-import { SessionType, UserType } from "./definitions";
 import { cookies } from "next/headers";
-import { decrypt } from "@/app/lib/session";
-import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
+import { SessionPayload, SessionType, UserType } from "@/app/lib/definitions";
+import { decrypt, updateSession } from "@/app/lib/session";
 
-export const verifySession = cache(async () => {
+export const customErrorCodes = {
+  NO_TOKEN_PROVIDED: "",
+  INVALID_TOKEN: "",
+};
+
+export const verifySession = cache(async (): Promise<SessionType> => {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
-  if (!session?.user) {
-    await signOut({ redirectTo: "/" });
+  if (
+    !session ||
+    !session.user ||
+    !session.accessToken ||
+    !session.refreshToken
+  ) {
+    redirect("/login");
   }
 
-  const { user, accessToken, refreshToken } = (session || {}) as SessionType;
+  const upError = await updateSession(session as SessionPayload);
+
+  if (upError) {
+    redirect("/login");
+  }
+
+  const { user, accessToken, refreshToken } = session as SessionPayload;
 
   return { isAuth: true, user, accessToken, refreshToken };
 });
@@ -80,7 +96,6 @@ export const getLoggedInUser = cache(
         setCookieHeader,
         "refresh_token"
       );
-      console.log(accessToken, refreshToken);
 
       const result = await response.json();
       return [result.data, accessToken, refreshToken];
@@ -90,3 +105,36 @@ export const getLoggedInUser = cache(
     }
   }
 );
+
+export async function refreshAccessToken(
+  token: string
+): Promise<{ accessToken: string; refreshToken: string } | string | undefined> {
+  const endPoint = `${process.env.API_URL}/api/auth/refresh/token`;
+
+  try {
+    const response = await fetch(endPoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      console.log(result);
+
+      if (!result?.success) return result.error;
+      return;
+    }
+
+    const result = await response.json();
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    return;
+  }
+}
