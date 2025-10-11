@@ -1,10 +1,10 @@
 "use client";
 
-import { updateUser, UserState } from "@/app/lib/actions";
+import { useActionState } from "react";
+import Link from "next/link";
+import { updateUser, UserState } from "@/app/lib/actions/user";
 import { UserType } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
-import Link from "next/link";
-import { useActionState } from "react";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },

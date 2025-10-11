@@ -3,7 +3,7 @@ import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import { deleteGuard } from "@/app/lib/actions";
+import { deleteGuard } from "@/app/lib/actions/guard";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import ModalTrigger from "@/app/ui/button-modal";
 import GuardForm from "./create/guard-form";

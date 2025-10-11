@@ -3,6 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { SessionPayload, SessionType, UserType } from "@/app/lib/definitions";
 import { decrypt } from "@/app/lib/session";
+import { redirect } from "next/navigation";
 
 export const customErrorCodes = {
   NO_TOKEN_PROVIDED: "",
@@ -13,16 +14,6 @@ export const getSession = cache(
   async (): Promise<SessionPayload | undefined> => {
     const cookie = (await cookies()).get("session")?.value;
     const session = await decrypt(cookie);
-
-    if (
-      !session ||
-      !session.user ||
-      !session.accessToken ||
-      !session.refreshToken
-    ) {
-      return;
-    }
-
     return session;
   }
 );
@@ -30,8 +21,16 @@ export const getSession = cache(
 export const verifySession = cache(async (): Promise<SessionType> => {
   const session = await getSession();
 
-  const { user, accessToken, refreshToken } = session || ({} as SessionPayload);
+  if (
+    !session ||
+    !session.user ||
+    !session.accessToken ||
+    !session.refreshToken
+  ) {
+    redirect("/login");
+  }
 
+  const { user, accessToken, refreshToken } = session;
   return { isAuth: true, user, accessToken, refreshToken };
 });
 

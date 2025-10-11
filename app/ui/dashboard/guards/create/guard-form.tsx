@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { createGuard, GuardState } from "@/app/lib/actions";
+import { createGuard, GuardState } from "@/app/lib/actions/guard";
 import { CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { InlineErrors } from "@/app/ui/custom-errors";

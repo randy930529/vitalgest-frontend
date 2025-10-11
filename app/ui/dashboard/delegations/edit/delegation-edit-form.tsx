@@ -2,13 +2,16 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { DelegationState, updateDelegation } from "@/app/lib/actions";
 import {
   CustomMxState,
   CustomOptions,
   DelegationType,
 } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
+import {
+  DelegationState,
+  updateDelegation,
+} from "@/app/lib/actions/delegation";
 
 export default function DelegationEditForm({
   delegation,

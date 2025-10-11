@@ -1,12 +1,12 @@
 import { fetchUsers } from "@/app/lib/data";
+import { deleteUser } from "@/app/lib/actions/user";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
-import TableActionEdit from "../botton-edit";
-import TableActionDelete from "../button-delete";
-import { deleteUser } from "@/app/lib/actions";
-import ModalTrigger from "../../button-modal";
-import UserForm from "./create/user-form";
+import TableActionEdit from "@/app/ui/dashboard/botton-edit";
+import TableActionDelete from "@/app/ui/dashboard/button-delete";
+import ModalTrigger from "@/app/ui/button-modal";
+import UserForm from "@/app/ui/dashboard/users/create/user-form";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },

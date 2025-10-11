@@ -3,10 +3,10 @@ import TableActions from "../tabla-actions";
 import TablePagination from "../pagination";
 import Filters from "../table-filters";
 import TableActionDelete from "../button-delete";
-import { deleteDelegation } from "@/app/lib/actions";
 import TableActionEdit from "../botton-edit";
 import ModalTrigger from "../../button-modal";
 import DelegationForm from "./create/delegation-form";
+import { deleteDelegation } from "@/app/lib/actions/delegation";
 
 const customHeaders = [
   { id: 0, label: "Estado" },
