@@ -7,8 +7,8 @@ import {
   MxState,
   ResponseAPIType,
   UserType,
-} from "./definitions";
-import { verifyAuthorization, verifySession } from "./dal";
+} from "@/app/lib/definitions";
+import { verifyAuthorization, verifySession } from "@/app/lib/dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
   try {
@@ -165,7 +165,7 @@ export async function fetchUserById(id: string): Promise<UserType | undefined> {
 
     const result = await response.json();
     console.log(result);
-    return result.data[0] as UserType;
+    return result.data;
   } catch (error) {
     console.log("Database Error:", error);
     return;

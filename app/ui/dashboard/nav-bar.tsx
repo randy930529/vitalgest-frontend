@@ -1,26 +1,26 @@
 "use client";
 
-import { BellIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import UserMenuDropdown from "./profile/user-menu-dropdown";
-import MenuOptionsDropdown from "./profile/menu-options-dropdown";
-import { SessionType } from "@/app/lib/definitions";
 import { useState } from "react";
+import { BellIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { UserType } from "@/app/lib/definitions";
+import UserMenuDropdown from "@/app/ui/dashboard/profile/user-menu-dropdown";
+import MenuOptionsDropdown from "@/app/ui/dashboard/profile/menu-options-dropdown";
 
-export default function NavBar({ session }: { session: SessionType }) {
-  const { id, email, name, lastname } = session?.user || {};
+export default function NavBar({ user }: { user: UserType }) {
+  const { id, email, name, lastname } = user;
   const [toggleDropdown, setToggleDropdown] = useState({
-    options: true,
-    user: true,
+    mOptions: true,
+    mUser: true,
   });
 
-  const { options, user } = toggleDropdown;
+  const { mOptions: options, mUser } = toggleDropdown;
 
   function handleToggle(e: any, value: boolean) {
     if (e.name === "options") {
-      setToggleDropdown({ ...toggleDropdown, options: value, user: true });
+      setToggleDropdown({ ...toggleDropdown, mOptions: value, mUser: true });
     }
     if (e.name === "user") {
-      setToggleDropdown({ ...toggleDropdown, user: value, options: true });
+      setToggleDropdown({ ...toggleDropdown, mUser: value, mOptions: true });
     }
   }
 
@@ -56,7 +56,7 @@ export default function NavBar({ session }: { session: SessionType }) {
         email={email}
         name={name}
         lastname={lastname}
-        hiddenDropdown={user}
+        hiddenDropdown={mUser}
         setHiddenDropdown={handleToggle}
       />
     </nav>
