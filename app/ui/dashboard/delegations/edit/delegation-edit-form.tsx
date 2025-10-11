@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import {
   CustomMxState,
   CustomOptions,
@@ -44,6 +45,11 @@ export default function DelegationEditForm({
       customMxStates.find(({ id }) => id === mxStateId)?.municipalities || [];
     setCustomMunicipalities(municipalities);
   }, [mxStateId]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   const handleOption = (name: string, id: string) => {
     console.log(`Options... ${name} ${id}`);

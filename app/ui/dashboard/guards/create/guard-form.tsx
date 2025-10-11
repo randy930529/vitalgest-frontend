@@ -1,10 +1,11 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { createGuard, GuardState } from "@/app/lib/actions/guard";
+import toast from "react-hot-toast";
 import { CustomOptions } from "@/app/lib/definitions";
-import { Button } from "@/app/ui/button";
+import { createGuard, GuardState } from "@/app/lib/actions/guard";
 import { InlineErrors } from "@/app/ui/custom-errors";
+import { Button } from "@/app/ui/button";
 
 export default function GuardForm({
   customGuardChief,
@@ -21,8 +22,14 @@ export default function GuardForm({
   console.log(state);
 
   useEffect(() => {
+    state.message && toast.success(state.message);
     state.message && onClose && onClose();
   }, [state.message]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   return (
     <form action={formAction}>

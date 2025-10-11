@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 import { verifySession } from "@/app/lib/dal";
 import SectionHeader from "@/app/ui/dashboard/section-header";
 import NavBar from "@/app/ui/dashboard/nav-bar";
@@ -24,8 +25,9 @@ export default async function DashboardLayout({
         <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
           <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+              <Toaster />
               <SectionHeader />
-              <NavBar session={session} />
+              <NavBar user={session.user} />
             </div>
             {children}
           </section>

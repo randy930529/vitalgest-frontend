@@ -32,15 +32,15 @@ export async function createDelegation(
   const { state, municipality } = validatedDelegationFields.data;
   try {
     // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    if (!session?.isAuth) redirect("/login");
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
 
     const endPoint = `${process.env.API_URL}/api/delegations/create`;
     const bodyContent = {
@@ -93,10 +93,8 @@ export async function updateDelegation(
   });
 
   if (!validatedDelegationFields.success) {
-    console.log("Validation Error:", validatedDelegationFields.error);
     return {
       errors: validatedDelegationFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Update Delegation.",
     };
   }
 
@@ -104,16 +102,18 @@ export async function updateDelegation(
 
   try {
     // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
     const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
+
     const bodyContent = {
       name: " ",
       stateId: state,
@@ -132,18 +132,24 @@ export async function updateDelegation(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log("Response Error:", await response.json());
-      return {
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log("Try Error:", error);
-    return { message: "Database Error: Failed to Update Delegation." };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/delegations");
   redirect("/dashboard/delegations");
+  // return { errors: {}, message: "Cambios guardados exitosamente." };
 }
 
 export async function deleteDelegation(id: string) {
