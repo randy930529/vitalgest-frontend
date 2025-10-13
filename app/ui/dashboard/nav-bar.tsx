@@ -4,32 +4,23 @@ import { useState } from "react";
 import { BellIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { UserType } from "@/app/lib/definitions";
 import UserMenuDropdown from "@/app/ui/dashboard/profile/user-menu-dropdown";
-import MenuOptionsDropdown from "@/app/ui/dashboard/profile/menu-options-dropdown";
 
 export default function NavBar({ user }: { user: UserType }) {
   const { id, email, name, lastname } = user;
   const [toggleDropdown, setToggleDropdown] = useState({
-    mOptions: true,
     mUser: true,
   });
 
-  const { mOptions: options, mUser } = toggleDropdown;
+  const { mUser } = toggleDropdown;
 
   function handleToggle(e: any, value: boolean) {
-    if (e.name === "options") {
-      setToggleDropdown({ ...toggleDropdown, mOptions: value, mUser: true });
-    }
     if (e.name === "user") {
-      setToggleDropdown({ ...toggleDropdown, mUser: value, mOptions: true });
+      setToggleDropdown({ ...toggleDropdown, mUser: value });
     }
   }
 
   return (
     <nav className="flex relative items-center lg:order-2">
-      <MenuOptionsDropdown
-        hiddenDropdown={options}
-        setHiddenDropdown={handleToggle}
-      />
       {/* <!-- Notifications --> */}
       <button
         type="button"
