@@ -1,5 +1,6 @@
 import { cache } from "react";
 import {
+  AmbulanceType,
   CustomMxState,
   CustomOptions,
   DelegationType,
@@ -423,6 +424,56 @@ export async function fetchMunicipalityByStateId(
     return customStates;
   } catch (error) {
     console.log("Database Error:", error);
+    return [];
+  }
+}
+
+export async function fetchAmbulances(): Promise<AmbulanceType[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/ambulances/many/all`;
+
+    const fetchAmbulancesFromApi = cache(
+      async (): Promise<ResponseAPIType<AmbulanceType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            // Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las ambulancias desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchAmbulancesFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+    return res.data;
+  } catch (err) {
+    console.log("API Error[GET AMBULANCES]:", err);
     return [];
   }
 }
