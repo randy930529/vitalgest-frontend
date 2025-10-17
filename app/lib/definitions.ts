@@ -82,3 +82,10 @@ export type GuardType = {
   delegation: DelegationType;
   createdAt: string;
 };
+
+export type AmbulanceType = {
+  id: string;
+  numero: string;
+  marca: string;
+  modelo: string;
+};

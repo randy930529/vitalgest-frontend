@@ -78,6 +78,19 @@ const FormGuardSchema = z.object({
   }),
 });
 
+const FormAmbulanceSchema = z.object({
+  id: z.string().uuid(),
+  numero: z.string({
+    invalid_type_error: "Por favor ingrese el número de la ambulancia.",
+  }),
+  marca: z.string({
+    invalid_type_error: "Por favor ingrese la marca de la ambulancia.",
+  }),
+  modelo: z.string({
+    invalid_type_error: "Por favor ingrese el modelo de la ambulancia.",
+  }),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, state: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -87,3 +100,6 @@ export const CreateGuard = FormGuardSchema.omit({
   ambulance: true,
   delegationId: true,
 });
+
+export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
+export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
