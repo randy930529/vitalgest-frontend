@@ -148,8 +148,7 @@ export async function updateAmbulance(
   }
 
   revalidatePath("/dashboard/ambulances");
-  redirect("/dashboard/ambulances");
-  // return { errors: {}, message: "Cambios guardados exitosamente." };
+  return { errors: {}, message: "Cambios guardados exitosamente." };
 }
 
 export async function deleteAmbulance(id: string) {
