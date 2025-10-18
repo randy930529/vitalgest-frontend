@@ -59,6 +59,15 @@ export type CustomMxState = CustomOptions & {
   municipalities?: CustomOptions[];
 };
 
+export type FormInputType = {
+  [key: string]: {
+    type: string;
+    title: string;
+    required?: boolean;
+    placeholder?: string;
+  };
+};
+
 export type DelegationType = {
   id: string;
   name: string;
