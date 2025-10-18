@@ -12,7 +12,7 @@ export type UserState = StateType<{
   email?: string[];
   password?: string[];
   role?: string[];
-  state?: string[];
+  status?: string[];
   position?: string[];
   success?: string[];
 }>;
@@ -106,7 +106,7 @@ export async function updateUser(
     password: formUserData.get("password"),
     role: formUserData.get("role"),
     position: formUserData.get("position"),
-    state: formUserData.get("state") === "true",
+    status: formUserData.get("status") === "true",
   });
 
   if (!validatedUserFields.success) {
@@ -117,7 +117,7 @@ export async function updateUser(
     };
   }
 
-  const { name, lastname, email, role, position, state } =
+  const { name, lastname, email, role, position, status } =
     validatedUserFields.data;
 
   try {
@@ -137,7 +137,7 @@ export async function updateUser(
       lastname,
       email,
       role,
-      state,
+      status,
       position,
     };
 

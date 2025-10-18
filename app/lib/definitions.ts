@@ -12,7 +12,7 @@ export type UserType = {
     | "general_admin"
     | string;
   position: string;
-  state?: boolean;
+  status?: boolean;
 };
 
 export type ResponseAPIType<T> = {

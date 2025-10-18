@@ -96,7 +96,7 @@ export default async function UserTable() {
                   {customRoles.find((rol) => user.role === rol.value)?.label}
                 </td>
                 <td className="px-4 py-3">
-                  <UserActive active={user.state} />
+                  <UserActive active={user.status} />
                 </td>
                 <TableActions>
                   <TableActionEdit

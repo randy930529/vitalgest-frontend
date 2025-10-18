@@ -43,7 +43,7 @@ export const verifyAuthorization = cache((session: SessionType) => {
   if (
     session?.isAuth &&
     session?.user &&
-    !session?.user?.state &&
+    !session?.user?.status &&
     !(
       session?.user?.role === "admin" || session?.user?.role === "general_admin"
     )

@@ -111,12 +111,12 @@ export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
 
     if (!res.data?.length) return [];
 
-    const guardChiefs = res.data.filter(({ role, state }) => {
+    const guardChiefs = res.data.filter(({ role, status }) => {
       let active = false;
-      if (typeof state === "string") {
-        active = state === "true";
+      if (typeof status === "string") {
+        active = status === "true";
       } else {
-        active = !!state;
+        active = !!status;
       }
       return ["head_guard"].includes(role) && active;
     });

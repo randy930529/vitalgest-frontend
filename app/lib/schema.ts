@@ -42,7 +42,7 @@ const FormUserSchema = z.object({
       invalid_type_error: "Por favor seleccione un rol de usuario.",
     }
   ),
-  state: z.boolean({
+  status: z.boolean({
     invalid_type_error: "Por favor seleccione el estado del usuario.",
   }),
   position: z.string({
@@ -91,7 +91,7 @@ const FormAmbulanceSchema = z.object({
   }),
 });
 
-export const CreateUser = FormUserSchema.omit({ id: true, state: true });
+export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
 export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
