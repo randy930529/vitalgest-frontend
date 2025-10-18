@@ -12,7 +12,7 @@ export type UserType = {
     | "general_admin"
     | string;
   position: string;
-  state?: boolean;
+  status?: boolean;
 };
 
 export type ResponseAPIType<T> = {
@@ -59,6 +59,15 @@ export type CustomMxState = CustomOptions & {
   municipalities?: CustomOptions[];
 };
 
+export type FormInputType = {
+  [key: string]: {
+    type: string;
+    title: string;
+    required?: boolean;
+    placeholder?: string;
+  };
+};
+
 export type DelegationType = {
   id: string;
   name: string;
@@ -81,4 +90,11 @@ export type GuardType = {
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
   createdAt: string;
+};
+
+export type AmbulanceType = {
+  id: string;
+  numero: string;
+  marca: string;
+  modelo: string;
 };

@@ -1,12 +1,12 @@
 "use client";
 
-import { PowerIcon } from "@heroicons/react/24/outline";
 import { useActionState } from "react";
-import { unAuthenticate } from "../lib/actions";
+import { PowerIcon } from "@heroicons/react/24/outline";
+import { logout } from "@/app/lib/actions/auth";
 
-export default function ButtonSignout() {
+export function ButtonSignout() {
   const [errorMessage, formSignOutAction, isPending] = useActionState(
-    unAuthenticate,
+    logout,
     undefined
   );
 
@@ -22,7 +22,7 @@ export default function ButtonSignout() {
 
 export function LinkSignout() {
   const [errorMessage, formSignOutAction, isPending] = useActionState(
-    unAuthenticate,
+    logout,
     undefined
   );
 

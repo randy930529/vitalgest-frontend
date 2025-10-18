@@ -18,6 +18,10 @@ const customSectionMeta: {
     title: "Gestión de Guardias",
     subtitle: "Administrar guardias en el sistema",
   },
+  ambulances: {
+    title: "Gestión de Ambulancias",
+    subtitle: "Administrar ambulancias en el sistema",
+  },
 };
 
 export default function SectionHeader() {

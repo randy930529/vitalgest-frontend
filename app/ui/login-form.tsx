@@ -1,22 +1,21 @@
 "use client";
 
-import { openSans } from "@/app/ui/fonts";
+import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
-import { Button } from "./button";
-import { useSearchParams } from "next/navigation";
-import { useActionState } from "react";
-import { authenticate } from "../lib/actions";
+import { login } from "@/app/lib/actions/auth";
+import { Button } from "@/app/ui/button";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [errorMessage, formLoginAction, isPending] = useActionState(
-    authenticate,
+    login,
     undefined
   );
   return (

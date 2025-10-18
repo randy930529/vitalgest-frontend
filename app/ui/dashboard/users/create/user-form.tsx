@@ -1,9 +1,10 @@
 "use client";
 
-import { createUser, UserState } from "@/app/lib/actions";
+import { useActionState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { Button } from "@/app/ui/button";
 import { InlineErrors } from "@/app/ui/custom-errors";
-import { useActionState, useEffect } from "react";
+import { createUser, UserState } from "@/app/lib/actions/user";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
@@ -21,8 +22,14 @@ export default function UserForm({ onClose }: { onClose?: () => void }) {
   const [state, formAction] = useActionState(createUser, initialState);
 
   useEffect(() => {
+    state.message && toast.success(state.message);
     state.message && onClose && onClose();
   }, [state.message]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   return (
     <form action={formAction}>

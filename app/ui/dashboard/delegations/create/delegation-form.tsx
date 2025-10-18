@@ -1,10 +1,14 @@
 "use client";
 
-import { createDelegation, DelegationState } from "@/app/lib/actions";
+import { useActionState, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import {
+  createDelegation,
+  DelegationState,
+} from "@/app/lib/actions/delegation";
 import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { InlineErrors } from "@/app/ui/custom-errors";
-import { useActionState, useEffect, useState } from "react";
 
 export default function DelegationForm({
   customMxStates,
@@ -32,8 +36,14 @@ export default function DelegationForm({
   }, [mxStateId]);
 
   useEffect(() => {
+    state.message && toast.success(state.message);
     state.message && onClose && onClose();
   }, [state.message]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   const handleOption = (name: string, id: string) => {
     console.log(`Options... ${name} ${id}`);

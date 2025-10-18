@@ -1,10 +1,10 @@
 "use client";
 
-import { updateUser, UserState } from "@/app/lib/actions";
+import { useActionState } from "react";
+import Link from "next/link";
+import { updateUser, UserState } from "@/app/lib/actions/user";
 import { UserType } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
-import Link from "next/link";
-import { useActionState } from "react";
 
 const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
@@ -159,13 +159,13 @@ export default function UserEditForm({ user }: { user: UserType | undefined }) {
                 </label>
                 <input
                   type="radio"
-                  name="state"
-                  id="state"
+                  name="status"
+                  id="status"
                   value="true"
                   defaultChecked={
-                    typeof user?.state === "string"
-                      ? user.state === "true"
-                      : user?.state
+                    typeof user?.status === "string"
+                      ? user.status === "true"
+                      : user?.status
                   }
                   className="h-4 w-4 border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />

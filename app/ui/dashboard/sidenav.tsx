@@ -1,7 +1,7 @@
 import Link from "next/link";
 import NavLinks from "@/app/ui/dashboard/nav-links";
 import VitalGestLogo from "@/app/ui/vitalgest-logo";
-import ButtonSignout from "@/app/ui/button-signout";
+import { ButtonSignout } from "@/app/ui/button-signout";
 
 export default function SideNav() {
   return (

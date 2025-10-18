@@ -1,41 +1,63 @@
-import { fetchUsers } from "@/app/lib/data";
-import { deleteUser } from "@/app/lib/actions/user";
+"use client";
+
+import { useState } from "react";
 import Filters from "@/app/ui/dashboard/table-filters";
-import TableActions from "@/app/ui/dashboard/tabla-actions";
+import ModalTrigger from "@/app/ui/button-modal";
 import TablePagination from "@/app/ui/dashboard/pagination";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import ModalTrigger from "@/app/ui/button-modal";
-import UserForm from "@/app/ui/dashboard/users/create/user-form";
-
-const customRoles = [
-  { id: 0, value: "", label: "Seleccione un rol" },
-  { id: 1, value: "admin", label: "Administrador" },
-  { id: 2, value: "paramedical", label: "Paramédico" },
-  { id: 3, value: "vehicle_operator", label: "Operador de Vehículo" },
-  { id: 4, value: "head_guard", label: "Jefe de Seguridad" },
-  { id: 5, value: "general_admin", label: "Administrador General" },
-];
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
+import AmbulanceForm from "@/app/ui/dashboard/ambulances/create/ambulance-form";
+import { deleteAmbulance } from "@/app/lib/actions/ambulance";
+import { AmbulanceType } from "@/app/lib/definitions";
 
 const customHeaders = [
-  { id: 0, label: "Nombre" },
-  { id: 1, label: "Apellidos" },
-  { id: 2, label: "Correo" },
-  { id: 3, label: "Rol" },
-  { id: 4, label: "Estado" },
+  { id: 0, label: "Numero" },
+  { id: 1, label: "Marca" },
+  { id: 2, label: "Modelo" },
 ];
 
-export default async function UserTable() {
-  const users = await fetchUsers();
-
+export default function AmbulanceTable({
+  ambulances,
+}: {
+  ambulances: AmbulanceType[];
+}) {
   {
-    /* <div>(Component) Tabla interactiva de usuarios - [CSR]</div> */
+    /* <div>(Component) Tabla interactiva de ambulancias - [CSR]</div> */
+  }
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  function handleCheckboxChange(checkedId: string, checked: boolean) {
+    if (checked) {
+      setSelectedIds([...selectedIds, checkedId]);
+    } else {
+      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
+    }
+  }
+
+  function handleSelectAllChange(checked: boolean) {
+    const ambulanceArray = ambulances.map((r) => r.id);
+    setSelectedIds(checked ? ambulanceArray : []);
   }
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
-        <ModalTrigger title="Crear Usuario" modelContent={<UserForm />} />
+        {selectedIds.length > 0 && (
+          <TableActionDeleteAllSelected
+            selectedIds={selectedIds}
+            actionDelete={async (ids: string[]) => {
+              //TODO: Implement bulk delete action
+              console.log(ids, "TODO: Implement bulk delete action");
+            }}
+          />
+        )}
+        <ModalTrigger
+          title="Crear Ambulancia"
+          modelContent={<AmbulanceForm />}
+        />
       </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -47,6 +69,9 @@ export default async function UserTable() {
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(event) => {
+                      handleSelectAllChange(event.target.checked);
+                    }}
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
@@ -67,17 +92,25 @@ export default async function UserTable() {
             </tr>
           </thead>
           <tbody>
-            {users?.map((user) => (
-              <tr key={user.id} className="border-b dark:border-gray-700">
+            {ambulances?.map((ambulance) => (
+              <tr key={ambulance.id} className="border-b dark:border-gray-700">
                 <td className="w-4 p-4">
                   <div className="flex items-center">
                     <input
-                      id={`checkbox-table-${user.id}`}
+                      id={`checkbox-table-${ambulance.id}`}
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      value={ambulance.id}
+                      checked={selectedIds.includes(ambulance.id)}
+                      onChange={(event) => {
+                        handleCheckboxChange(
+                          ambulance.id,
+                          event.target.checked
+                        );
+                      }}
                     />
                     <label
-                      htmlFor={`checkbox-table-${user.id}`}
+                      htmlFor={`checkbox-table-${ambulance.id}`}
                       className="sr-only"
                     >
                       checkbox
@@ -88,49 +121,25 @@ export default async function UserTable() {
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {user.name}
+                  {ambulance.numero}
                 </th>
-                <td className="px-4 py-3">{user.lastname}</td>
-                <td className="px-4 py-3">{user.email}</td>
-                <td className="px-4 py-3">
-                  {customRoles.find((rol) => user.role === rol.value)?.label}
-                </td>
-                <td className="px-4 py-3">
-                  <UserActive active={user.status} />
-                </td>
+                <td className="px-4 py-3">{ambulance.marca}</td>
+                <td className="px-4 py-3">{ambulance.modelo}</td>
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/users/${user.id}/edit`}
+                    editLink={`/dashboard/ambulances/${ambulance.id}/edit`}
                   />
-                  <TableActionDelete id={user.id} actionDelete={deleteUser} />
+                  <TableActionDelete
+                    id={ambulance.id}
+                    actionDelete={deleteAmbulance}
+                  />
                 </TableActions>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={users.length} />
-    </div>
-  );
-}
-
-function UserActive(
-  { active }: { active: boolean | string | undefined | null } = { active: true }
-) {
-  let userState = false;
-  if (typeof active === "string") {
-    userState = active === "true";
-  } else {
-    userState = !!active;
-  }
-  return (
-    <div className="flex items-center">
-      <div
-        className={`h-2.5 w-2.5 rounded-full ${
-          userState ? "bg-green-500" : "bg-red-500"
-        } me-2`}
-      ></div>{" "}
-      {userState ? "Activo" : "Inactivo"}
+      <TablePagination totalItems={ambulances.length} />
     </div>
   );
 }

@@ -42,7 +42,7 @@ const FormUserSchema = z.object({
       invalid_type_error: "Por favor seleccione un rol de usuario.",
     }
   ),
-  state: z.boolean({
+  status: z.boolean({
     invalid_type_error: "Por favor seleccione el estado del usuario.",
   }),
   position: z.string({
@@ -78,7 +78,20 @@ const FormGuardSchema = z.object({
   }),
 });
 
-export const CreateUser = FormUserSchema.omit({ id: true, state: true });
+const FormAmbulanceSchema = z.object({
+  id: z.string().uuid(),
+  numero: z.string({
+    invalid_type_error: "Por favor ingrese el número de la ambulancia.",
+  }),
+  marca: z.string({
+    invalid_type_error: "Por favor ingrese la marca de la ambulancia.",
+  }),
+  modelo: z.string({
+    invalid_type_error: "Por favor ingrese el modelo de la ambulancia.",
+  }),
+});
+
+export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
 export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
@@ -87,3 +100,6 @@ export const CreateGuard = FormGuardSchema.omit({
   ambulance: true,
   delegationId: true,
 });
+
+export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
+export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
