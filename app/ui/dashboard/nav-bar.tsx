@@ -32,7 +32,7 @@ export default function NavBar({ user }: { user: UserType }) {
         <span className="sr-only">View notifications</span>
         {/* <!-- Bell icon --> */}
         <BellIcon className="w-8 h-8" />
-        <Tooltip id="notification-tooltip" content="Ver notificaciones" />
+        <Tooltip id="notification-tooltip" content="Notificaciones" />
       </button>
       {/* <!-- help --> */}
       <button
@@ -43,7 +43,7 @@ export default function NavBar({ user }: { user: UserType }) {
         <span className="sr-only">View help</span>
         {/* <!-- Bell icon --> */}
         <QuestionMarkCircleIcon className="w-8 h-8" />
-        <Tooltip id="question-tooltip" content="Ver ayuda" />
+        <Tooltip id="question-tooltip" content="Ayuda" />
       </button>
       <UserMenuDropdown
         key={`user-${id}`}
