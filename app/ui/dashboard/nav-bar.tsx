@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { BellIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { UserType } from "@/app/lib/definitions";
@@ -8,17 +7,6 @@ import UserMenuDropdown from "@/app/ui/dashboard/profile/user-menu-dropdown";
 
 export default function NavBar({ user }: { user: UserType }) {
   const { id, email, name, lastname } = user;
-  const [toggleDropdown, setToggleDropdown] = useState({
-    mUser: true,
-  });
-
-  const { mUser } = toggleDropdown;
-
-  function handleToggle(e: any, value: boolean) {
-    if (e.name === "user") {
-      setToggleDropdown({ ...toggleDropdown, mUser: value });
-    }
-  }
 
   return (
     <nav className="flex relative items-center lg:order-2">
@@ -51,8 +39,6 @@ export default function NavBar({ user }: { user: UserType }) {
         email={email}
         name={name}
         lastname={lastname}
-        hiddenDropdown={mUser}
-        setHiddenDropdown={handleToggle}
       />
     </nav>
   );
