@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { StateType } from "@/app/lib/definitions";
 import { CreateUser, UpdateUser } from "@/app/lib/schema";
 import { verifySession } from "@/app/lib/dal";
@@ -14,6 +13,7 @@ export type UserState = StateType<{
   role?: string[];
   status?: string[];
   position?: string[];
+  delegation?: string[];
   success?: string[];
 }>;
 
@@ -38,6 +38,7 @@ export async function createUser(
 
   const { name, lastname, email, password, position, role } =
     validatedUserFields.data;
+
   try {
     // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
@@ -59,6 +60,7 @@ export async function createUser(
       password,
       role,
       position,
+      delegationId: "esto aun no esta verificado!",
     };
 
     const config = {
@@ -89,7 +91,6 @@ export async function createUser(
   }
 
   revalidatePath("/dashboard/users");
-  console.log("User created successfully.");
 
   return { message: "Usuario creado exitosamente." };
 }
@@ -106,14 +107,12 @@ export async function updateUser(
     password: formUserData.get("password"),
     role: formUserData.get("role"),
     position: formUserData.get("position"),
-    status: formUserData.get("status") === "true",
+    status: formUserData.get("status") === "on",
   });
 
   if (!validatedUserFields.success) {
-    console.log("Validation Error:", validatedUserFields.error);
     return {
       errors: validatedUserFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Update User.",
     };
   }
 
@@ -121,17 +120,19 @@ export async function updateUser(
     validatedUserFields.data;
 
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
     const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
     const apiToken = session?.accessToken;
-    // if (!apiUrl /* || !apiToken*/) {
-    //   throw new Error(
-    //     "Las variables de conexión a la API no están configuradas."
-    //   );
-    // }
+
     const endPoint = `${process.env.API_URL}/api/adm/edit/user/${id}`;
+
     const bodyContent = {
       name,
       lastname,
@@ -139,6 +140,7 @@ export async function updateUser(
       role,
       status,
       position,
+      delegationId: "esto aun no esta verificado!",
     };
 
     const config = {
@@ -153,32 +155,38 @@ export async function updateUser(
     const response = await fetch(endPoint, config);
 
     if (!response.ok) {
-      console.log("Response Error:", await response.json());
-      return {
-        message: (await response.json())["error"],
-      };
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
     }
   } catch (error) {
-    console.log("Try Error:", error);
-    return { message: "Database Error: Failed to Update User." };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/users");
-  redirect("/dashboard/users");
+  return { message: "Cambios guardados exitosamente." };
 }
 
-export async function deleteUser(id: string) {
+export async function deleteUser(id: string): Promise<UserState> {
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
     const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
     const apiToken = session?.accessToken;
-    // if (!apiUrl /* || !apiToken*/) {
-    //   throw new Error(
-    //     "Las variables de conexión a la API no están configuradas."
-    //   );
-    // }
+
     const endPoint = `${process.env.API_URL}/api/adm/delete/user/${id}`;
 
     const response = await fetch(endPoint, {
@@ -189,17 +197,22 @@ export async function deleteUser(id: string) {
       },
     });
 
-    // if (!response.ok) {
-    //   return {
-    //     errors: {},
-    //     message: (await response.json())["error"],
-    //   };
-    // }
-    console.log(id, await response.json());
+    if (!response.ok) {
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
   } catch (error) {
-    // return { errors: {}, message: "Database Error: Failed to Delete User." };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/users");
-  // return { errors: {}, message: "User deleted successfully." };
+  return { message: "Usuario eliminado exitosamente." };
 }
