@@ -97,4 +97,5 @@ export type AmbulanceType = {
   numero: string;
   marca: string;
   modelo: string;
+  delegation: DelegationType;
 };

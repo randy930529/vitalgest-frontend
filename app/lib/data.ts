@@ -447,7 +447,7 @@ export async function fetchAmbulances(): Promise<AmbulanceType[]> {
       async (): Promise<ResponseAPIType<AmbulanceType[]>> => {
         const response = await fetch(endPoint, {
           headers: {
-            // Authorization: `Bearer ${apiToken}`,
+            Authorization: `Bearer ${apiToken}`,
             "Content-Type": "application/json",
           },
         });

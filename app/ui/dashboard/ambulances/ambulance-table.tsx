@@ -1,32 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import Filters from "@/app/ui/dashboard/table-filters";
+import { AmbulanceType, DelegationType } from "@/app/lib/definitions";
+import { deleteAmbulance } from "@/app/lib/actions/ambulance";
 import ModalTrigger from "@/app/ui/button-modal";
+import Filters from "@/app/ui/dashboard/table-filters";
 import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import AmbulanceForm from "@/app/ui/dashboard/ambulances/create/ambulance-form";
-import { deleteAmbulance } from "@/app/lib/actions/ambulance";
-import { AmbulanceType } from "@/app/lib/definitions";
 
 const customHeaders = [
   { id: 0, label: "Numero" },
   { id: 1, label: "Marca" },
   { id: 2, label: "Modelo" },
+  { id: 3, label: "Delegación" },
 ];
 
 export default function AmbulanceTable({
-  ambulances,
+  data,
 }: {
-  ambulances: AmbulanceType[];
+  data: [AmbulanceType[], DelegationType[]];
 }) {
-  {
-    /* <div>(Component) Tabla interactiva de ambulancias - [CSR]</div> */
-  }
+  // (Component) Tabla interactiva de ambulancias - [CSR]
 
+  const [ambulances, delegatios] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
@@ -56,7 +56,7 @@ export default function AmbulanceTable({
         )}
         <ModalTrigger
           title="Crear Ambulancia"
-          modelContent={<AmbulanceForm />}
+          modelContent={<AmbulanceForm delegations={delegatios} />}
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -125,6 +125,7 @@ export default function AmbulanceTable({
                 </th>
                 <td className="px-4 py-3">{ambulance.marca}</td>
                 <td className="px-4 py-3">{ambulance.modelo}</td>
+                <td className="px-4 py-3">{ambulance.delegation?.name}</td>
                 <TableActions>
                   <TableActionEdit
                     editLink={`/dashboard/ambulances/${ambulance.id}/edit`}
