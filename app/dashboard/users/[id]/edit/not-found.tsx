@@ -1,18 +1,15 @@
-import Link from "next/link";
 import { FaceFrownIcon } from "@heroicons/react/24/outline";
+import { Notfound404 } from "@/app/ui/page-error";
 
 export default function NotFound() {
   return (
-    <main className="flex h-full flex-col items-center justify-center gap-2">
+    <main className="flex h-full flex-col items-center justify-center gap-2 bg-white mt-7 p-10 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <FaceFrownIcon className="w-10 text-gray-400" />
-      <h2 className="text-xl font-semibold">404 Not Found</h2>
-      <p>Could not find the requested invoice.</p>
-      <Link
-        href="/dashboard/users"
-        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
-      >
-        Go Back
-      </Link>
+      <Notfound404
+        error={404}
+        message="No se encontró el usuario solicitado."
+        goBack="/dashboard/users"
+      />
     </main>
   );
 }
