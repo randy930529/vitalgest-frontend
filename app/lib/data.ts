@@ -307,7 +307,7 @@ export async function fetchGuards(): Promise<any[]> {
   }
 }
 
-export async function fetchStates(): Promise<CustomMxState[]> {
+export async function fetchMxStates(): Promise<CustomMxState[]> {
   try {
     if (!process.env.API_URL) {
       throw new Error(
@@ -447,7 +447,7 @@ export async function fetchAmbulances(): Promise<AmbulanceType[]> {
       async (): Promise<ResponseAPIType<AmbulanceType[]>> => {
         const response = await fetch(endPoint, {
           headers: {
-            // Authorization: `Bearer ${apiToken}`,
+            Authorization: `Bearer ${apiToken}`,
             "Content-Type": "application/json",
           },
         });

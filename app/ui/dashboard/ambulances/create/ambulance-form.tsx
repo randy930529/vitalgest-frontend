@@ -2,9 +2,11 @@
 
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { DelegationType } from "@/app/lib/definitions";
 import { AmbulanceState, createAmbulance } from "@/app/lib/actions/ambulance";
-import { FormInput } from "@/app/ui/dashboard/form-input";
 import { Button } from "@/app/ui/button";
+import { FormInput } from "@/app/ui/dashboard/form-fields";
+import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
 const customFormInput = {
   numero: { type: "text", title: "Número", required: true },
@@ -12,8 +14,14 @@ const customFormInput = {
   modelo: { type: "text", title: "Modelo", required: true },
 };
 
-export default function AmbulanceForm({ onClose }: { onClose?: () => void }) {
-  // <div>(Component) Formulario de Ambulancia - [CSR]</div>
+export default function AmbulanceForm({
+  delegations,
+  onClose,
+}: {
+  delegations?: DelegationType[];
+  onClose?: () => void;
+}) {
+  // (Component) Formulario de Ambulancia - [CSR]
 
   const initialState: AmbulanceState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createAmbulance, initialState);
@@ -39,6 +47,13 @@ export default function AmbulanceForm({ onClose }: { onClose?: () => void }) {
             customFormInput={customFormInput}
           />
         ))}
+
+        {delegations && (
+          <DelegationsSelector
+            delegations={delegations}
+            errors={state.errors?.delegationId}
+          />
+        )}
       </div>
       <div className="w-full flex justify-end gap-4">
         <Button

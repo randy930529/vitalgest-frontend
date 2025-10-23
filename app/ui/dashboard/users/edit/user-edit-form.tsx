@@ -1,193 +1,159 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { notFound } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { updateUser, UserState } from "@/app/lib/actions/user";
-import { UserType } from "@/app/lib/definitions";
+import { DelegationType, UserType } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
+import { FormInput } from "@/app/ui/dashboard/form-fields";
+import { UserRolesSelect } from "@/app/ui/dashboard/users/create/user-form";
+import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
-const customRoles = [
-  { id: 0, value: "", label: "Seleccione un rol" },
-  { id: 1, value: "admin", label: "Administrador" },
-  { id: 2, value: "paramedical", label: "Paramédico" },
-  { id: 3, value: "vehicle_operator", label: "Operador de Vehículo" },
-  { id: 4, value: "head_guard", label: "Jefe de Seguridad" },
-  { id: 5, value: "general_admin", label: "Administrador General" },
-];
+const customFormInput = {
+  name: { type: "text", title: "Nombre", required: true },
+  lastname: { type: "text", title: "Apellidos", required: true },
+  email: { type: "email", title: "Correo Electrónico", required: true },
+  password: { type: "password", title: "Contraseña", required: false },
+  position: { type: "text", title: "Cargo Laboral", required: true },
+};
 
-export default function UserEditForm({ user }: { user: UserType | undefined }) {
+export default function UserEditForm({
+  data,
+}: {
+  data: [UserType | undefined, DelegationType[]];
+}) {
   // <div>(Component) Formulario de usuario - [CSR]</div>
+
+  const [user, delegations] = data;
+
+  if (!user) {
+    notFound();
+  }
 
   const initialState: UserState = { errors: {}, message: null };
   const updateUserWithId = updateUser.bind(null, user?.id || "");
   const [state, formAction] = useActionState(updateUserWithId, initialState);
-  console.log(state.errors);
+
+  useEffect(() => {
+    state.message && toast.success(state.message) && (state.message = null);
+  }, [state.message]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   return (
-    <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-      <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
-        <form action={formAction}>
-          {state.message}
-          <div className="grid gap-4 mb-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Nombre
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                defaultValue={user?.name}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="José Luis"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="last-name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Apellidos
-              </label>
-              <input
-                type="text"
-                name="lastname"
-                id="lastname"
-                defaultValue={user?.lastname}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Hernández García"
-                required
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Correo Electrónico
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  defaultValue={user?.email}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="mycorreo@correos.mx"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  defaultValue={user?.password}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="role"
-                  className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Rol del Usuario
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  defaultValue={user?.role}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  required
-                >
-                  {customRoles.map((role) => (
-                    <option
-                      key={
-                        role.value
-                          ? `${role.id}-${role.value}`
-                          : `${role.id}-select`
+    <>
+      <section className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+        <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
+          <PencilSquareIcon className="w-6 h-6" />
+          {`${user?.name} ${user?.lastname}`}
+        </h2>
+        <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
+          {user?.email}
+        </p>
+        <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
+          <form action={formAction}>
+            <div className="grid gap-4 mb-4 sm:grid-cols-2">
+              {Object.keys(customFormInput)
+                .filter((key) => key === "name" || key === "lastname")
+                .map((name) => (
+                  <FormInput
+                    key={name}
+                    name={name}
+                    initialValue={user?.[name as "name" | "lastname"]}
+                    errors={state.errors?.[name as "name" | "lastname"]}
+                    customFormInput={customFormInput}
+                  />
+                ))}
+
+              <div className="sm:col-span-2">
+                {Object.keys(customFormInput)
+                  .filter(
+                    (key) =>
+                      key === "email" ||
+                      key === "password" ||
+                      key === "position"
+                  )
+                  .map((name) => (
+                    <FormInput
+                      key={name}
+                      name={name}
+                      initialValue={
+                        user?.[name as "email" | "password" | "position"]
                       }
-                      value={role.value}
-                    >
-                      {role.label}
-                    </option>
+                      errors={
+                        state.errors?.[
+                          name as "email" | "password" | "position"
+                        ]
+                      }
+                      customFormInput={customFormInput}
+                    />
                   ))}
-                </select>
-                <div id="rol-error" aria-live="polite" aria-atomic="true">
-                  {state.errors?.role &&
-                    state.errors.role.map((error: string) => (
-                      <p className="mt-2 text-sm text-red-500" key={error}>
-                        {error}
-                      </p>
-                    ))}
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="position"
-                  className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Posición
-                </label>
-                <input
-                  type="text"
-                  name="position"
-                  id="position"
-                  defaultValue={user?.position}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Empleado"
+
+                {delegations && (
+                  <DelegationsSelector
+                    delegations={delegations}
+                    errors={state.errors?.delegation}
+                  />
+                )}
+
+                <UserRolesSelect
+                  errors={state.errors?.role}
+                  defaultValue={user?.role}
                   required
                 />
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Estado
-                </label>
-                <input
-                  type="radio"
-                  name="status"
-                  id="status"
-                  value="true"
-                  defaultChecked={
-                    typeof user?.status === "string"
-                      ? user.status === "true"
-                      : user?.status
-                  }
-                  className="h-4 w-4 border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
+
+                <UserStatusChecked status={user?.status} />
               </div>
             </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href="/dashboard/users"
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Cancelar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
-        </form>
-      </div>
+            <div className="mt-6 flex justify-end gap-4">
+              <Link
+                href="/dashboard/users"
+                className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Regresar
+              </Link>
+              <Button
+                type="submit"
+                className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Guardar
+              </Button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function UserStatusChecked({
+  status,
+}: {
+  status: boolean | string | undefined;
+}) {
+  const isChecked = typeof status === "string" ? status === "true" : status;
+
+  return (
+    <div className="flex items-center mt-4 mb-2">
+      <label
+        htmlFor="status"
+        className="block me-4 text-sm font-medium text-gray-900 dark:text-white"
+      >
+        Estado
+      </label>
+      <input
+        type="checkbox"
+        name="status"
+        id="status"
+        defaultChecked={isChecked}
+        className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+      />
     </div>
   );
 }

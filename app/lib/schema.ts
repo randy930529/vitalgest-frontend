@@ -89,6 +89,9 @@ const FormAmbulanceSchema = z.object({
   modelo: z.string({
     invalid_type_error: "Por favor ingrese el modelo de la ambulancia.",
   }),
+  delegationId: z.string({
+    invalid_type_error: "Por favor seleccione una delegación.",
+  }),
 });
 
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });

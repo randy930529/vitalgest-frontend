@@ -1,3 +1,5 @@
+import { CustomMxState } from "./definitions";
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -21,3 +23,20 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+/**
+ * Obtiene los municipios a partir del Id de un estado
+ * o una lista vacia si no existe un estado con ese Id.
+ * @param stateId Id del estado de un pais.
+ * @param STATES_WITH_MUNICIPALITIES Lista de estados del pais con sus respectivos municipios de cada estado.
+ * @returns Retorna una lista de los municipios que pertenecen al estado.
+ */
+export function getMunicipalitiesOfState(
+  stateId: string | number,
+  STATES_WITH_MUNICIPALITIES: CustomMxState[]
+): CustomMxState[] {
+  return (
+    STATES_WITH_MUNICIPALITIES.find(({ id }) => id === stateId)
+      ?.municipalities || []
+  );
+}

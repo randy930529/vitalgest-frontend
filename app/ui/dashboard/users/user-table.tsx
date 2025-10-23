@@ -1,5 +1,9 @@
-import { fetchUsers } from "@/app/lib/data";
+"use client";
+
+import { useState } from "react";
+import { DelegationType, UserType } from "@/app/lib/definitions";
 import { deleteUser } from "@/app/lib/actions/user";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
@@ -8,13 +12,13 @@ import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import ModalTrigger from "@/app/ui/button-modal";
 import UserForm from "@/app/ui/dashboard/users/create/user-form";
 
-const customRoles = [
+export const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
-  { id: 1, value: "admin", label: "Administrador" },
-  { id: 2, value: "paramedical", label: "Paramédico" },
-  { id: 3, value: "vehicle_operator", label: "Operador de Vehículo" },
-  { id: 4, value: "head_guard", label: "Jefe de Seguridad" },
-  { id: 5, value: "general_admin", label: "Administrador General" },
+  { id: 1, value: "general_admin", label: "Administrador General" },
+  { id: 2, value: "admin", label: "Administrador" },
+  { id: 3, value: "head_guard", label: "Jefe de Guardia" },
+  { id: 4, value: "vehicle_operator", label: "Operador de Ambulancia" },
+  { id: 5, value: "paramedical", label: "Paramédico" },
 ];
 
 const customHeaders = [
@@ -25,17 +29,47 @@ const customHeaders = [
   { id: 4, label: "Estado" },
 ];
 
-export default async function UserTable() {
-  const users = await fetchUsers();
-
+export default function UserTable({
+  data,
+}: {
+  data: [UserType[], DelegationType[]];
+}) {
   {
     /* <div>(Component) Tabla interactiva de usuarios - [CSR]</div> */
+  }
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [users, delegations] = data;
+
+  function handleCheckboxChange(checkedId: string, checked: boolean) {
+    if (checked) {
+      setSelectedIds([...selectedIds, checkedId]);
+    } else {
+      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
+    }
+  }
+
+  function handleSelectAllChange(checked: boolean) {
+    const ambulanceArray = users.map((r) => r.id);
+    setSelectedIds(checked ? ambulanceArray : []);
   }
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
-        <ModalTrigger title="Crear Usuario" modelContent={<UserForm />} />
+        {selectedIds.length > 0 && (
+          <TableActionDeleteAllSelected
+            selectedIds={selectedIds}
+            actionDelete={async (ids: string[]) => {
+              //TODO: Implement bulk delete action
+              console.log(ids, "TODO: Implement bulk delete action");
+            }}
+          />
+        )}
+        <ModalTrigger
+          title="Crear Usuario"
+          modelContent={<UserForm delegations={delegations} />}
+        />
       </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -47,6 +81,9 @@ export default async function UserTable() {
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(event) => {
+                      handleSelectAllChange(event.target.checked);
+                    }}
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
@@ -75,6 +112,11 @@ export default async function UserTable() {
                       id={`checkbox-table-${user.id}`}
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      value={user.id}
+                      checked={selectedIds.includes(user.id)}
+                      onChange={(event) => {
+                        handleCheckboxChange(user.id, event.target.checked);
+                      }}
                     />
                     <label
                       htmlFor={`checkbox-table-${user.id}`}

@@ -1,12 +1,16 @@
-import { fetchDelegations, fetchStates } from "@/app/lib/data";
-import TableActions from "../tabla-actions";
-import TablePagination from "../pagination";
-import Filters from "../table-filters";
-import TableActionDelete from "../button-delete";
-import TableActionEdit from "../botton-edit";
-import ModalTrigger from "../../button-modal";
-import DelegationForm from "./create/delegation-form";
+"use client";
+
+import { useState } from "react";
+import { CustomMxState, DelegationType } from "@/app/lib/definitions";
 import { deleteDelegation } from "@/app/lib/actions/delegation";
+import ModalTrigger from "@/app/ui/button-modal";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
+import TablePagination from "@/app/ui/dashboard/pagination";
+import Filters from "@/app/ui/dashboard/table-filters";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
+import TableActionDelete from "@/app/ui/dashboard/button-delete";
+import TableActionEdit from "@/app/ui/dashboard/botton-edit";
+import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";
 
 const customHeaders = [
   { id: 0, label: "Estado" },
@@ -15,16 +19,41 @@ const customHeaders = [
   { id: 3, label: "Fecha de Registro" },
 ];
 
-export default async function DelegationTable() {
-  // <div>(Component) Lista de delegaciones existentes - [CSR]</div>;
-  const [delegations, customMxStates] = await Promise.all([
-    fetchDelegations(),
-    fetchStates(),
-  ]);
+export default function DelegationTable({
+  data,
+}: {
+  data: [DelegationType[], CustomMxState[]];
+}) {
+  // (Component) Lista de delegaciones existentes - [CSR]
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [delegations, customMxStates] = data;
+
+  function handleCheckboxChange(checkedId: string, checked: boolean) {
+    if (checked) {
+      setSelectedIds([...selectedIds, checkedId]);
+    } else {
+      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
+    }
+  }
+
+  function handleSelectAllChange(checked: boolean) {
+    const ambulanceArray = delegations.map((r) => r.id);
+    setSelectedIds(checked ? ambulanceArray : []);
+  }
 
   return (
     <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
+        {selectedIds.length > 0 && (
+          <TableActionDeleteAllSelected
+            selectedIds={selectedIds}
+            actionDelete={async (ids: string[]) => {
+              //TODO: Implement bulk delete action
+              console.log(ids, "TODO: Implement bulk delete action");
+            }}
+          />
+        )}
         <ModalTrigger
           title="Crear Delegación"
           modelContent={<DelegationForm customMxStates={customMxStates} />}
@@ -40,6 +69,9 @@ export default async function DelegationTable() {
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(event) => {
+                      handleSelectAllChange(event.target.checked);
+                    }}
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
@@ -68,6 +100,14 @@ export default async function DelegationTable() {
                       id={`checkbox-table-${delegation.id}`}
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      value={delegation.id}
+                      checked={selectedIds.includes(delegation.id)}
+                      onChange={(event) => {
+                        handleCheckboxChange(
+                          delegation.id,
+                          event.target.checked
+                        );
+                      }}
                     />
                     <label
                       htmlFor={`checkbox-table-${delegation.id}`}

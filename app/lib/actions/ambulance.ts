@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { StateType } from "@/app/lib/definitions";
 import { CreateAmbulance, UpdateAmbulance } from "@/app/lib/schema";
 import { verifySession } from "@/app/lib/dal";
@@ -10,6 +9,7 @@ export type AmbulanceState = StateType<{
   numero?: string[];
   marca?: string[];
   modelo?: string[];
+  delegationId?: string[];
   success?: string[];
 }>;
 
@@ -21,6 +21,7 @@ export async function createAmbulance(
     numero: formAmbulanceData.get("numero"),
     marca: formAmbulanceData.get("marca"),
     modelo: formAmbulanceData.get("modelo"),
+    delegationId: formAmbulanceData.get("delegation"),
   });
 
   if (!validatedAmbulanceFields.success) {
@@ -29,10 +30,9 @@ export async function createAmbulance(
     };
   }
 
-  const { numero, marca, modelo } = validatedAmbulanceFields.data;
+  const { numero, marca, modelo, delegationId } = validatedAmbulanceFields.data;
 
   try {
-    // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
@@ -48,6 +48,9 @@ export async function createAmbulance(
       numero,
       marca,
       modelo,
+      delegation: {
+        id: delegationId,
+      },
     };
 
     const config = {
@@ -90,6 +93,7 @@ export async function updateAmbulance(
     numero: formAmbulanceData.get("numero"),
     marca: formAmbulanceData.get("marca"),
     modelo: formAmbulanceData.get("modelo"),
+    delegationId: formAmbulanceData.get("delegation"),
   });
 
   if (!validatedAmbulanceFields.success) {
@@ -98,10 +102,9 @@ export async function updateAmbulance(
     };
   }
 
-  const { numero, marca, modelo } = validatedAmbulanceFields.data;
+  const { numero, marca, modelo, delegationId } = validatedAmbulanceFields.data;
 
   try {
-    // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
@@ -118,6 +121,9 @@ export async function updateAmbulance(
       numero,
       marca,
       modelo,
+      delegation: {
+        id: delegationId,
+      },
     };
 
     const config = {
@@ -153,7 +159,6 @@ export async function updateAmbulance(
 
 export async function deleteAmbulance(id: string) {
   try {
-    // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
@@ -185,13 +190,13 @@ export async function deleteAmbulance(id: string) {
       throw new Error(errorMessage);
     }
   } catch (error) {
-    // return {
-    //   errors: {
-    //     success: [error instanceof Error ? error.message : String(error)],
-    //   },
-    // };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/ambulances");
-  // return { message: "Ambulancia eliminada exitosamente." };
+  return { message: "Ambulancia eliminada exitosamente." };
 }

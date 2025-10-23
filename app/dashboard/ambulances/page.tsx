@@ -1,9 +1,16 @@
+import { Suspense } from "react";
+import { fetchAmbulances, fetchDelegations } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import AmbulanceTable from "@/app/ui/dashboard/ambulances/ambulance-table";
-import { fetchAmbulances } from "@/app/lib/data";
+import AmbulanceForm from "@/app/ui/dashboard/ambulances/create/ambulance-form";
 
 export default async function AmbulancePage() {
-  const ambulances = await fetchAmbulances();
+  // (Página) Listado de ambulancias - [SSR]
+
+  const fetchAmbulancesAndDelegations = async () =>
+    await Promise.all([fetchAmbulances(), fetchDelegations()]);
 
   return (
     <>
@@ -13,7 +20,19 @@ export default async function AmbulancePage() {
           { label: "Ambulancias", href: "/dashboard/ambulances" },
         ]}
       />
-      <AmbulanceTable ambulances={ambulances} />
+      <Suspense
+        fallback={
+          <TableSkeleton
+            title="Crear Ambulancia"
+            modelContent={<AmbulanceForm />}
+          />
+        }
+      >
+        <WrapperTable
+          fetchData={fetchAmbulancesAndDelegations}
+          WrappedComponent={AmbulanceTable}
+        />
+      </Suspense>
     </>
   );
 }

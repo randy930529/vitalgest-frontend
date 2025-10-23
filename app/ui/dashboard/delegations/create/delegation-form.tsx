@@ -8,7 +8,8 @@ import {
 } from "@/app/lib/actions/delegation";
 import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
-import { InlineErrors } from "@/app/ui/custom-errors";
+import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import { getMunicipalitiesOfState } from "@/app/lib/utils";
 
 export default function DelegationForm({
   customMxStates,
@@ -22,17 +23,15 @@ export default function DelegationForm({
   const initialState: DelegationState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createDelegation, initialState);
 
-  const [mxStateId, setmxStateId] = useState(0);
-
+  const [mxStateId, setMxStateId] = useState(0);
   const [customMunicipalities, setCustomMunicipalities] = useState<
     CustomOptions[]
   >([]);
 
   useEffect(() => {
-    console.log("Cambio algo", mxStateId);
-    const municipalities =
-      customMxStates.find(({ id }) => id === mxStateId)?.municipalities || [];
-    setCustomMunicipalities(municipalities);
+    setCustomMunicipalities(
+      getMunicipalitiesOfState(mxStateId, customMxStates)
+    );
   }, [mxStateId]);
 
   useEffect(() => {
@@ -45,87 +44,44 @@ export default function DelegationForm({
       state.errors?.success.map((error: string) => toast.error(error));
   }, [state.errors?.success]);
 
-  const handleOption = (name: string, id: string) => {
-    console.log(`Options... ${name} ${id}`);
-    setmxStateId(Number(id));
-  };
+  function handleOption(name: string, value: string) {
+    setMxStateId(Number(value));
+  }
 
   return (
     <form action={formAction}>
-      {state.errors?.success && (
-        <InlineErrors
-          key="success-error"
-          errorId="success-error"
-          errors={state.errors?.success}
-        />
-      )}
       <div className="grid gap-4 mb-4 sm:grid-cols-1">
-        <div>
-          <label
-            htmlFor="role"
-            className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Estado
-          </label>
-          <select
-            id="state"
-            name="state"
-            defaultValue={""}
-            onChange={(e) => {
-              handleOption(e.target.name, e.target.value);
-            }}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            required
-          >
-            <option key={"state-select"} value="">
-              Seleccione el Estado
-            </option>
-            {customMxStates.map((state) => (
-              <option key={state.id} value={state.value}>
-                {state.label}
-              </option>
-            ))}
-          </select>
-          {state.errors?.state && (
-            <InlineErrors
-              key="state-error"
-              errorId="state-error"
-              errors={state.errors?.state}
-            />
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="role"
-            className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Municipio
-          </label>
-          <select
-            id="municipality"
-            name="municipality"
-            defaultValue={""}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            required
-            disabled={!mxStateId}
-          >
-            <option key={"state-select"} value="">
-              {`Seleccione ${!mxStateId ? "un Estado" : "el Municipio"}`}
-            </option>
-            {customMunicipalities.map((state) => (
-              <option key={state.id} value={state.value}>
-                {state.label}
-              </option>
-            ))}
-          </select>
-          {state.errors?.municipality && (
-            <InlineErrors
-              key="municipality-error"
-              errorId="municipality-error"
-              errors={state.errors?.municipality}
-            />
-          )}
-        </div>
+        <FormSelect
+          key="state"
+          name="state"
+          title="Estado"
+          defaultValue=""
+          options={[
+            { id: 0, label: "Seleccione el Estado", value: "" },
+            ...customMxStates,
+          ]}
+          handleOption={handleOption}
+          errors={state.errors?.state}
+          required
+        />
+
+        <FormSelect
+          key="municipality"
+          name="municipality"
+          title="Municipio"
+          defaultValue=""
+          options={[
+            {
+              id: 0,
+              label: "Seleccione el Municipio",
+              value: "",
+            },
+            ...customMunicipalities,
+          ]}
+          errors={state.errors?.municipality}
+          required
+          disabled={!mxStateId}
+        />
       </div>
       <div className="w-full flex justify-end gap-4">
         <Button
