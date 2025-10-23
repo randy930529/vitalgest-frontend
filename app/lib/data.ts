@@ -307,7 +307,7 @@ export async function fetchGuards(): Promise<any[]> {
   }
 }
 
-export async function fetchStates(): Promise<CustomMxState[]> {
+export async function fetchMxStates(): Promise<CustomMxState[]> {
   try {
     if (!process.env.API_URL) {
       throw new Error(
