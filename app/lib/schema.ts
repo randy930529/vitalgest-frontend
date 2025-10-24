@@ -80,13 +80,13 @@ const FormGuardSchema = z.object({
 
 const FormAmbulanceSchema = z.object({
   id: z.string().uuid(),
-  numero: z.string({
+  number: z.string({
     invalid_type_error: "Por favor ingrese el número de la ambulancia.",
   }),
-  marca: z.string({
+  brand: z.string({
     invalid_type_error: "Por favor ingrese la marca de la ambulancia.",
   }),
-  modelo: z.string({
+  model: z.string({
     invalid_type_error: "Por favor ingrese el modelo de la ambulancia.",
   }),
   delegationId: z.string({

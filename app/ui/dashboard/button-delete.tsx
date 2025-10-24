@@ -16,13 +16,13 @@ export default function TableActionDelete({
   const [state, formAction] = useActionState(deleteUserWithId, initialState);
 
   useEffect(() => {
-    state?.message && toast.success(state.message) && (state.message = null);
-  }, [state?.message]);
+    state.message && toast.success(state.message);
+  }, [state.message]);
 
   useEffect(() => {
-    state?.errors?.success &&
-      state?.errors?.success.map((error: string) => toast.error(error));
-  }, [state?.errors?.success]);
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
 
   return (
     <form action={formAction}>

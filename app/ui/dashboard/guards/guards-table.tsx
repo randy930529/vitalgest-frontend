@@ -29,7 +29,7 @@ export default async function GuardsTable() {
   ]);
 
   return (
-    <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
         <ModalTrigger
           title="Crear Guardia"
@@ -106,7 +106,7 @@ export default async function GuardsTable() {
         </table>
       </div>
       <TablePagination totalItems={guards.length} />
-    </div>
+    </main>
   );
 }
 

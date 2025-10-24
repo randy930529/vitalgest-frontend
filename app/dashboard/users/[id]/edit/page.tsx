@@ -6,7 +6,6 @@ import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import UserEditForm from "@/app/ui/dashboard/users/edit/user-edit-form";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 
-//TODO: Agregar los metadatos a cada pagina
 export const metadata: Metadata = {
   title: "Editar Usuario",
 };
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 export default async function EditUserPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  // <div>(Página) Editar Usuario - [SSR]</div>
+  // (Página) Editar Usuario - [SSR]
 
   const params = await props.params;
   const id = params.id;

@@ -94,8 +94,8 @@ export type GuardType = {
 
 export type AmbulanceType = {
   id: string;
-  numero: string;
-  marca: string;
-  modelo: string;
+  number: string;
+  brand: string;
+  model: string;
   delegation: DelegationType;
 };

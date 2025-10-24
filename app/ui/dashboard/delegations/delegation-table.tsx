@@ -43,7 +43,7 @@ export default function DelegationTable({
   }
 
   return (
-    <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -141,6 +141,6 @@ export default function DelegationTable({
         </table>
       </div>
       <TablePagination totalItems={delegations.length} />
-    </div>
+    </main>
   );
 }

@@ -12,9 +12,9 @@ import { FormInput } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
 const customFormInput = {
-  numero: { type: "text", title: "Número", required: true },
-  marca: { type: "text", title: "Marca", required: true },
-  modelo: { type: "text", title: "Modelo", required: true },
+  number: { type: "text", title: "Número", required: true },
+  brand: { type: "text", title: "Marca", required: true },
+  model: { type: "text", title: "Modelo", required: true },
 };
 
 export default function AmbulanceEditForm({
@@ -47,13 +47,13 @@ export default function AmbulanceEditForm({
   }, [state.errors?.success]);
 
   return (
-    <section className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />
-        {ambulance?.numero}
+        {ambulance.number}
       </h2>
       <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
-        {ambulance?.marca} - {ambulance?.modelo}
+        {ambulance.brand} - {ambulance.model}
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-3/5" action={formAction}>
@@ -62,10 +62,8 @@ export default function AmbulanceEditForm({
               <FormInput
                 key={name}
                 name={name}
-                initialValue={
-                  ambulance?.[name as "numero" | "marca" | "modelo"]
-                }
-                errors={state.errors?.[name as "numero" | "marca" | "modelo"]}
+                initialValue={ambulance[name as "number" | "brand" | "model"]}
+                errors={state.errors?.[name as "number" | "brand" | "model"]}
                 customFormInput={customFormInput}
               />
             ))}
@@ -73,6 +71,7 @@ export default function AmbulanceEditForm({
             {delegations && (
               <DelegationsSelector
                 delegations={delegations}
+                defaultValue={ambulance.delegation?.id || ""}
                 errors={state.errors?.delegationId}
               />
             )}
@@ -93,6 +92,6 @@ export default function AmbulanceEditForm({
           </div>
         </form>
       </div>
-    </section>
+    </main>
   );
 }
