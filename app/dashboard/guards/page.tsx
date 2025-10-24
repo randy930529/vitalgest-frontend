@@ -1,8 +1,13 @@
+import { Metadata } from "next";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 
+export const metadata: Metadata = {
+  title: "Gestión de Guardias",
+};
+
 export default async function GuardsPage() {
-  // <div>(Página) Gestionar guardias - [SSR]</div>
+  // (Página) Gestionar guardias - [SSR]
 
   return (
     <>

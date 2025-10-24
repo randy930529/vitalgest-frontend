@@ -1,10 +1,15 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { fetchDelegations, fetchMxStates } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import DelegationTable from "@/app/ui/dashboard/delegations/delegation-table";
 import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";
+
+export const metadata: Metadata = {
+  title: "Gestión de Delegaciones",
+};
 
 export default async function DelegationsPage() {
   // (Página) Gestionar delegaciones - [SSR]

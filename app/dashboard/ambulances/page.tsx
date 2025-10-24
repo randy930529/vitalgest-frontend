@@ -1,10 +1,15 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { fetchAmbulances, fetchDelegations } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import AmbulanceTable from "@/app/ui/dashboard/ambulances/ambulance-table";
 import AmbulanceForm from "@/app/ui/dashboard/ambulances/create/ambulance-form";
+
+export const metadata: Metadata = {
+  title: "Gestión de Ambulancias",
+};
 
 export default async function AmbulancePage() {
   // (Página) Listado de ambulancias - [SSR]
