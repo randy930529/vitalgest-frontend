@@ -6,9 +6,9 @@ import { CreateAmbulance, UpdateAmbulance } from "@/app/lib/schema";
 import { verifySession } from "@/app/lib/dal";
 
 export type AmbulanceState = StateType<{
-  numero?: string[];
-  marca?: string[];
-  modelo?: string[];
+  number?: string[];
+  brand?: string[];
+  model?: string[];
   delegationId?: string[];
   success?: string[];
 }>;
@@ -18,9 +18,9 @@ export async function createAmbulance(
   formAmbulanceData: FormData
 ): Promise<AmbulanceState> {
   const validatedAmbulanceFields = CreateAmbulance.safeParse({
-    numero: formAmbulanceData.get("numero"),
-    marca: formAmbulanceData.get("marca"),
-    modelo: formAmbulanceData.get("modelo"),
+    number: formAmbulanceData.get("number"),
+    brand: formAmbulanceData.get("brand"),
+    model: formAmbulanceData.get("model"),
     delegationId: formAmbulanceData.get("delegation"),
   });
 
@@ -29,8 +29,6 @@ export async function createAmbulance(
       errors: validatedAmbulanceFields.error.flatten().fieldErrors,
     };
   }
-
-  const { numero, marca, modelo, delegationId } = validatedAmbulanceFields.data;
 
   try {
     if (!process.env.API_URL) {
@@ -44,15 +42,7 @@ export async function createAmbulance(
     const apiToken = session?.accessToken;
 
     const endPoint = `${process.env.API_URL}/api/ambulances/create`;
-    const bodyContent = {
-      numero,
-      marca,
-      modelo,
-      delegation: {
-        id: delegationId,
-      },
-    };
-
+    const bodyContent = validatedAmbulanceFields.data;
     const config = {
       method: "POST",
       headers: {
@@ -81,7 +71,7 @@ export async function createAmbulance(
   }
 
   revalidatePath("/dashboard/ambulances");
-  return { errors: {}, message: "Ambulancia creada exitosamente." };
+  return { message: "Ambulancia creada exitosamente." };
 }
 
 export async function updateAmbulance(
@@ -90,9 +80,9 @@ export async function updateAmbulance(
   formAmbulanceData: FormData
 ): Promise<AmbulanceState> {
   const validatedAmbulanceFields = UpdateAmbulance.safeParse({
-    numero: formAmbulanceData.get("numero"),
-    marca: formAmbulanceData.get("marca"),
-    modelo: formAmbulanceData.get("modelo"),
+    number: formAmbulanceData.get("number"),
+    brand: formAmbulanceData.get("brand"),
+    model: formAmbulanceData.get("model"),
     delegationId: formAmbulanceData.get("delegation"),
   });
 
@@ -101,8 +91,6 @@ export async function updateAmbulance(
       errors: validatedAmbulanceFields.error.flatten().fieldErrors,
     };
   }
-
-  const { numero, marca, modelo, delegationId } = validatedAmbulanceFields.data;
 
   try {
     if (!process.env.API_URL) {
@@ -115,17 +103,8 @@ export async function updateAmbulance(
     const session = await verifySession();
     const apiToken = session?.accessToken;
 
-    const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
-
-    const bodyContent = {
-      numero,
-      marca,
-      modelo,
-      delegation: {
-        id: delegationId,
-      },
-    };
-
+    const endPoint = `${process.env.API_URL}/api/ambulances/edit/${id}`;
+    const bodyContent = validatedAmbulanceFields.data;
     const config = {
       method: "PUT",
       headers: {
@@ -154,7 +133,7 @@ export async function updateAmbulance(
   }
 
   revalidatePath("/dashboard/ambulances");
-  return { errors: {}, message: "Cambios guardados exitosamente." };
+  return { message: "Cambios guardados exitosamente." };
 }
 
 export async function deleteAmbulance(id: string) {

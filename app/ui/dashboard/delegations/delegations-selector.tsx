@@ -7,9 +7,11 @@ import { FormSelect } from "@/app/ui/dashboard/form-fields";
 
 export default function DelegationsSelector({
   delegations,
+  defaultValue,
   errors,
 }: {
   delegations: DelegationType[];
+  defaultValue?: string | number;
   errors?: string[];
 }) {
   // Selector interactivo de delegaciones - [CSR]
@@ -37,9 +39,11 @@ export default function DelegationsSelector({
 
   return (
     <FormSelect
+      key={String(defaultValue || "")}
       name="delegation"
       title="Delegación"
       options={customSelectedDelegations}
+      defaultValue={defaultValue}
       errors={errors}
       required
     />

@@ -38,7 +38,7 @@ export default function AmbulanceTable({
   }
 
   function handleSelectAllChange(checked: boolean) {
-    const ambulanceArray = ambulances.map((r) => r.id);
+    const ambulanceArray = ambulances.map(({ id }) => id);
     setSelectedIds(checked ? ambulanceArray : []);
   }
 
@@ -121,10 +121,10 @@ export default function AmbulanceTable({
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {ambulance.numero}
+                  {ambulance.number}
                 </th>
-                <td className="px-4 py-3">{ambulance.marca}</td>
-                <td className="px-4 py-3">{ambulance.modelo}</td>
+                <td className="px-4 py-3">{ambulance.brand}</td>
+                <td className="px-4 py-3">{ambulance.model}</td>
                 <td className="px-4 py-3">{ambulance.delegation?.name}</td>
                 <TableActions>
                   <TableActionEdit

@@ -9,9 +9,9 @@ import { FormInput } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
 const customFormInput = {
-  numero: { type: "text", title: "Número", required: true },
-  marca: { type: "text", title: "Marca", required: true },
-  modelo: { type: "text", title: "Modelo", required: true },
+  number: { type: "text", title: "Número", required: true },
+  brand: { type: "text", title: "Marca", required: true },
+  model: { type: "text", title: "Modelo", required: true },
 };
 
 export default function AmbulanceForm({
@@ -43,7 +43,7 @@ export default function AmbulanceForm({
           <FormInput
             key={name}
             name={name}
-            errors={state.errors?.[name as "numero" | "marca" | "modelo"]}
+            errors={state.errors?.[name as "number" | "brand" | "model"]}
             customFormInput={customFormInput}
           />
         ))}
