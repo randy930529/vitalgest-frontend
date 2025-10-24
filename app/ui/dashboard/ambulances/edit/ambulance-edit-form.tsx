@@ -47,7 +47,7 @@ export default function AmbulanceEditForm({
   }, [state.errors?.success]);
 
   return (
-    <section className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />
         {ambulance.number}
@@ -92,6 +92,6 @@ export default function AmbulanceEditForm({
           </div>
         </form>
       </div>
-    </section>
+    </main>
   );
 }

@@ -55,7 +55,7 @@ export default function UserTable({
   }
 
   return (
-    <div className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -152,7 +152,7 @@ export default function UserTable({
         </table>
       </div>
       <TablePagination totalItems={users.length} />
-    </div>
+    </main>
   );
 }
 

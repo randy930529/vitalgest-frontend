@@ -47,88 +47,82 @@ export default function UserEditForm({
   }, [state.errors?.success]);
 
   return (
-    <>
-      <section className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-        <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
-          <PencilSquareIcon className="w-6 h-6" />
-          {`${user?.name} ${user?.lastname}`}
-        </h2>
-        <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
-          {user?.email}
-        </p>
-        <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
-          <form action={formAction}>
-            <div className="grid gap-4 mb-4 sm:grid-cols-2">
+    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+      <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
+        <PencilSquareIcon className="w-6 h-6" />
+        {`${user?.name} ${user?.lastname}`}
+      </h2>
+      <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
+        {user?.email}
+      </p>
+      <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
+        <form action={formAction}>
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
+            {Object.keys(customFormInput)
+              .filter((key) => key === "name" || key === "lastname")
+              .map((name) => (
+                <FormInput
+                  key={name}
+                  name={name}
+                  initialValue={user?.[name as "name" | "lastname"]}
+                  errors={state.errors?.[name as "name" | "lastname"]}
+                  customFormInput={customFormInput}
+                />
+              ))}
+
+            <div className="sm:col-span-2">
               {Object.keys(customFormInput)
-                .filter((key) => key === "name" || key === "lastname")
+                .filter(
+                  (key) =>
+                    key === "email" || key === "password" || key === "position"
+                )
                 .map((name) => (
                   <FormInput
                     key={name}
                     name={name}
-                    initialValue={user?.[name as "name" | "lastname"]}
-                    errors={state.errors?.[name as "name" | "lastname"]}
+                    initialValue={
+                      user?.[name as "email" | "password" | "position"]
+                    }
+                    errors={
+                      state.errors?.[name as "email" | "password" | "position"]
+                    }
                     customFormInput={customFormInput}
                   />
                 ))}
 
-              <div className="sm:col-span-2">
-                {Object.keys(customFormInput)
-                  .filter(
-                    (key) =>
-                      key === "email" ||
-                      key === "password" ||
-                      key === "position"
-                  )
-                  .map((name) => (
-                    <FormInput
-                      key={name}
-                      name={name}
-                      initialValue={
-                        user?.[name as "email" | "password" | "position"]
-                      }
-                      errors={
-                        state.errors?.[
-                          name as "email" | "password" | "position"
-                        ]
-                      }
-                      customFormInput={customFormInput}
-                    />
-                  ))}
-
-                {delegations && (
-                  <DelegationsSelector
-                    delegations={delegations}
-                    errors={state.errors?.delegation}
-                  />
-                )}
-
-                <UserRolesSelect
-                  errors={state.errors?.role}
-                  defaultValue={user?.role}
-                  required
+              {delegations && (
+                <DelegationsSelector
+                  delegations={delegations}
+                  errors={state.errors?.delegation}
                 />
+              )}
 
-                <UserStatusChecked status={user?.status} />
-              </div>
+              <UserRolesSelect
+                errors={state.errors?.role}
+                defaultValue={user?.role}
+                required
+              />
+
+              <UserStatusChecked status={user?.status} />
             </div>
-            <div className="mt-6 flex justify-end gap-4">
-              <Link
-                href="/dashboard/users"
-                className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Regresar
-              </Link>
-              <Button
-                type="submit"
-                className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Guardar
-              </Button>
-            </div>
-          </form>
-        </div>
-      </section>
-    </>
+          </div>
+          <div className="mt-6 flex justify-end gap-4">
+            <Link
+              href="/dashboard/users"
+              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+              Regresar
+            </Link>
+            <Button
+              type="submit"
+              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+              Guardar
+            </Button>
+          </div>
+        </form>
+      </div>
+    </main>
   );
 }
 
