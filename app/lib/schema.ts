@@ -48,6 +48,9 @@ const FormUserSchema = z.object({
   position: z.string({
     invalid_type_error: "Por favor ingrese el cargo del usuario.",
   }),
+  delegation: z.string({
+    invalid_type_error: "Por favor seleccione una delegación.",
+  }),
 });
 
 const FormDelegationSchema = z.object({

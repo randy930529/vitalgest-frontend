@@ -1,4 +1,4 @@
-import VitalGestLogo from "@/app/ui/vitalgest-logo";
+import { VitalGestLogo } from "@/app/ui/logos";
 
 export default function Page() {
   return (
