@@ -1,7 +1,7 @@
-import VitalGestLogo from "@/app/ui/vitalgest-logo";
-import LoginForm from "@/app/ui/login-form";
 import { Suspense } from "react";
-import { openSans } from "../ui/fonts";
+import { VitalGestLogo } from "@/app/ui/logos";
+import LoginForm from "@/app/ui/login-form";
+import { openSans } from "@/app/ui/fonts";
 
 export default function LoginPage() {
   return (

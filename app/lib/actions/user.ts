@@ -28,6 +28,7 @@ export async function createUser(
     password: formUserData.get("password"),
     position: formUserData.get("position"),
     role: formUserData.get("role"),
+    delegation: formUserData.get("delegation"),
   });
 
   if (!validatedUserFields.success) {
@@ -36,7 +37,7 @@ export async function createUser(
     };
   }
 
-  const { name, lastname, email, password, position, role } =
+  const { name, lastname, email, password, position, role, delegation } =
     validatedUserFields.data;
 
   try {
@@ -60,7 +61,7 @@ export async function createUser(
       password,
       role,
       position,
-      delegationId: "esto aun no esta verificado!",
+      delegationId: delegation,
     };
 
     const config = {
@@ -108,6 +109,7 @@ export async function updateUser(
     role: formUserData.get("role"),
     position: formUserData.get("position"),
     status: formUserData.get("status") === "on",
+    delegation: formUserData.get("delegation"),
   });
 
   if (!validatedUserFields.success) {
@@ -116,7 +118,7 @@ export async function updateUser(
     };
   }
 
-  const { name, lastname, email, role, position, status } =
+  const { name, lastname, email, role, position, status, delegation } =
     validatedUserFields.data;
 
   try {
@@ -140,7 +142,7 @@ export async function updateUser(
       role,
       status,
       position,
-      delegationId: "esto aun no esta verificado!",
+      delegationId: delegation,
     };
 
     const config = {
