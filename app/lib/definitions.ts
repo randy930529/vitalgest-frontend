@@ -100,3 +100,46 @@ export type AmbulanceType = {
   model: string;
   delegation: DelegationType;
 };
+
+export type CheckListAmbulanceType = {
+  id: string;
+  date: string;
+  vale_gas?: string;
+  notas_adicionales?: string;
+  state: "Nuevo" | "Abierto" | "Cerrado";
+  guard: GuardType;
+  preguntas: {
+    pregunta: string;
+    area_pregunta: string;
+    order: number;
+  };
+};
+
+export type StepItemType = {
+  id: number;
+  label: string;
+  details?: string;
+  status?: "completed" | "pending" | "error";
+};
+
+export type TimelinePropsType = {
+  steps: StepItemType[];
+  currentStepId: number;
+  showStatus?: boolean;
+  progress?: number;
+};
+
+export type ChecklistQuestionsType = {
+  id: string;
+  question: string;
+  name_category: string;
+  order_category: number;
+  order_question_category: number;
+  name_subcategory?: string;
+  order_subcategory?: number;
+  boolean_response: boolean;
+  enum_response: boolean;
+  free_response: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
