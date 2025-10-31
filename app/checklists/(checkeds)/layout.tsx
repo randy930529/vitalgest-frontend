@@ -7,7 +7,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <main className="bg-white mt-7 dark:bg-gray-800">
       <section className="flex flex-col md:flex-row items-center justify-center md:justify-between md:space-y-0 px-3 sm:px-5">
         <div className="hidden md:block">
           <CruzRojaLogo />

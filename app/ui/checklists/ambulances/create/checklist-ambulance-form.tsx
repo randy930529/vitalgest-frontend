@@ -24,7 +24,7 @@ export default function ChecklistAmbulanceForm({
   // (Component) Formulario de Checklist de Ambulancia - [CSR]
 
   return (
-    <section className="flex md:flex-row items-center justify-center md:justify-between md:space-y-0 p-4">
+    <section className="flex md:flex-row items-center justify-center md:justify-between md:space-y-0 p-4 relative shadow-md sm:rounded-lg overflow-hidden">
       <form className="w-full" /*action={formAction}*/>
         <div className="grid gap-4 sm: mb-4 sm:grid-flow-row sm:grid-cols-3">
           <p className="ms-6 font-semibold text-center">
