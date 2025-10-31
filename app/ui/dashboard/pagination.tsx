@@ -204,8 +204,6 @@ export function PaginationChecklist({ isLast }: { isLast: boolean }) {
   const isNotes = !!searchParams.get("notes");
   const { id } = useParams<{ id: string }>();
 
-  console.log(isLast);
-
   return (
     <div className="flex w-full justify-between gap-4">
       <PaginationButton

@@ -43,7 +43,7 @@ export default async function EditCheckListAmbulancePage({
   if (currentStep) {
     currentStep.status = "pending";
   }
-  const title = steps.find((step) => step.id === Number(step))?.label;
+  const title = currentStep?.label;
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
@@ -65,7 +65,7 @@ export default async function EditCheckListAmbulancePage({
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm title={title}>
+          <NotesSignatureForm title={"Notas"}>
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}

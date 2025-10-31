@@ -13,10 +13,9 @@ export const metadata: Metadata = {
 export default async function EditAmbulancePage(props: {
   params: Promise<{ id: string }>;
 }) {
-  // <div>(Página) Editar Ambulancia - [SSR]</div>
+  // (Página) Editar Ambulancia - [SSR]
   const params = await props.params;
   const id = params.id;
-  const ambulance = await fetchAmbulanceById(id);
 
   const fetchAmbulanceByIdAndDelegations = async () =>
     await Promise.all([fetchAmbulanceById(id), fetchDelegations()]);

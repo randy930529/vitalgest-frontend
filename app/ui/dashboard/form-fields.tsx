@@ -52,6 +52,7 @@ export function FormSelect({
   errors,
   required,
   disabled,
+  inline,
   handleOption,
 }: {
   name: string;
@@ -65,10 +66,11 @@ export function FormSelect({
   errors?: string[];
   required?: boolean;
   disabled?: boolean;
+  inline?: boolean;
   handleOption?: (name: string, value: string) => void;
 }) {
   return (
-    <div>
+    <div className={inline ? "flex gap-2 md:gap-4" : undefined}>
       {title && (
         <label
           htmlFor={name}
@@ -135,5 +137,73 @@ export function FormCheckbox({
         {title}
       </span>
     </label>
+  );
+}
+
+export function FormTextarea({
+  name,
+  title,
+  rows = 4,
+  placeholder,
+}: {
+  name: string;
+  title?: string;
+  rows?: number;
+  placeholder?: string;
+}) {
+  return (
+    <>
+      {title && (
+        <label
+          form={name}
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          {title}
+        </label>
+      )}
+      <textarea
+        id={name}
+        rows={rows}
+        className="block  my-2 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder={placeholder}
+      ></textarea>
+    </>
+  );
+}
+
+export function FormSignature(param: {
+  name: string;
+  title: string;
+  usersOptions: {
+    id: string | number;
+    value: string;
+    label: string;
+    position?: string;
+  }[];
+  errors?: string[];
+  required?: boolean;
+}) {
+  const [position, setPosition] = useState("");
+  const { usersOptions, ...rest } = param;
+
+  function handlePosition(userId: string) {
+    setPosition(
+      usersOptions.find(({ value }) => value === userId)?.position || ""
+    );
+  }
+
+  return (
+    <>
+      <FormSelect
+        {...rest}
+        options={usersOptions}
+        handleOption={(_, value) => handlePosition(value)}
+        inline
+      />
+      <FormTextarea name={param.name} />
+      <p>
+        Cargo: <span className="inline-block">{position}</span>
+      </p>
+    </>
   );
 }
