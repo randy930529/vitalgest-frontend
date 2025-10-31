@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { FormInputType } from "@/app/lib/definitions";
+import { JSX, useState } from "react";
+import clsx from "clsx";
+import { ChecklistQuestionsType, FormInputType } from "@/app/lib/definitions";
 import { InlineErrors } from "@/app/ui/custom-errors";
 
 export function FormInput({
@@ -53,6 +54,7 @@ export function FormSelect({
   required,
   disabled,
   inline,
+  contents,
   handleOption,
 }: {
   name: string;
@@ -67,14 +69,20 @@ export function FormSelect({
   required?: boolean;
   disabled?: boolean;
   inline?: boolean;
+  contents?: boolean;
   handleOption?: (name: string, value: string) => void;
 }) {
   return (
-    <div className={inline ? "flex gap-2 md:gap-4" : undefined}>
+    <div
+      className={clsx({ "flex gap-2 md:gap-4": inline, contents: contents })}
+    >
       {title && (
         <label
           htmlFor={name}
-          className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className={clsx(
+            "mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white",
+            { block: !inline }
+          )}
         >
           {title}
           {required && <span className="text-red-600"> *</span>}
@@ -84,7 +92,10 @@ export function FormSelect({
         id={name}
         name={name}
         defaultValue={defaultValue}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        className={clsx(
+          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
+          { "block w-full p-2.5": !inline }
+        )}
         required={required}
         disabled={disabled}
         onChange={(e) =>
@@ -129,7 +140,7 @@ export function FormCheckbox({
         type="checkbox"
         name={name}
         className="sr-only peer"
-        checked={checked}
+        defaultChecked={checked}
         onChange={() => setChecked(!checked)}
       />
       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600 dark:peer-checked:bg-green-600"></div>
@@ -206,4 +217,197 @@ export function FormSignature(param: {
       </p>
     </>
   );
+}
+
+export function FormInputSingle({
+  name,
+  type,
+  title,
+  errors,
+  initialValue,
+  required,
+  placeholder,
+}: {
+  name: string;
+  type: string;
+  title?: string;
+  initialValue?: string;
+  errors?: string[];
+  required?: boolean;
+  placeholder?: string;
+}) {
+  return (
+    <>
+      {title && (
+        <label
+          htmlFor={name}
+          className="text-sm font-medium text-gray-900 dark:text-white"
+        >
+          {title}
+          {required && <span className="text-red-600"> *</span>}
+        </label>
+      )}
+
+      <input
+        type={type}
+        name={name}
+        id={name}
+        defaultValue={initialValue || ""}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-0.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        placeholder={placeholder || title}
+        required={required}
+      />
+      {errors && (
+        <InlineErrors
+          key={`${name}-error`}
+          errorId={`${name}-error`}
+          errors={errors}
+        />
+      )}
+    </>
+  );
+}
+
+export function FormInputSetter({
+  type,
+  name,
+  title,
+}: {
+  type: ChecklistQuestionsType["type_response"];
+  name: string;
+  title?: string;
+}): JSX.Element {
+  const customOptios = [
+    {
+      id: 1,
+      value: "bueno",
+      label: `Bueno\u00A0\u00A0\u00A0`,
+    },
+    {
+      id: 2,
+      value: "regular",
+      label: "Regular\u00A0\u00A0\u00A0",
+    },
+    {
+      id: 3,
+      value: "malo",
+      label: "Malo\u00A0\u00A0\u00A0",
+    },
+  ];
+
+  switch (type) {
+    case "text":
+      return (
+        <FormInputSingle
+          key={`question-input-${name}`}
+          type={type}
+          name={name}
+          title={title}
+        />
+      );
+
+    case "bool":
+      return (
+        <FormCheckbox
+          key={`question-checkbox-${name}`}
+          name={name}
+          title={title || ""}
+          isChecked
+        />
+      );
+
+    case "bool_text":
+      return (
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={name}
+            title={title || ""}
+            isChecked
+          />
+          <FormInputSingle
+            key={`question-input-${name}`}
+            type={type}
+            name={name}
+            placeholder={title}
+          />
+        </>
+      );
+
+    case "bool_option":
+      return (
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={name}
+            title={title || ""}
+            isChecked
+          />
+          <FormSelect
+            key={`question-select-${name}`}
+            name={name}
+            options={customOptios}
+            inline
+          />
+        </>
+      );
+
+    case "option":
+      return (
+        <FormSelect
+          key={`question-select-${name}`}
+          name={name}
+          title={title}
+          options={customOptios}
+          inline
+          contents
+        />
+      );
+
+    case "option_text":
+      return (
+        <>
+          <FormSelect
+            key={`question-select-${name}`}
+            name={name}
+            title={title}
+            options={customOptios}
+            inline
+          />
+          <FormInputSingle
+            key={`question-input-${name}`}
+            type={type}
+            name={name}
+            placeholder={title}
+          />
+        </>
+      );
+
+    case "bool_option_text":
+      return (
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={name}
+            title={title || ""}
+            isChecked
+          />
+          <FormSelect
+            key={`question-select-${name}`}
+            name={name}
+            options={customOptios}
+            inline
+          />
+          <FormInputSingle
+            key={`question-input-${name}`}
+            type={type}
+            name={name}
+            placeholder={title}
+          />
+        </>
+      );
+
+    default:
+      return <></>;
+  }
 }
