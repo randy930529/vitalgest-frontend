@@ -137,9 +137,14 @@ export type ChecklistQuestionsType = {
   order_question_category: number;
   name_subcategory?: string;
   order_subcategory?: number;
-  boolean_response: boolean;
-  enum_response: boolean;
-  free_response: boolean;
+  type_response:
+    | "bool"
+    | "option"
+    | "text"
+    | "bool_option"
+    | "bool_text"
+    | "option_text"
+    | "bool_option_text";
   createdAt: Date;
   updatedAt: Date;
 };
