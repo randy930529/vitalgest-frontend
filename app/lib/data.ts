@@ -261,7 +261,7 @@ export async function fetchDelegationById(
   }
 }
 
-export async function fetchGuards(): Promise<any[]> {
+export async function fetchGuards(): Promise<GuardType[]> {
   try {
     if (!process.env.API_URL) {
       throw new Error(
@@ -305,7 +305,7 @@ export async function fetchGuards(): Promise<any[]> {
 
     return res.data;
   } catch (err) {
-    console.log("API Error[GET DELEGATIONS]:", err);
+    console.log("API Error[GET GUARDS]:", err);
     return [];
   }
 }

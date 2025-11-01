@@ -10,6 +10,7 @@ export type GuardState = StateType<{
   guardChief?: string[];
   date?: string[];
   ambulance?: string[];
+  delegationId?: string[];
   success?: string[];
 }>;
 
@@ -20,6 +21,7 @@ export async function createGuard(
   const date = formGuarData.get("date") as string;
 
   const validatedGuardFields = CreateGuard.safeParse({
+    delegationId: formGuarData.get("delegation"),
     guardChief: formGuarData.get("guardChief"),
     date: new Date(date),
   });
@@ -30,7 +32,7 @@ export async function createGuard(
     };
   }
 
-  const { guardChief } = validatedGuardFields.data;
+  const { guardChief, delegationId } = validatedGuardFields.data;
   try {
     // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
@@ -46,6 +48,7 @@ export async function createGuard(
     const endPoint = `${process.env.API_URL}/api/guards/create`;
 
     const bodyContent = {
+      delegationId,
       guardChief,
       date,
     };
@@ -85,38 +88,44 @@ export async function createGuard(
 
 export async function deleteGuard(id: string) {
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
-    const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
-    const endPoint = `${process.env.API_URL}/api/adm/delete/guard/${id}`;
 
-    const response = await fetch(endPoint, {
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/delete/${id}`;
+
+    const config = {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
-    });
+    };
 
-    // if (!response.ok) {
-    //   return {
-    //     errors: {},
-    //     message: (await response.json())["error"],
-    //   };
-    // }
-    console.log(id, await response.json());
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const result = await response.json();
+      // TODO: Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = result.error
+        ? result.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
   } catch (error) {
-    // return { errors: {}, message: "Database Error: Failed to Delete User." };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/guards");
-  // return { errors: {}, message: "User deleted successfully." };
+  return { message: "Guardia eliminada exitosamente." };
 }

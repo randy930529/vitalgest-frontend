@@ -66,6 +66,7 @@ const FormDelegationSchema = z.object({
 });
 
 const FormGuardSchema = z.object({
+  id: z.string().uuid(),
   guardChief: z.string({
     invalid_type_error: "Por favor seleccione el jefe de guardia.",
   }),
@@ -75,9 +76,6 @@ const FormGuardSchema = z.object({
   }),
   delegationId: z.string({
     invalid_type_error: "Por favor seleccione una delegación.",
-  }),
-  ambulance: z.string({
-    invalid_type_error: "Por favor seleccione una ambulancia.",
   }),
 });
 
@@ -102,10 +100,8 @@ export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
 export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
 
-export const CreateGuard = FormGuardSchema.omit({
-  ambulance: true,
-  delegationId: true,
-});
+export const CreateGuard = FormGuardSchema.omit({ id: true });
+export const UpdateGuard = FormGuardSchema.omit({ id: true });
 
 export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
 export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
