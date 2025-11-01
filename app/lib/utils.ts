@@ -68,3 +68,18 @@ export const getStatusIcon = (status?: StepItemType["status"]) => {
 
   return customStepItem[status || "default"];
 };
+
+/**
+ * Convierte una cadena de fecha en formato DD/MM/YYYY
+ * @param dateString Cadena de fecha (Ej: "2024-01-15T00:00:00.000Z")
+ * @returns Retorna la fecha formateada como string (Ej: "15/01/2024")
+ */
+export const formatDateToDDMMYYYY = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = date.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
+};
