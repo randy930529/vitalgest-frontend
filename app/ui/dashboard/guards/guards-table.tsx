@@ -1,12 +1,21 @@
-import { fetchGuards, fetchUsersGuardChief } from "@/app/lib/data";
+"use client";
+
+import { useState } from "react";
+import {
+  CustomOptions,
+  DelegationType,
+  GuardType,
+} from "@/app/lib/definitions";
+import { deleteGuard } from "@/app/lib/actions/guard";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import { deleteGuard } from "@/app/lib/actions/guard";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
-import ModalTrigger from "@/app/ui/button-modal";
-import GuardForm from "./create/guard-form";
+import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 
 const customHeaders = [
   { id: 0, label: "Jefe de Guardia" },
@@ -21,19 +30,62 @@ const customGuardsStates = [
   { id: 3, value: "closed", label: "Cerrada", bgColor: "bg-red-500" },
 ];
 
-export default async function GuardsTable() {
-  // <div>(Component) Lista de guardias existentes - [CSR]</div>;
-  const [guards, customGuardChief] = await Promise.all([
-    fetchGuards(),
-    fetchUsersGuardChief(),
-  ]);
+export default function GuardsTable({
+  data,
+}: {
+  data: [
+    GuardType[],
+    CustomOptions[],
+    DelegationType[],
+    [CustomOptions[], CustomOptions[], CustomOptions[]]
+  ];
+}) {
+  // (Component) Lista de guardias existentes - [CSR]
+
+  const [
+    guards,
+    guardChiefs,
+    delegations,
+    [ambulances, drivers, paramedicals],
+  ] = data;
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  function handleCheckboxChange(checkedId: string, checked: boolean) {
+    if (checked) {
+      setSelectedIds([...selectedIds, checkedId]);
+    } else {
+      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
+    }
+  }
+
+  function handleSelectAllChange(checked: boolean) {
+    const guardsIdArray = guards.map(({ id }) => id);
+    setSelectedIds(checked ? guardsIdArray : []);
+  }
 
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
+        {selectedIds.length > 0 && (
+          <TableActionDeleteAllSelected
+            selectedIds={selectedIds}
+            actionDelete={async (ids: string[]) => {
+              //TODO: Implement bulk delete action
+              console.log(ids, "TODO: Implement bulk delete action");
+            }}
+          />
+        )}
         <ModalTrigger
           title="Crear Guardia"
-          modelContent={<GuardForm customGuardChief={customGuardChief} />}
+          modelContent={
+            <GuardForm
+              guardChiefs={guardChiefs}
+              delegations={delegations}
+              ambulances={ambulances}
+              drivers={drivers}
+              paramedicals={paramedicals}
+            />
+          }
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -46,6 +98,9 @@ export default async function GuardsTable() {
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(event) => {
+                      handleSelectAllChange(event.target.checked);
+                    }}
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
@@ -74,6 +129,11 @@ export default async function GuardsTable() {
                       id={`checkbox-table-${guard.id}`}
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      value={guard.id}
+                      checked={selectedIds.includes(guard.id)}
+                      onChange={(event) => {
+                        handleCheckboxChange(guard.id, event.target.checked);
+                      }}
                     />
                     <label
                       htmlFor={`checkbox-table-${guard.id}`}
@@ -87,10 +147,12 @@ export default async function GuardsTable() {
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {guard.guardChief}
+                  {guard.guardChief?.name}
                 </th>
-                <td className="px-4 py-3">{guard.date}</td>
-                <td className="px-4 py-3">{guard.ambulance}</td>
+                <td className="px-4 py-3">
+                  {formatDateToDDMMYYYY(guard.date)}
+                </td>
+                <td className="px-4 py-3">{/*guard.ambulance*/}</td>
                 <td className="px-4 py-3">
                   <GuardStatus state={guard.state} />
                 </td>

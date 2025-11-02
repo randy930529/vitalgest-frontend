@@ -1,12 +1,15 @@
 import { cache } from "react";
 import {
   AmbulanceType,
+  CheckListAmbulanceType,
+  ChecklistQuestionsType,
   CustomMxState,
   CustomOptions,
   DelegationType,
   GuardType,
   MxState,
   ResponseAPIType,
+  StepItemType,
   UserType,
 } from "@/app/lib/definitions";
 import { verifyAuthorization, verifySession } from "@/app/lib/dal";
@@ -258,7 +261,7 @@ export async function fetchDelegationById(
   }
 }
 
-export async function fetchGuards(): Promise<any[]> {
+export async function fetchGuards(): Promise<GuardType[]> {
   try {
     if (!process.env.API_URL) {
       throw new Error(
@@ -302,7 +305,7 @@ export async function fetchGuards(): Promise<any[]> {
 
     return res.data;
   } catch (err) {
-    console.log("API Error[GET DELEGATIONS]:", err);
+    console.log("API Error[GET GUARDS]:", err);
     return [];
   }
 }
@@ -493,6 +496,303 @@ export async function fetchAmbulanceById(
     const apiToken = session?.accessToken;
 
     const endPoint = `${process.env.API_URL}/api/ambulances/one/${id}`;
+    const response = await fetch(endPoint, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
+  }
+}
+
+export async function fetchCheckListAmbulanceById(
+  id: string
+): Promise<CheckListAmbulanceType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/ambulances/checklist/one/${id}`;
+    // const response = await fetch(endPoint, {
+    //   headers: {
+    //     Authorization: `Bearer ${apiToken}`,
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    // if (!response.ok) {
+    //   return;
+    // }
+
+    // const result = await response.json();
+    // console.log(result);
+    // return result.data;
+    return {
+      id: "uuid-1",
+      guard: {
+        id: "uuid-1",
+        createdAt: "24-10-2025",
+        // ambulance: "9809-90809",
+        guardChief: {
+          id: "uuid-1",
+          email: "wew@sds",
+          name: "Randy",
+          lastname: "Delgado",
+          position: "Dev",
+          role: "admin",
+          status: true,
+          delegation_id: "",
+        },
+        date: "24-10-2025",
+        state: "Nueva",
+        delegation: {
+          id: "uuid-1",
+          name: "",
+          state: {
+            id: 1,
+            name: "Jalisco",
+          },
+          municipality: {
+            id: 1,
+            name: "Ameca",
+          },
+          pharmacyId: "uuid-1",
+        },
+      },
+      date: "24-10-2024",
+      preguntas: {
+        area_pregunta: "Area 1",
+        order: 0,
+        pregunta: "?La pregunta?",
+      },
+      state: "Nuevo",
+    };
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
+  }
+}
+
+export async function fetchChecklistQuestions(
+  category?: number
+): Promise<ChecklistQuestionsType[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [];
+    const apiToken = session.accessToken;
+
+    const param = category ? `?category=${category}` : "";
+    const endPoint = `${process.env.API_URL}/api/checklists/ambulance/questions${param}`;
+
+    const fetchChecklistQuestionsFromApi = cache(
+      async (): Promise<ResponseAPIType<ChecklistQuestionsType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las preguntas desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchChecklistQuestionsFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+    return res.data;
+  } catch (err) {
+    console.log("API Error[GET QUESTIONS]:", err);
+    return [];
+  }
+}
+
+export async function fetchChecklistSteps(): Promise<[StepItemType[], number]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [[], 0];
+    const apiToken = session.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/checklists/ambulance/questions`;
+
+    const fetchChecklistQuestionsFromApi = cache(
+      async (): Promise<ResponseAPIType<ChecklistQuestionsType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las preguntas desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchChecklistQuestionsFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    //TODO: Extrar esta logica como utilidad------------------
+    const steps = Array.from(
+      new Map(
+        res.data.map<[string, StepItemType]>(
+          ({ order_category, name_category }) => [
+            `${order_category}-${name_category}`,
+            { id: order_category, label: name_category },
+          ]
+        )
+      ).values()
+    );
+    steps.sort((a, b) => a.id - b.id);
+    // -------------------------------------------------------
+    console.log(steps);
+
+    return [steps, steps.length];
+  } catch (err) {
+    console.log("API Error[GET STEPS]:", err);
+    return [[], 0];
+  }
+}
+
+export async function fetchUsersGuardChiefsDriversAndParamedical(): Promise<
+  [CustomOptions[], CustomOptions[], CustomOptions[]]
+> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [[], [], []];
+    const apiToken = session.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
+
+    const fetchUsersFromApi = cache(
+      async (): Promise<ResponseAPIType<UserType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchUsersFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    const userByRolesMap = new Map<string, CustomOptions[]>();
+    res.data.forEach(({ id, role, name, lastname }) => {
+      const customUsers = userByRolesMap.get(role) ?? [];
+      customUsers.push({
+        id,
+        value: id,
+        label: `${name} ${lastname}`,
+      });
+      userByRolesMap.set(role, customUsers);
+    });
+
+    return [
+      userByRolesMap.get("head_guard") || [],
+      userByRolesMap.get("vehicle_operator") || [],
+      userByRolesMap.get("paramedical") || [],
+    ];
+  } catch (err) {
+    console.log("API Error[GET USERS]:", err);
+    return [[], [], []];
+  }
+}
+
+export async function fetchGuardById(
+  id: string
+): Promise<GuardType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/one/${id}`;
     const response = await fetch(endPoint, {
       headers: {
         Authorization: `Bearer ${apiToken}`,

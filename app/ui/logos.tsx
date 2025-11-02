@@ -1,5 +1,5 @@
-import { openSans } from "@/app/ui/fonts";
 import Image from "next/image";
+import { openSans } from "@/app/ui/fonts";
 
 export function VitalGestLogo() {
   return (
@@ -25,8 +25,8 @@ export function CruzRojaLogo() {
     >
       <Image
         src="/images/logo-cruz-roja.png"
-        width={185}
-        height={261}
+        width={100}
+        height={130}
         className="hidden md:block"
         alt="Logo de la Cruz Roja, cruz roja sobre fondo blanco"
         priority

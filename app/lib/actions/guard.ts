@@ -1,26 +1,29 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { CreateGuard } from "@/app/lib/schema";
-import { StateType } from "@/app/lib/definitions";
+import { GuardType, ResponseAPIType, StateType } from "@/app/lib/definitions";
 import { verifySession } from "@/app/lib/dal";
 
 export type GuardState = StateType<{
   guardChief?: string[];
   date?: string[];
   ambulance?: string[];
+  delegationId?: string[];
   success?: string[];
-}>;
+}> & {
+  guard?: GuardType;
+};
 
 export async function createGuard(
   prevState: GuardState,
-  formGuarData: FormData
+  formGuardData: FormData
 ): Promise<GuardState> {
-  const date = formGuarData.get("date") as string;
+  const date = formGuardData.get("date") as string;
 
   const validatedGuardFields = CreateGuard.safeParse({
-    guardChief: formGuarData.get("guardChief"),
+    delegationId: formGuardData.get("delegation"),
+    guardChief: formGuardData.get("guardChief"),
     date: new Date(date),
   });
 
@@ -30,7 +33,7 @@ export async function createGuard(
     };
   }
 
-  const { guardChief } = validatedGuardFields.data;
+  const { guardChief, delegationId } = validatedGuardFields.data;
   try {
     // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
@@ -46,12 +49,89 @@ export async function createGuard(
     const endPoint = `${process.env.API_URL}/api/guards/create`;
 
     const bodyContent = {
+      delegationId,
       guardChief,
       date,
     };
 
     const config = {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
+
+    const resut: ResponseAPIType<GuardType> = await response.json();
+
+    revalidatePath("/dashboard/guards");
+    console.log("Guard created successfully.");
+
+    return { message: "Guardia creada exitosamente.", guard: resut.data };
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+}
+
+export async function updateGuard(
+  id: string,
+  prevState: GuardState,
+  formGuardData: FormData
+): Promise<GuardState> {
+  const date = formGuardData.get("date") as string;
+
+  const validatedGuardFields = CreateGuard.safeParse({
+    delegationId: formGuardData.get("delegation"),
+    guardChief: formGuardData.get("guardChief"),
+    date: new Date(date),
+  });
+
+  if (!validatedGuardFields.success) {
+    return {
+      errors: validatedGuardFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { guardChief, delegationId } = validatedGuardFields.data;
+
+  try {
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/edit/${id}`;
+
+    const bodyContent = {
+      delegationId,
+      guardChief,
+      date,
+    };
+
+    const config = {
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
@@ -78,45 +158,49 @@ export async function createGuard(
   }
 
   revalidatePath("/dashboard/guards");
-  console.log("Guard created successfully.");
-
-  return { message: "Guardia creada exitosamente." };
+  return { message: "Cambios guardados exitosamente." };
 }
 
 export async function deleteGuard(id: string) {
   try {
-    // Obtener el token desde la cache usando cookies (Next.js recomienda cookies para datos persistentes)
-    // const apiToken = (await cookies()).get("apiToken")?.value;
-    const session = await verifySession();
-    if (!session?.isAuth) redirect("/");
-    const apiToken = session?.accessToken;
-
-    if (!process.env.API_URL || !apiToken) {
+    if (!process.env.API_URL) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas."
       );
     }
-    const endPoint = `${process.env.API_URL}/api/adm/delete/guard/${id}`;
 
-    const response = await fetch(endPoint, {
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/delete/${id}`;
+
+    const config = {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
-    });
+    };
 
-    // if (!response.ok) {
-    //   return {
-    //     errors: {},
-    //     message: (await response.json())["error"],
-    //   };
-    // }
-    console.log(id, await response.json());
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const result = await response.json();
+      // TODO: Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = result.error
+        ? result.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
   } catch (error) {
-    // return { errors: {}, message: "Database Error: Failed to Delete User." };
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
   }
 
   revalidatePath("/dashboard/guards");
-  // return { errors: {}, message: "User deleted successfully." };
+  return { message: "Guardia eliminada exitosamente." };
 }

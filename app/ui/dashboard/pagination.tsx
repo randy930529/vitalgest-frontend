@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname, useSearchParams, useParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Link from "next/link";
-import { generatePagination } from "@/app/lib/utils";
-import { usePathname, useSearchParams } from "next/navigation";
+import { createPageURL, generatePagination } from "@/app/lib/utils";
+import { Button } from "@/app/ui/button";
 
 const ITEMS_PER_PAGE = parseInt(process.env.ITEMS_PER_PAGE || "5");
 
@@ -149,5 +150,103 @@ function PaginationArrow({
     <Link className={className} href={href}>
       {icon}
     </Link>
+  );
+}
+
+function PaginationButton({
+  href,
+  direction,
+  isDisabled,
+  title,
+  hasIcon = true,
+}: {
+  href: string;
+  direction: "left" | "right";
+  isDisabled?: boolean;
+  title?: string;
+  hasIcon?: boolean;
+}) {
+  const className = clsx(
+    "text-white inline-flex items-center bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 sm:px-5 sm:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800",
+    {
+      "pointer-events-none text-gray-300 bg-primary-300": isDisabled,
+    }
+  );
+
+  const icon =
+    direction === "left" ? (
+      <>
+        <span className="sr-only">Previous</span>
+        {hasIcon && <ChevronLeftIcon className="w-5 h-5" />}
+        {title ? title : "Anterior"}
+      </>
+    ) : (
+      <>
+        <span className="sr-only">Next</span>
+        {title ? title : "Siguiente"}
+        {hasIcon && <ChevronRightIcon className="w-5 h-5" />}
+      </>
+    );
+
+  return isDisabled ? (
+    <div className={className}>{icon}</div>
+  ) : (
+    <Link className={className} href={href}>
+      {icon}
+    </Link>
+  );
+}
+
+export function PaginationChecklist({ isLast }: { isLast: boolean }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("step")) || 1;
+  const isNotes = !!searchParams.get("notes");
+  const { id } = useParams<{ id: string }>();
+
+  return (
+    <div className="flex w-full justify-between gap-4">
+      <PaginationButton
+        href={
+          currentPage - 1
+            ? createPageURL(currentPage - 1, searchParams, pathname)
+            : `/checklists/ambulances/${id}`
+        }
+        direction="left"
+      />
+      {isLast && isNotes ? (
+        <>
+          <PaginationButton
+            href={createPageURL(currentPage + 1, searchParams, pathname)}
+            direction="right"
+            title="Guardar"
+            isDisabled={isLast}
+            hasIcon={false}
+          />
+          <Button
+            type="submit"
+            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
+          >
+            Enviar
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            type="submit"
+            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
+          >
+            Guardar
+          </Button>
+          <PaginationButton
+            href={
+              createPageURL(currentPage + 1, searchParams, pathname) +
+              `${isLast && !isNotes ? "&notes=1" : ""}`
+            }
+            direction="right"
+          />
+        </>
+      )}
+    </div>
   );
 }
