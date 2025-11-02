@@ -6,6 +6,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import {
+  AmbulanceType,
   CustomOptions,
   DelegationType,
   GuardType,
@@ -23,15 +24,20 @@ export default function GuardEditForm({
 }: {
   data: [
     GuardType | undefined,
+    AmbulanceType[],
     DelegationType[],
-    CustomOptions[],
     [CustomOptions[], CustomOptions[], CustomOptions[]]
   ];
 }) {
   // (Component) Formulario de edicion de guardias - [CSR]
 
-  const [guard, delegations, guardChiefs, [ambulances, drivers, paramedicals]] =
+  const [guard, ambulances, delegations, [guardChiefs, drivers, paramedicals]] =
     data;
+  const customAmbulances = ambulances.map<CustomOptions>(({ id, number }) => ({
+    id,
+    label: number,
+    value: id,
+  }));
 
   if (!guard) {
     notFound();
@@ -139,7 +145,7 @@ export default function GuardEditForm({
             </div>
             <AmbulanceAssignForm
               guardId={guard.id}
-              ambulances={ambulances}
+              ambulances={customAmbulances}
               drivers={drivers}
               paramedicals={paramedicals}
             />

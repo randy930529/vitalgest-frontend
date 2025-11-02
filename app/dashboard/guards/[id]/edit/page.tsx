@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import {
+  fetchAmbulances,
   fetchDelegations,
   fetchGuardById,
-  fetchUsersGuardChief,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
@@ -26,8 +26,8 @@ export default async function EditGuardPage(props: {
   const fetchGuardByIdAndMXStates = async () =>
     await Promise.all([
       fetchGuardById(id),
+      fetchAmbulances(),
       fetchDelegations(),
-      fetchUsersGuardChief(),
       fetchUsersGuardChiefsDriversAndParamedical(),
     ]);
 
