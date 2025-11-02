@@ -95,6 +95,22 @@ const FormAmbulanceSchema = z.object({
   }),
 });
 
+const FormShiftSchema = z.object({
+  id: z.string().uuid(),
+  ambulanceId: z.string({
+    invalid_type_error: "Por favor seleccione una ambulancia.",
+  }),
+  guardId: z.string({
+    invalid_type_error: "Por favor seleccione una guardia.",
+  }),
+  paramedicalId: z.string({
+    invalid_type_error: "Por favor seleccione un paramedico.",
+  }),
+  driverId: z.string({
+    invalid_type_error: "Por favor seleccione un chofer.",
+  }),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -105,3 +121,6 @@ export const UpdateGuard = FormGuardSchema.omit({ id: true });
 
 export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
 export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
+
+export const CreateShift = FormShiftSchema.omit({ id: true });
+export const UpdateShift = FormShiftSchema.omit({ id: true });

@@ -87,7 +87,7 @@ export type GuardType = {
   id: string;
   guardChief: UserType;
   date: string;
-  ambulance: string;
+  // ambulance: string;
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
   createdAt: string;
@@ -147,4 +147,15 @@ export type ChecklistQuestionsType = {
     | "bool_option_text";
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type ShiftType = {
+  id: string;
+  name?: string;
+  ambulance: AmbulanceType;
+  guard: GuardType;
+  paramedical: UserType;
+  driver: UserType;
+  createdAt: string;
+  updatedAt: string;
 };
