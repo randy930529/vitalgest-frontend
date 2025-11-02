@@ -7,6 +7,7 @@ import {
   GuardType,
 } from "@/app/lib/definitions";
 import { deleteGuard } from "@/app/lib/actions/guard";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
@@ -14,8 +15,7 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
-import TableActionDeleteAllSelected from "../button-delete-all";
-import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 
 const customHeaders = [
   { id: 0, label: "Jefe de Guardia" },
@@ -33,11 +33,21 @@ const customGuardsStates = [
 export default function GuardsTable({
   data,
 }: {
-  data: [GuardType[], CustomOptions[], DelegationType[]];
+  data: [
+    GuardType[],
+    CustomOptions[],
+    DelegationType[],
+    [CustomOptions[], CustomOptions[], CustomOptions[]]
+  ];
 }) {
   // (Component) Lista de guardias existentes - [CSR]
 
-  const [guards, guardChiefs, delegations] = data;
+  const [
+    guards,
+    guardChiefs,
+    delegations,
+    [ambulances, drivers, paramedicals],
+  ] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
@@ -69,8 +79,11 @@ export default function GuardsTable({
           title="Crear Guardia"
           modelContent={
             <GuardForm
-              customGuardChief={guardChiefs}
+              guardChiefs={guardChiefs}
               delegations={delegations}
+              ambulances={ambulances}
+              drivers={drivers}
+              paramedicals={paramedicals}
             />
           }
         />
@@ -139,7 +152,7 @@ export default function GuardsTable({
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(guard.date)}
                 </td>
-                <td className="px-4 py-3">{guard.ambulance}</td>
+                <td className="px-4 py-3">{/*guard.ambulance*/}</td>
                 <td className="px-4 py-3">
                   <GuardStatus state={guard.state} />
                 </td>

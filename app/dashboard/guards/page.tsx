@@ -4,6 +4,7 @@ import {
   fetchDelegations,
   fetchGuards,
   fetchUsersGuardChief,
+  fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
@@ -23,6 +24,7 @@ export default async function GuardsPage() {
       fetchGuards(),
       fetchUsersGuardChief(),
       fetchDelegations(),
+      fetchUsersGuardChiefsDriversAndParamedical(),
     ]);
 
   return (
@@ -37,7 +39,15 @@ export default async function GuardsPage() {
         fallback={
           <TableSkeleton
             title="Crear Guardia"
-            modelContent={<GuardForm customGuardChief={[]} delegations={[]} />}
+            modelContent={
+              <GuardForm
+                guardChiefs={[]}
+                delegations={[]}
+                ambulances={[]}
+                drivers={[]}
+                paramedicals={[]}
+              />
+            }
           />
         }
       >

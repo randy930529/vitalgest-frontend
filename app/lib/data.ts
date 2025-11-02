@@ -550,7 +550,7 @@ export async function fetchCheckListAmbulanceById(
       guard: {
         id: "uuid-1",
         createdAt: "24-10-2025",
-        ambulance: "9809-90809",
+        // ambulance: "9809-90809",
         guardChief: {
           id: "uuid-1",
           email: "wew@sds",
@@ -707,5 +707,73 @@ export async function fetchChecklistSteps(): Promise<[StepItemType[], number]> {
   } catch (err) {
     console.log("API Error[GET STEPS]:", err);
     return [[], 0];
+  }
+}
+
+export async function fetchUsersGuardChiefsDriversAndParamedical(): Promise<
+  [CustomOptions[], CustomOptions[], CustomOptions[]]
+> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    if (!verifyAuthorization(session)) return [[], [], []];
+    const apiToken = session.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/adm/get-all/users/all`;
+
+    const fetchUsersFromApi = cache(
+      async (): Promise<ResponseAPIType<UserType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener los usuarios desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const res = await fetchUsersFromApi();
+    console.log(res);
+
+    if (!res.success) {
+      throw new Error(res.error);
+    }
+
+    const userByRolesMap = new Map<string, CustomOptions[]>();
+    res.data.forEach(({ id, role, name, lastname }) => {
+      const customUsers = userByRolesMap.get(role) ?? [];
+      customUsers.push({
+        id,
+        value: id,
+        label: `${name} ${lastname}`,
+      });
+      userByRolesMap.set(role, customUsers);
+    });
+
+    return [
+      userByRolesMap.get("head_guard") || [],
+      userByRolesMap.get("vehicle_operator") || [],
+      userByRolesMap.get("paramedical") || [],
+    ];
+  } catch (err) {
+    console.log("API Error[GET USERS]:", err);
+    return [[], [], []];
   }
 }

@@ -1,9 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { CreateGuard } from "@/app/lib/schema";
-import { StateType } from "@/app/lib/definitions";
+import { GuardType, ResponseAPIType, StateType } from "@/app/lib/definitions";
 import { verifySession } from "@/app/lib/dal";
 
 export type GuardState = StateType<{
@@ -12,7 +11,9 @@ export type GuardState = StateType<{
   ambulance?: string[];
   delegationId?: string[];
   success?: string[];
-}>;
+}> & {
+  guard?: GuardType;
+};
 
 export async function createGuard(
   prevState: GuardState,
@@ -72,6 +73,13 @@ export async function createGuard(
         : "Falló la comunicación con el api, intente más tarde.";
       throw new Error(errorMessage);
     }
+
+    const resut: ResponseAPIType<GuardType> = await response.json();
+
+    revalidatePath("/dashboard/guards");
+    console.log("Guard created successfully.");
+
+    return { message: "Guardia creada exitosamente.", guard: resut.data };
   } catch (error) {
     return {
       errors: {
@@ -79,11 +87,6 @@ export async function createGuard(
       },
     };
   }
-
-  revalidatePath("/dashboard/guards");
-  console.log("Guard created successfully.");
-
-  return { message: "Guardia creada exitosamente." };
 }
 
 export async function deleteGuard(id: string) {
