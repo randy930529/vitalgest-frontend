@@ -17,13 +17,13 @@ export type GuardState = StateType<{
 
 export async function createGuard(
   prevState: GuardState,
-  formGuarData: FormData
+  formGuardData: FormData
 ): Promise<GuardState> {
-  const date = formGuarData.get("date") as string;
+  const date = formGuardData.get("date") as string;
 
   const validatedGuardFields = CreateGuard.safeParse({
-    delegationId: formGuarData.get("delegation"),
-    guardChief: formGuarData.get("guardChief"),
+    delegationId: formGuardData.get("delegation"),
+    guardChief: formGuardData.get("guardChief"),
     date: new Date(date),
   });
 
@@ -87,6 +87,78 @@ export async function createGuard(
       },
     };
   }
+}
+
+export async function updateGuard(
+  id: string,
+  prevState: GuardState,
+  formGuardData: FormData
+): Promise<GuardState> {
+  const date = formGuardData.get("date") as string;
+
+  const validatedGuardFields = CreateGuard.safeParse({
+    delegationId: formGuardData.get("delegation"),
+    guardChief: formGuardData.get("guardChief"),
+    date: new Date(date),
+  });
+
+  if (!validatedGuardFields.success) {
+    return {
+      errors: validatedGuardFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { guardChief, delegationId } = validatedGuardFields.data;
+
+  try {
+    // Obtener el token desde la cache usando cookies
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/edit/${id}`;
+
+    const bodyContent = {
+      delegationId,
+      guardChief,
+      date,
+    };
+
+    const config = {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyContent),
+    };
+
+    const response = await fetch(endPoint, config);
+
+    if (!response.ok) {
+      const resut = await response.json();
+      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      let errorMessage = resut.error
+        ? resut.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+
+  revalidatePath("/dashboard/guards");
+  return { message: "Cambios guardados exitosamente." };
 }
 
 export async function deleteGuard(id: string) {

@@ -777,3 +777,38 @@ export async function fetchUsersGuardChiefsDriversAndParamedical(): Promise<
     return [[], [], []];
   }
 }
+
+export async function fetchGuardById(
+  id: string
+): Promise<GuardType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/guards/one/${id}`;
+    const response = await fetch(endPoint, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
+  }
+}
