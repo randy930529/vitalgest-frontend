@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import {
+  fetchAmbulances,
   fetchDelegations,
   fetchGuards,
-  fetchUsersGuardChief,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
@@ -22,7 +22,7 @@ export default async function GuardsPage() {
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
       fetchGuards(),
-      fetchUsersGuardChief(),
+      fetchAmbulances(),
       fetchDelegations(),
       fetchUsersGuardChiefsDriversAndParamedical(),
     ]);

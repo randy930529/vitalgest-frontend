@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import {
+  AmbulanceType,
   CustomOptions,
   DelegationType,
   GuardType,
@@ -35,7 +36,7 @@ export default function GuardsTable({
 }: {
   data: [
     GuardType[],
-    CustomOptions[],
+    AmbulanceType[],
     DelegationType[],
     [CustomOptions[], CustomOptions[], CustomOptions[]]
   ];
@@ -44,10 +45,15 @@ export default function GuardsTable({
 
   const [
     guards,
-    guardChiefs,
+    ambulances,
     delegations,
-    [ambulances, drivers, paramedicals],
+    [guardChiefs, drivers, paramedicals],
   ] = data;
+  const customAmbulances = ambulances.map<CustomOptions>(({ id, number }) => ({
+    id,
+    label: number,
+    value: id,
+  }));
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
@@ -81,7 +87,7 @@ export default function GuardsTable({
             <GuardForm
               guardChiefs={guardChiefs}
               delegations={delegations}
-              ambulances={ambulances}
+              ambulances={customAmbulances}
               drivers={drivers}
               paramedicals={paramedicals}
             />
