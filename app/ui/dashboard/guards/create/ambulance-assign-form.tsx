@@ -80,9 +80,9 @@ export default function AmbulanceAssignForm({
           <FormSelect
             key="paramedical"
             name="paramedical"
-            title="Paramedico"
+            title="Paramédico"
             options={[
-              { id: "", label: "Seleccione Paramedico", value: "" },
+              { id: "", label: "Seleccione Paramédico", value: "" },
               ...paramedicals,
             ]}
             required

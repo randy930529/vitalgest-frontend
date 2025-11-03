@@ -104,7 +104,7 @@ const FormShiftSchema = z.object({
     invalid_type_error: "Por favor seleccione una guardia.",
   }),
   paramedicalId: z.string({
-    invalid_type_error: "Por favor seleccione un paramedico.",
+    invalid_type_error: "Por favor seleccione un paramédico.",
   }),
   driverId: z.string({
     invalid_type_error: "Por favor seleccione un chofer.",
