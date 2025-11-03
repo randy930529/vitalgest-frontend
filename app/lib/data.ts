@@ -9,6 +9,7 @@ import {
   GuardType,
   MxState,
   ResponseAPIType,
+  ShiftType,
   StepItemType,
   UserType,
 } from "@/app/lib/definitions";
@@ -810,5 +811,38 @@ export async function fetchGuardById(
   } catch (error) {
     console.log("Database Error:", error);
     return;
+  }
+}
+
+export async function fetchShiftsByGuardId(id: string): Promise<ShiftType[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/shifts/guard/${id}`;
+    const response = await fetch(endPoint, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return [];
   }
 }

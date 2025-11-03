@@ -1,17 +1,26 @@
-import Link from "next/link";
 import clsx from "clsx";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { ShiftType } from "@/app/lib/definitions";
+import { Button } from "./button";
 
 export function CardWrapper({
   children,
   isColumn,
+  controllers,
 }: {
   children: React.ReactNode;
   isColumn?: boolean;
+  controllers?: boolean;
 }) {
   return (
-    <div className="w-full bg-gray-200 border border-gray-600 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4">
-      <div className="flex justify-end px-4">{/* TODO: Dropdown menu */}</div>
+    <div className="relative bg-gray-200 border border-gray-600 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4">
+      {controllers && (
+        <div className="flex justify-end px-4">
+          <Button className="absolute top-2 right-2 rounded-md border p-2 bg-white hover:bg-gray-300">
+            <PencilIcon className="w-5 h-5" />
+          </Button>
+        </div>
+      )}
       <div
         className={clsx("flex items-center", {
           "flex-col md:items-start": isColumn,
@@ -23,26 +32,26 @@ export function CardWrapper({
   );
 }
 
+export function CardsGroup({ children }: { children: React.ReactNode }) {
+  return <section className="overflow-x-auto rounded-lg">{children}</section>;
+}
+
 export function CardShift({ shift }: { shift: ShiftType }) {
   return (
-    <>
-      <h3 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+    <div className="flex flex-col pr-8">
+      <h3 className="mb-1 font-medium text-gray-900 dark:text-white">
         {shift.name ? shift.name : shift.ambulance.number}
       </h3>
-      <div className="flex mt-4 md:mt-6">
-        <Link
-          href="#"
-          className="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-        >
-          Message
-        </Link>
-        <Link
-          href="#"
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Add friend
-        </Link>
-      </div>
-    </>
+      <p className="text-xs">
+        <span>Chofer: </span>
+        {`${shift.driver?.name || ""} ${shift.driver?.lastname || ""}`}
+      </p>
+      <p className="text-xs">
+        <span>Paramédico: </span>
+        {`${shift.paramedical?.name || ""} ${
+          shift.paramedical?.lastname || ""
+        }`}
+      </p>
+    </div>
   );
 }

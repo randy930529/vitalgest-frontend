@@ -10,20 +10,23 @@ import {
   CustomOptions,
   DelegationType,
   GuardType,
+  ShiftType,
 } from "@/app/lib/definitions";
 import { GuardState, updateGuard } from "@/app/lib/actions/guard";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
 import AmbulanceAssignForm from "@/app/ui/dashboard/guards/create/ambulance-assign-form";
-import { InlineErrors } from "@/app/ui/custom-errors";
-import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
+import { CardsGroup, CardShift, CardWrapper } from "@/app/ui/cards";
+import { GuardStateShow } from "@/app/ui/dashboard/guards/guards-table";
 
 export default function GuardEditForm({
   data,
 }: {
   data: [
     GuardType | undefined,
+    ShiftType[],
     AmbulanceType[],
     DelegationType[],
     [CustomOptions[], CustomOptions[], CustomOptions[]]
@@ -31,8 +34,13 @@ export default function GuardEditForm({
 }) {
   // (Component) Formulario de edicion de guardias - [CSR]
 
-  const [guard, ambulances, delegations, [guardChiefs, drivers, paramedicals]] =
-    data;
+  const [
+    guard,
+    shifts,
+    ambulances,
+    delegations,
+    [guardChiefs, drivers, paramedicals],
+  ] = data;
   const customAmbulances = ambulances.map<CustomOptions>(({ id, number }) => ({
     id,
     label: number,
@@ -51,6 +59,8 @@ export default function GuardEditForm({
   );
 
   const date = formatDateToDDMMYYYY(guard?.date || "");
+  const datePicker = new Date(guard?.date).toISOString().split("T")[0];
+  const dateStart = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     state.message && toast.success(state.message);
@@ -92,34 +102,19 @@ export default function GuardEditForm({
               required
             />
 
-            {/* TODO: Factorizar como un form date reutilizable */}
             <div className="relative max-w-sm">
-              <label
-                htmlFor="date"
-                className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Fecha
-                <span className="text-red-600"> *</span>
-              </label>
-              <input
-                id="date"
+              <FormDatepicker
                 name="date"
                 type="date"
-                defaultValue={date}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="dd/mm/aaaa"
+                title="Fecha"
+                initialDate={datePicker}
+                dateStart={dateStart}
+                errors={state.errors?.date}
                 required
               />
-              {state.errors?.date && (
-                <InlineErrors
-                  key="date-error"
-                  errorId="date-error"
-                  errors={state.errors?.date}
-                />
-              )}
             </div>
           </div>
-          <div className="absolute w-3/5 bottom-4 mt-6 flex justify-end gap-4">
+          <div className="absolute w-3/5 bottom-4 flex justify-end gap-4">
             <Link
               href="/dashboard/guards"
               className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -138,10 +133,7 @@ export default function GuardEditForm({
           <div className="w-3/5 py-4">
             <div className="mb-4">
               <p>Estado</p>
-              <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
-                {guard.state}
-              </span>
+              <GuardStateShow state={guard.state} />
             </div>
             <AmbulanceAssignForm
               guardId={guard.id}
@@ -151,6 +143,19 @@ export default function GuardEditForm({
             />
           </div>
         )}
+        <div className="w-3/5 py-4">
+          <CardsGroup>
+            <ul className="flex gap-2 pb-3">
+              {shifts.map((shift) => (
+                <li key={`shift-${shift.id}`}>
+                  <CardWrapper key={`card-container-${shift.id}`} controllers>
+                    <CardShift key={`card-${shift.id}`} shift={shift} />
+                  </CardWrapper>
+                </li>
+              ))}
+            </ul>
+          </CardsGroup>
+        </div>
       </div>
     </main>
   );
