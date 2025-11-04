@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { StateType } from "@/app/lib/definitions";
+import { ResponseAPIType, ShiftType, StateType } from "@/app/lib/definitions";
 import { CreateShift, UpdateShift } from "@/app/lib/schema";
 import { verifySession } from "@/app/lib/dal";
 
@@ -11,7 +11,9 @@ export type ShiftState = StateType<{
   paramedicalId?: string[];
   driverId?: string[];
   success?: string[];
-}>;
+}> & {
+  shift?: ShiftType;
+};
 
 export async function createShift(
   prevState: ShiftState,
@@ -63,6 +65,11 @@ export async function createShift(
         : "Falló la comunicación con el api, intente más tarde.";
       throw new Error(errorMessage);
     }
+
+    const resut: ResponseAPIType<ShiftType> = await response.json();
+
+    revalidatePath("/dashboard/guards");
+    return { message: "Turno asignado exitosamente.", shift: resut.data };
   } catch (error) {
     return {
       errors: {
@@ -70,9 +77,6 @@ export async function createShift(
       },
     };
   }
-
-  revalidatePath("/dashboard/guards");
-  return { message: "Turno asignado exitosamente." };
 }
 
 export async function updateShift(

@@ -2,13 +2,17 @@
 
 import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { CustomOptions, DelegationType } from "@/app/lib/definitions";
+import {
+  CustomOptions,
+  DelegationType,
+  ShiftType,
+} from "@/app/lib/definitions";
 import { createGuard, GuardState } from "@/app/lib/actions/guard";
 import { Button } from "@/app/ui/button";
-import { InlineErrors } from "@/app/ui/custom-errors";
-import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import { CardsGroup, CardShift, CardWrapper } from "@/app/ui/cards";
+import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
-import AmbulanceAssignForm from "./ambulance-assign-form";
+import AmbulanceAssignForm from "@/app/ui/dashboard/guards/create/ambulance-assign-form";
 
 export default function GuardForm({
   guardChiefs,
@@ -28,13 +32,12 @@ export default function GuardForm({
   // (Component) Formulario de guardia - [CSR]
 
   const initialState: GuardState = { errors: {}, message: null };
+  const dateStart = new Date().toISOString().split("T")[0];
   const [state, formAction] = useActionState(createGuard, initialState);
-  const [runClose, setRunClose] = useState(false);
-  console.log(state);
+  const [shifts, setShifts] = useState<ShiftType[]>([]);
 
   useEffect(() => {
     state.message && toast.success(state.message);
-    setRunClose(!!(state.message && state.guard));
   }, [state.message]);
 
   useEffect(() => {
@@ -63,33 +66,19 @@ export default function GuardForm({
             required
           />
 
-          {/* TODO: Factorizar como un form date reutilizable */}
           <div className="relative max-w-sm">
-            <label
-              htmlFor="date"
-              className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Fecha
-              <span className="text-red-600"> *</span>
-            </label>
-            <input
-              id="date"
+            <FormDatepicker
               name="date"
               type="date"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="dd/mm/aaaa"
+              title="Fecha"
+              initialDate={dateStart}
+              dateStart={dateStart}
+              errors={state.errors?.date}
               required
             />
-            {state.errors?.date && (
-              <InlineErrors
-                key="date-error"
-                errorId="date-error"
-                errors={state.errors?.date}
-              />
-            )}
           </div>
         </div>
-        {!runClose && (
+        {!(state.message && state.guard) && (
           <div className="w-full flex justify-end gap-4">
             <Button
               type="reset"
@@ -121,8 +110,23 @@ export default function GuardForm({
             ambulances={ambulances}
             drivers={drivers}
             paramedicals={paramedicals}
+            setShifts={setShifts}
           />
-          <div className="w-full flex justify-end gap-4">
+          <div className="py-4">
+            <CardsGroup>
+              <h3 className="text-base font-bold mb-2">Turnos Asignados</h3>
+              <ul className="flex gap-2 pb-3">
+                {shifts.map((shift) => (
+                  <li key={`shift-${shift.id}`}>
+                    <CardWrapper key={`card-container-${shift.id}`} controllers>
+                      <CardShift key={`card-${shift.id}`} shift={shift} />
+                    </CardWrapper>
+                  </li>
+                ))}
+              </ul>
+            </CardsGroup>
+          </div>
+          <div className="flex justify-end w-full">
             <Button
               type="reset"
               onClick={onClose}

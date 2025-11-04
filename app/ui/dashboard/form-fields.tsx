@@ -411,3 +411,57 @@ export function FormInputSetter({
       return <></>;
   }
 }
+
+export function FormDatepicker({
+  name,
+  title,
+  errors,
+  initialDate,
+  dateStart,
+  dateEnd,
+  required,
+  placeholder,
+}: {
+  name: string;
+  type: string;
+  title?: string;
+  initialDate?: string;
+  dateStart?: string;
+  dateEnd?: string;
+  errors?: string[];
+  required?: boolean;
+  placeholder?: string;
+}) {
+  return (
+    <>
+      {title && (
+        <label
+          htmlFor={name}
+          className="text-sm font-medium me-2 text-gray-900 dark:text-white"
+        >
+          {title}
+          {required && <span className="text-red-600"> *</span>}
+        </label>
+      )}
+
+      <input
+        type="date"
+        name={name}
+        id={name}
+        defaultValue={initialDate}
+        min={dateStart}
+        max={dateEnd}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-0.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        placeholder={placeholder || title}
+        required={required}
+      />
+      {errors && (
+        <InlineErrors
+          key={`${name}-error`}
+          errorId={`${name}-error`}
+          errors={errors}
+        />
+      )}
+    </>
+  );
+}

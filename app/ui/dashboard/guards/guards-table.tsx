@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import {
   AmbulanceType,
   CustomOptions,
@@ -23,12 +24,6 @@ const customHeaders = [
   { id: 1, label: "Fecha" },
   { id: 2, label: "Ambulancias" },
   { id: 3, label: "Estado" },
-];
-
-const customGuardsStates = [
-  { id: 1, value: "new", label: "Nueva", bgColor: "bg-green-500" },
-  { id: 2, value: "ongoing", label: "En curso", bgColor: "bg-orange-500" },
-  { id: 3, value: "closed", label: "Cerrada", bgColor: "bg-red-500" },
 ];
 
 export default function GuardsTable({
@@ -158,9 +153,9 @@ export default function GuardsTable({
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(guard.date)}
                 </td>
-                <td className="px-4 py-3">{/*guard.ambulance*/}</td>
+                <td className="px-4 py-3">{"Turnos"}</td>
                 <td className="px-4 py-3">
-                  <GuardStatus state={guard.state} />
+                  <GuardStateShow state={guard.state} />
                 </td>
                 <TableActions>
                   <TableActionEdit
@@ -178,17 +173,40 @@ export default function GuardsTable({
   );
 }
 
-function GuardStatus({ state }: { state: string }) {
-  const guardState = customGuardsStates.find(
-    (customState) => state === customState.value
-  );
+export function GuardStateShow({ state }: { state: GuardType["state"] }) {
+  const customGuardsStates = {
+    customStates: [
+      { label: "Nueva", bgColor: "bg-green-500" },
+      { label: "En curso", bgColor: "bg-orange-500" },
+      { label: "Cerrada", bgColor: "bg-red-500" },
+    ],
+    get(state: string) {
+      return this.customStates.find(({ label }) => label === state);
+    },
+  };
+
+  const guardState = customGuardsStates.get(state);
 
   return (
-    <div className="flex items-center">
-      <div
-        className={`h-2.5 w-2.5 rounded-full ${guardState?.bgColor} me-2`}
-      ></div>
+    <span
+      className={clsx(
+        "inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full",
+        {
+          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300":
+            guardState?.bgColor === "bg-green-500",
+          "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300":
+            guardState?.bgColor === "bg-orange-500",
+          "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300":
+            guardState?.bgColor === "bg-red-500",
+        }
+      )}
+    >
+      <span
+        className={clsx("w-2 h-2 me-1 bg-green-500 rounded-full", {
+          [`${guardState?.bgColor}`]: guardState?.bgColor,
+        })}
+      ></span>
       {guardState?.label}
-    </div>
+    </span>
   );
 }

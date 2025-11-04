@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import {
   fetchAmbulances,
   fetchDelegations,
+  fetchShiftsByGuardId,
   fetchGuardById,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
@@ -26,6 +27,7 @@ export default async function EditGuardPage(props: {
   const fetchGuardByIdAndMXStates = async () =>
     await Promise.all([
       fetchGuardById(id),
+      fetchShiftsByGuardId(id),
       fetchAmbulances(),
       fetchDelegations(),
       fetchUsersGuardChiefsDriversAndParamedical(),
