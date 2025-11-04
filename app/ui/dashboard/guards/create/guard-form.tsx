@@ -2,9 +2,14 @@
 
 import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { CustomOptions, DelegationType } from "@/app/lib/definitions";
+import {
+  CustomOptions,
+  DelegationType,
+  ShiftType,
+} from "@/app/lib/definitions";
 import { createGuard, GuardState } from "@/app/lib/actions/guard";
 import { Button } from "@/app/ui/button";
+import { CardsGroup, CardShift, CardWrapper } from "@/app/ui/cards";
 import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 import AmbulanceAssignForm from "@/app/ui/dashboard/guards/create/ambulance-assign-form";
@@ -29,11 +34,10 @@ export default function GuardForm({
   const initialState: GuardState = { errors: {}, message: null };
   const dateStart = new Date().toISOString().split("T")[0];
   const [state, formAction] = useActionState(createGuard, initialState);
-  const [runClose, setRunClose] = useState(false);
+  const [shifts, setShifts] = useState<ShiftType[]>([]);
 
   useEffect(() => {
     state.message && toast.success(state.message);
-    setRunClose(!!(state.message && state.guard));
   }, [state.message]);
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export default function GuardForm({
             />
           </div>
         </div>
-        {!runClose && (
+        {!(state.message && state.guard) && (
           <div className="w-full flex justify-end gap-4">
             <Button
               type="reset"
@@ -106,8 +110,23 @@ export default function GuardForm({
             ambulances={ambulances}
             drivers={drivers}
             paramedicals={paramedicals}
+            setShifts={setShifts}
           />
-          <div className="w-full flex justify-end gap-4">
+          <div className="py-4">
+            <CardsGroup>
+              <h3 className="text-base font-bold mb-2">Turnos Asignados</h3>
+              <ul className="flex gap-2 pb-3">
+                {shifts.map((shift) => (
+                  <li key={`shift-${shift.id}`}>
+                    <CardWrapper key={`card-container-${shift.id}`} controllers>
+                      <CardShift key={`card-${shift.id}`} shift={shift} />
+                    </CardWrapper>
+                  </li>
+                ))}
+              </ul>
+            </CardsGroup>
+          </div>
+          <div className="flex justify-end w-full">
             <Button
               type="reset"
               onClick={onClose}

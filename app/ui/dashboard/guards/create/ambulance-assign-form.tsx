@@ -1,8 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
-import { CustomOptions } from "@/app/lib/definitions";
+import { CustomOptions, ShiftType } from "@/app/lib/definitions";
 import { createShift, ShiftState } from "@/app/lib/actions/shift.action";
 import { Button } from "@/app/ui/button";
 import { CardWrapper } from "@/app/ui/cards";
@@ -13,21 +19,33 @@ export default function AmbulanceAssignForm({
   ambulances,
   drivers,
   paramedicals,
+  setShifts,
 }: {
   guardId: string;
   ambulances: CustomOptions[];
   drivers: CustomOptions[];
   paramedicals: CustomOptions[];
+  setShifts?: Dispatch<SetStateAction<ShiftType[]>>;
 }) {
   // (Component) Formulario de asignar turnos - [CSR]
 
   const initialState: ShiftState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createShift, initialState);
   const [showForm, setShowForm] = useState(false);
-  console.log(state);
 
   useEffect(() => {
-    state.message && toast.success(state.message);
+    if (state.message) {
+      toast.success(state.message);
+      if (state.shift && setShifts) {
+        setShifts((currentState) => [
+          ...currentState,
+          state.shift as ShiftType,
+        ]);
+      }
+    }
+    return () => {
+      state.message = null;
+    };
   }, [state.message]);
 
   useEffect(() => {

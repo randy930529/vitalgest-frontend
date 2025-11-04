@@ -145,6 +145,7 @@ export default function GuardEditForm({
         )}
         <div className="w-3/5 py-4">
           <CardsGroup>
+            <h3 className="text-base font-bold mb-2">Turnos Asignados</h3>
             <ul className="flex gap-2 pb-3">
               {shifts.map((shift) => (
                 <li key={`shift-${shift.id}`}>
