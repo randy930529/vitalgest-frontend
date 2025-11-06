@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchCheckListAmbulanceById } from "@/app/lib/data";
+import { fetchShiftById } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
@@ -11,22 +11,27 @@ export const metadata: Metadata = {
 };
 
 export default async function CheckListAmbulancePage(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ guardId: string; id: string }>;
 }) {
   // (Página) CheckList de Ambulancia - [SSR]
 
   const params = await props.params;
   const id = params.id;
+  const guardId = params.guardId;
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/" },
-          { label: "Checklists", href: "/checklists" },
+          {
+            label: "Checklists",
+            href: `/checklists/${guardId}`,
+            active: true,
+          },
           {
             label: "Chequeo de Ambulancia",
-            href: `/checklists/ambulances/${id}`,
+            href: `/checklists/${guardId}/ambulances/${id}`,
             active: true,
           },
         ]}
@@ -34,7 +39,7 @@ export default async function CheckListAmbulancePage(props: {
       {/* TODO: prepara un sketelo apropiado para formulario de checklist */}
       <Suspense fallback={<FormSkeleton goBackUrl="/ckecklists" />}>
         <WrapperForm
-          fetchData={async () => await fetchCheckListAmbulanceById(id)}
+          fetchData={async () => await fetchShiftById(id)}
           WrappedComponent={ChecklistAmbulanceForm}
         />
       </Suspense>

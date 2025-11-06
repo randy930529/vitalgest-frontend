@@ -814,6 +814,59 @@ export async function fetchGuardById(
   }
 }
 
+export async function fetchOpenGuardsByUserMe(): Promise<GuardType[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+    const userId = session?.user.id;
+
+    const endPoint = `${process.env.API_URL}/api/guards/many/all`;
+    const fetchGuardsFromApi = cache(
+      async (): Promise<ResponseAPIType<GuardType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const result = await fetchGuardsFromApi();
+
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+    console.log(result);
+
+    // TODO: Filtrar las guardias en curso donde aparesca el usuario
+    // const myOpenGuards = result.data.filter(({state,guardChief})=>state === "En curso" && (guardChief.id === userId))
+
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return [];
+  }
+}
+
 export async function fetchShiftsByGuardId(id: string): Promise<ShiftType[]> {
   try {
     if (!process.env.API_URL) {
@@ -844,5 +897,40 @@ export async function fetchShiftsByGuardId(id: string): Promise<ShiftType[]> {
   } catch (error) {
     console.log("Database Error:", error);
     return [];
+  }
+}
+
+export async function fetchShiftById(
+  id: string
+): Promise<ShiftType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/shifts/one/${id}`;
+    const response = await fetch(endPoint, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
   }
 }
