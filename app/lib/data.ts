@@ -215,6 +215,7 @@ export async function fetchDelegations(): Promise<DelegationType[]> {
     );
 
     const res = await fetchDelegationsFromApi();
+    console.log(res.data);
 
     if (!res.success) {
       throw new Error(res.error);
@@ -353,11 +354,11 @@ export async function fetchMxStates(): Promise<CustomMxState[]> {
     const customStates = res.data?.map<CustomMxState>(
       ({ id, name, municipalities }) => ({
         id,
-        value: String(id),
+        value: `${id}-${name}`,
         label: name,
         municipalities: municipalities.map(({ id, name }) => ({
           id,
-          value: String(id),
+          value: `${id}-${name}`,
           label: name,
         })),
       })
@@ -517,80 +518,80 @@ export async function fetchAmbulanceById(
   }
 }
 
-export async function fetchCheckListAmbulanceById(
-  id: string
-): Promise<CheckListAmbulanceType | undefined> {
-  try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
+// export async function fetchCheckListAmbulanceById(
+//   id: string
+// ): Promise<CheckListAmbulanceType | undefined> {
+//   try {
+//     if (!process.env.API_URL) {
+//       throw new Error(
+//         "Las variables de conexión a la API no están configuradas."
+//       );
+//     }
 
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
+//     // Obtener el token desde la cache usando cookies
+//     const session = await verifySession();
+//     const apiToken = session?.accessToken;
 
-    const endPoint = `${process.env.API_URL}/api/ambulances/checklist/one/${id}`;
-    // const response = await fetch(endPoint, {
-    //   headers: {
-    //     Authorization: `Bearer ${apiToken}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // });
+//     const endPoint = `${process.env.API_URL}/api/ambulances/checklist/one/${id}`;
+//     // const response = await fetch(endPoint, {
+//     //   headers: {
+//     //     Authorization: `Bearer ${apiToken}`,
+//     //     "Content-Type": "application/json",
+//     //   },
+//     // });
 
-    // if (!response.ok) {
-    //   return;
-    // }
+//     // if (!response.ok) {
+//     //   return;
+//     // }
 
-    // const result = await response.json();
-    // console.log(result);
-    // return result.data;
-    return {
-      id: "uuid-1",
-      guard: {
-        id: "uuid-1",
-        createdAt: "24-10-2025",
-        // ambulance: "9809-90809",
-        guardChief: {
-          id: "uuid-1",
-          email: "wew@sds",
-          name: "Randy",
-          lastname: "Delgado",
-          position: "Dev",
-          role: "admin",
-          status: true,
-          delegation_id: "",
-        },
-        date: "24-10-2025",
-        state: "Nueva",
-        delegation: {
-          id: "uuid-1",
-          name: "",
-          state: {
-            id: 1,
-            name: "Jalisco",
-          },
-          municipality: {
-            id: 1,
-            name: "Ameca",
-          },
-          pharmacyId: "uuid-1",
-        },
-      },
-      date: "24-10-2024",
-      preguntas: {
-        area_pregunta: "Area 1",
-        order: 0,
-        pregunta: "?La pregunta?",
-      },
-      state: "Nuevo",
-    };
-  } catch (error) {
-    console.log("Database Error:", error);
-    return;
-  }
-}
+//     // const result = await response.json();
+//     // console.log(result);
+//     // return result.data;
+//     return {
+//       id: "uuid-1",
+//       guard: {
+//         id: "uuid-1",
+//         createdAt: "24-10-2025",
+//         // ambulance: "9809-90809",
+//         guardChief: {
+//           id: "uuid-1",
+//           email: "wew@sds",
+//           name: "Randy",
+//           lastname: "Delgado",
+//           position: "Dev",
+//           role: "admin",
+//           status: true,
+//           delegation_id: "",
+//         },
+//         date: "24-10-2025",
+//         state: "Nueva",
+//         delegation: {
+//           id: "uuid-1",
+//           name: "",
+//           state: {
+//             id: 1,
+//             name: "Jalisco",
+//           },
+//           municipality: {
+//             id: 1,
+//             name: "Ameca",
+//           },
+//           pharmacyId: "uuid-1",
+//         },
+//       },
+//       date: "24-10-2024",
+//       preguntas: {
+//         area_pregunta: "Area 1",
+//         order: 0,
+//         pregunta: "?La pregunta?",
+//       },
+//       state: "Nuevo",
+//     };
+//   } catch (error) {
+//     console.log("Database Error:", error);
+//     return;
+//   }
+// }
 
 export async function fetchChecklistQuestions(
   category?: number
@@ -814,6 +815,59 @@ export async function fetchGuardById(
   }
 }
 
+export async function fetchOpenGuardsByUserMe(): Promise<GuardType[]> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+    const userId = session?.user.id;
+
+    const endPoint = `${process.env.API_URL}/api/guards/many/all`;
+    const fetchGuardsFromApi = cache(
+      async (): Promise<ResponseAPIType<GuardType[]>> => {
+        const response = await fetch(endPoint, {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las delegaciones desde la API.",
+          };
+        }
+
+        return response.json();
+      }
+    );
+
+    const result = await fetchGuardsFromApi();
+
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+    console.log(result);
+
+    // TODO: Filtrar las guardias en curso donde aparesca el usuario
+    // const myOpenGuards = result.data.filter(({state,guardChief})=>state === "En curso" && (guardChief.id === userId))
+
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return [];
+  }
+}
+
 export async function fetchShiftsByGuardId(id: string): Promise<ShiftType[]> {
   try {
     if (!process.env.API_URL) {
@@ -844,5 +898,40 @@ export async function fetchShiftsByGuardId(id: string): Promise<ShiftType[]> {
   } catch (error) {
     console.log("Database Error:", error);
     return [];
+  }
+}
+
+export async function fetchShiftById(
+  id: string
+): Promise<ShiftType | undefined> {
+  try {
+    if (!process.env.API_URL) {
+      throw new Error(
+        "Las variables de conexión a la API no están configuradas."
+      );
+    }
+
+    // Obtener el token desde la cache usando cookies
+    const session = await verifySession();
+    const apiToken = session?.accessToken;
+
+    const endPoint = `${process.env.API_URL}/api/shifts/one/${id}`;
+    const response = await fetch(endPoint, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
   }
 }

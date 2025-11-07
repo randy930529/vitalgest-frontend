@@ -1,3 +1,4 @@
+import { File } from "buffer";
 import { z } from "zod";
 
 const FormUserSchema = z.object({
@@ -57,10 +58,10 @@ const FormDelegationSchema = z.object({
   name: z.string({
     invalid_type_error: "Por favor ingrese el nombre de la delegación.",
   }),
-  state: z.number({
+  state: z.string({
     invalid_type_error: "Por favor seleccione un estado.",
   }),
-  municipality: z.number({
+  municipality: z.string({
     invalid_type_error: "Por favor seleccione un municipio.",
   }),
 });
@@ -111,10 +112,68 @@ const FormShiftSchema = z.object({
   }),
 });
 
+const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB
+const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
+
+const FormChecklistSchema = z.object({
+  id: z.string().uuid(),
+  ambulanceId: z
+    .string({
+      invalid_type_error: "Por favor seleccione una ambulancia.",
+    })
+    .uuid({ message: "Identificador de ambulancia inválido." }),
+  shiftId: z
+    .string({
+      invalid_type_error: "Por favor seleccione un turno de guardia.",
+    })
+    .uuid({ message: "Identificador de turno inválido." }),
+  km: z
+    .number({
+      invalid_type_error: "Por favor ingrese kilometraje actual.",
+    })
+    .min(0, { message: "El kilometraje no puede ser negativo." }),
+  notes: z
+    .string()
+    .trim()
+    .max(1000, { message: "Las notas no deben exceder los 1000 caracteres." })
+    .optional()
+    .nullable(),
+  gasFile: z
+    .instanceof(File, { message: "Por favor adjunte el vale de combustible." })
+    .refine(
+      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      "El archivo de combustible excede el tamaño máximo de 3 MB."
+    )
+    .refine(
+      (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
+      "Formato no válido. Solo se permiten JPG, PNG o PDF."
+    ),
+  signOperatorFile: z
+    .instanceof(File, { message: "Por favor adjunte la firma del operador." })
+    .refine(
+      (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
+      "Formato no válido. Solo se permiten JPG, PNG o PDF."
+    )
+    .refine(
+      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      "La firma del operador excede el tamaño máximo de 5 MB."
+    ),
+  signRecipientFile: z
+    .instanceof(File, { message: "Por favor adjunte la firma del receptor." })
+    .refine((file: File) => ACCEPTED_FILE_TYPES.includes(file.type), {
+      message: "Formato no válido. Solo se permiten JPG, PNG o PDF.",
+    })
+    .refine(
+      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      "La firma del receptor excede el tamaño máximo de 5 MB."
+    ),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
-export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
+export const CreateDelegation = FormDelegationSchema.omit({ name: true });
+export const UpdateDelegation = FormDelegationSchema.omit({});
 
 export const CreateGuard = FormGuardSchema.omit({ id: true });
 export const UpdateGuard = FormGuardSchema.omit({ id: true });
@@ -124,3 +183,13 @@ export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
 
 export const CreateShift = FormShiftSchema.omit({ id: true });
 export const UpdateShift = FormShiftSchema.omit({ id: true });
+
+export const CreateChecklist = FormChecklistSchema.omit({
+  id: true,
+  signOperatorFile: true,
+  signRecipientFile: true,
+});
+export const UpdateChecklist = FormChecklistSchema.omit({
+  id: true,
+  gasFile: true,
+});

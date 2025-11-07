@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import {
   createDelegation,
   DelegationState,
-} from "@/app/lib/actions/delegation";
+} from "@/app/lib/actions/delegation.action";
 import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
@@ -23,7 +23,7 @@ export default function DelegationForm({
   const initialState: DelegationState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createDelegation, initialState);
 
-  const [mxStateId, setMxStateId] = useState(0);
+  const [mxStateId, setMxStateId] = useState("");
   const [customMunicipalities, setCustomMunicipalities] = useState<
     CustomOptions[]
   >([]);
@@ -45,7 +45,7 @@ export default function DelegationForm({
   }, [state.errors?.success]);
 
   function handleOption(name: string, value: string) {
-    setMxStateId(Number(value));
+    setMxStateId(value);
   }
 
   return (

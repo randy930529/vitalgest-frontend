@@ -2,11 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { StateType } from "@/app/lib/definitions";
-import { UpdateDelegation } from "@/app/lib/schema";
+import { CreateDelegation, UpdateDelegation } from "@/app/lib/schema";
 import { verifySession } from "@/app/lib/dal";
 
 export type DelegationState = StateType<{
-  name?: string[];
   state?: string[];
   municipality?: string[];
   success?: string[];
@@ -16,10 +15,9 @@ export async function createDelegation(
   prevState: DelegationState,
   formDelegationData: FormData
 ): Promise<DelegationState> {
-  const validatedDelegationFields = UpdateDelegation.safeParse({
-    name: formDelegationData.get("name"),
-    state: Number(formDelegationData.get("state")),
-    municipality: Number(formDelegationData.get("municipality")),
+  const validatedDelegationFields = CreateDelegation.safeParse({
+    state: formDelegationData.get("state"),
+    municipality: formDelegationData.get("municipality"),
   });
 
   if (!validatedDelegationFields.success) {
@@ -28,7 +26,6 @@ export async function createDelegation(
     };
   }
 
-  const { state, municipality } = validatedDelegationFields.data;
   try {
     // Obtener el token desde la cache usando cookies
     if (!process.env.API_URL) {
@@ -42,11 +39,11 @@ export async function createDelegation(
     const apiToken = session?.accessToken;
 
     const endPoint = `${process.env.API_URL}/api/delegations/create`;
+    const { state, municipality } = validatedDelegationFields.data;
     const bodyContent = {
-      stateName: " ",
-      municipalityName: " ",
-      stateId: state,
-      municipalityId: municipality,
+      stateName: state.split("-")[1],
+      municipalityName: municipality.split("-")[1],
+      municipalityId: municipality.split("-")[0],
     };
 
     const config = {
@@ -87,8 +84,8 @@ export async function updateDelegation(
 ): Promise<DelegationState> {
   const validatedDelegationFields = UpdateDelegation.safeParse({
     name: formDelegationData.get("name"),
-    state: Number(formDelegationData.get("state")),
-    municipality: Number(formDelegationData.get("municipality")),
+    state: formDelegationData.get("state"),
+    municipality: formDelegationData.get("municipality"),
   });
 
   if (!validatedDelegationFields.success) {
@@ -96,8 +93,6 @@ export async function updateDelegation(
       errors: validatedDelegationFields.error.flatten().fieldErrors,
     };
   }
-
-  const { state, municipality } = validatedDelegationFields.data;
 
   try {
     // Obtener el token desde la cache usando cookies
@@ -112,11 +107,13 @@ export async function updateDelegation(
     const apiToken = session?.accessToken;
 
     const endPoint = `${process.env.API_URL}/api/delegations/edit/${id}`;
+    const { name, state, municipality } = validatedDelegationFields.data;
+    console.log(validatedDelegationFields.data);
 
     const bodyContent = {
-      name: " ",
-      stateId: state,
-      municipalityId: municipality,
+      name,
+      municipalityName: municipality.split("-")[1],
+      municipalityId: municipality.split("-")[0],
     };
 
     const config = {

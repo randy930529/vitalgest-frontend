@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CustomMxState, DelegationType } from "@/app/lib/definitions";
-import { deleteDelegation } from "@/app/lib/actions/delegation";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/dashboard/pagination";
@@ -11,6 +11,7 @@ import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";
+import { deleteDelegation } from "@/app/lib/actions/delegation.action";
 
 const customHeaders = [
   { id: 0, label: "Estado" },
@@ -121,11 +122,13 @@ export default function DelegationTable({
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {delegation.state?.name}
+                  {delegation.name}
                 </th>
                 <td className="px-4 py-3">{delegation.municipality?.name}</td>
                 <td className="px-4 py-3">{/*delegation.userToRegister*/}</td>
-                <td className="px-4 py-3">{/*delegation.createdAt*/}</td>
+                <td className="px-4 py-3">
+                  {formatDateToDDMMYYYY(delegation.createdAt)}
+                </td>
                 <TableActions>
                   <TableActionEdit
                     editLink={`/dashboard/delegations/${delegation.id}/edit`}
