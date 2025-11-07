@@ -60,7 +60,7 @@ export default function AmbulanceAssignForm({
         onClick={() => setShowForm(true)}
         className="inline-flex max-w-xs items-center border border-gray-400 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center dark:text-white dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
       >
-        Agragar Turnos
+        Agregar Turnos
       </Button>
     );
   }
