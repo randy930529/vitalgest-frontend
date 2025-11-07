@@ -53,7 +53,7 @@ export const getMunicipalitiesOfState = (
   STATES_WITH_MUNICIPALITIES: CustomMxState[]
 ): CustomMxState[] => {
   return (
-    STATES_WITH_MUNICIPALITIES.find(({ id }) => id === stateId)
+    STATES_WITH_MUNICIPALITIES.find(({ value }) => value === stateId)
       ?.municipalities || []
   );
 };

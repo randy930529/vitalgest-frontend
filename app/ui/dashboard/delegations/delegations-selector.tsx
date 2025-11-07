@@ -17,13 +17,11 @@ export default function DelegationsSelector({
   // Selector interactivo de delegaciones - [CSR]
   const showError = useRef(false);
 
-  const customSelectedDelegations = delegations.map(
-    ({ id, state, municipality }, index) => ({
-      id: index + 1,
-      value: id,
-      label: state.name + " - " + municipality.name,
-    })
-  );
+  const customSelectedDelegations = delegations.map(({ id, name }, index) => ({
+    id: index + 1,
+    value: id,
+    label: name,
+  }));
   customSelectedDelegations.unshift({
     id: 0,
     value: "",

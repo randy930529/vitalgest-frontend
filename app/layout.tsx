@@ -1,6 +1,7 @@
 import "@/app/ui/global.css";
 import { montserrat } from "@/app/ui/fonts";
 import { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: {
@@ -10,14 +11,17 @@ export const metadata: Metadata = {
   description: "Dashboard de gestión de inventario para Cruz Roja",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="es">
-      <body className={`${montserrat.className}`}>{children}</body>
+      <body className={`${montserrat.className}`}>
+        <Toaster />
+        {children}
+      </body>
     </html>
   );
 }

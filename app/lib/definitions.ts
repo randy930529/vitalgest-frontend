@@ -81,6 +81,7 @@ export type DelegationType = {
     name: string;
   };
   pharmacyId: string;
+  createdAt: string;
 };
 
 export type GuardType = {

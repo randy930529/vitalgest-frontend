@@ -58,10 +58,10 @@ const FormDelegationSchema = z.object({
   name: z.string({
     invalid_type_error: "Por favor ingrese el nombre de la delegación.",
   }),
-  state: z.number({
+  state: z.string({
     invalid_type_error: "Por favor seleccione un estado.",
   }),
-  municipality: z.number({
+  municipality: z.string({
     invalid_type_error: "Por favor seleccione un municipio.",
   }),
 });
@@ -172,7 +172,8 @@ const FormChecklistSchema = z.object({
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
-export const UpdateDelegation = FormDelegationSchema.omit({ name: true });
+export const CreateDelegation = FormDelegationSchema.omit({ name: true });
+export const UpdateDelegation = FormDelegationSchema.omit({});
 
 export const CreateGuard = FormGuardSchema.omit({ id: true });
 export const UpdateGuard = FormGuardSchema.omit({ id: true });

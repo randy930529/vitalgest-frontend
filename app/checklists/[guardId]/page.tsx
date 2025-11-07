@@ -1,10 +1,11 @@
-import { fetchShiftsByGuardId } from "@/app/lib/data";
 import Link from "next/link";
+import { fetchShiftsByGuardId } from "@/app/lib/data";
 
 export default async function CheckListsPage(props: {
   params: Promise<{ guardId: string }>;
 }) {
   // (Página) Listado de listas de chequeo - [SSR]
+
   const params = await props.params;
   const guardId = params.guardId;
   const shifts = await fetchShiftsByGuardId(guardId);
