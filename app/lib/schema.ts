@@ -1,4 +1,4 @@
-import { File } from "buffer";
+import { File } from "node:buffer";
 import { z } from "zod";
 
 const FormUserSchema = z.object({
