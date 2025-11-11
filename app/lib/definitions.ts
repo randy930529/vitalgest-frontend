@@ -160,3 +160,15 @@ export type ShiftType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SupplyType = {
+  id: string;
+  category: string;
+  specification: string;
+  avialble_quantity: number;
+  expiration_date: string;
+  measurement_unit: string;
+  pharmacy_id: string;
+  createdAt: string;
+  updatedAt: string;
+};

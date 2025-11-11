@@ -23,14 +23,14 @@ export type ChecklistState = StateType<{
 
 export async function createChecklist(
   prevState: ChecklistState,
-  formChecklistData: FormData
+  formDataChecklist: FormData
 ): Promise<ChecklistState> {
   const validatedChecklistFields = CreateChecklist.safeParse({
-    ambulanceId: formChecklistData.get("ambulance"),
-    shiftId: formChecklistData.get("shift"),
-    km: Number(formChecklistData.get("km")),
-    notes: formChecklistData.get("notes"),
-    gasFile: formChecklistData.get("gasFile"),
+    ambulanceId: formDataChecklist.get("ambulance"),
+    shiftId: formDataChecklist.get("shift"),
+    km: Number(formDataChecklist.get("km")),
+    notes: formDataChecklist.get("notes"),
+    gasFile: formDataChecklist.get("gasFile"),
   });
 
   if (!validatedChecklistFields.success) {
@@ -52,21 +52,13 @@ export async function createChecklist(
 
     const endPoint = `${process.env.API_URL}/api/checklists/ambulance/create`;
     const { ambulanceId, shiftId, km } = validatedChecklistFields.data;
-    const gasFile = validatedChecklistFields.data.gasFile;
-    const bytes = await gasFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const uint8Array = new Uint8Array(buffer);
 
     const bodyContent = new FormData();
     bodyContent.append("ambulanceId", ambulanceId);
     bodyContent.append("shiftId", shiftId);
     bodyContent.append("km", String(km));
     bodyContent.append("notes", "");
-    bodyContent.append(
-      "gasFile",
-      new Blob([uint8Array], { type: gasFile.type }),
-      gasFile.name
-    );
+    bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
     const config = {
       method: "POST",
@@ -81,6 +73,7 @@ export async function createChecklist(
 
     if (!response.ok) {
       const resut = await response.json();
+      console.log(resut);
       // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
       let errorMessage = resut.error
         ? resut.error
