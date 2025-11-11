@@ -27,8 +27,8 @@ const links = [
     icon: ShieldCheckIcon,
   },
   {
-    name: "Inventario",
-    href: "/dashboard/inventory",
+    name: "Insumos",
+    href: `/dashboard/supplies/pharmacies/{pharmacyId}`,
     icon: DocumentDuplicateIcon,
   },
 ];

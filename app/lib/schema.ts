@@ -169,6 +169,37 @@ const FormChecklistSchema = z.object({
     ),
 });
 
+const FormSupplySchema = z.object({
+  id: z.string().uuid(),
+  pharmacyId: z.string({
+    invalid_type_error: "Por favor seleccione una farmacia.",
+  }),
+  category: z.string({
+    invalid_type_error: "Por favor seleccione una categoria.",
+  }),
+  specification: z.string({
+    invalid_type_error: "Por favor seleccione la especificación.",
+  }),
+  avilableQuantity: z
+    .number({
+      invalid_type_error: "Por favor ingrese un cantidad.",
+    })
+    .min(0, { message: "La cantidad no puede ser negativa." }),
+  expirationDate: z.date({
+    invalid_type_error: "Formato de fecha inválido.",
+    message: "Por favor seleccione un fecha de vencimiento.",
+  }),
+  measurementUnit: z.string({
+    invalid_type_error: "Por favor seleccione la unidad de medida.",
+  }),
+  notes: z
+    .string()
+    .trim()
+    .max(1000, { message: "Las notas no deben exceder los 1000 caracteres." })
+    .optional()
+    .nullable(),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -193,3 +224,6 @@ export const UpdateChecklist = FormChecklistSchema.omit({
   id: true,
   gasFile: true,
 });
+
+export const CreateSupply = FormSupplySchema.omit({ id: true });
+export const UpdateSupply = FormSupplySchema.omit({ id: true });
