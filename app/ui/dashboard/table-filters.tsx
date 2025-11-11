@@ -24,7 +24,7 @@ export default function Filters({ children }: { children?: React.ReactNode }) {
           </div>
         </form>
       </div>
-      {children}
+      <div className="flex gap-3">{children}</div>
     </div>
   );
 }

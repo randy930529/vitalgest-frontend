@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { CustomMxState, DelegationType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -70,9 +71,15 @@ export default function DelegationTable({
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    data-tooltip-id="checkbox-all-tooltip"
                     onChange={(event) => {
                       handleSelectAllChange(event.target.checked);
                     }}
+                  />
+                  <Tooltip
+                    id="checkbox-all-tooltip"
+                    content="Seleccionar Todos"
+                    className="font-normal capitalize"
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
