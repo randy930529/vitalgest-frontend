@@ -423,7 +423,6 @@ export function FormDatepicker({
   placeholder,
 }: {
   name: string;
-  type: string;
   title?: string;
   initialDate?: string;
   dateStart?: string;

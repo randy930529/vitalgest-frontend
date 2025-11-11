@@ -58,7 +58,7 @@ export default function AmbulanceForm({
       <div className="w-full flex justify-end gap-4">
         <Button
           type="reset"
-          onClick={onClose}
+          onMouseDown={onClose}
           className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
           Cancelar

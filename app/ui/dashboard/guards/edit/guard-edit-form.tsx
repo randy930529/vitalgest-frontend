@@ -105,7 +105,6 @@ export default function GuardEditForm({
             <div className="relative max-w-sm">
               <FormDatepicker
                 name="date"
-                type="date"
                 title="Fecha"
                 initialDate={datePicker}
                 dateStart={dateStart}
