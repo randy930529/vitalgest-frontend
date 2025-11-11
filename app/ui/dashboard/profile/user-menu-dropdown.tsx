@@ -58,7 +58,7 @@ export default function UserMenuDropdown({
         <span className="sr-only">Open user menu</span>
         {/* <!-- User icon --> */}
         <UserIcon className="w-8 h-8" />
-        <Tooltip id="user-menu-tooltip" content="Menú de usuario" />
+        <Tooltip id="user-menu-tooltip" content="Menú de Usuario" />
       </button>
       {/* <!-- Dropdown menu --> */}
       <div

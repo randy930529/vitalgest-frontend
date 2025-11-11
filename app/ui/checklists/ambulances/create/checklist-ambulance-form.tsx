@@ -110,11 +110,8 @@ export default function ChecklistAmbulanceForm({
                 required
               />
             </div>
-            <p
-              className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-              id="file_input_help"
-            >
-              JPG o PDF
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+              JPG, PNG o PDF
             </p>
           </div>
 

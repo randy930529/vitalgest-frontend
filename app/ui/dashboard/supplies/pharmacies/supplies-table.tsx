@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { SupplyType } from "@/app/lib/definitions";
 import ModalTrigger from "@/app/ui/button-modal";
-import TableActionEdit from "../../botton-edit";
-import TableActionDelete from "../../button-delete";
-import TableActionDeleteAllSelected from "../../button-delete-all";
-import TablePagination from "../../pagination";
-import TableActions from "../../tabla-actions";
-import Filters from "../../table-filters";
+import TableActionEdit from "@/app/ui/dashboard/botton-edit";
+import TableActionDelete from "@/app/ui/dashboard/button-delete";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
+import TablePagination from "@/app/ui/dashboard/pagination";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
+import Filters from "@/app/ui/dashboard/table-filters";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import SupplyForm from "./create/supply-form";
+import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { deleteSupply } from "@/app/lib/actions/supply";
 
 const customHeaders = [
   { id: 0, label: "Categoría" },
@@ -43,6 +45,11 @@ export default function SuppliesTable({
     const ambulanceArray = supplies.map(({ id }) => id);
     setSelectedIds(checked ? ambulanceArray : []);
   }
+
+  async function handleDelete(id: string) {
+    deleteSupply.bind(null, id, "");
+  }
+
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
       <Filters>
@@ -70,9 +77,15 @@ export default function SuppliesTable({
                     id="checkbox-all"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    data-tooltip-id="checkbox-all-tooltip"
                     onChange={(event) => {
                       handleSelectAllChange(event.target.checked);
                     }}
+                  />
+                  <Tooltip
+                    id="checkbox-all-tooltip"
+                    content="Seleccionar Todos"
+                    className="font-normal capitalize"
                   />
                   <label htmlFor="checkbox-all" className="sr-only">
                     checkbox
@@ -139,10 +152,10 @@ export default function SuppliesTable({
                   <TableActionEdit
                     editLink={`/dashboard/ambulances/${supply.id}/edit`}
                   />
-                  {/* <TableActionDelete
+                  <TableActionDelete
                     id={supply.id}
-                    actionDelete={deleteAmbulance}
-                  /> */}
+                    actionDelete={handleDelete}
+                  />
                 </TableActions>
               </tr>
             ))}
