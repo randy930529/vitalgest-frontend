@@ -7,33 +7,34 @@ import {
   BuildingOfficeIcon,
   TruckIcon,
 } from "@heroicons/react/24/outline";
+import { UserType } from "@/app/lib/definitions";
 
-const links = [
-  { name: "Inicio", href: "/dashboard", icon: HomeIcon },
-  { name: "Usuarios", href: "/dashboard/users", icon: UserGroupIcon },
-  {
-    name: "Delegaciones",
-    href: "/dashboard/delegations",
-    icon: BuildingOfficeIcon,
-  },
-  {
-    name: "Ambulancias",
-    href: "/dashboard/ambulances",
-    icon: TruckIcon,
-  },
-  {
-    name: "Guardias",
-    href: "/dashboard/guards",
-    icon: ShieldCheckIcon,
-  },
-  {
-    name: "Insumos",
-    href: `/dashboard/supplies/pharmacies/{pharmacyId}`,
-    icon: DocumentDuplicateIcon,
-  },
-];
+export default function NavLinks({ user }: { user: UserType }) {
+  const links = [
+    { name: "Inicio", href: "/dashboard", icon: HomeIcon },
+    { name: "Usuarios", href: "/dashboard/users", icon: UserGroupIcon },
+    {
+      name: "Delegaciones",
+      href: "/dashboard/delegations",
+      icon: BuildingOfficeIcon,
+    },
+    {
+      name: "Ambulancias",
+      href: "/dashboard/ambulances",
+      icon: TruckIcon,
+    },
+    {
+      name: "Guardias",
+      href: "/dashboard/guards",
+      icon: ShieldCheckIcon,
+    },
+    {
+      name: "Insumos",
+      href: `/dashboard/supplies/pharmacies/${user.delegationId}`,
+      icon: DocumentDuplicateIcon,
+    },
+  ];
 
-export default function NavLinks() {
   return (
     <>
       {links.map((link) => {

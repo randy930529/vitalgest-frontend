@@ -1,7 +1,9 @@
 import { SupplyType } from "@/app/lib/definitions";
 import { DataFetch } from "./data";
 
-export async function fetchSupplies(pharmacyId: string): Promise<SupplyType[]> {
+export async function fetchSupplies(
+  pharmacyId: string | number
+): Promise<SupplyType[]> {
   try {
     const endPoint = `/api/supplies/pharmacy/${pharmacyId}`;
 

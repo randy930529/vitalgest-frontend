@@ -47,7 +47,7 @@ export class DataFetch<T> {
       },
     };
 
-    const response = await fetch(this.apiUrl + this.endPoint, config);
+    const response = await fetch(this.endPoint, config);
     if (!response.ok) return;
 
     const result: ResponseAPIType<T> = await response.json();
@@ -69,7 +69,7 @@ export class DataFetch<T> {
           "Content-Type": "application/json",
         },
       };
-      const response = await fetch(this.apiUrl + this.endPoint, config);
+      const response = await fetch(this.endPoint, config);
 
       if (!response.ok) {
         console.log(await response.json());
