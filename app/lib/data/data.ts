@@ -25,6 +25,18 @@ export class DataFetch<T> {
     this.adminOnly = adminOnly;
   }
 
+  /**
+   * Verifica la sesión de usuario y la autorización.
+   *
+   * Si la instancia está marcada como solo administrador (admin-only),
+   * comprueba si el usuario tiene los permisos necesarios.
+   *
+   * @returns Una promesa que se resuelve en true si el usuario está autorizado,
+   *          false en caso contrario.
+   * @throws No lanza excepciones directamente, pero devuelve false en caso de
+   *         fallo de autorización.
+   *
+   */
   private async authorize(): Promise<boolean> {
     const session = await verifySession();
     this.apiToken = session.accessToken;
@@ -34,7 +46,13 @@ export class DataFetch<T> {
   }
 
   /**
-   * TODO: Describir metodo
+   * Obtiene un único recurso de tipo T desde una ruta de la API.
+   *
+   * Verifica la autorización del usuario antes de realizar la solicitud. Si la instancia
+   * está marcada como solo administrador, asegura que el usuario tenga los permisos necesarios.
+   *
+   * @returns Una promesa que se resuelve en un único elemento de tipo T, o undefined
+   *          si la autorización falla o la solicitud a la API no es exitosa.
    */
   public async getOne(): Promise<T | undefined> {
     const authorizedUser = await this.authorize();
@@ -47,7 +65,7 @@ export class DataFetch<T> {
       },
     };
 
-    const response = await fetch(this.apiUrl + this.endPoint, config);
+    const response = await fetch(this.endPoint, config);
     if (!response.ok) return;
 
     const result: ResponseAPIType<T> = await response.json();
@@ -56,7 +74,15 @@ export class DataFetch<T> {
   }
 
   /**
-   * TODO: Describir metodo
+   * Obtiene todos los recursos de tipo T desde la ruta de la API.
+   *
+   * Verifica la autorización del usuario antes de realizar la solicitud. Si la instancia
+   * está marcada como solo administrador (admin-only), asegura que el usuario tenga los
+   * permisos necesarios.
+   *
+   * @returns Una promesa que se resuelve en un arreglo de elementos de tipo T, o un arreglo vacío
+   *          si la autorización falla o la solicitud a la API no tiene éxito. Devuelve un arreglo
+   *          vacío en caso de fallo de autorización o respuesta fallida de la API.
    */
   public async getAll(): Promise<T[]> {
     const authorizedUser = await this.authorize();
@@ -69,7 +95,7 @@ export class DataFetch<T> {
           "Content-Type": "application/json",
         },
       };
-      const response = await fetch(this.apiUrl + this.endPoint, config);
+      const response = await fetch(this.endPoint, config);
 
       if (!response.ok) {
         console.log(await response.json());

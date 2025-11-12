@@ -4,10 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { notFound, redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { ShiftType } from "@/app/lib/definitions";
-import {
-  ChecklistState,
-  createChecklist,
-} from "@/app/lib/actions/checklist.action";
+import { ChecklistState, createChecklist } from "@/app/lib/actions/checklist";
 import { Button } from "@/app/ui/button";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import {

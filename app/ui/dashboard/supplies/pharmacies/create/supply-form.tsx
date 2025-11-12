@@ -53,7 +53,7 @@ export default function SupplyForm({
   pharmacyId,
   onClose,
 }: {
-  pharmacyId: string;
+  pharmacyId: string | number;
   onClose?: () => void;
 }) {
   // (Component) Formulario de Insumos - [CSR]

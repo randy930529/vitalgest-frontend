@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { UserType } from "@/app/lib/definitions";
 import NavLinks from "@/app/ui/dashboard/nav-links";
 import { VitalGestLogo } from "@/app/ui/logos";
 import { ButtonSignout } from "@/app/ui/button-signout";
 
-export default function SideNav() {
+export default function SideNav({ user }: { user: UserType }) {
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
@@ -15,7 +16,7 @@ export default function SideNav() {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks />
+        <NavLinks user={user} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <ButtonSignout />
       </div>

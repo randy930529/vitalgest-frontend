@@ -1,7 +1,8 @@
 import { cache } from "react";
+import { verifyAuthorization, verifySession } from "@/app/lib/dal";
+import { DataFetch } from "@/app/lib/data/data";
 import {
   AmbulanceType,
-  CheckListAmbulanceType,
   ChecklistQuestionsType,
   CustomMxState,
   CustomOptions,
@@ -13,7 +14,6 @@ import {
   StepItemType,
   UserType,
 } from "@/app/lib/definitions";
-import { verifyAuthorization, verifySession } from "@/app/lib/dal";
 
 export async function fetchUsers(): Promise<UserType[]> {
   try {
@@ -232,31 +232,11 @@ export async function fetchDelegationById(
   id: string
 ): Promise<DelegationType | undefined> {
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
+    const endPoint = `/api/delegations/one/${id}`;
+    const dataFetching = new DataFetch<DelegationType>(endPoint);
+    const delegation = await dataFetching.getOne();
 
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/delegations/one/${id}`;
-    const response = await fetch(endPoint, {
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      return;
-    }
-
-    const result = await response.json();
-    console.log(result);
-    return result.data;
+    return delegation;
   } catch (error) {
     console.log("Database Error:", error);
     return;

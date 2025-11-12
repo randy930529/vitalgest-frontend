@@ -13,7 +13,7 @@ export type UserType = {
     | string;
   position: string;
   status?: boolean;
-  delegation_id: string;
+  delegationId: string;
 };
 
 export type ResponseAPIType<T> = {
@@ -80,7 +80,9 @@ export type DelegationType = {
     id: number;
     name: string;
   };
-  pharmacyId: string;
+  pharmacy: {
+    id: number;
+  };
   createdAt: string;
 };
 
@@ -88,7 +90,6 @@ export type GuardType = {
   id: string;
   guardChief: UserType;
   date: string;
-  // ambulance: string;
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
   createdAt: string;
@@ -104,16 +105,13 @@ export type AmbulanceType = {
 
 export type CheckListAmbulanceType = {
   id: string;
-  date: string;
-  vale_gas?: string;
-  notas_adicionales?: string;
-  state: "Nuevo" | "Abierto" | "Cerrado";
-  guard: GuardType;
-  preguntas: {
-    pregunta: string;
-    area_pregunta: string;
-    order: number;
-  };
+  ambulance_id: string;
+  shift_id: string;
+  time: string;
+  km: number;
+  gas_path: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type StepItemType = {

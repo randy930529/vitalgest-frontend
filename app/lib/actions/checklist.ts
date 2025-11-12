@@ -1,12 +1,8 @@
 "use server";
 
-import {
-  CheckListAmbulanceType,
-  ResponseAPIType,
-  StateType,
-} from "@/app/lib/definitions";
+import { CheckListAmbulanceType, StateType } from "@/app/lib/definitions";
+import { ActionsServer } from "@/app/lib/actions/actions";
 import { CreateChecklist } from "@/app/lib/schema";
-import { verifySession } from "@/app/lib/dal";
 
 export type ChecklistState = StateType<{
   ambulance?: string[];
@@ -40,51 +36,20 @@ export async function createChecklist(
   }
 
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
+    const endPoint = "/api/checklists/ambulance/create";
 
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/checklists/ambulance/create`;
     const { ambulanceId, shiftId, km } = validatedChecklistFields.data;
-
     const bodyContent = new FormData();
     bodyContent.append("ambulanceId", ambulanceId);
     bodyContent.append("shiftId", shiftId);
     bodyContent.append("km", String(km));
-    bodyContent.append("notes", "");
+    bodyContent.append("notes", "Lorem ipsum adicional");
     bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
-    const config = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "multipart/form-data",
-      },
-      body: bodyContent,
-    };
+    const actions = new ActionsServer<CheckListAmbulanceType>(endPoint, true);
+    const checklist = await actions.create(bodyContent);
 
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      console.log(resut);
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
-
-    const resut: ResponseAPIType<CheckListAmbulanceType> =
-      await response.json();
-
-    return { message: "Checklist creada exitosamente.", checklist: resut.data };
+    return { message: "Checklist creado exitosamente.", checklist: checklist };
   } catch (error) {
     return {
       errors: {
