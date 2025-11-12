@@ -24,6 +24,18 @@ export class ActionsServer<T> {
     this.adminOnly = adminOnly;
   }
 
+  /**
+   * Verifica la sesión de usuario y la autorización.
+   *
+   * Si la instancia está marcada como solo administrador (admin-only),
+   * comprueba si el usuario tiene los permisos necesarios.
+   *
+   * @returns Una promesa que se resuelve en true si el usuario está autorizado,
+   *          false en caso contrario.
+   * @throws No lanza excepciones directamente, pero devuelve false en caso de
+   *         fallo de autorización.
+   *
+   */
   private async authorize(): Promise<boolean> {
     const session = await verifySession();
     this.apiToken = session.accessToken;
@@ -33,7 +45,11 @@ export class ActionsServer<T> {
   }
 
   /**
-   * TODO: Describir metodo
+   * Crea un nuevo recurso de tipo T en la ruta de la API.
+   *
+   * @param bodyContent - El contenido del cuerpo de la solicitud para crear el recurso.
+   * @returns Una promesa que se resuelve en el recurso creado de tipo T.
+   * @throws Lanza un error si el usuario no está autorizado o si la solicitud falla.
    */
   public async create(bodyContent: any): Promise<T> {
     const authorizedUser = await this.authorize();
@@ -64,7 +80,11 @@ export class ActionsServer<T> {
   }
 
   /**
-   * TODO: Describir metodo
+   * Actualiza un recurso existente de tipo T en la ruta de la API.
+   *
+   * @param bodyContent - El contenido del cuerpo de la solicitud para actualizar el recurso.
+   * @returns Una promesa que se resuelve en el recurso actualizado de tipo T.
+   * @throws Lanza un error si el usuario no está autorizado o si la solicitud falla.
    */
   public async update(bodyContent: any): Promise<T> {
     const authorizedUser = await this.authorize();
@@ -96,7 +116,10 @@ export class ActionsServer<T> {
   }
 
   /**
-   * TODO: Describir metodo
+   * Elimina un recurso existente de tipo T en la ruta de la API.
+   *
+   * @returns Una promesa que se resuelve cuando el recurso ha sido eliminado.
+   * @throws Lanza un error si el usuario no está autorizado o si la solicitud falla.
    */
   public async delete(): Promise<void> {
     const authorizedUser = await this.authorize();
