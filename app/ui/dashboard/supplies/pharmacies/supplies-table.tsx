@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 import { SupplyType } from "@/app/lib/definitions";
+import { deleteSupply } from "@/app/lib/actions/supply";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
-import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
-import { deleteSupply } from "@/app/lib/actions/supply";
 
 const customHeaders = [
   { id: 0, label: "Categoría" },
@@ -21,17 +22,16 @@ const customHeaders = [
   { id: 3, label: "Cantidad" },
   { id: 4, label: "Fecha de entrada" },
   { id: 5, label: "Registrado por" },
-  { id: 6, label: "Fecha de modificación" },
-  { id: 7, label: "Modificado por" },
-  { id: 8, label: "Notas" },
 ];
 
 export default function SuppliesTable({
-  data: supplies,
+  data,
 }: {
-  data: SupplyType[];
+  data: [SupplyType[], string | number];
 }) {
+  const [supplies, pharmacyId] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const params = useParams<{ delegationId: string }>();
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -47,7 +47,7 @@ export default function SuppliesTable({
   }
 
   async function handleDelete(id: string) {
-    deleteSupply.bind(null, id, "");
+    return await deleteSupply(id, pharmacyId);
   }
 
   return (
@@ -64,7 +64,7 @@ export default function SuppliesTable({
         )}
         <ModalTrigger
           title="Crear Insumo"
-          modelContent={<SupplyForm pharmacyId="" />}
+          modelContent={<SupplyForm pharmacyId={pharmacyId} />}
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -138,19 +138,14 @@ export default function SuppliesTable({
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(supply.expiration_date)}
                 </td>
-                <td className="px-4 py-3">{supply.avialble_quantity}</td>
+                <td className="px-4 py-3">{supply.avaible_quantity}</td>
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(supply.createdAt)}
                 </td>
                 <td className="px-4 py-3">{/* usuario del registro */}</td>
-                <td className="px-4 py-3">
-                  {formatDateToDDMMYYYY(supply.updatedAt)}
-                </td>
-                <td className="px-4 py-3">{/* usuario que modifica */}</td>
-                <td className="px-4 py-3">{/* notas */}</td>
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/ambulances/${supply.id}/edit`}
+                    editLink={`/dashboard/supplies/${params.delegationId}/pharmacies/${supply.id}/edit`}
                   />
                   <TableActionDelete
                     id={supply.id}

@@ -66,10 +66,11 @@ export class ActionsServer<T> {
 
     const response = await fetch(this.endPoint, config);
     if (!response.ok) {
-      const resut = await response.json();
+      const result = await response.json();
       // TODO: Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
+      console.log(result);
+      let errorMessage = result.error
+        ? result.error
         : "Falló la comunicación con el api, intente más tarde.";
       throw new Error(errorMessage);
     }
@@ -102,10 +103,10 @@ export class ActionsServer<T> {
     const response = await fetch(this.endPoint, config);
 
     if (!response.ok) {
-      const resut = await response.json();
+      const result = await response.json();
       // TODO: Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
+      let errorMessage = result.error
+        ? result.error
         : "Falló la comunicación con el api, intente más tarde.";
       throw new Error(errorMessage);
     }
@@ -136,10 +137,10 @@ export class ActionsServer<T> {
     const response = await fetch(this.endPoint, config);
 
     if (!response.ok) {
-      const resut = await response.json();
+      const result = await response.json();
       // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
+      let errorMessage = result.error
+        ? result.error
         : "Falló la comunicación con el api, intente más tarde.";
       throw new Error(errorMessage);
     }

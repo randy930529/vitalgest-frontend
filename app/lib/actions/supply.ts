@@ -9,7 +9,7 @@ export type SupplyState = StateType<{
   pharmacy?: string[];
   category?: string[];
   specification?: string[];
-  avilableQuantity?: string[];
+  avaibleQuantity?: string[];
   expirationDate?: string[];
   measurementUnit?: string[];
   notes?: string[];
@@ -20,13 +20,13 @@ export async function createSupply(
   prevState: SupplyState,
   formDataSupply: FormData
 ): Promise<SupplyState> {
-  const date = formDataSupply.get("date") as string;
+  const date = formDataSupply.get("expirationDate") as string;
 
   const validatedSupplyFields = CreateSupply.safeParse({
     pharmacyId: formDataSupply.get("pharmacy"),
     category: formDataSupply.get("category"),
     specification: formDataSupply.get("specification"),
-    avilableQuantity: Number(formDataSupply.get("avilableQuantity")),
+    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
     expirationDate: new Date(date),
     measurementUnit: formDataSupply.get("measurementUnit"),
   });
@@ -37,22 +37,13 @@ export async function createSupply(
     };
   }
 
-  const {
-    pharmacyId,
-    category,
-    specification,
-    avilableQuantity,
-    measurementUnit,
-  } = validatedSupplyFields.data;
+  const pharmacyId = validatedSupplyFields.data.pharmacyId;
   try {
     const endPoint = `/api/supplies/create/pharmacy/${pharmacyId}`;
     const actions = new ActionsServer<SupplyType>(endPoint, true);
     await actions.create({
-      category,
-      specification,
-      avilableQuantity,
+      ...validatedSupplyFields.data,
       expirationDate: date,
-      measurementUnit,
     });
   } catch (error) {
     return {
@@ -69,15 +60,17 @@ export async function createSupply(
 export async function updateSupply(
   id: string,
   prevState: SupplyState,
-  formSupplyData: FormData
+  formDataSupply: FormData
 ): Promise<SupplyState> {
+  const date = formDataSupply.get("expirationDate") as string;
+
   const validatedSupplyFields = UpdateSupply.safeParse({
-    pharmacyId: formSupplyData.get("pharmacy"),
-    category: formSupplyData.get("category"),
-    specification: formSupplyData.get("specification"),
-    avilableQuantity: Number(formSupplyData.get("avilableQuantity")),
-    expirationDate: Number(formSupplyData.get("expirationDate")),
-    measurementUnit: Number(formSupplyData.get("measurementUnit")),
+    pharmacyId: formDataSupply.get("pharmacy"),
+    category: formDataSupply.get("category"),
+    specification: formDataSupply.get("specification"),
+    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
+    expirationDate: new Date(date),
+    measurementUnit: formDataSupply.get("measurementUnit"),
   });
 
   if (!validatedSupplyFields.success) {
@@ -86,11 +79,14 @@ export async function updateSupply(
     };
   }
 
-  const { pharmacyId } = validatedSupplyFields.data;
+  const pharmacyId = validatedSupplyFields.data.pharmacyId;
   try {
     const endPoint = `/api/supplies/edit/${id}`;
     const actions = new ActionsServer<SupplyType>(endPoint, true);
-    await actions.update(validatedSupplyFields.data);
+    await actions.update({
+      ...validatedSupplyFields.data,
+      expirationDate: date,
+    });
   } catch (error) {
     return {
       errors: {
@@ -103,7 +99,10 @@ export async function updateSupply(
   return { message: "Cambios guardados exitosamente." };
 }
 
-export async function deleteSupply(id: string, pharmacyId: string) {
+export async function deleteSupply(
+  id: string,
+  pharmacyId: string | number
+): Promise<SupplyState> {
   try {
     const endPoint = `/api/supplies/delete/${id}`;
     const actions = new ActionsServer<SupplyType>(endPoint, true);
@@ -117,5 +116,5 @@ export async function deleteSupply(id: string, pharmacyId: string) {
   }
 
   revalidatePath(`/dashboard/supplies/pharmacies/${pharmacyId}`);
-  return { message: "Ambulancia eliminada exitosamente." };
+  return { message: "Insumo eliminada exitosamente." };
 }
