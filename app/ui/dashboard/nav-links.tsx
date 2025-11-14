@@ -30,7 +30,7 @@ export default function NavLinks({ user }: { user: UserType }) {
     },
     {
       name: "Insumos",
-      href: `/dashboard/supplies/pharmacies/${user.delegationId}`,
+      href: `/dashboard/supplies/${user.delegationId}/pharmacies`,
       icon: DocumentDuplicateIcon,
     },
   ];

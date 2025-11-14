@@ -10,7 +10,7 @@ import {
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
 
-const customCategories = [
+export const customCategories = [
   {
     id: 1,
     value: "",
@@ -23,7 +23,7 @@ const customCategories = [
   },
 ];
 
-const customSpecifications = [
+export const customSpecifications = [
   {
     id: 1,
     value: "",
@@ -36,7 +36,7 @@ const customSpecifications = [
   },
 ];
 
-const customUnits = [
+export const customUnits = [
   {
     id: 1,
     value: "",
@@ -60,7 +60,6 @@ export default function SupplyForm({
 
   const initialState: SupplyState = { errors: {}, message: null };
   const [state, formAction] = useActionState(createSupply, initialState);
-  console.log(state);
 
   useEffect(() => {
     state.message && toast.success(state.message);
@@ -71,6 +70,8 @@ export default function SupplyForm({
     state.errors?.success &&
       state.errors?.success.map((error: string) => toast.error(error));
   }, [state.errors?.success]);
+
+  const dateStart = new Date().toISOString().split("T")[0];
 
   return (
     <form action={formAction}>
@@ -113,6 +114,8 @@ export default function SupplyForm({
             key="datepicker-expirationDate"
             name="expirationDate"
             title="Fecha de Caducidad"
+            initialDate={dateStart}
+            dateStart={dateStart}
             errors={state.errors?.expirationDate}
             required
           />
@@ -120,12 +123,12 @@ export default function SupplyForm({
 
         <div className="w-2/12">
           <FormInputSingle
-            key="input-avilableQuantity"
+            key="input-avaibleQuantity"
             type="number"
-            name="avilableQuantity"
+            name="avaibleQuantity"
             title="Cantidad"
             placeholder="0"
-            errors={state.errors?.avilableQuantity}
+            errors={state.errors?.avaibleQuantity}
             required
           />
         </div>

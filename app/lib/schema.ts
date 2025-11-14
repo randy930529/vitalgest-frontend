@@ -1,4 +1,4 @@
-import { File } from "node:buffer";
+import { File } from "buffer";
 import { z } from "zod";
 
 const FormUserSchema = z.object({
@@ -180,7 +180,7 @@ const FormSupplySchema = z.object({
   specification: z.string({
     invalid_type_error: "Por favor seleccione la especificación.",
   }),
-  avilableQuantity: z
+  avaibleQuantity: z
     .number({
       invalid_type_error: "Por favor ingrese un cantidad.",
     })

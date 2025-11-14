@@ -17,6 +17,7 @@ export default async function PharmacySuppliesPage(props: {
   params: Promise<{ delegationId: string }>;
 }) {
   // (Página) Gestionar insumos en farmacia - [SSR]
+
   const params = await props.params;
   const delegationId = params.delegationId;
   const fetchPharmacyByDelegationId = await fetchDelegationById(delegationId);
@@ -26,7 +27,8 @@ export default async function PharmacySuppliesPage(props: {
   }
 
   const pharmacyId = fetchPharmacyByDelegationId.pharmacy.id;
-  const fetchsupplies = async () => await fetchSupplies(pharmacyId);
+  const fetchsuppliesByPharmacyId = async () =>
+    Promise.all([fetchSupplies(pharmacyId), pharmacyId]);
 
   return (
     <>
@@ -35,7 +37,7 @@ export default async function PharmacySuppliesPage(props: {
           { label: "", href: "/dashboard" },
           {
             label: "Insumos en Farmacia",
-            href: `/dashboard/supplies/${delegationId}`,
+            href: `/dashboard/supplies/${delegationId}/pharmacies`,
           },
         ]}
       />
@@ -48,7 +50,7 @@ export default async function PharmacySuppliesPage(props: {
         }
       >
         <WrapperTable
-          fetchData={fetchsupplies}
+          fetchData={fetchsuppliesByPharmacyId}
           WrappedComponent={SuppliesTable}
         />
       </Suspense>
