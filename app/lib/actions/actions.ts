@@ -80,6 +80,34 @@ export class ActionsServer<T> {
     return result.data;
   }
 
+  public async createWithFormData(bodyContent: FormData): Promise<T> {
+    const authorizedUser = await this.authorize();
+    if (!authorizedUser) throw new Error("Usuario no autorizado.");
+
+    const config = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.apiToken}`,
+      },
+      body: bodyContent,
+    };
+
+    const response = await fetch(this.endPoint, config);
+    if (!response.ok) {
+      const result = await response.json();
+      // TODO: Revisar "error": "CODE_LIST" para generar mensages persolalizados.
+      console.log(result);
+      let errorMessage = result.error
+        ? result.error
+        : "Falló la comunicación con el api, intente más tarde.";
+      throw new Error(errorMessage);
+    }
+
+    const result: ResponseAPIType<T> = await response.json();
+    console.log(result);
+    return result.data;
+  }
+
   /**
    * Actualiza un recurso existente de tipo T en la ruta de la API.
    *

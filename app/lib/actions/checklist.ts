@@ -43,11 +43,11 @@ export async function createChecklist(
     bodyContent.append("ambulanceId", ambulanceId);
     bodyContent.append("shiftId", shiftId);
     bodyContent.append("km", String(km));
-    bodyContent.append("notes", "Lorem ipsum adicional");
-    bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
+    bodyContent.append("notes", "");
+    // bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
     const actions = new ActionsServer<CheckListAmbulanceType>(endPoint, true);
-    const checklist = await actions.create(bodyContent);
+    const checklist = await actions.createWithFormData(bodyContent);
 
     return { message: "Checklist creado exitosamente.", checklist: checklist };
   } catch (error) {
