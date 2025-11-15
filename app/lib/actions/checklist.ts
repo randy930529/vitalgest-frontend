@@ -47,7 +47,7 @@ export async function createChecklist(
     // bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
     const actions = new ActionsServer<CheckListAmbulanceType>(endPoint, true);
-    const checklist = await actions.create(bodyContent);
+    const checklist = await actions.createWithFormData(bodyContent);
 
     return { message: "Checklist creado exitosamente.", checklist: checklist };
   } catch (error) {
