@@ -44,7 +44,7 @@ export async function createChecklist(
     bodyContent.append("shiftId", shiftId);
     bodyContent.append("km", String(km));
     bodyContent.append("notes", "");
-    // bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
+    bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
     const actions = new ActionsServer<CheckListAmbulanceType>(endPoint, true);
     const checklist = await actions.createWithFormData(bodyContent);
