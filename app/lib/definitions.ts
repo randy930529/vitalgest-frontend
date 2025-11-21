@@ -1,3 +1,9 @@
+export type BaseType = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type UserType = {
   id: string;
   name: string;
@@ -69,8 +75,7 @@ export type FormInputType = {
   };
 };
 
-export type DelegationType = {
-  id: string;
+export type DelegationType = BaseType & {
   name: string;
   state: {
     id: number;
@@ -83,16 +88,13 @@ export type DelegationType = {
   pharmacy: {
     id: number;
   };
-  createdAt: string;
 };
 
-export type GuardType = {
-  id: string;
+export type GuardType = BaseType & {
   guardChief: UserType;
   date: string;
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
-  createdAt: string;
 };
 
 export type AmbulanceType = {
@@ -103,15 +105,12 @@ export type AmbulanceType = {
   delegation: DelegationType;
 };
 
-export type CheckListAmbulanceType = {
-  id: string;
+export type CheckListAmbulanceType = BaseType & {
   ambulance_id: string;
   shift_id: string;
   time: string;
   km: number;
   gas_path: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export type StepItemType = {
@@ -128,8 +127,7 @@ export type TimelinePropsType = {
   progress?: number;
 };
 
-export type ChecklistQuestionsType = {
-  id: string;
+export type ChecklistQuestionsType = BaseType & {
   question: string;
   name_category: string;
   order_category: number;
@@ -144,29 +142,40 @@ export type ChecklistQuestionsType = {
     | "bool_text"
     | "option_text"
     | "bool_option_text";
-  createdAt: Date;
-  updatedAt: Date;
 };
 
-export type ShiftType = {
-  id: string;
+export type ChecklistAnswersType = {
+  questionId: string;
+  type: ChecklistQuestionsType["type_response"];
+  valueBool?: boolean;
+  valueOption?: string;
+  valueText?: string;
+};
+
+export type ShiftType = BaseType & {
   name?: string;
   ambulance: AmbulanceType;
   guard: GuardType;
   paramedical: UserType;
   driver: UserType;
-  createdAt: string;
-  updatedAt: string;
 };
 
-export type SupplyType = {
-  id: string;
+export type SupplyPharmacyType = BaseType & {
   category: string;
   specification: string;
   avaible_quantity: number;
   expiration_date: string;
   measurement_unit: string;
   pharmacy_id: string;
-  createdAt: string;
-  updatedAt: string;
+};
+
+export type SupplyAmbulanceType = BaseType & {
+  category: string;
+  specification: string;
+  avaible_quantity: number;
+  min_quantity: number;
+  expiration_date: string;
+  measurement_unit: string;
+  area_id: number;
+  ambulance_id: string;
 };
