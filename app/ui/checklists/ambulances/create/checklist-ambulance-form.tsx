@@ -41,7 +41,9 @@ export default function ChecklistAmbulanceForm({
   useEffect(() => {
     if (state.message && state.checklist) {
       toast.success(state.message);
-      redirect(`/checklists/ambulances/${state.checklist.id}/edit?step=1`);
+      redirect(
+        `/checklists/${guard.id}/ambulances/${state.checklist.id}/edit?step=1`
+      );
     }
   }, [state.message]);
 

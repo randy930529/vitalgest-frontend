@@ -190,10 +190,14 @@ function PaginationButton({
 
   return isDisabled ? (
     <div className={className}>{icon}</div>
-  ) : (
+  ) : direction === "left" ? (
     <Link className={className} href={href}>
       {icon}
     </Link>
+  ) : (
+    <Button type="submit" className={className}>
+      {icon}
+    </Button>
   );
 }
 
@@ -216,13 +220,13 @@ export function PaginationChecklist({ isLast }: { isLast: boolean }) {
       />
       {isLast && isNotes ? (
         <>
-          <PaginationButton
+          {/* <PaginationButton
             href={createPageURL(currentPage + 1, searchParams, pathname)}
             direction="right"
             title="Guardar"
             isDisabled={isLast}
             hasIcon={false}
-          />
+          /> */}
           <Button
             type="submit"
             className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
@@ -232,19 +236,13 @@ export function PaginationChecklist({ isLast }: { isLast: boolean }) {
         </>
       ) : (
         <>
-          <Button
+          {/* <Button
             type="submit"
             className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
           >
             Guardar
-          </Button>
-          <PaginationButton
-            href={
-              createPageURL(currentPage + 1, searchParams, pathname) +
-              `${isLast && !isNotes ? "&notes=1" : ""}`
-            }
-            direction="right"
-          />
+          </Button> */}
+          <PaginationButton href="next" direction="right" />
         </>
       )}
     </div>
