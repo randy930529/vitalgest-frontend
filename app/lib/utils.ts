@@ -4,7 +4,12 @@ import {
   ClockIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { CustomMxState, StepItemType } from "./definitions";
+import {
+  ChecklistAnswersType,
+  ChecklistQuestionsType,
+  CustomMxState,
+  StepItemType,
+} from "@/app/lib/definitions";
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   if (totalPages <= 7) {
@@ -30,6 +35,13 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+/**
+ * Crea una URL de navegación para la ruta de checklist con la actualización del parámetro "step".
+ * @param pageNumber - Número o identificador de la página/step que se quiere establecer en la URL.
+ * @param searchParams - Parámetros de búsqueda actuales que se usarán como base.
+ * @param pathname - Ruta base (por ejemplo "/app/list") sobre la que se construye la URL final.
+ * @returns Cadena con la URL completa que incluye los parámetros actualizados.
+ */
 export const createPageURL = (
   pageNumber: number | string,
   searchParams: ReadonlyURLSearchParams,
@@ -82,4 +94,59 @@ export const formatDateToDDMMYYYY = (dateString: string): string => {
   const year = date.getUTCFullYear();
 
   return `${day}/${month}/${year}`;
+};
+
+/**
+ * Construye un objeto de respuesta para una pregunta de checklist
+ * a partir de su id, tipo de respuesta y el valor enviado.
+ * @param questionId - Identificador único de la pregunta.
+ * @param type - Tipo de respuesta esperado (p. ej. "bool", "option", "text" o combinaciones).
+ * @param answer - Valor recibido desde el formulario.
+ * @returns Objeto de la respuesta con la(s) propiedad(es) adecuada(s).
+ */
+export const createAnswer = (
+  questionId: string,
+  type: ChecklistQuestionsType["type_response"],
+  answer: string
+): ChecklistAnswersType => {
+  return {
+    questionId,
+    type,
+    valueBool: type.includes("bool") && answer === "on" ? true : undefined,
+    valueOption:
+      type.includes("option") && ["bueno", "regular", "malo"].includes(answer)
+        ? answer
+        : undefined,
+    valueText:
+      type.includes("text") &&
+      !["on", "bueno", "regular", "malo"].includes(answer)
+        ? answer
+        : undefined,
+  };
+};
+
+export const createStepAnswers = (
+  formData: FormData,
+  checklistQuestions: ChecklistQuestionsType[]
+) => {
+  const answers: ChecklistAnswersType[] = [];
+
+  formData.keys().forEach((key) => {
+    const cleanKey = key.includes("~") ? key.split("~")[1] : key;
+    const question = checklistQuestions.find((q) => q.id === cleanKey);
+
+    if (!question) return;
+
+    const value = formData.get(key);
+
+    if (value === null) return;
+
+    const answer = createAnswer(
+      cleanKey,
+      question.type_response,
+      value.toString()
+    );
+    answers.push(answer);
+  });
+  return answers;
 };
