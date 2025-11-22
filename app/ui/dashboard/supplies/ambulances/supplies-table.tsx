@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
-import { SupplyPharmacyType } from "@/app/lib/definitions";
-import { deleteSupply } from "@/app/lib/actions/supply";
+import {
+  AmbulanceType,
+  DelegationType,
+  SupplyAmbulanceType,
+} from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
@@ -24,12 +27,12 @@ const customHeaders = [
   { id: 5, label: "Registrado por" },
 ];
 
-export default function PharmacySuppliesTable({
+export default function AmbulanceSuppliesTable({
   data,
 }: {
-  data: [SupplyPharmacyType[], string | number];
+  data: [DelegationType[], AmbulanceType[], SupplyAmbulanceType[]];
 }) {
-  const [supplies, pharmacyId] = data;
+  const [delegations, ambulances, supplies] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const params = useParams<{ delegationId: string }>();
 
@@ -47,7 +50,7 @@ export default function PharmacySuppliesTable({
   }
 
   async function handleDelete(id: string) {
-    return await deleteSupply(id, pharmacyId);
+    // return await deleteSupply(id, pharmacyId);
   }
 
   return (
@@ -64,7 +67,7 @@ export default function PharmacySuppliesTable({
         )}
         <ModalTrigger
           title="Crear Insumo"
-          modelContent={<SupplyForm pharmacyId={pharmacyId} />}
+          modelContent={<SupplyForm pharmacyId={"pharmacyId"} />}
         />
       </Filters>
       <div className="overflow-x-auto">

@@ -1,13 +1,13 @@
-import { SupplyType } from "@/app/lib/definitions";
-import { DataFetch } from "./data";
+import { SupplyAmbulanceType, SupplyPharmacyType } from "@/app/lib/definitions";
+import { DataFetch } from "@/app/lib/data/data";
 
-export async function fetchSupplies(
+export async function fetchSuppliesByPharmacyId(
   pharmacyId: string | number
-): Promise<SupplyType[]> {
+): Promise<SupplyPharmacyType[]> {
   try {
     const endPoint = `/api/supplies/pharmacy/${pharmacyId}`;
 
-    const dataFetching = new DataFetch<SupplyType>(endPoint, true);
+    const dataFetching = new DataFetch<SupplyPharmacyType>(endPoint, true);
     const supplies = await dataFetching.getAll();
 
     return supplies;
@@ -19,16 +19,32 @@ export async function fetchSupplies(
 
 export async function fetchSupplyById(
   id: string
-): Promise<SupplyType | undefined> {
+): Promise<SupplyPharmacyType | undefined> {
   try {
     const endPoint = `/api/supplies/one/${id}`;
 
-    const dataFetching = new DataFetch<SupplyType>(endPoint, true);
+    const dataFetching = new DataFetch<SupplyPharmacyType>(endPoint, true);
     const supply = await dataFetching.getOne();
 
     return supply;
   } catch (error) {
     console.log("Database Error:", error);
     return;
+  }
+}
+
+export async function fetchSuppliesByAmbulanceId(
+  ambulanceId: string
+): Promise<SupplyAmbulanceType[]> {
+  try {
+    const endPoint = `/api/ambulances/supplies/${ambulanceId}`;
+
+    const dataFetching = new DataFetch<SupplyAmbulanceType>(endPoint, true);
+    const supplies = await dataFetching.getAll();
+
+    return supplies;
+  } catch (err) {
+    console.log("API Error[GET SUPPLIES]:", err);
+    return [];
   }
 }
