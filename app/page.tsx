@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { VitalGestLogo } from "@/app/ui/logos";
-import { ButtonSignout } from "@/app/ui/button-signout";
 import { fetchOpenGuardsByUserMe } from "./lib/data";
 
 export default async function HomePage() {
@@ -22,9 +21,6 @@ export default async function HomePage() {
           </Link>
         ))}
       </main>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <ButtonSignout />
-      </div>
     </div>
   );
 }
