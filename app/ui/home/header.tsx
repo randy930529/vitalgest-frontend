@@ -19,11 +19,13 @@ export default async function Header() {
 
   return (
     <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-8">
-      <div className="flex justify-between items-center rounded-lg p-4 max-h-24 overflow-y-hidden">
-        <div className="w-32 text-white md:w-40">
+      <div className="flex justify-between items-center rounded-lg py-4 px-8 max-h-24">
+        <div className="w-32 text-white md:w-40 overflow-y-hidden">
           <VitalGestLogo />
         </div>
-        <NavBar user={session.user} />
+        <div className="mr-8">
+          <NavBar user={session.user} />
+        </div>
       </div>
       <img
         src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
