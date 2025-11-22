@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { StateType, SupplyType } from "@/app/lib/definitions";
+import { StateType, SupplyPharmacyType } from "@/app/lib/definitions";
 import { CreateSupply, UpdateSupply } from "@/app/lib/schema";
 import { ActionsServer } from "@/app/lib/actions/actions";
 
@@ -40,7 +40,7 @@ export async function createSupply(
   const pharmacyId = validatedSupplyFields.data.pharmacyId;
   try {
     const endPoint = `/api/supplies/create/pharmacy/${pharmacyId}`;
-    const actions = new ActionsServer<SupplyType>(endPoint, true);
+    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
     await actions.create({
       ...validatedSupplyFields.data,
       expirationDate: date,
@@ -82,7 +82,7 @@ export async function updateSupply(
   const pharmacyId = validatedSupplyFields.data.pharmacyId;
   try {
     const endPoint = `/api/supplies/edit/${id}`;
-    const actions = new ActionsServer<SupplyType>(endPoint, true);
+    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
     await actions.update({
       ...validatedSupplyFields.data,
       expirationDate: date,
@@ -105,7 +105,7 @@ export async function deleteSupply(
 ): Promise<SupplyState> {
   try {
     const endPoint = `/api/supplies/delete/${id}`;
-    const actions = new ActionsServer<SupplyType>(endPoint, true);
+    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
     await actions.delete();
   } catch (error) {
     return {
