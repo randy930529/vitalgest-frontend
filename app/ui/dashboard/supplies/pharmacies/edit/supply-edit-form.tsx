@@ -4,7 +4,7 @@ import { useActionState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { SupplyType } from "@/app/lib/definitions";
+import { SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { SupplyState, updateSupply } from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
@@ -23,7 +23,7 @@ import {
 export default function SupplyEditForm({
   data,
 }: {
-  data: [SupplyType | undefined, string];
+  data: [SupplyPharmacyType | undefined, string];
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
 
