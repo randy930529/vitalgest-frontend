@@ -84,7 +84,7 @@ export async function updateCheckListAmbulanceAnswers(
   try {
     const endPoint = `/api/checklists/ambulance/answers/${id}`;
     const actions = new ActionsServer<ChecklistAnswersType[]>(endPoint);
-    await actions.create({ answers });
+    await actions.update({ answers });
 
     return { message: "Checklist guardado exitosamente." };
   } catch (error) {

@@ -39,14 +39,12 @@ export default function NotesSignatureForm({
   );
 
   useEffect(() => {
-    state.message && toast.success(state.message);
-    return () => {
-      if (state.message) {
-        reset();
-        state.message = null;
-        router.push(`/checklists/${guardId}`);
-      }
-    };
+    if (state.message) {
+      toast.success(state.message);
+      reset();
+      state.message = null;
+      router.push(`/checklists/${guardId}`);
+    }
   }, [state.message]);
 
   useEffect(() => {
