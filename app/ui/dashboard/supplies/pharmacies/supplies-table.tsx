@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
-import { SupplyType } from "@/app/lib/definitions";
+import { SupplyAmbulanceType } from "@/app/lib/definitions";
 import { deleteSupply } from "@/app/lib/actions/supply";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -27,7 +27,7 @@ const customHeaders = [
 export default function SuppliesTable({
   data,
 }: {
-  data: [SupplyType[], string | number];
+  data: [SupplyAmbulanceType[], string | number];
 }) {
   const [supplies, pharmacyId] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
