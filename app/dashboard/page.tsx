@@ -1,15 +1,23 @@
 import { Metadata } from "next";
-import AdminDashboard from "@/app/ui/dashboard/stats-cards";
+import {
+  AdminDashboard,
+  DashboardSections,
+  DashboardStats,
+} from "@/app/ui/dashboard/stats-cards";
 
 export const metadata: Metadata = {
   title: "Panel Administrativo",
 };
 
 export default function DashboardPage() {
+  // (Página) Resumen general del Dashboard - [SSR]
+
   return (
-    <>
-      <p>(Página) Resumen general del Dashboard - [SSR]</p>
-      <AdminDashboard />
-    </>
+    <AdminDashboard>
+      <>
+        <DashboardStats />
+        <DashboardSections />
+      </>
+    </AdminDashboard>
   );
 }
