@@ -12,7 +12,7 @@ import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";
-import { deleteDelegation } from "@/app/lib/actions/delegation.action";
+import { deleteDelegation } from "@/app/lib/actions/delegation";
 
 const customHeaders = [
   { id: 0, label: "Estado" },

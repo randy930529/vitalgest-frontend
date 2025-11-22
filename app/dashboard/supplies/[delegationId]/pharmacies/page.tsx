@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchDelegationById } from "@/app/lib/data";
-import { fetchSupplies } from "@/app/lib/data/supplies";
+import { fetchSuppliesByPharmacyId } from "@/app/lib/data/supplies";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
-import SuppliesTable from "@/app/ui/dashboard/supplies/pharmacies/supplies-table";
+import PharmacySuppliesTable from "@/app/ui/dashboard/supplies/pharmacies/supplies-table";
 import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default async function PharmacySuppliesPage(props: {
 
   const pharmacyId = fetchPharmacyByDelegationId.pharmacy.id;
   const fetchsuppliesByPharmacyId = async () =>
-    Promise.all([fetchSupplies(pharmacyId), pharmacyId]);
+    Promise.all([fetchSuppliesByPharmacyId(pharmacyId), pharmacyId]);
 
   return (
     <>
@@ -51,7 +51,7 @@ export default async function PharmacySuppliesPage(props: {
       >
         <WrapperTable
           fetchData={fetchsuppliesByPharmacyId}
-          WrappedComponent={SuppliesTable}
+          WrappedComponent={PharmacySuppliesTable}
         />
       </Suspense>
     </>

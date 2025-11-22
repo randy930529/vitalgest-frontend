@@ -15,7 +15,7 @@ export default async function EditCheckListAmbulancePage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ guardId: string; id: string }>;
   searchParams: Promise<{
     step: string | undefined;
     notes: string | undefined;
@@ -23,9 +23,8 @@ export default async function EditCheckListAmbulancePage({
 }) {
   // (Página) Editar el CheckList de Ambulancia - [SSR]
 
-  const { id } = await params;
+  const { guardId, id } = await params;
   const { step, notes } = await searchParams;
-  console.log(id, step, notes);
   const param = Number(step) || undefined;
 
   const data = !notes ? await fetchChecklistQuestions(param) : [];
@@ -50,22 +49,22 @@ export default async function EditCheckListAmbulancePage({
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/" },
-          { label: "Checklists", href: "/checklists" },
+          { label: "Checklists", href: `/checklists/${guardId}` },
           {
             label: "Chequeo de Ambulancia",
-            href: `/checklists/ambulances/${id}`,
+            href: `/checklists/${guardId}/ambulances/${id}/create`,
             active: true,
           },
           {
             label: "Checklist",
-            href: `/checklists/ambulances/${id}/edit?step=${step}`,
+            href: `/checklists/${guardId}/ambulances/${id}/edit?step=${step}`,
             active: true,
           },
         ]}
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm title={"Notas"}>
+          <NotesSignatureForm title={"Notas"} data={data}>
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}

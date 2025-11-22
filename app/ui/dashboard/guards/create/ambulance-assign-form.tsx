@@ -9,7 +9,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import { CustomOptions, ShiftType } from "@/app/lib/definitions";
-import { createShift, ShiftState } from "@/app/lib/actions/shift.action";
+import { createShift, ShiftState } from "@/app/lib/actions/shift";
 import { Button } from "@/app/ui/button";
 import { CardWrapper } from "@/app/ui/cards";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";

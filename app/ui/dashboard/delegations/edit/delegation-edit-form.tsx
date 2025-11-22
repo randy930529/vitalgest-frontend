@@ -13,7 +13,7 @@ import {
 import {
   DelegationState,
   updateDelegation,
-} from "@/app/lib/actions/delegation.action";
+} from "@/app/lib/actions/delegation";
 import { Button } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import { getMunicipalitiesOfState } from "@/app/lib/utils";

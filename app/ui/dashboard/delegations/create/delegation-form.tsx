@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import {
   createDelegation,
   DelegationState,
-} from "@/app/lib/actions/delegation.action";
+} from "@/app/lib/actions/delegation";
 import { CustomMxState, CustomOptions } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
