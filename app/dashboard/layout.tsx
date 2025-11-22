@@ -23,7 +23,7 @@ export default async function DashboardLayout({
         <aside className="w-full flex-none md:max-w-44">
           <SideNav user={session.user} />
         </aside>
-        <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
+        <div className="flex-grow px-6 py-3 md:overflow-y-auto md:px-12 md:py-6">
           <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <header className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
               <SectionHeader />
