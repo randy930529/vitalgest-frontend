@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import {
-  fetchAmbulances,
   fetchDelegations,
   fetchGuards,
   fetchUsersGuardChiefsDriversAndParamedical,
@@ -11,6 +10,7 @@ import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
+import { fetchAmbulances } from "@/app/lib/data/ambulances";
 
 export const metadata: Metadata = {
   title: "Gestión de Guardias",

@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import {
-  fetchAmbulances,
   fetchDelegations,
   fetchShiftsByGuardId,
   fetchGuardById,
@@ -11,6 +10,7 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import GuardEditForm from "@/app/ui/dashboard/guards/edit/guard-edit-form";
+import { fetchAmbulances } from "@/app/lib/data/ambulances";
 
 export const metadata: Metadata = {
   title: "Editar Delegación",

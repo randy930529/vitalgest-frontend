@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchAmbulanceById, fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import AmbulanceEditForm from "@/app/ui/dashboard/ambulances/edit/ambulance-edit-form";
+import { fetchAmbulanceById } from "@/app/lib/data/ambulances";
 
 export const metadata: Metadata = {
   title: "Editar Ambulancia",

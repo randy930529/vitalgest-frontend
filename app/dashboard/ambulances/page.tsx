@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchAmbulances, fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data";
+import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
