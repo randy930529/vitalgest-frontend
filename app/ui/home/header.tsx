@@ -1,14 +1,9 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { getSession } from "@/app/lib/dal";
 import { VitalGestLogo } from "@/app/ui/logos";
 import NavBar from "@/app/ui/dashboard/nav-bar";
-import { StatCard } from "../dashboard/cards";
-import {
-  BuildingOffice2Icon,
-  ShieldCheckIcon,
-  TruckIcon,
-  UsersIcon,
-} from "@heroicons/react/24/outline";
+import { HeaderStats } from "@/app/ui/home/stast-home";
 
 export default async function Header() {
   const session = await getSession();
@@ -17,6 +12,9 @@ export default async function Header() {
     redirect("/login");
   }
 
+  const userRole = session.user?.role;
+  const isAdmin = userRole === "admin" || userRole === "general_admin";
+
   return (
     <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-8">
       <div className="flex justify-between items-center rounded-lg py-4 px-8 max-h-24">
@@ -24,13 +22,15 @@ export default async function Header() {
           <VitalGestLogo />
         </div>
         <div className="mr-8">
-          <NavBar user={session.user} />
+          <NavBar user={session.user} showCog={isAdmin} />
         </div>
       </div>
-      <img
-        src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
-        alt=""
+      <Image
+        src={"/images/image-banner.jpg"}
+        width={2830}
+        height={1500}
         className="absolute inset-0 -z-10 size-full object-cover object-right md:object-center"
+        alt="Grupo de personas de la Cruz Roja Mexicana, reunidos frente a una ambulancia llevando uniformes o chalecos con el símbolo de la Cruz Roja."
       />
       <div
         aria-hidden="true"
@@ -67,54 +67,7 @@ export default async function Header() {
           </p>
         </div>
         <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-          {/* <dl className="mt-8 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="flex flex-col-reverse gap-1">
-              <dt className="text-base/7 text-gray-300">Offices worldwide</dt>
-              <dd className="text-4xl font-semibold tracking-tight text-white">
-                12
-              </dd>
-            </div>
-            <div className="flex flex-col-reverse gap-1">
-              <dt className="text-base/7 text-gray-300">
-                Full-time colleagues
-              </dt>
-              <dd className="text-4xl font-semibold tracking-tight text-white">
-                300+
-              </dd>
-            </div>
-            <div className="flex flex-col-reverse gap-1">
-              <dt className="text-base/7 text-gray-300">Hours per week</dt>
-              <dd className="text-4xl font-semibold tracking-tight text-white">
-                40
-              </dd>
-            </div>
-            <div className="flex flex-col-reverse gap-1">
-              <dt className="text-base/7 text-gray-300">Paid time off</dt>
-              <dd className="text-4xl font-semibold tracking-tight text-white">
-                Unlimited
-              </dd>
-            </div>
-          </dl> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard
-              title="Delegación"
-              value={"1"}
-              icon={BuildingOffice2Icon}
-              color="bg-green-500"
-            />
-            <StatCard
-              title="Guardia Activa"
-              value={"1"}
-              icon={ShieldCheckIcon}
-              color="bg-purple-500"
-            />
-            <StatCard
-              title="Ambulancia"
-              value={"2"}
-              icon={TruckIcon}
-              color="bg-red-500"
-            />
-          </div>
+          <HeaderStats user={session.user} />
         </div>
       </div>
     </header>
