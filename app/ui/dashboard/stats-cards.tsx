@@ -1,4 +1,3 @@
-import { JSX } from "react";
 import {
   UsersIcon,
   BuildingOffice2Icon,
@@ -15,7 +14,11 @@ import {
 } from "@/app/lib/data";
 import { StatCard } from "@/app/ui/dashboard/cards";
 
-export async function AdminDashboard({ children }: { children: JSX.Element }) {
+export async function AdminDashboard({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   // (Component) Tarjetas con estadísticas clave - [SSR]
 
   return (

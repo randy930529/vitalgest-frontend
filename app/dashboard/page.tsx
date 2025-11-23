@@ -14,10 +14,8 @@ export default function DashboardPage() {
 
   return (
     <AdminDashboard>
-      <>
-        <DashboardStats />
-        <DashboardSections />
-      </>
+      <DashboardStats />
+      <DashboardSections />
     </AdminDashboard>
   );
 }

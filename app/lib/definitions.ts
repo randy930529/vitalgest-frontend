@@ -95,6 +95,9 @@ export type GuardType = BaseType & {
   date: string;
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
+  shifts: ShiftType[];
+  checklistAmbulance?: CheckListAmbulanceType;
+  checklistSupplies?: null;
 };
 
 export type AmbulanceType = {
@@ -110,7 +113,11 @@ export type CheckListAmbulanceType = BaseType & {
   shift_id: string;
   time: string;
   km: number;
-  gas_path: string;
+  gas_path?: string;
+  sign_operator_path?: string;
+  recipient_id?: string;
+  sign_recipient_path?: null;
+  notes?: string;
 };
 
 export type StepItemType = {
