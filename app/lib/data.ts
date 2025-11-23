@@ -233,10 +233,12 @@ export async function fetchDelegationById(
 ): Promise<DelegationType | undefined> {
   try {
     const endPoint = `/api/delegations/one/${id}`;
-    const dataFetching = new DataFetch<DelegationType>(endPoint);
-    const delegation = await dataFetching.getOne();
+    const dataFetching = new DataFetch<DelegationType[]>(endPoint);
+    // TODO: Pedir corregir endpoint para que retorne la delegacion
+    // en vez de un array con la delegacion
+    const delegation = (await dataFetching.getOne()) || [];
 
-    return delegation;
+    return delegation[0];
   } catch (error) {
     console.log("Database Error:", error);
     return;
