@@ -1,7 +1,14 @@
 import clsx from "clsx";
-import { PencilIcon } from "@heroicons/react/24/outline";
-import { ShiftType } from "@/app/lib/definitions";
+import {
+  CalendarIcon,
+  PencilIcon,
+  TruckIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
+import { ShiftType, UserType } from "@/app/lib/definitions";
 import { Button } from "./button";
+import { StatCardProps } from "./dashboard/cards";
+import { getElapsedMessage } from "../lib/utils";
 
 export function CardWrapper({
   children,
@@ -53,5 +60,106 @@ export function CardShift({ shift }: { shift: ShiftType }) {
         }`}
       </p>
     </div>
+  );
+}
+
+export function ResourceCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+}: StatCardProps) {
+  return (
+    <div className={`text-center px-8 py-3 bg-${color}-50 rounded-lg md:p-3`}>
+      <Icon className={`w-5 h-5 text-${color}-600 mx-auto mb-1`} />
+      <p className={`text-2xl font-bold text-${color}-900`}>{value}</p>
+      <p className={`hidden text-xs text-${color}-600 md:block`}>{title}</p>
+    </div>
+  );
+}
+
+export function ShiftCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+  ambulanceNumber,
+  driver,
+  paramedical,
+}: StatCardProps & {
+  ambulanceNumber: string;
+  driver: UserType;
+  paramedical: UserType;
+}) {
+  const timeElapsed = getElapsedMessage(new Date(value), new Date());
+  const driverName = fullName(driver.name, driver.lastname);
+  const paramedicalName = fullName(paramedical.name, paramedical.lastname);
+
+  function fullName(name: string, lastname: string) {
+    const [firstName, secondName = ""] = name.split(" ");
+    const [firstLastname, secondLastname = ""] = lastname.split(" ");
+    return `${firstName} ${secondName[0] ? secondName[0] + ". " : ""} ${
+      firstLastname[0] + "."
+    } ${secondLastname}`;
+  }
+
+  return (
+    <div className="flex flex-col gap-1 justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+      <div className="flex items-center gap-3">
+        <div
+          className={`w-10 h-10 bg-${color}-100 rounded-full flex items-center justify-center`}
+        >
+          <Icon className={`w-5 h-5 text-${color}-600`} />
+        </div>
+        <div>
+          <p className="font-semibold text-gray-800">{title}</p>
+          <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+            <CalendarIcon className="w-3 h-3" />
+            <span>{timeElapsed}</span>
+          </div>
+        </div>
+      </div>
+      <TeamCard
+        ambulanceNumber={ambulanceNumber}
+        driverName={driverName}
+        paramedicalName={paramedicalName}
+        color="purple"
+      />
+    </div>
+  );
+}
+
+export function TeamCard({
+  ambulanceNumber,
+  driverName,
+  paramedicalName,
+  color,
+}: {
+  ambulanceNumber: string;
+  driverName: string;
+  paramedicalName: string;
+  color: string;
+}) {
+  return (
+    <>
+      <p className="flex gap-2 font-light">
+        <span>
+          <TruckIcon className={`w-5 h-5 text-${color}-600 mx-auto mb-1`} />
+        </span>
+        {ambulanceNumber}
+      </p>
+      <div className="flex flex-col items-start text-xs font-medium">
+        <span>
+          <UsersIcon className={`w-5 h-5 text-blue-600 mx-auto mb-1`} />
+        </span>
+        <p>
+          Chofer: <span className="font-normal uppercase">{driverName}</span>
+        </p>
+        <p>
+          Paramédico:{" "}
+          <span className="font-normal uppercase">{paramedicalName}</span>
+        </p>
+      </div>
+    </>
   );
 }

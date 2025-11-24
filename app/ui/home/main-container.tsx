@@ -1,13 +1,28 @@
 import Link from "next/link";
-import { fetchOpenGuardsByUserMe } from "@/app/lib/data";
-import { GuardsStats } from "../dashboard/stats-cards";
+import { UserType } from "@/app/lib/definitions";
+import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
+import { GuardStats } from "@/app/ui/home/stast-home";
 
-export default async function MainContainer() {
-  const guards = await fetchOpenGuardsByUserMe();
+export default async function MainContainer({ user }: { user: UserType }) {
+  const [guards, inlineGuard] = await fetchGuardsAndInlineGuardByUserMe(user);
   return (
-    <main className="mt-4 flex grow flex-col gap-4 md:flex-row">
-      <GuardsStats />
-      {guards.map(({ id }) => (
+    <main className="my-4 p-8 flex grow flex-col gap-4 md:flex-row">
+      {inlineGuard && <GuardStats guard={inlineGuard} />}
+
+      {/* TODO: Una seccion que muestra todas las guardias realizadas por el 
+      usuario logueado.
+      - Inicial muestra una cantidad reducida y una opcion para ver el todas
+      las guardias realizadas.
+      - Siguiente las guardias se agrupan/paginan por mes y año.
+      __2025___________
+      _________________
+      ___________Enero_
+      -----------------
+      -----------------
+      -----------------
+       */}
+
+      {/* {guards.map(({ id }) => (
         <Link
           key={`checklists-${id}`}
           href={`/checklists/${id}`}
@@ -15,7 +30,7 @@ export default async function MainContainer() {
         >
           CheckList Ambulancia
         </Link>
-      ))}
+      ))} */}
     </main>
   );
 }
