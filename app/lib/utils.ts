@@ -150,3 +150,22 @@ export const createStepAnswers = (
   });
   return answers;
 };
+
+/**
+ * Calcular y mostrar un mensaje alternativo al trancurrir sierto
+ * tiempo entre dos fechas.
+ * @param dateStart Fecha inicio.
+ * @param dateEnd Fecha final.
+ * @returns Mensaje alternativo en formato Ej. 'Hace 1h' o 'Hace 2min'.
+ */
+export const getElapsedMessage = (dateStart: Date, dateEnd: Date): string => {
+  const diffMs = Math.abs(dateEnd.getTime() - dateStart.getTime());
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMinutes / 60);
+
+  if (diffHours >= 1) {
+    return `Hace ${diffHours}h`;
+  } else {
+    return `Hace ${diffMinutes}min`;
+  }
+};
