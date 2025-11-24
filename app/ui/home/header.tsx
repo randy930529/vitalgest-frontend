@@ -1,18 +1,11 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
-import { getSession } from "@/app/lib/dal";
+import { UserType } from "@/app/lib/definitions";
 import { VitalGestLogo } from "@/app/ui/logos";
 import NavBar from "@/app/ui/dashboard/nav-bar";
 import { HeaderStats } from "@/app/ui/home/stast-home";
 
-export default async function Header() {
-  const session = await getSession();
-
-  if (!session) {
-    redirect("/login");
-  }
-
-  const userRole = session.user?.role;
+export default async function Header({ user }: { user: UserType }) {
+  const userRole = user.role;
   const isAdmin = userRole === "admin" || userRole === "general_admin";
 
   return (
@@ -22,7 +15,7 @@ export default async function Header() {
           <VitalGestLogo />
         </div>
         <div className="mr-8">
-          <NavBar user={session.user} showCog={isAdmin} />
+          <NavBar user={user} showCog={isAdmin} />
         </div>
       </div>
       <Image
@@ -67,7 +60,7 @@ export default async function Header() {
           </p>
         </div>
         <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-          <HeaderStats user={session.user} />
+          <HeaderStats user={user} />
         </div>
       </div>
     </header>

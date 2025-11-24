@@ -6,12 +6,8 @@ import {
   CalendarIcon,
   MapPinIcon,
 } from "@heroicons/react/24/outline";
-import {
-  fetchAmbulances,
-  fetchDelegations,
-  fetchGuards,
-  fetchUsers,
-} from "@/app/lib/data";
+import { fetchAmbulances, fetchDelegations, fetchUsers } from "@/app/lib/data";
+import { fetchGuards } from "@/app/lib/data/guards";
 import { StatCard } from "@/app/ui/dashboard/cards";
 
 export async function AdminDashboard({
