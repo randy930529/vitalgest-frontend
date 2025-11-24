@@ -125,7 +125,7 @@ export function GuardStats({ guard }: { guard: GuardType }) {
   ];
 
   return (
-    <section className="bg-white rounded-lg shadow-md p-6 md:w-2/3">
+    <section className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-sm font-bold text-gray-800 md:text-xl">
           Detalles de Guardia Actual
@@ -136,7 +136,7 @@ export function GuardStats({ guard }: { guard: GuardType }) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-8">
         <ul className="flex md:flex-col justify-between gap-4">
           {customCard.map(({ title, value, icon, color }, index) => (
             <li key={String(index) + value}>
@@ -149,7 +149,7 @@ export function GuardStats({ guard }: { guard: GuardType }) {
             </li>
           ))}
         </ul>
-        <ul className="space-y-3 md:ml-auto">
+        <ul className="space-y-3">
           {guard.shifts.map(
             ({
               id,
@@ -160,7 +160,7 @@ export function GuardStats({ guard }: { guard: GuardType }) {
               driver,
               paramedical,
             }) => (
-              <li key={id} className="flex gap-4">
+              <li key={id} className="flex gap-4 md:gap-8">
                 <ShiftCard
                   title={name || ""}
                   value={updatedAt || updated_at}
@@ -171,7 +171,16 @@ export function GuardStats({ guard }: { guard: GuardType }) {
                   paramedical={paramedical}
                 />
                 <ol>
-                  <li>asdasda</li>
+                  <li>
+                    <div className="shadow-lg w-24 h-10 rounded">
+                      {/* TODO:Dar acceso a los checklist desde aqui */}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="shadow-lg w-24 h-10 rounded">
+                      {/* TODO:Dar acceso a los checklist desde aqui */}
+                    </div>
+                  </li>
                 </ol>
               </li>
             )
