@@ -8,7 +8,7 @@ export default function NotFound() {
       <Notfound404
         error={404}
         message="No se encontró la lista de chequeo solicitada."
-        goBack="/checklists"
+        goBack="/"
       />
     </main>
   );

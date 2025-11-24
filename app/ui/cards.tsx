@@ -1,14 +1,17 @@
+import Link from "next/link";
 import clsx from "clsx";
 import {
   CalendarIcon,
   PencilIcon,
   TruckIcon,
   UsersIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { ShiftType, UserType } from "@/app/lib/definitions";
-import { Button } from "./button";
-import { StatCardProps } from "./dashboard/cards";
-import { getElapsedMessage } from "../lib/utils";
+import { getElapsedMessage } from "@/app/lib/utils";
+import { Button } from "@/app/ui/button";
+import { Badge } from "@/app/ui/badges";
+import { StatCardProps } from "@/app/ui/dashboard/cards";
 
 export function CardWrapper({
   children,
@@ -161,5 +164,45 @@ export function TeamCard({
         </p>
       </div>
     </>
+  );
+}
+
+export function ChecklistsLinkCard({
+  title,
+  link,
+  guardId,
+  id,
+  isChecked,
+  param = "create",
+}: {
+  title: string;
+  link: string;
+  guardId: string;
+  id: string;
+  isChecked?: boolean;
+  param?: string;
+}) {
+  const checklistStatus = isChecked ? "Finalizado" : "Pendiente";
+  const checklistUrl = link
+    ? `/checklists/${guardId}/${link}/${id}/${param}`
+    : "#";
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg shadow-md p-2 hover:shadow-lg transition-shadow">
+      <Link
+        className="rounded-lg font-medium text-xs text-blue-500 p-2 dark:text-blue-500 hover:text-blue-700 hover:shadow-lg transition-shadow"
+        href={checklistUrl}
+      >
+        {title}
+        <ArrowRightIcon className="mx-2 inline-block w-4 h-4" />
+      </Link>
+      <div className="mx-2">
+        <Badge
+          title={checklistStatus}
+          success={isChecked}
+          pending={param === "edit"}
+        />
+      </div>
+    </div>
   );
 }
