@@ -6,7 +6,7 @@ import {
 import { UserType } from "@/app/lib/definitions";
 import { fetchDelegationById, fetchGuards } from "@/app/lib/data";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import { CardGuard, StatCardHome } from "@/app/ui/dashboard/cards";
+import { CardAmbulancesGuard, StatCardHome } from "@/app/ui/dashboard/cards";
 
 export async function HeaderStats({ user }: { user: UserType }) {
   const delegationId = user.delegationId;
@@ -77,11 +77,11 @@ export async function HeaderStats({ user }: { user: UserType }) {
           )}
           {guardChief && (
             <li>
-              <CardGuard
+              <CardAmbulancesGuard
                 title={"Ambulancias en Turno"}
                 value={ambulancesInGuard.trim().slice(0, -1)}
-                icon={ShieldCheckIcon}
-                color="text-purple-600"
+                icon={TruckIcon}
+                color="bg-red-100"
               />
             </li>
           )}
