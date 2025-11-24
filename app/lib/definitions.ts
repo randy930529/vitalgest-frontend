@@ -98,8 +98,6 @@ export type GuardType = BaseType & {
   state: "En curso" | "Nueva" | "Cerrada";
   delegation: DelegationType;
   shifts: ShiftType[];
-  checklistAmbulance?: CheckListAmbulanceType;
-  checklistSupplies?: null;
 };
 
 export type AmbulanceType = {
@@ -167,6 +165,8 @@ export type ShiftType = BaseType & {
   guard: GuardType;
   paramedical: UserType;
   driver: UserType;
+  checklistAmbulance?: CheckListAmbulanceType;
+  checklistSupplies?: null;
 };
 
 export type SupplyPharmacyType = BaseType & {

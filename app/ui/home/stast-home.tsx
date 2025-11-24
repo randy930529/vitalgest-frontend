@@ -5,16 +5,21 @@ import {
   TruckIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import { GuardType, UserType } from "@/app/lib/definitions";
+import {
+  CheckListAmbulanceType,
+  GuardType,
+  ShiftType,
+  UserType,
+} from "@/app/lib/definitions";
 import { fetchDelegationById } from "@/app/lib/data";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { ChecklistsLinkCard, ResourceCard, ShiftCard } from "@/app/ui/cards";
 import {
   CardAmbulancesGuard,
   StatCardHome,
   StatCardProps,
 } from "@/app/ui/dashboard/cards";
-import { ResourceCard, ShiftCard } from "../cards";
 
 export async function HeaderStats({ user }: { user: UserType }) {
   const delegationId = user.delegationId;
@@ -99,8 +104,148 @@ export async function HeaderStats({ user }: { user: UserType }) {
   );
 }
 
+export function ResourceStats({ cardItems }: { cardItems: StatCardProps[] }) {
+  return (
+    <ul className="flex md:flex-col gap-4">
+      {cardItems.map(({ title, value, icon, color }, index) => (
+        <li key={String(index) + value}>
+          <ResourceCard title={title} value={value} icon={icon} color={color} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function CheckListStats({
+  guardId,
+  id,
+  checklistAmbulance,
+  checklistSupplies,
+}: {
+  guardId: string;
+  id: string;
+  checklistAmbulance: CheckListAmbulanceType | undefined;
+  checklistSupplies: any;
+}) {
+  return (
+    <ol className="flex flex-col justify-between gap-2">
+      {checklistAmbulance ? (
+        <>
+          {checklistAmbulance.notes ? (
+            <li key={`checklists-link_ambulance-${id}`}>
+              <ChecklistsLinkCard
+                title="CheckList Ambulancia"
+                link=""
+                guardId={guardId}
+                id={id}
+                isChecked
+              />
+            </li>
+          ) : (
+            <li key={`checklists-link_ambulance-${id}`}>
+              <ChecklistsLinkCard
+                title="CheckList Ambulancia"
+                link="ambulances"
+                param="edit"
+                guardId={guardId}
+                id={id}
+              />
+            </li>
+          )}
+        </>
+      ) : (
+        <li key={`checklists-link_ambulance-${id}`}>
+          <ChecklistsLinkCard
+            title="CheckList Ambulancia"
+            link="ambulances"
+            guardId={guardId}
+            id={id}
+          />
+        </li>
+      )}
+      {checklistSupplies ? (
+        <>
+          {checklistSupplies.notes ? (
+            <li key={`checklists-link_supplies-${id}`}>
+              <ChecklistsLinkCard
+                title="CheckList Insumos"
+                link=""
+                guardId={guardId}
+                id={id}
+                isChecked
+              />
+            </li>
+          ) : (
+            <li key={`checklists-link_supplies-${id}`}>
+              <ChecklistsLinkCard
+                title="CheckList Insumos"
+                link="supplies"
+                param="edit"
+                guardId={guardId}
+                id={id}
+              />
+            </li>
+          )}
+        </>
+      ) : (
+        <li key={`checklists-link_supplies-${id}`}>
+          <ChecklistsLinkCard
+            title="CheckList Insumos"
+            link="supplies"
+            guardId={guardId}
+            id={id}
+          />
+        </li>
+      )}
+    </ol>
+  );
+}
+
+export function ShiftStats({
+  guardId,
+  shifts,
+}: {
+  guardId: string;
+  shifts: ShiftType[];
+}) {
+  return (
+    <ul className="space-y-4">
+      {shifts.map(
+        ({
+          id,
+          name,
+          updatedAt,
+          updated_at,
+          ambulance,
+          driver,
+          paramedical,
+          checklistAmbulance,
+          checklistSupplies,
+        }) => (
+          <li key={"shift-" + id} className="flex gap-4 md:gap-8">
+            <ShiftCard
+              title={name || ""}
+              value={updatedAt || updated_at}
+              color="purple"
+              icon={ShieldCheckIcon}
+              ambulanceNumber={ambulance.number}
+              driver={driver}
+              paramedical={paramedical}
+            />
+            <CheckListStats
+              guardId={guardId}
+              id={id}
+              checklistAmbulance={checklistAmbulance}
+              checklistSupplies={checklistSupplies}
+            />
+          </li>
+        )
+      )}
+    </ul>
+  );
+}
+
 export function GuardStats({ guard }: { guard: GuardType }) {
-  console.log(guard);
   const totalShifts = guard.shifts.length;
   const date = formatDateToDDMMYYYY(guard.date);
   const customCard: StatCardProps[] = [
@@ -137,55 +282,8 @@ export function GuardStats({ guard }: { guard: GuardType }) {
       </div>
 
       <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-8">
-        <ul className="flex md:flex-col justify-between gap-4">
-          {customCard.map(({ title, value, icon, color }, index) => (
-            <li key={String(index) + value}>
-              <ResourceCard
-                title={title}
-                value={value}
-                icon={icon}
-                color={color}
-              />
-            </li>
-          ))}
-        </ul>
-        <ul className="space-y-3">
-          {guard.shifts.map(
-            ({
-              id,
-              name,
-              updatedAt,
-              updated_at,
-              ambulance,
-              driver,
-              paramedical,
-            }) => (
-              <li key={id} className="flex gap-4 md:gap-8">
-                <ShiftCard
-                  title={name || ""}
-                  value={updatedAt || updated_at}
-                  color="purple"
-                  icon={ShieldCheckIcon}
-                  ambulanceNumber={ambulance.number}
-                  driver={driver}
-                  paramedical={paramedical}
-                />
-                <ol>
-                  <li>
-                    <div className="shadow-lg w-24 h-10 rounded">
-                      {/* TODO:Dar acceso a los checklist desde aqui */}
-                    </div>
-                  </li>
-                  <li>
-                    <div className="shadow-lg w-24 h-10 rounded">
-                      {/* TODO:Dar acceso a los checklist desde aqui */}
-                    </div>
-                  </li>
-                </ol>
-              </li>
-            )
-          )}
-        </ul>
+        <ResourceStats cardItems={customCard} />
+        <ShiftStats guardId={guard.id} shifts={guard.shifts} />
       </div>
     </section>
   );
