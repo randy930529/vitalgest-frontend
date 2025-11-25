@@ -22,7 +22,11 @@ export default async function DelegationsPage() {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
-          { label: "Delegaciones", href: "/dashboard/delegations" },
+          {
+            label: "Delegaciones",
+            href: "/dashboard/delegations",
+            active: true,
+          },
         ]}
       />
       <Suspense

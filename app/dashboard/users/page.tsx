@@ -23,7 +23,7 @@ export default async function UserPage() {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
-          { label: "Usuarios", href: "/dashboard/users" },
+          { label: "Usuarios", href: "/dashboard/users", active: true },
         ]}
       />
       <Suspense
