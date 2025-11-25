@@ -32,7 +32,7 @@ export default async function GuardsPage() {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
-          { label: "Guardias", href: "/dashboard/guards" },
+          { label: "Guardias", href: "/dashboard/guards", active: true },
         ]}
       />
       <Suspense

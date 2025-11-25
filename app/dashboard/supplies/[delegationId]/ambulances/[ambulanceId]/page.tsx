@@ -36,6 +36,7 @@ export default async function AmbulancesSuppliesPage(props: {
           {
             label: "Insumos en Farmacia",
             href: `/dashboard/supplies/${delegationId}/pharmacies`,
+            active: true,
           },
         ]}
       />

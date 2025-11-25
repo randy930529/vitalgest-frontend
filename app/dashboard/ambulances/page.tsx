@@ -23,7 +23,7 @@ export default async function AmbulancePage() {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
-          { label: "Ambulancias", href: "/dashboard/ambulances" },
+          { label: "Ambulancias", href: "/dashboard/ambulances", active: true },
         ]}
       />
       <Suspense
