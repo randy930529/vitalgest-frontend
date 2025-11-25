@@ -10,6 +10,7 @@ export type GuardState = StateType<{
   date?: string[];
   ambulance?: string[];
   delegationId?: string[];
+  state?: string[];
   success?: string[];
 }> & {
   guard?: GuardType;
@@ -95,7 +96,6 @@ export async function updateGuard(
   formGuardData: FormData
 ): Promise<GuardState> {
   const date = formGuardData.get("date") as string;
-  console.log(date);
 
   const validatedGuardFields = UpdateGuard.safeParse({
     delegationId: formGuardData.get("delegation"),

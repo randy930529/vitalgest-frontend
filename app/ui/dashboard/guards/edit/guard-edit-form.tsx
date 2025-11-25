@@ -112,6 +112,21 @@ export default function GuardEditForm({
                 required
               />
             </div>
+
+            <FormSelect
+              key="state"
+              name="state"
+              title="Estado"
+              options={[
+                { id: "", label: "Seleccione el Estado", value: "" },
+                { id: 1, value: "Nueva", label: "Nueva" },
+                { id: 2, value: "En curso", label: "En curso" },
+                { id: 3, value: "Cerrada", label: "Cerrada" },
+              ]}
+              defaultValue={guard.state}
+              errors={state.errors?.state}
+              required
+            />
           </div>
           <div className="absolute w-3/5 bottom-4 flex justify-end gap-4">
             <Link
@@ -130,8 +145,7 @@ export default function GuardEditForm({
         </form>
         {guard && (
           <div className="w-3/5 py-4">
-            <div className="mb-4">
-              <p>Estado</p>
+            <div className="mb-4 space-y-3">
               <GuardStateShow state={guard.state} />
             </div>
             <AmbulanceAssignForm
