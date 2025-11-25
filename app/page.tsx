@@ -1,30 +1,19 @@
-import Link from "next/link";
-import { VitalGestLogo } from "@/app/ui/logos";
-import { ButtonSignout } from "@/app/ui/button-signout";
-import { fetchOpenGuardsByUserMe } from "./lib/data";
+import { redirect } from "next/navigation";
+import { getSession } from "@/app/lib/dal";
+import MainContainer from "@/app/ui/home/main-container";
+import Header from "@/app/ui/home/header";
 
 export default async function HomePage() {
-  const guards = await fetchOpenGuardsByUserMe();
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
-    <div className="flex min-h-screen flex-col p-6">
-      <header className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
-        <VitalGestLogo />
-      </header>
-      <main className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        {guards.map(({ id }) => (
-          <Link
-            key={`checklists-${id}`}
-            href={`/checklists/${id}`}
-            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-          >
-            CheckList Ambulancia
-          </Link>
-        ))}
-      </main>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <ButtonSignout />
-      </div>
+    <div className="flex min-h-screen flex-col">
+      <Header user={session.user} />
+      <MainContainer user={session.user} />
     </div>
   );
 }

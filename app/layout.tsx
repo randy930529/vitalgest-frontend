@@ -2,6 +2,7 @@ import "@/app/ui/global.css";
 import { montserrat } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/app/ui/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +22,7 @@ export default async function RootLayout({
       <body className={`${montserrat.className}`}>
         <Toaster />
         {children}
+        <Footer />
       </body>
     </html>
   );

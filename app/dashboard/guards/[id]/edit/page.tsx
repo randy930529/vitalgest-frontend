@@ -3,9 +3,9 @@ import { Metadata } from "next";
 import {
   fetchDelegations,
   fetchShiftsByGuardId,
-  fetchGuardById,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
+import { fetchGuardById } from "@/app/lib/data/guards";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";

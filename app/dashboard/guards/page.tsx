@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import {
   fetchDelegations,
-  fetchGuards,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
+import { fetchGuards } from "@/app/lib/data/guards";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";

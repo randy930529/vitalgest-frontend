@@ -6,7 +6,6 @@ import {
   CustomMxState,
   CustomOptions,
   DelegationType,
-  GuardType,
   MxState,
   ResponseAPIType,
   ShiftType,
@@ -232,6 +231,7 @@ export async function fetchDelegationById(
 ): Promise<DelegationType | undefined> {
   try {
     const endPoint = `/api/delegations/one/${id}`;
+
     const dataFetching = new DataFetch<DelegationType>(endPoint);
     const delegation = await dataFetching.getOne();
 
@@ -239,55 +239,6 @@ export async function fetchDelegationById(
   } catch (error) {
     console.log("Database Error:", error);
     return;
-  }
-}
-
-export async function fetchGuards(): Promise<GuardType[]> {
-  try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/guards/many/all`;
-
-    const fetchGuardsFromApi = cache(
-      async (): Promise<ResponseAPIType<GuardType[]>> => {
-        const response = await fetch(endPoint, {
-          headers: {
-            Authorization: `Bearer ${apiToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          console.log(await response.json());
-          return {
-            success: false,
-            data: [],
-            error: "No se pudo obtener las delegaciones desde la API.",
-          };
-        }
-
-        return response.json();
-      }
-    );
-
-    const res = await fetchGuardsFromApi();
-
-    if (!res.success) {
-      throw new Error(res.error);
-    }
-
-    return res.data;
-  } catch (err) {
-    console.log("API Error[GET GUARDS]:", err);
-    return [];
   }
 }
 
@@ -596,94 +547,6 @@ export async function fetchUsersGuardChiefsDriversAndParamedical(): Promise<
   } catch (err) {
     console.log("API Error[GET USERS]:", err);
     return [[], [], []];
-  }
-}
-
-export async function fetchGuardById(
-  id: string
-): Promise<GuardType | undefined> {
-  try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/guards/one/${id}`;
-    const response = await fetch(endPoint, {
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      return;
-    }
-
-    const result = await response.json();
-    console.log(result);
-    return result.data;
-  } catch (error) {
-    console.log("Database Error:", error);
-    return;
-  }
-}
-
-export async function fetchOpenGuardsByUserMe(): Promise<GuardType[]> {
-  try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-    const userId = session?.user.id;
-
-    const endPoint = `${process.env.API_URL}/api/guards/many/all`;
-    const fetchGuardsFromApi = cache(
-      async (): Promise<ResponseAPIType<GuardType[]>> => {
-        const response = await fetch(endPoint, {
-          headers: {
-            Authorization: `Bearer ${apiToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          console.log(await response.json());
-          return {
-            success: false,
-            data: [],
-            error: "No se pudo obtener las delegaciones desde la API.",
-          };
-        }
-
-        return response.json();
-      }
-    );
-
-    const result = await fetchGuardsFromApi();
-
-    if (!result.success) {
-      throw new Error(result.error);
-    }
-    console.log(result);
-
-    // TODO: Filtrar las guardias en curso donde aparesca el usuario
-    // const myOpenGuards = result.data.filter(({state,guardChief})=>state === "En curso" && (guardChief.id === userId))
-
-    return result.data;
-  } catch (error) {
-    console.log("Database Error:", error);
-    return [];
   }
 }
 

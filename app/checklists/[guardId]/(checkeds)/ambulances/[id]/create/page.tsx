@@ -25,13 +25,8 @@ export default async function CheckListAmbulancePage(props: {
         breadcrumbs={[
           { label: "", href: "/" },
           {
-            label: "Checklists",
-            href: `/checklists/${guardId}`,
-            active: true,
-          },
-          {
             label: "Chequeo de Ambulancia",
-            href: `/checklists/${guardId}/ambulances/${id}`,
+            href: `/checklists/${guardId}/ambulances/${id}/create`,
             active: true,
           },
         ]}
