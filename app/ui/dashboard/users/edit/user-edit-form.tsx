@@ -93,7 +93,7 @@ export default function UserEditForm({
               {delegations && (
                 <DelegationsSelector
                   delegations={delegations}
-                  defaultValue={user.delegationId}
+                  defaultValue={user.delegation.id}
                   errors={state.errors?.delegation}
                 />
               )}

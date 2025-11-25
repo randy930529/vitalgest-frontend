@@ -22,6 +22,7 @@ export type UserType = {
   position: string;
   status?: boolean;
   delegationId: string;
+  delegation: DelegationType;
 };
 
 export type ResponseAPIType<T> = {
