@@ -78,6 +78,11 @@ const FormGuardSchema = z.object({
   delegationId: z.string({
     invalid_type_error: "Por favor seleccione una delegación.",
   }),
+  state: z
+    .enum(["En curso", "Nueva", "Cerrada"], {
+      invalid_type_error: "Por favor seleccione un estado.",
+    })
+    .optional(),
 });
 
 const FormAmbulanceSchema = z.object({
@@ -207,7 +212,7 @@ export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 export const CreateDelegation = FormDelegationSchema.omit({ name: true });
 export const UpdateDelegation = FormDelegationSchema.omit({});
 
-export const CreateGuard = FormGuardSchema.omit({ id: true });
+export const CreateGuard = FormGuardSchema.omit({ id: true, state: true });
 export const UpdateGuard = FormGuardSchema.omit({ id: true });
 
 export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
