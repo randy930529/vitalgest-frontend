@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CreateGuard } from "@/app/lib/schema";
+import { CreateGuard, UpdateGuard } from "@/app/lib/schema";
 import { GuardType, ResponseAPIType, StateType } from "@/app/lib/definitions";
 import { verifySession } from "@/app/lib/dal";
 
@@ -95,11 +95,13 @@ export async function updateGuard(
   formGuardData: FormData
 ): Promise<GuardState> {
   const date = formGuardData.get("date") as string;
+  console.log(date);
 
-  const validatedGuardFields = CreateGuard.safeParse({
+  const validatedGuardFields = UpdateGuard.safeParse({
     delegationId: formGuardData.get("delegation"),
     guardChief: formGuardData.get("guardChief"),
     date: new Date(date),
+    state: formGuardData.get("state"),
   });
 
   if (!validatedGuardFields.success) {
@@ -108,7 +110,7 @@ export async function updateGuard(
     };
   }
 
-  const { guardChief, delegationId } = validatedGuardFields.data;
+  const { guardChief, delegationId, state } = validatedGuardFields.data;
 
   try {
     // Obtener el token desde la cache usando cookies
@@ -128,6 +130,7 @@ export async function updateGuard(
       delegationId,
       guardChief,
       date,
+      state,
     };
 
     const config = {

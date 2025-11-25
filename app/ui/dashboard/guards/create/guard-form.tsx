@@ -5,9 +5,10 @@ import toast from "react-hot-toast";
 import {
   CustomOptions,
   DelegationType,
+  GuardType,
   ShiftType,
 } from "@/app/lib/definitions";
-import { createGuard, GuardState } from "@/app/lib/actions/guard";
+import { createGuard, GuardState, updateGuard } from "@/app/lib/actions/guard";
 import { Button } from "@/app/ui/button";
 import { CardsGroup, CardShift, CardWrapper } from "@/app/ui/cards";
 import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
@@ -51,17 +52,19 @@ export default function GuardForm({
         <div className="grid gap-4 mb-4 sm:grid-cols-1">
           <DelegationsSelector
             delegations={delegations}
+            defaultValue={state.guard?.delegation?.id}
             errors={state.errors?.delegationId}
           />
 
           <FormSelect
-            key="guardChief"
+            key={"guardChief" + state.guard?.guardChief?.id}
             name="guardChief"
             title="Jefe de Guardia"
             options={[
               { id: "", label: "Seleccione Jefe de Guardia", value: "" },
               ...guardChiefs,
             ]}
+            defaultValue={state.guard?.guardChief?.id}
             errors={state.errors?.guardChief}
             required
           />
@@ -125,17 +128,87 @@ export default function GuardForm({
               </ul>
             </CardsGroup>
           </div>
-          <div className="flex justify-end w-full">
-            <Button
-              type="reset"
-              onMouseDown={onClose}
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <InitGuardForm
+            guard={state.guard}
+            onClose={onClose}
+            hasShifts={!!shifts.length}
+          />
         </>
       )}
     </>
+  );
+}
+
+function InitGuardForm({
+  guard,
+  onClose,
+  hasShifts,
+}: {
+  guard: GuardType;
+  onClose?: () => void;
+  hasShifts?: boolean;
+}) {
+  const initialState: GuardState = { errors: {}, message: null };
+  const updateDelegationWithId = updateGuard.bind(null, guard?.id || "");
+  const [state, formAction] = useActionState(
+    updateDelegationWithId,
+    initialState
+  );
+
+  const datePicker = new Date(guard.date).toISOString().split("T")[0];
+
+  useEffect(() => {
+    if (state.message) {
+      toast.success(state.message);
+      onClose && onClose();
+    }
+  }, [state.message]);
+
+  useEffect(() => {
+    state.errors?.success &&
+      state.errors?.success.map((error: string) => toast.error(error));
+  }, [state.errors?.success]);
+
+  function handleSubmit(formData: FormData) {
+    if (hasShifts) {
+      formAction(formData);
+    } else {
+      toast.error("Debe asignar los tunos a la guardia.");
+    }
+  }
+
+  return (
+    <form action={handleSubmit} className="flex justify-end w-full">
+      <input
+        type="text"
+        name="delegation"
+        defaultValue={guard.delegation.id}
+        className="hidden"
+      />
+      <input
+        type="text"
+        name="guardChief"
+        defaultValue={guard.guardChief.id}
+        className="hidden"
+      />
+      <input
+        type="date"
+        name="date"
+        defaultValue={datePicker}
+        className="hidden"
+      />
+      <input
+        type="text"
+        name="state"
+        defaultValue="En curso"
+        className="hidden"
+      />
+      <Button
+        type="submit"
+        className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+      >
+        Iniciar Guardia
+      </Button>
+    </form>
   );
 }
