@@ -9,6 +9,8 @@ import {
   fetchChecklistQuestions,
   fetchChecklistSteps,
 } from "@/app/lib/data/checklist";
+import { fetchUsers } from "@/app/lib/data/users";
+import { CustomOptions } from "@/app/lib/definitions";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Ambulancia",
@@ -36,7 +38,10 @@ export default async function EditCheckListAmbulancePage({
     notFound();
   }
 
-  const [steps, maxSteps] = await fetchChecklistSteps();
+  const [[steps, maxSteps], users] = await Promise.all([
+    fetchChecklistSteps(),
+    fetchUsers(),
+  ]);
   const isLastQuestions = Number(step) >= maxSteps;
 
   const tmProgress = (Number(step) / maxSteps) * 100;
@@ -46,6 +51,16 @@ export default async function EditCheckListAmbulancePage({
     currentStep.status = "pending";
   }
   const title = currentStep?.label;
+  const customUsers = users.map<
+    CustomOptions & {
+      position?: string;
+    }
+  >(({ id, name, lastname, position }) => ({
+    id,
+    label: `${name} ${lastname}`,
+    value: id,
+    position,
+  }));
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
@@ -66,7 +81,11 @@ export default async function EditCheckListAmbulancePage({
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm title={"Notas"} data={data}>
+          <NotesSignatureForm
+            title={"Notas"}
+            data={data}
+            usersOptions={customUsers}
+          >
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}

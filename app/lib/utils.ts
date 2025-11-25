@@ -169,3 +169,34 @@ export const getElapsedMessage = (dateStart: Date, dateEnd: Date): string => {
     return `Hace ${diffMinutes}min`;
   }
 };
+
+/**
+ *
+ */
+export const purgeDuplicateAnswers = (
+  answers: Record<string, ChecklistAnswersType[]>
+): ChecklistAnswersType[] => {
+  const answersMap = new Map<string, ChecklistAnswersType>();
+
+  const allAnswers: ChecklistAnswersType[] = [];
+  Object.values(answers).forEach((stepAnswers) => {
+    allAnswers.push(...stepAnswers);
+  });
+
+  allAnswers.forEach((answers) => {
+    const existingAnswer = answersMap.get(answers.questionId);
+    if (existingAnswer) {
+      answersMap.set(answers.questionId, {
+        questionId: answers.questionId,
+        type: answers.type,
+        valueBool: existingAnswer.valueBool || answers.valueBool,
+        valueOption: existingAnswer.valueOption || answers.valueOption,
+        valueText: existingAnswer.valueText || answers.valueText,
+      });
+    } else {
+      answersMap.set(answers.questionId, answers);
+    }
+  });
+
+  return Array.from(answersMap.values());
+};
