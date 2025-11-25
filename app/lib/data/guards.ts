@@ -42,7 +42,7 @@ export async function fetchGuardsAndInlineGuardByUserMe(
     if (!guards.length) return [[], undefined];
 
     const userId = user.id;
-    const delegationId = user.delegationId;
+    const delegationId = user.delegation?.id || user.delegationId;
 
     const inlineGuard = getInlineGuard(guards, userId, delegationId);
 
