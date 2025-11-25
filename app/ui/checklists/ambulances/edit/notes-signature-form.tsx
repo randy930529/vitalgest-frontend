@@ -4,11 +4,8 @@ import { useActionState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
-import {
-  ChecklistAnswersType,
-  ChecklistQuestionsType,
-} from "@/app/lib/definitions";
-import { createStepAnswers } from "@/app/lib/utils";
+import { ChecklistQuestionsType, CustomOptions } from "@/app/lib/definitions";
+import { createStepAnswers, purgeDuplicateAnswers } from "@/app/lib/utils";
 import { useChecklistAmbulanceStore } from "@/app/lib/store/checklist-answers";
 import {
   ChecklistAnswersState,
@@ -21,14 +18,19 @@ export default function NotesSignatureForm({
   children,
   title,
   data: checklistQuestions,
+  usersOptions,
 }: {
   children?: React.ReactNode;
   title?: string;
   data: ChecklistQuestionsType[];
+  usersOptions: (CustomOptions & {
+    position?: string;
+  })[];
 }) {
   const router = useRouter();
   const { guardId, id } = useParams<{ guardId: string; id: string }>();
   const { answers, setAnswer, reset } = useChecklistAmbulanceStore();
+  console.log(answers);
 
   const initialState: ChecklistAnswersState = { errors: {}, message: null };
   const updateCheckListAmbulanceAnswersWithId =
@@ -65,10 +67,7 @@ export default function NotesSignatureForm({
 
   function handleSubmit(formData: FormData) {
     handleAnswers(formData);
-    const allAnswers: ChecklistAnswersType[] = [];
-    Object.values(answers).forEach((stepAnswers) => {
-      allAnswers.push(...stepAnswers);
-    });
+    const allAnswers = purgeDuplicateAnswers(answers);
     formAction(allAnswers);
   }
 
@@ -96,19 +95,8 @@ export default function NotesSignatureForm({
               name="write-out-signature"
               title="Entrega:"
               usersOptions={[
-                // TOTEST: Data Test
-                {
-                  id: "uuid-1",
-                  value: "uuid-1",
-                  label: "User1",
-                  position: "Dev",
-                },
-                {
-                  id: "uuid-2",
-                  value: "uuid-2",
-                  label: "User2",
-                  position: "Test",
-                },
+                { id: "", value: "", label: "Seleccione quien entrega" },
+                ...usersOptions,
               ]}
             />
           </div>
@@ -118,7 +106,10 @@ export default function NotesSignatureForm({
               key="write-in-signature"
               name="write-in-signature"
               title="Recibe:"
-              usersOptions={[]}
+              usersOptions={[
+                { id: "", value: "", label: "Seleccione quien recibe" },
+                ...usersOptions,
+              ]}
             />
           </div>
         </div>
