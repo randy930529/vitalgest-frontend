@@ -5,7 +5,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 const customSectionMeta: {
   [key: string]: { title: string; subtitle: string };
 } = {
-  null: { title: "Dashboard", subtitle: "Resumen general" },
+  null: { title: "Panel Administrativo", subtitle: "Resumen general" },
   users: {
     title: "Gestión de Usuarios del Sistema",
     subtitle: "Administrar usuarios que tienen acceso al sistema",

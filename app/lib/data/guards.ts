@@ -64,7 +64,7 @@ function getInlineGuard(
   return guards.find(
     ({ delegation, guardChief, shifts, state }) =>
       delegation.id === delegationId &&
-      //   state === "En curso" &&
+      state === "En curso" &&
       (guardChief.id === userId ||
         !!shifts.find(
           ({ driver, paramedical }) =>
