@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations, fetchUserById } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data";
+import { fetchUserById } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import UserEditForm from "@/app/ui/dashboard/users/edit/user-edit-form";
