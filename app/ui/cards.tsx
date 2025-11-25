@@ -200,7 +200,7 @@ export function ChecklistsLinkCard({
         <Badge
           title={checklistStatus}
           success={isChecked}
-          pending={param === "edit"}
+          pending={param.startsWith("edit")}
         />
       </div>
     </div>
