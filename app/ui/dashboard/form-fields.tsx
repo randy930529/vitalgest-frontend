@@ -212,8 +212,9 @@ export function FormSignature(param: {
         options={usersOptions}
         handleOption={(_, value) => handlePosition(value)}
         inline
+        required
       />
-      <FormTextarea name={param.name} />
+      <FormTextarea name={"sign-" + param.name} />
       <p>
         Cargo: <span className="inline-block">{position}</span>
       </p>

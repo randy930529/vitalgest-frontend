@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CustomOptions } from "@/app/lib/definitions";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import Timeline from "@/app/ui/timeline";
 import ChecklistQuestionsForm from "@/app/ui/checklists/ambulances/edit/checklist-questions-form";
@@ -10,7 +11,6 @@ import {
   fetchChecklistSteps,
 } from "@/app/lib/data/checklist";
 import { fetchUsers } from "@/app/lib/data/users";
-import { CustomOptions } from "@/app/lib/definitions";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Ambulancia",
@@ -81,11 +81,7 @@ export default async function EditCheckListAmbulancePage({
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm
-            title={"Notas"}
-            data={data}
-            usersOptions={customUsers}
-          >
+          <NotesSignatureForm title={"Notas"} usersOptions={customUsers}>
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}
