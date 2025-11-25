@@ -4,14 +4,12 @@ import { useActionState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
-import {
-  ChecklistAnswersType,
-  ChecklistQuestionsType,
-} from "@/app/lib/definitions";
-import { createStepAnswers } from "@/app/lib/utils";
+import { CustomOptions } from "@/app/lib/definitions";
+import { purgeDuplicateAnswers } from "@/app/lib/utils";
 import { useChecklistAmbulanceStore } from "@/app/lib/store/checklist-answers";
 import {
   ChecklistAnswersState,
+  signCheckListAmbulance,
   updateCheckListAmbulanceAnswers,
 } from "@/app/lib/actions/checklist";
 import { FormSignature, FormTextarea } from "@/app/ui/dashboard/form-fields";
@@ -20,15 +18,17 @@ import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
 export default function NotesSignatureForm({
   children,
   title,
-  data: checklistQuestions,
+  usersOptions,
 }: {
   children?: React.ReactNode;
   title?: string;
-  data: ChecklistQuestionsType[];
+  usersOptions: (CustomOptions & {
+    position?: string;
+  })[];
 }) {
   const router = useRouter();
   const { guardId, id } = useParams<{ guardId: string; id: string }>();
-  const { answers, setAnswer, reset } = useChecklistAmbulanceStore();
+  const { answers, reset } = useChecklistAmbulanceStore();
 
   const initialState: ChecklistAnswersState = { errors: {}, message: null };
   const updateCheckListAmbulanceAnswersWithId =
@@ -38,14 +38,30 @@ export default function NotesSignatureForm({
     initialState
   );
 
+  const signCheckListAmbulanceWithId = signCheckListAmbulance.bind(
+    null,
+    id || ""
+  );
+  const [stateSign, formActionSign] = useActionState(
+    signCheckListAmbulanceWithId,
+    initialState
+  );
+
   useEffect(() => {
     if (state.message) {
       toast.success(state.message);
       reset();
       state.message = null;
-      router.push(`/checklists/${guardId}`);
     }
   }, [state.message]);
+
+  useEffect(() => {
+    if (stateSign.message) {
+      toast.success(stateSign.message);
+      stateSign.message = null;
+      router.push("/");
+    }
+  }, [stateSign.message]);
 
   useEffect(() => {
     if (state.errors?.success) {
@@ -56,20 +72,26 @@ export default function NotesSignatureForm({
     }
   }, [state.errors?.success, state.errors?.answers]);
 
-  function handleAnswers(formData: FormData) {
-    const stepAnswers = createStepAnswers(formData, checklistQuestions);
-    // TODO: Revisar si es correcto guardar las notas en el store de respuestas
-    // o quizás manejarlo por separado y enviarlo directamente en el submit.
-    setAnswer("notes", stepAnswers);
-  }
+  useEffect(() => {
+    if (stateSign.errors?.success) {
+      stateSign.errors?.success.map((error: string) => toast.error(error));
+    }
+    if (stateSign.errors?.notes) {
+      stateSign.errors?.notes.map((error: string) => toast.error(error));
+    }
+    if (stateSign.errors?.recipientId) {
+      stateSign.errors?.recipientId.map((error: string) => toast.error(error));
+    }
+  }, [
+    stateSign.errors?.success,
+    stateSign.errors?.notes,
+    stateSign.errors?.recipientId,
+  ]);
 
   function handleSubmit(formData: FormData) {
-    handleAnswers(formData);
-    const allAnswers: ChecklistAnswersType[] = [];
-    Object.values(answers).forEach((stepAnswers) => {
-      allAnswers.push(...stepAnswers);
-    });
+    const allAnswers = purgeDuplicateAnswers(answers);
     formAction(allAnswers);
+    formActionSign(formData);
   }
 
   return (
@@ -89,36 +111,28 @@ export default function NotesSignatureForm({
 
         <FormTextarea key="write-notes" name="notes" rows={10} />
 
-        <div className="flex gap-4 md:gap-20">
-          <div className="w-1/2 md:p-4">
+        <div className="flex flex-col gap-4 md:flex-row md:gap-20">
+          <div className="md:w-1/2 md:p-4">
             <FormSignature
               key="write-out-signature"
               name="write-out-signature"
               title="Entrega:"
               usersOptions={[
-                // TOTEST: Data Test
-                {
-                  id: "uuid-1",
-                  value: "uuid-1",
-                  label: "User1",
-                  position: "Dev",
-                },
-                {
-                  id: "uuid-2",
-                  value: "uuid-2",
-                  label: "User2",
-                  position: "Test",
-                },
+                { id: "", value: "", label: "Seleccione quien entrega" },
+                ...usersOptions,
               ]}
             />
           </div>
 
-          <div className="w-1/2 md:p-4">
+          <div className="md:w-1/2 md:p-4">
             <FormSignature
               key="write-in-signature"
               name="write-in-signature"
               title="Recibe:"
-              usersOptions={[]}
+              usersOptions={[
+                { id: "", value: "", label: "Seleccione quien recibe" },
+                ...usersOptions,
+              ]}
             />
           </div>
         </div>

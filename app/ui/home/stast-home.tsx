@@ -146,7 +146,7 @@ export function CheckListStats({
               <ChecklistsLinkCard
                 title="CheckList Ambulancia"
                 link="ambulances"
-                param="edit"
+                param="edit?step=1"
                 guardId={guardId}
                 id={id}
               />

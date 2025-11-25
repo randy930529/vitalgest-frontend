@@ -117,6 +117,7 @@ const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 const FormChecklistSchema = z.object({
   id: z.string().uuid(),
+  recipientId: z.string().uuid(),
   ambulanceId: z
     .string({
       invalid_type_error: "Por favor seleccione una ambulancia.",
@@ -217,12 +218,23 @@ export const UpdateShift = FormShiftSchema.omit({ id: true });
 
 export const CreateChecklist = FormChecklistSchema.omit({
   id: true,
+  recipientId: true,
   signOperatorFile: true,
   signRecipientFile: true,
 });
 export const UpdateChecklist = FormChecklistSchema.omit({
   id: true,
+  recipientId: true,
   gasFile: true,
+});
+export const SignChecklist = FormChecklistSchema.omit({
+  id: true,
+  gasFile: true,
+  ambulanceId: true,
+  km: true,
+  shiftId: true,
+  signOperatorFile: true,
+  signRecipientFile: true,
 });
 
 export const CreateSupply = FormSupplySchema.omit({ id: true });

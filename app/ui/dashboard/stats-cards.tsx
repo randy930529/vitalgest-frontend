@@ -6,9 +6,11 @@ import {
   CalendarIcon,
   MapPinIcon,
 } from "@heroicons/react/24/outline";
-import { fetchAmbulances, fetchDelegations, fetchUsers } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data";
+import { fetchUsers } from "@/app/lib/data/users";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { StatCard } from "@/app/ui/dashboard/cards";
+import { fetchAmbulances } from "@/app/lib/data/ambulances";
 
 export async function AdminDashboard({
   children,

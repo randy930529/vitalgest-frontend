@@ -21,16 +21,6 @@ export default async function MainContainer({ user }: { user: UserType }) {
       -----------------
       -----------------
        */}
-
-      {/* {guards.map(({ id }) => (
-        <Link
-          key={`checklists-${id}`}
-          href={`/checklists/${id}`}
-          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-        >
-          CheckList Ambulancia
-        </Link>
-      ))} */}
     </main>
   );
 }

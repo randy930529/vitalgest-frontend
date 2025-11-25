@@ -1,6 +1,10 @@
 import { JSX, useState } from "react";
 import clsx from "clsx";
-import { ChecklistQuestionsType, FormInputType } from "@/app/lib/definitions";
+import {
+  ChecklistQuestionsType,
+  CustomOptions,
+  FormInputType,
+} from "@/app/lib/definitions";
 import { InlineErrors } from "@/app/ui/custom-errors";
 
 export function FormInput({
@@ -186,12 +190,9 @@ export function FormTextarea({
 export function FormSignature(param: {
   name: string;
   title: string;
-  usersOptions: {
-    id: string | number;
-    value: string;
-    label: string;
+  usersOptions: (CustomOptions & {
     position?: string;
-  }[];
+  })[];
   errors?: string[];
   required?: boolean;
 }) {
@@ -211,8 +212,9 @@ export function FormSignature(param: {
         options={usersOptions}
         handleOption={(_, value) => handlePosition(value)}
         inline
+        required
       />
-      <FormTextarea name={param.name} />
+      <FormTextarea name={"sign-" + param.name} />
       <p>
         Cargo: <span className="inline-block">{position}</span>
       </p>

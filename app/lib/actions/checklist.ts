@@ -6,7 +6,7 @@ import {
   StateType,
 } from "@/app/lib/definitions";
 import { ActionsServer } from "@/app/lib/actions/actions";
-import { CreateChecklist } from "@/app/lib/schema";
+import { CreateChecklist, SignChecklist } from "@/app/lib/schema";
 
 export type ChecklistState = StateType<{
   ambulance?: string[];
@@ -16,6 +16,7 @@ export type ChecklistState = StateType<{
   gasFile?: string[];
   signOperatorFile?: string[];
   signRecipientFile?: string[];
+  recipientId?: string[];
   success?: string[];
 }> & {
   checklist?: CheckListAmbulanceType;
@@ -73,7 +74,6 @@ export async function updateCheckListAmbulanceAnswers(
   prevState: ChecklistAnswersState,
   answers: ChecklistAnswersType[]
 ): Promise<ChecklistAnswersState> {
-  console.log(id, { answers });
   if (!answers.length) {
     return {
       errors: {
@@ -87,6 +87,55 @@ export async function updateCheckListAmbulanceAnswers(
     await actions.update({ answers });
 
     return { message: "Checklist guardado exitosamente." };
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+}
+
+export async function signCheckListAmbulance(
+  id: string,
+  prevState: ChecklistState,
+  formDataChecklist: FormData
+): Promise<ChecklistState> {
+  const validatedChecklistFields = SignChecklist.safeParse({
+    recipientId: formDataChecklist.get("write-in-signature"),
+    notes: formDataChecklist.get("notes"),
+    signOperatorFile: formDataChecklist.get("sign-write-out-signature"),
+    signRecipientFile: formDataChecklist.get("sign-write-in-signature"),
+  });
+
+  if (!validatedChecklistFields.success) {
+    return {
+      errors: validatedChecklistFields.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const endPoint = `/api/checklists/ambulance/${id}/sign`;
+
+    const bodyContent = new FormData();
+    bodyContent.append(
+      "recipientId",
+      formDataChecklist.get("write-in-signature") as string
+    );
+    bodyContent.append("notes", formDataChecklist.get("notes") as string);
+    // bodyContent.append(
+    //   "signOperatorFile",
+    //   formDataChecklist.get("sign-write-out-signature") as File
+    // );
+    // bodyContent.append(
+    //   "signRecipientFile",
+    //   formDataChecklist.get("sign-write-in-signature") as File
+    // );
+
+    const actions = new ActionsServer<ChecklistAnswersType[]>(endPoint);
+    await actions.updateWithFormData(bodyContent);
+
+    return { message: "Checklist aprobado exitosamente." };
   } catch (error) {
     return {
       errors: {
