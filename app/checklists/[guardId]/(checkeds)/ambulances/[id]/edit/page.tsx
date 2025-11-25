@@ -1,11 +1,14 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchChecklistQuestions, fetchChecklistSteps } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import Timeline from "@/app/ui/timeline";
 import ChecklistQuestionsForm from "@/app/ui/checklists/ambulances/edit/checklist-questions-form";
 import NotesSignatureForm from "@/app/ui/checklists/ambulances/edit/notes-signature-form";
+import {
+  fetchChecklistQuestions,
+  fetchChecklistSteps,
+} from "@/app/lib/data/checklist";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Ambulancia",
@@ -49,7 +52,6 @@ export default async function EditCheckListAmbulancePage({
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/" },
-          { label: "Checklists", href: `/checklists/${guardId}` },
           {
             label: "Chequeo de Ambulancia",
             href: `/checklists/${guardId}/ambulances/${id}/create`,
@@ -58,7 +60,7 @@ export default async function EditCheckListAmbulancePage({
           {
             label: "Checklist",
             href: `/checklists/${guardId}/ambulances/${id}/edit?step=${step}`,
-            active: true,
+            active: false,
           },
         ]}
       />
