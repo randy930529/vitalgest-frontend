@@ -157,7 +157,7 @@ export default function PharmacySuppliesTable({
                 {/* <td className="px-4 py-3">usuario del registro</td> */}
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/supplies/${params.delegationId}/pharmacies/${supply.id}/edit`}
+                    editLink={`/dashboard/supplies/pharmacies/${supply.id}/edit`}
                   />
                   <TableActionDelete
                     id={supply.id}

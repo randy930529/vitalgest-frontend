@@ -8,7 +8,7 @@ import { SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { SupplyState, updateSupply } from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
-import NotFound from "@/app/dashboard/supplies/[delegationId]/pharmacies/[id]/edit/not-found";
+import NotFound from "@/app/dashboard/supplies/pharmacies/[id]/edit/not-found";
 import {
   FormDatepicker,
   FormInputSingle,
