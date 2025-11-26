@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { UserType } from "@/app/lib/definitions";
 import NavLinks from "@/app/ui/dashboard/nav-links";
 import { VitalGestLogo } from "@/app/ui/logos";
 
-export default function SideNav({ user }: { user: UserType }) {
+export default function SideNav() {
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
@@ -15,7 +14,7 @@ export default function SideNav({ user }: { user: UserType }) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks user={user} />
+        <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
       </div>
     </div>
