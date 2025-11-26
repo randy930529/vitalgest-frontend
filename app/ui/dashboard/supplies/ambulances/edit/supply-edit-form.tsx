@@ -14,11 +14,7 @@ import {
   FormInputSingle,
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
-import {
-  customCategories,
-  customSpecifications,
-  customUnits,
-} from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { customUnits } from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
 
 export default function SupplyEditForm({
   data,
@@ -30,7 +26,7 @@ export default function SupplyEditForm({
   const [supply, delegationId] = data;
 
   if (!supply) {
-    return <NotFound delegationId={delegationId} />;
+    return null;
   }
 
   const initialState: SupplyState = { errors: {}, message: null };
@@ -70,25 +66,6 @@ export default function SupplyEditForm({
               name="pharmacy"
               defaultValue={supply.pharmacy_id}
               className="hidden"
-            />
-            <FormSelect
-              key="select-category"
-              name="category"
-              title="Categoría"
-              options={customCategories}
-              defaultValue={supply.category}
-              errors={state.errors?.category}
-              required
-            />
-
-            <FormSelect
-              key="select-specification"
-              name="specification"
-              title="Especificación"
-              options={customSpecifications}
-              defaultValue={supply.specification}
-              errors={state.errors?.specification}
-              required
             />
 
             <FormSelect
