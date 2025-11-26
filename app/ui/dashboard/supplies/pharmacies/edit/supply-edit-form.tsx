@@ -2,35 +2,31 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { SupplyState, updateSupply } from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
-import NotFound from "@/app/dashboard/supplies/[delegationId]/pharmacies/[id]/edit/not-found";
 import {
   FormDatepicker,
   FormInputSingle,
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
-import {
-  customCategories,
-  customSpecifications,
-  customUnits,
-} from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { customUnits } from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
 
 export default function SupplyEditForm({
   data,
 }: {
-  data: [SupplyPharmacyType | undefined, string];
+  data: SupplyPharmacyType | undefined;
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
 
-  const [supply, delegationId] = data;
+  const supply = data;
 
   if (!supply) {
-    return <NotFound delegationId={delegationId} />;
+    return notFound();
   }
 
   const initialState: SupplyState = { errors: {}, message: null };
@@ -71,22 +67,23 @@ export default function SupplyEditForm({
               defaultValue={supply.pharmacy_id}
               className="hidden"
             />
-            <FormSelect
+
+            <FormInputSingle
               key="select-category"
+              type="text"
               name="category"
               title="Categoría"
-              options={customCategories}
-              defaultValue={supply.category}
+              initialValue={supply.category}
               errors={state.errors?.category}
               required
             />
 
-            <FormSelect
+            <FormInputSingle
               key="select-specification"
+              type="text"
               name="specification"
               title="Especificación"
-              options={customSpecifications}
-              defaultValue={supply.specification}
+              initialValue={supply.specification}
               errors={state.errors?.specification}
               required
             />
@@ -128,7 +125,7 @@ export default function SupplyEditForm({
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Link
-              href={`/dashboard/supplies/${delegationId}/pharmacies`}
+              href={`/dashboard/supplies/pharmacies`}
               className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Regresar

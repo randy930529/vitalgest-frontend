@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
-import { SupplyPharmacyType } from "@/app/lib/definitions";
+import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
 import { deleteSupply } from "@/app/lib/actions/supply";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -14,6 +14,7 @@ import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { SearchPharmacieSupplies } from "@/app/ui/dashboard/search";
 
 const customHeaders = [
   { id: 0, label: "Categoría" },
@@ -21,15 +22,15 @@ const customHeaders = [
   { id: 2, label: "Fecha de Caducidad" },
   { id: 3, label: "Cantidad" },
   { id: 4, label: "Fecha de entrada" },
-  { id: 5, label: "Registrado por" },
+  // { id: 5, label: "Registrado por" },
 ];
 
 export default function PharmacySuppliesTable({
   data,
 }: {
-  data: [SupplyPharmacyType[], string | number];
+  data: [SupplyPharmacyType[], DelegationType[], string];
 }) {
-  const [supplies, pharmacyId] = data;
+  const [supplies, delegations, pharmacyId] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const params = useParams<{ delegationId: string }>();
 
@@ -62,6 +63,10 @@ export default function PharmacySuppliesTable({
             }}
           />
         )}
+        <SearchPharmacieSupplies
+          delegations={delegations}
+          pharmacyId={pharmacyId}
+        />
         <ModalTrigger
           title="Crear Insumo"
           modelContent={<SupplyForm pharmacyId={pharmacyId} />}
@@ -106,6 +111,13 @@ export default function PharmacySuppliesTable({
             </tr>
           </thead>
           <tbody>
+            {!supplies.length && (
+              <tr className="relative h-10">
+                <td className="absolute top-0 left-0 px-10">
+                  No hay elementos para mostrar.
+                </td>
+              </tr>
+            )}
             {supplies?.map((supply) => (
               <tr key={supply.id} className="border-b dark:border-gray-700">
                 <td className="w-4 p-4">
@@ -142,10 +154,10 @@ export default function PharmacySuppliesTable({
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(supply.createdAt)}
                 </td>
-                <td className="px-4 py-3">{/* usuario del registro */}</td>
+                {/* <td className="px-4 py-3">usuario del registro</td> */}
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/supplies/${params.delegationId}/pharmacies/${supply.id}/edit`}
+                    editLink={`/dashboard/supplies/pharmacies/${supply.id}/edit`}
                   />
                   <TableActionDelete
                     id={supply.id}

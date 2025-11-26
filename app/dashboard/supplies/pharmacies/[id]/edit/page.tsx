@@ -11,14 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default async function PharmacySuppliesEditPage(props: {
-  params: Promise<{ delegationId: string; id: string }>;
+  params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const delegationId = params.delegationId;
   const id = params.id;
-
-  const fetchSupply = async () =>
-    await Promise.all([fetchSupplyById(id), delegationId]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
@@ -27,24 +23,20 @@ export default async function PharmacySuppliesEditPage(props: {
           { label: "", href: "/dashboard" },
           {
             label: "Insumos en Farmacia",
-            href: `/dashboard/supplies/${delegationId}/pharmacies`,
+            href: `/dashboard/supplies/pharmacies`,
           },
           {
             label: "Editar Insumo",
-            href: `/dashboard/supplies/${delegationId}/pharmacies/${id}/edit`,
+            href: `/dashboard/supplies/pharmacies/${id}/edit`,
             active: true,
           },
         ]}
       />
       <Suspense
-        fallback={
-          <FormSkeleton
-            goBackUrl={`/dashboard/supplies/pharmacies/${delegationId}`}
-          />
-        }
+        fallback={<FormSkeleton goBackUrl={`/dashboard/supplies/pharmacies`} />}
       >
         <WrapperForm
-          fetchData={fetchSupply}
+          fetchData={async () => await fetchSupplyById(id)}
           WrappedComponent={SupplyEditForm}
         />
       </Suspense>

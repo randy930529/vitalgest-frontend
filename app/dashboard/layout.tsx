@@ -21,7 +21,7 @@ export default async function DashboardLayout({
     return (
       <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
         <aside className="w-full flex-none md:max-w-44">
-          <SideNav user={session.user} />
+          <SideNav />
         </aside>
         <div className="flex-grow px-6 py-3 md:overflow-y-auto md:px-12 md:py-6">
           <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
