@@ -89,7 +89,7 @@ export type DelegationType = BaseType & {
     name: string;
   };
   pharmacy: {
-    id: number;
+    id: string;
   };
 };
 

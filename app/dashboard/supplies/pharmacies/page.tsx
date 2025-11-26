@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchDelegationById } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data";
+import { getSession } from "@/app/lib/dal";
 import { fetchSuppliesByPharmacyId } from "@/app/lib/data/supplies";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
@@ -13,22 +14,39 @@ export const metadata: Metadata = {
   title: "Gestión de Insumos en Farmacia",
 };
 
-export default async function PharmacySuppliesPage(props: {
-  params: Promise<{ delegationId: string }>;
+export default async function PharmacySuppliesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    pharmacy: string;
+  }>;
 }) {
   // (Página) Gestionar insumos en farmacia - [SSR]
 
-  const params = await props.params;
-  const delegationId = params.delegationId;
-  const fetchPharmacyByDelegationId = await fetchDelegationById(delegationId);
+  const { pharmacy } = await searchParams;
+  const delegations = await fetchDelegations();
 
-  if (!fetchPharmacyByDelegationId || !fetchPharmacyByDelegationId.pharmacy) {
+  let pharmacyId = pharmacy;
+
+  if (!pharmacy) {
+    const delegationId = (await getSession())?.user.delegationId;
+
+    if (delegationId) {
+      pharmacyId =
+        delegations.find(({ id }) => id === delegationId)?.pharmacy.id || "";
+    }
+  }
+
+  if (!pharmacyId) {
     return notFound();
   }
 
-  const pharmacyId = fetchPharmacyByDelegationId.pharmacy.id;
   const fetchsuppliesByPharmacyId = async () =>
-    Promise.all([fetchSuppliesByPharmacyId(pharmacyId), pharmacyId]);
+    Promise.all([
+      fetchSuppliesByPharmacyId(pharmacyId),
+      delegations,
+      pharmacyId,
+    ]);
 
   return (
     <>
@@ -37,7 +55,7 @@ export default async function PharmacySuppliesPage(props: {
           { label: "", href: "/dashboard" },
           {
             label: "Insumos en Farmacia",
-            href: `/dashboard/supplies/${delegationId}/pharmacies`,
+            href: `/dashboard/supplies/pharmacies?pharmacy=${pharmacyId}`,
             active: true,
           },
         ]}
