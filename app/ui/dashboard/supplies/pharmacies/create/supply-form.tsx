@@ -2,7 +2,10 @@
 
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { createSupply, SupplyState } from "@/app/lib/actions/supply";
+import {
+  createSupplyInPharmacy,
+  SupplyInPharmacyState,
+} from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
 import {
   FormDatepicker,
@@ -102,8 +105,11 @@ export default function SupplyForm({
 }) {
   // (Component) Formulario de Insumos - [CSR]
 
-  const initialState: SupplyState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(createSupply, initialState);
+  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
+  const [state, formAction] = useActionState(
+    createSupplyInPharmacy,
+    initialState
+  );
 
   useEffect(() => {
     state.message && toast.success(state.message);
@@ -166,7 +172,7 @@ export default function SupplyForm({
           />
         </div>
 
-        <div className="w-2/12">
+        <div className="w-3/12 md:w-2/12">
           <FormInputSingle
             key="input-avaibleQuantity"
             type="number"

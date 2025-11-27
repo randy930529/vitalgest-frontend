@@ -7,7 +7,10 @@ import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import { SupplyState, updateSupply } from "@/app/lib/actions/supply";
+import {
+  SupplyInPharmacyState,
+  updateSupplyInPharmacy,
+} from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
 import {
   FormDatepicker,
@@ -29,8 +32,11 @@ export default function SupplyEditForm({
     return notFound();
   }
 
-  const initialState: SupplyState = { errors: {}, message: null };
-  const updateSupplyWithId = updateSupply.bind(null, supply?.id || "");
+  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
+  const updateSupplyWithId = updateSupplyInPharmacy.bind(
+    null,
+    supply?.id || ""
+  );
   const [state, formAction] = useActionState(updateSupplyWithId, initialState);
 
   useEffect(() => {

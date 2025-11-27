@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
-import { deleteSupply } from "@/app/lib/actions/supply";
+import { deleteSupplyInPharmacy } from "@/app/lib/actions/supply";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
@@ -32,7 +31,6 @@ export default function PharmacySuppliesTable({
 }) {
   const [supplies, delegations, pharmacyId] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const params = useParams<{ delegationId: string }>();
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -48,7 +46,7 @@ export default function PharmacySuppliesTable({
   }
 
   async function handleDelete(id: string) {
-    return await deleteSupply(id, pharmacyId);
+    return await deleteSupplyInPharmacy(id, pharmacyId);
   }
 
   return (
