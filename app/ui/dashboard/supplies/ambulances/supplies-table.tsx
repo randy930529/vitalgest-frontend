@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 import {
+  AmbulanceAreaType,
   AmbulanceType,
   DelegationType,
   SupplyAmbulanceType,
+  SupplyPharmacyType,
 } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -16,7 +18,9 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import SupplyForm from "@/app/ui/dashboard/supplies/ambulances/create/supply-form";
+import { deleteSupplyInAmbulance } from "@/app/lib/actions/supply";
+import { SearchAmbulanceSupplies } from "@/app/ui/dashboard/search";
 
 const customHeaders = [
   { id: 0, label: "Categoría" },
@@ -30,9 +34,23 @@ const customHeaders = [
 export default function AmbulanceSuppliesTable({
   data,
 }: {
-  data: [DelegationType[], AmbulanceType[], SupplyAmbulanceType[]];
+  data: [
+    AmbulanceType[],
+    SupplyAmbulanceType[],
+    string,
+    AmbulanceAreaType[],
+    SupplyPharmacyType[],
+    DelegationType[]
+  ];
 }) {
-  const [delegations, ambulances, supplies] = data;
+  const [
+    ambulances,
+    suppliesAmbulance,
+    ambulanceId,
+    areas,
+    suppliesPharmacy,
+    delegations,
+  ] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const params = useParams<{ delegationId: string }>();
 
@@ -45,12 +63,12 @@ export default function AmbulanceSuppliesTable({
   }
 
   function handleSelectAllChange(checked: boolean) {
-    const ambulanceArray = supplies.map(({ id }) => id);
-    setSelectedIds(checked ? ambulanceArray : []);
+    const supplyArray = suppliesAmbulance.map(({ id }) => id);
+    setSelectedIds(checked ? supplyArray : []);
   }
 
   async function handleDelete(id: string) {
-    // return await deleteSupply(id, pharmacyId);
+    return await deleteSupplyInAmbulance(id, ambulanceId);
   }
 
   return (
@@ -65,9 +83,21 @@ export default function AmbulanceSuppliesTable({
             }}
           />
         )}
+        <SearchAmbulanceSupplies
+          ambulances={ambulances}
+          ambulanceId={ambulanceId}
+          delegations={delegations}
+        />
         <ModalTrigger
           title="Crear Insumo"
-          modelContent={<SupplyForm pharmacyId={"pharmacyId"} />}
+          modelContent={
+            <SupplyForm
+              ambulanceId={ambulanceId}
+              ambulances={ambulances}
+              areas={areas}
+              suppliesPharmacy={suppliesPharmacy}
+            />
+          }
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -109,7 +139,14 @@ export default function AmbulanceSuppliesTable({
             </tr>
           </thead>
           <tbody>
-            {supplies?.map((supply) => (
+            {!suppliesAmbulance.length && (
+              <tr className="relative h-10">
+                <td className="absolute top-0 left-0 px-10">
+                  No hay elementos para mostrar.
+                </td>
+              </tr>
+            )}
+            {suppliesAmbulance?.map((supply) => (
               <tr key={supply.id} className="border-b dark:border-gray-700">
                 <td className="w-4 p-4">
                   <div className="flex items-center">
@@ -160,7 +197,7 @@ export default function AmbulanceSuppliesTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={supplies.length} />
+      <TablePagination totalItems={suppliesAmbulance.length} />
     </main>
   );
 }

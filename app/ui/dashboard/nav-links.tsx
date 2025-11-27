@@ -44,7 +44,7 @@ const links = [
       },
       {
         name: "Ambulancias",
-        href: `/dashboard/supplies/pharmacies`,
+        href: `/dashboard/supplies/ambulances`,
       },
     ],
   },
