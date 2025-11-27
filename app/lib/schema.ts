@@ -294,4 +294,5 @@ export const UpdateSupplyInAmbulance = FormSupplySchema.omit({
   pharmacyId: true,
   notes: true,
   specification: true,
+  supplyId: true,
 });
