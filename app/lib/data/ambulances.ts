@@ -1,4 +1,4 @@
-import { AmbulanceType } from "@/app/lib/definitions";
+import { AmbulanceAreaType, AmbulanceType } from "@/app/lib/definitions";
 import { DataFetch } from "@/app/lib/data/data";
 
 export async function fetchAmbulances(): Promise<AmbulanceType[]> {
@@ -44,6 +44,20 @@ export async function fetchAmbulancesByDelegationId(
     );
   } catch (error) {
     console.log("API Error[GET AMBULANCES BY DELEGATION ID]:", error);
+    return [];
+  }
+}
+
+export async function fetchAmbulanceAreas(): Promise<AmbulanceAreaType[]> {
+  try {
+    const endPoint = "/api/ambulances/areas";
+
+    const dataFetching = new DataFetch<AmbulanceAreaType>(endPoint, true);
+    const areas = await dataFetching.getAll();
+
+    return areas;
+  } catch (err) {
+    console.log("API Error[GET AREAS]:", err);
     return [];
   }
 }
