@@ -183,10 +183,9 @@ export async function updateSupplyInAmbulance(
   id: string,
   prevState: SupplyInAmbulanceState,
   formDataSupply: FormData
-): Promise<SupplyInPharmacyState> {
+): Promise<SupplyInAmbulanceState> {
   const validatedSupplyFields = UpdateSupplyInAmbulance.safeParse({
     ambulanceId: formDataSupply.get("ambulance"),
-    supplyId: formDataSupply.get("supply"),
     areaId: Number(formDataSupply.get("area")),
     avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
     minQuantity: Number(formDataSupply.get("minQuantity")),
@@ -205,7 +204,6 @@ export async function updateSupplyInAmbulance(
     const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
     await actions.update({
       ...validatedSupplyFields.data,
-      supplyId: undefined,
     });
   } catch (error) {
     return {

@@ -4,36 +4,51 @@ import { useActionState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { SupplyPharmacyType } from "@/app/lib/definitions";
+import {
+  AmbulanceAreaType,
+  AmbulanceType,
+  SupplyAmbulanceType,
+} from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import {
-  SupplyInPharmacyState,
-  updateSupplyInPharmacy,
+  SupplyInAmbulanceState,
+  updateSupplyInAmbulance,
 } from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
-import NotFound from "@/app/dashboard/supplies/pharmacies/[id]/edit/not-found";
-import {
-  FormDatepicker,
-  FormInputSingle,
-  FormSelect,
-} from "@/app/ui/dashboard/form-fields";
-import { customUnits } from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
 
 export default function SupplyEditForm({
   data,
 }: {
-  data: [SupplyPharmacyType | undefined, string];
+  data: [
+    SupplyAmbulanceType | undefined,
+    string | number,
+    AmbulanceType[],
+    AmbulanceAreaType[]
+  ];
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
 
-  const [supply, delegationId] = data;
+  const [supply, ambulanceId, ambulances, areas] = data;
 
   if (!supply) {
     return null;
   }
 
-  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
-  const updateSupplyWithId = updateSupplyInPharmacy.bind(
+  const customSelectedAmbulances = ambulances.map(({ id, number }) => ({
+    id,
+    value: id,
+    label: number,
+  }));
+
+  const customSelectedAreas = areas.map(({ id, name }) => ({
+    id,
+    value: id,
+    label: name,
+  }));
+
+  const initialState: SupplyInAmbulanceState = { errors: {}, message: null };
+  const updateSupplyWithId = updateSupplyInAmbulance.bind(
     null,
     supply?.id || ""
   );
@@ -47,11 +62,6 @@ export default function SupplyEditForm({
     state.errors?.success &&
       state.errors?.success.map((error: string) => toast.error(error));
   }, [state.errors?.success]);
-
-  const datePicker = new Date(supply.expiration_date)
-    .toISOString()
-    .split("T")[0];
-  const dateStart = new Date().toISOString().split("T")[0];
 
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -67,36 +77,41 @@ export default function SupplyEditForm({
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-3/5" action={formAction}>
           <div className="grid gap-4 mb-4 sm:grid-cols-1">
-            <input
-              type="text"
-              name="pharmacy"
-              defaultValue={supply.pharmacy_id}
-              className="hidden"
-            />
-
             <FormSelect
-              key="select-measurementUnit"
-              name="measurementUnit"
-              title="Unidad de Medida"
-              options={customUnits}
-              defaultValue={supply.measurement_unit}
-              errors={state.errors?.measurementUnit}
+              key="select-ambulance"
+              name="ambulance"
+              title="Ambulancia"
+              options={[
+                {
+                  id: 0,
+                  label: "Seleccione un Ambulancia",
+                  value: "",
+                },
+                ...customSelectedAmbulances,
+              ]}
+              defaultValue={ambulanceId}
+              errors={state.errors?.ambulanceId}
               required
             />
 
-            <div className="flex flex-col gap-2 w-2/5">
-              <FormDatepicker
-                key="datepicker-expirationDate"
-                name="expirationDate"
-                title="Fecha de Caducidad"
-                initialDate={datePicker}
-                dateStart={dateStart}
-                errors={state.errors?.expirationDate}
-                required
-              />
-            </div>
+            <FormSelect
+              key="select-area"
+              name="area"
+              title="Área en la Ambulancia"
+              options={[
+                {
+                  id: 0,
+                  label: "Seleccione el Área",
+                  value: "",
+                },
+                ...customSelectedAreas,
+              ]}
+              defaultValue={supply.area_id}
+              errors={state.errors?.areaId}
+              required
+            />
 
-            <div className="w-2/12">
+            <div className="w-3/12 md:w-2/12">
               <FormInputSingle
                 key="input-avaibleQuantity"
                 type="number"
@@ -108,10 +123,23 @@ export default function SupplyEditForm({
                 required
               />
             </div>
+
+            <div className="w-5/12 md:w-3/12">
+              <FormInputSingle
+                key="input-minQuantity"
+                type="number"
+                name="minQuantity"
+                title="Cantidad Mínima"
+                placeholder="0"
+                initialValue={String(supply.min_quantity)}
+                errors={state.errors?.minQuantity}
+                required
+              />
+            </div>
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Link
-              href={`/dashboard/supplies/${delegationId}/pharmacies`}
+              href={`/dashboard/supplies/ambulances?ambulance=${supply.ambulance_id}`}
               className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Regresar

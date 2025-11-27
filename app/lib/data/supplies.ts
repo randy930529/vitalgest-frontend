@@ -48,3 +48,19 @@ export async function fetchSuppliesByAmbulanceId(
     return [];
   }
 }
+
+export async function fetchAmbulanceSupplyById(
+  id: string
+): Promise<SupplyAmbulanceType | undefined> {
+  try {
+    const endPoint = `/api/ambulances/supplies/one/${id}`;
+
+    const dataFetching = new DataFetch<SupplyAmbulanceType>(endPoint, true);
+    const supply = await dataFetching.getOne();
+
+    return supply;
+  } catch (error) {
+    console.log("Database Error:", error);
+    return;
+  }
+}
