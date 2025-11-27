@@ -62,7 +62,9 @@ export default async function PharmacySuppliesPage({
         fallback={
           <TableSkeleton
             title="Crear Ambulancia"
-            modelContent={<SupplyForm pharmacyId={pharmacyId} />}
+            modelContent={
+              <SupplyForm pharmacyId={pharmacyId} delegations={delegations} />
+            }
           />
         }
       >

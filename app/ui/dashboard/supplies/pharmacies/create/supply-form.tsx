@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { DelegationType } from "@/app/lib/definitions";
 import {
   createSupplyInPharmacy,
   SupplyInPharmacyState,
@@ -98,12 +99,22 @@ export const customUnits = [
 
 export default function SupplyForm({
   pharmacyId,
+  delegations,
   onClose,
 }: {
   pharmacyId: string | number;
+  delegations: DelegationType[];
   onClose?: () => void;
 }) {
   // (Component) Formulario de Insumos - [CSR]
+
+  const customSelectedDelegations = delegations.map(
+    ({ id, name, pharmacy }) => ({
+      id,
+      value: pharmacy.id,
+      label: name,
+    })
+  );
 
   const initialState: SupplyInPharmacyState = { errors: {}, message: null };
   const [state, formAction] = useActionState(
@@ -126,11 +137,19 @@ export default function SupplyForm({
   return (
     <form action={formAction}>
       <div className="grid gap-4 mb-4 sm:grid-cols-1">
-        <input
-          type="text"
+        <FormSelect
+          key={pharmacyId}
           name="pharmacy"
+          title="Delegación"
+          options={[
+            {
+              id: 0,
+              value: "",
+              label: "Seleccione la Delegación",
+            },
+            ...customSelectedDelegations,
+          ]}
           defaultValue={pharmacyId}
-          className="hidden"
         />
 
         <FormInputSingle

@@ -67,7 +67,9 @@ export default function PharmacySuppliesTable({
         />
         <ModalTrigger
           title="Crear Insumo"
-          modelContent={<SupplyForm pharmacyId={pharmacyId} />}
+          modelContent={
+            <SupplyForm pharmacyId={pharmacyId} delegations={delegations} />
+          }
         />
       </Filters>
       <div className="overflow-x-auto">
