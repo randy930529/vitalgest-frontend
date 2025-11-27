@@ -1,18 +1,19 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import {
+  AmbulanceAreaType,
+  AmbulanceType,
+  SupplyPharmacyType,
+} from "@/app/lib/definitions";
 import {
   createSupplyInAmbulance,
   SupplyInAmbulanceState,
 } from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
 import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
-import {
-  AmbulanceAreaType,
-  AmbulanceType,
-  SupplyPharmacyType,
-} from "@/app/lib/definitions";
+import { Badge } from "@/app/ui/badges";
 
 export default function SupplyForm({
   ambulanceId,
@@ -53,6 +54,9 @@ export default function SupplyForm({
     initialState
   );
 
+  const [quantity, setQuantity] = useState<number | null>(null);
+  const [avaibleQuantity, setAvaibleQuantity] = useState<number | null>(null);
+
   useEffect(() => {
     state.message && toast.success(state.message);
     state.message && onClose && onClose();
@@ -62,6 +66,24 @@ export default function SupplyForm({
     state.errors?.success &&
       state.errors?.success.map((error: string) => toast.error(error));
   }, [state.errors?.success]);
+
+  function handleSupply(name: string, supplyId: string) {
+    const { avaible_quantity } =
+      suppliesPharmacy.find(({ id }) => id === supplyId) || {};
+
+    setAvaibleQuantity(avaible_quantity || null);
+    setQuantity(avaible_quantity || null);
+  }
+
+  function handleAvaibleQuantitySupply(name: string, value: string) {
+    if (value && avaibleQuantity) {
+      const rest = Number(avaibleQuantity) - Number(value);
+
+      if (Number(value) >= 0 && rest >= 0) {
+        setQuantity(rest);
+      }
+    }
+  }
 
   return (
     <form action={formAction}>
@@ -96,6 +118,7 @@ export default function SupplyForm({
             ...customSelectedSuppliesPharmacy,
           ]}
           errors={state.errors?.supplyId}
+          handleOption={handleSupply}
           required
         />
 
@@ -115,14 +138,27 @@ export default function SupplyForm({
           required
         />
 
+        {avaibleQuantity && (
+          <div className="w-5/12 space-y-2 md:w-3/12">
+            <p>Disponibilidad</p>
+            <Badge
+              title={String(quantity)}
+              success={quantity ? quantity > 5 : false}
+              pending={quantity ? quantity <= 5 : undefined}
+            />
+          </div>
+        )}
+
         <div className="w-3/12 md:w-2/12">
           <FormInputSingle
-            key="input-avaibleQuantity"
+            key={`input-avaibleQuantity-${avaibleQuantity}`}
             type="number"
             name="avaibleQuantity"
             title="Cantidad"
             placeholder="0"
+            initialValue={String(0)}
             errors={state.errors?.avaibleQuantity}
+            handleOption={handleAvaibleQuantitySupply}
             required
           />
         </div>
