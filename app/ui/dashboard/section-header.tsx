@@ -22,6 +22,10 @@ const customSectionMeta: {
     title: "Gestión de Ambulancias",
     subtitle: "Administrar ambulancias en el sistema",
   },
+  supplies: {
+    title: "Gestión de Insumos",
+    subtitle: "Administrar los insumos en el sistema",
+  },
 };
 
 export default function SectionHeader() {

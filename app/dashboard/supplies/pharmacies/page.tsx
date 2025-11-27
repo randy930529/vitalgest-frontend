@@ -23,12 +23,10 @@ export default async function PharmacySuppliesPage({
 }) {
   // (Página) Gestionar insumos en farmacia - [SSR]
 
-  const { pharmacy } = await searchParams;
+  let { pharmacy: pharmacyId } = await searchParams;
   const delegations = await fetchDelegations();
 
-  let pharmacyId = pharmacy;
-
-  if (!pharmacy) {
+  if (!pharmacyId) {
     const delegationId = (await getSession())?.user.delegationId;
 
     if (delegationId) {
@@ -64,7 +62,9 @@ export default async function PharmacySuppliesPage({
         fallback={
           <TableSkeleton
             title="Crear Ambulancia"
-            modelContent={<SupplyForm pharmacyId={pharmacyId} />}
+            modelContent={
+              <SupplyForm pharmacyId={pharmacyId} delegations={delegations} />
+            }
           />
         }
       >

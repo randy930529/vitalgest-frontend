@@ -101,12 +101,18 @@ export type GuardType = BaseType & {
   shifts: ShiftType[];
 };
 
-export type AmbulanceType = {
+export type AmbulanceType = BaseType & {
   id: string;
   number: string;
   brand: string;
   model: string;
   delegation: DelegationType;
+};
+
+export type AmbulanceAreaType = BaseType & {
+  name: string;
+  section: string;
+  order: number;
 };
 
 export type CheckListAmbulanceType = BaseType & {

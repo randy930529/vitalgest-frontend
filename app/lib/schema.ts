@@ -137,7 +137,7 @@ const FormChecklistSchema = z.object({
     .number({
       invalid_type_error: "Por favor ingrese kilometraje actual.",
     })
-    .min(0, { message: "El kilometraje no puede ser negativo." }),
+    .min(1, { message: "El kilometraje no puede ser menor que 1." }),
   notes: z
     .string()
     .trim()
@@ -177,8 +177,23 @@ const FormChecklistSchema = z.object({
 
 const FormSupplySchema = z.object({
   id: z.string().uuid(),
-  pharmacyId: z.string({
-    invalid_type_error: "Por favor seleccione una farmacia.",
+  pharmacyId: z
+    .string({
+      invalid_type_error: "Por favor seleccione una farmacia.",
+    })
+    .uuid(),
+  ambulanceId: z
+    .string({
+      invalid_type_error: "Por favor seleccione una ambulancia.",
+    })
+    .uuid(),
+  supplyId: z
+    .string({
+      invalid_type_error: "Por favor seleccione un insumo.",
+    })
+    .uuid(),
+  areaId: z.number({
+    invalid_type_error: "Por favor seleccione un insumo.",
   }),
   category: z.string({
     invalid_type_error: "Por favor seleccione una categoria.",
@@ -190,7 +205,12 @@ const FormSupplySchema = z.object({
     .number({
       invalid_type_error: "Por favor ingrese un cantidad.",
     })
-    .min(0, { message: "La cantidad no puede ser negativa." }),
+    .min(1, { message: "La cantidad no puede ser menor que 1." }),
+  minQuantity: z
+    .number({
+      invalid_type_error: "Por favor ingrese un cantidad mínima.",
+    })
+    .min(1, { message: "La cantidad mínima no puede ser menor que 1." }),
   expirationDate: z.date({
     invalid_type_error: "Formato de fecha inválido.",
     message: "Por favor seleccione un fecha de vencimiento.",
@@ -242,5 +262,36 @@ export const SignChecklist = FormChecklistSchema.omit({
   signRecipientFile: true,
 });
 
-export const CreateSupply = FormSupplySchema.omit({ id: true });
-export const UpdateSupply = FormSupplySchema.omit({ id: true });
+export const CreateSupplyInPharmacy = FormSupplySchema.omit({
+  id: true,
+  supplyId: true,
+  ambulanceId: true,
+  areaId: true,
+  minQuantity: true,
+});
+export const UpdateSupplyInPharmacy = FormSupplySchema.omit({
+  id: true,
+  supplyId: true,
+  ambulanceId: true,
+  areaId: true,
+  minQuantity: true,
+});
+
+export const CreateSupplyInAmbulance = FormSupplySchema.omit({
+  id: true,
+  category: true,
+  expirationDate: true,
+  measurementUnit: true,
+  pharmacyId: true,
+  notes: true,
+  specification: true,
+});
+export const UpdateSupplyInAmbulance = FormSupplySchema.omit({
+  id: true,
+  category: true,
+  expirationDate: true,
+  measurementUnit: true,
+  pharmacyId: true,
+  notes: true,
+  specification: true,
+});

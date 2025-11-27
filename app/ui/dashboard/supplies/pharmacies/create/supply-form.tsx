@@ -2,7 +2,11 @@
 
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { createSupply, SupplyState } from "@/app/lib/actions/supply";
+import { DelegationType } from "@/app/lib/definitions";
+import {
+  createSupplyInPharmacy,
+  SupplyInPharmacyState,
+} from "@/app/lib/actions/supply";
 import { Button } from "@/app/ui/button";
 import {
   FormDatepicker,
@@ -95,15 +99,28 @@ export const customUnits = [
 
 export default function SupplyForm({
   pharmacyId,
+  delegations,
   onClose,
 }: {
   pharmacyId: string | number;
+  delegations: DelegationType[];
   onClose?: () => void;
 }) {
   // (Component) Formulario de Insumos - [CSR]
 
-  const initialState: SupplyState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(createSupply, initialState);
+  const customSelectedDelegations = delegations.map(
+    ({ id, name, pharmacy }) => ({
+      id,
+      value: pharmacy.id,
+      label: name,
+    })
+  );
+
+  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
+  const [state, formAction] = useActionState(
+    createSupplyInPharmacy,
+    initialState
+  );
 
   useEffect(() => {
     state.message && toast.success(state.message);
@@ -120,11 +137,19 @@ export default function SupplyForm({
   return (
     <form action={formAction}>
       <div className="grid gap-4 mb-4 sm:grid-cols-1">
-        <input
-          type="text"
+        <FormSelect
+          key={pharmacyId}
           name="pharmacy"
+          title="Delegación"
+          options={[
+            {
+              id: 0,
+              value: "",
+              label: "Seleccione la Delegación",
+            },
+            ...customSelectedDelegations,
+          ]}
           defaultValue={pharmacyId}
-          className="hidden"
         />
 
         <FormInputSingle
@@ -166,7 +191,7 @@ export default function SupplyForm({
           />
         </div>
 
-        <div className="w-2/12">
+        <div className="w-3/12 md:w-2/12">
           <FormInputSingle
             key="input-avaibleQuantity"
             type="number"
