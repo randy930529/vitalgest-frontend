@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 import {
   AmbulanceAreaType,
@@ -11,6 +10,8 @@ import {
   SupplyPharmacyType,
 } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { deleteSupplyInAmbulance } from "@/app/lib/actions/supply";
+import { Badge } from "@/app/ui/badges";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
@@ -19,16 +20,17 @@ import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import SupplyForm from "@/app/ui/dashboard/supplies/ambulances/create/supply-form";
-import { deleteSupplyInAmbulance } from "@/app/lib/actions/supply";
 import { SearchAmbulanceSupplies } from "@/app/ui/dashboard/search";
 
 const customHeaders = [
   { id: 0, label: "Categoría" },
   { id: 1, label: "Especificación" },
-  { id: 2, label: "Fecha de Caducidad" },
-  { id: 3, label: "Cantidad" },
-  { id: 4, label: "Fecha de entrada" },
-  { id: 5, label: "Registrado por" },
+  { id: 2, label: "Área" },
+  { id: 3, label: "Fecha de Caducidad" },
+  { id: 4, label: "Cantidad" },
+  { id: 5, label: "Cantidad Mínima" },
+  { id: 6, label: "Fecha de entrada" },
+  // { id: 6, label: "Registrado por" },
 ];
 
 export default function AmbulanceSuppliesTable({
@@ -51,8 +53,8 @@ export default function AmbulanceSuppliesTable({
     suppliesPharmacy,
     delegations,
   ] = data;
+
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const params = useParams<{ delegationId: string }>();
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -176,16 +178,35 @@ export default function AmbulanceSuppliesTable({
                 </th>
                 <td className="px-4 py-3">{supply.specification}</td>
                 <td className="px-4 py-3">
+                  {areas.find(({ id }) => Number(id) === supply.area_id)
+                    ?.name || ""}
+                </td>
+                <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(supply.expiration_date)}
                 </td>
-                <td className="px-4 py-3">{supply.avaible_quantity}</td>
+                {supply.avaible_quantity < supply.min_quantity ? (
+                  <td
+                    className="px-4 py-3"
+                    data-tooltip-id="checkbox-avaibleQuantity-tooltip"
+                  >
+                    <Badge title={String(supply.avaible_quantity)} pending />
+                    <Tooltip
+                      id="checkbox-avaibleQuantity-tooltip"
+                      content="¡Insumo faltante!"
+                      className="font-normal capitalize"
+                    />
+                  </td>
+                ) : (
+                  <td className="px-4 py-3">{supply.avaible_quantity}</td>
+                )}
+                <td className="px-4 py-3">{supply.min_quantity}</td>
                 <td className="px-4 py-3">
                   {formatDateToDDMMYYYY(supply.createdAt)}
                 </td>
-                <td className="px-4 py-3">{/* usuario del registro */}</td>
+                {/* <td className="px-4 py-3">usuario del registro</td> */}
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/supplies/${params.delegationId}/pharmacies/${supply.id}/edit`}
+                    editLink={`/dashboard/supplies/ambulances/${supply.id}/edit`}
                   />
                   <TableActionDelete
                     id={supply.id}
