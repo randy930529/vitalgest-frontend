@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CruzRojaLogo } from "@/app/ui/logos";
+import ChecklistSubTitle from "@/app/checklists/[guardId]/(checkeds)/checklist-subtitle";
 
 export default async function DashboardLayout({
   children,
@@ -22,9 +23,7 @@ export default async function DashboardLayout({
           <h2 className="text-xl md:text-2xl font-bold dark:text-white text-center">
             Coordinación Local de Socorros
           </h2>
-          <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center">
-            Checklist de Ambulancia
-          </p>
+          <ChecklistSubTitle />
         </div>
         <Image
           src="/images/ambulancia.svg"
