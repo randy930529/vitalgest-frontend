@@ -70,12 +70,11 @@ export default async function EditCheckListAmbulancePage({
           {
             label: "Chequeo de Ambulancia",
             href: `/checklists/${guardId}/ambulances/${id}/create`,
-            active: true,
           },
           {
             label: "Checklist",
             href: `/checklists/${guardId}/ambulances/${id}/edit?step=${step}`,
-            active: false,
+            active: true,
           },
         ]}
       />
