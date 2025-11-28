@@ -1,33 +1,30 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { notFound, redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { ShiftType } from "@/app/lib/definitions";
 import {
-  ChecklistState,
-  createChecklistAmbulance,
+  ChecklistSuppliesState,
+  createChecklistSupplies,
 } from "@/app/lib/actions/checklist";
 import { Button } from "@/app/ui/button";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import {
-  FormInputSingle,
-  FormSelect,
-  FormUploadFile,
-} from "@/app/ui/dashboard/form-fields";
+import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import { Timer } from "@/app/ui/checklists/ambulances/create/checklist-ambulance-form";
 
-export default function ChecklistAmbulanceForm({
+export default function ChecklistSuppliesForm({
   data,
 }: {
   data: ShiftType | undefined;
 }) {
-  // (Component) Formulario de Checklist de Ambulancia - [CSR]
+  // (Component) Formulario de Checklist de Insumos - [CSR]
 
   if (!data) {
     notFound();
   }
 
-  const { guard, ambulance, driver, paramedical } = data;
+  const { guard, ambulance, paramedical } = data;
 
   const guardShif = {
     id: guard.guardChief?.id || "000",
@@ -37,9 +34,9 @@ export default function ChecklistAmbulanceForm({
       return `${this.name} ${this.lastname}`;
     },
   };
-  const initialState: ChecklistState = { errors: {}, message: null };
+  const initialState: ChecklistSuppliesState = { errors: {}, message: null };
   const [state, formAction] = useActionState(
-    createChecklistAmbulance,
+    createChecklistSupplies,
     initialState
   );
   console.log(state);
@@ -48,16 +45,10 @@ export default function ChecklistAmbulanceForm({
     if (state.message && state.checklist) {
       toast.success(state.message);
       redirect(
-        `/checklists/${guard.id}/ambulances/${state.checklist.id}/edit?step=1`
+        `/checklists/${guard.id}/supplies/${state.checklist.id}/edit?step=1`
       );
     }
   }, [state.message]);
-
-  useEffect(() => {
-    if (state.errors?.gasFile) {
-      toast.error("Porfavor seleccione el vale de gas.");
-    }
-  }, [state.errors?.gasFile]);
 
   useEffect(() => {
     state.errors?.success &&
@@ -76,12 +67,6 @@ export default function ChecklistAmbulanceForm({
         <div className="grid gap-4 sm: mb-4 sm:grid-flow-row sm:grid-cols-3">
           <p className="font-semibold text-center md:ms-6">
             Ambulancia: <span className="font-normal">{ambulance.number}</span>
-            <input
-              type="text"
-              name="ambulance"
-              defaultValue={ambulance.id}
-              className="hidden"
-            />
           </p>
           <div className="flex flex-col items-center">
             <p className="font-semibold text-center">
@@ -90,14 +75,6 @@ export default function ChecklistAmbulanceForm({
                 {formatDateToDDMMYYYY(guard.date)}
               </span>
             </p>
-            <div className="flex w-1/3 gap-2">
-              <FormInputSingle
-                name="km"
-                type="number"
-                title="Km: "
-                placeholder="0"
-              />
-            </div>
           </div>
           <div className="flex flex-col items-center md:items-start">
             <div className="flex justify-center gap-1 w-3/5 font-semibold md:justify-start">
@@ -106,18 +83,6 @@ export default function ChecklistAmbulanceForm({
                 <Timer />
               </div>
             </div>
-            <div className="flex gap-1 flex-col items-center md:flex-row">
-              <FormUploadFile
-                name="gasFile"
-                title="Vale de Gas:"
-                errors={state.errors?.gasFile}
-                acceptFile=".jpg,.jpeg,.pdf"
-                required
-              />
-            </div>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-              JPG, PNG o PDF
-            </p>
           </div>
 
           <div className="flex flex-col">
@@ -133,19 +98,6 @@ export default function ChecklistAmbulanceForm({
                 },
               ]}
               defaultValue={guardShif.id}
-            />
-            <FormSelect
-              key={driver.id}
-              name={driver.id}
-              title="Operador:"
-              options={[
-                {
-                  id: driver.id,
-                  label: `${driver.name} ${driver.lastname}`,
-                  value: driver.id,
-                },
-              ]}
-              defaultValue={driver.id}
             />
             <FormSelect
               key={paramedical.id}
@@ -171,26 +123,4 @@ export default function ChecklistAmbulanceForm({
       </form>
     </section>
   );
-}
-
-export function Timer() {
-  function getCurrentTime(): string {
-    const now = new Date();
-    return now.toLocaleTimeString("es-MX", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-  }
-  const [time, setTime] = useState(getCurrentTime());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(getCurrentTime());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-  return <span className="font-normal">{time}</span>;
 }

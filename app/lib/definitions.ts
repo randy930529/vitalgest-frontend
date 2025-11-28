@@ -123,7 +123,7 @@ export type CheckListAmbulanceType = BaseType & {
   gas_path?: string;
   sign_operator_path?: string;
   recipient_id?: string;
-  sign_recipient_path?: null;
+  sign_recipient_path?: string;
   notes?: string;
 };
 
@@ -156,6 +156,12 @@ export type ChecklistQuestionsType = BaseType & {
     | "bool_text"
     | "option_text"
     | "bool_option_text";
+};
+
+export type ChecklistSuppliesType = BaseType & {
+  shift_id: string;
+  sign_paramedical_path?: string;
+  sign_recipient_path?: string;
 };
 
 export type ChecklistAnswersType = {

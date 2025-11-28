@@ -262,6 +262,17 @@ export const SignChecklist = FormChecklistSchema.omit({
   signRecipientFile: true,
 });
 
+export const CreateChecklistSupplies = FormChecklistSchema.omit({
+  id: true,
+  recipientId: true,
+  signOperatorFile: true,
+  signRecipientFile: true,
+  ambulanceId: true,
+  gasFile: true,
+  km: true,
+  notes: true,
+});
+
 export const CreateSupplyInPharmacy = FormSupplySchema.omit({
   id: true,
   supplyId: true,

@@ -3,10 +3,15 @@
 import {
   CheckListAmbulanceType,
   ChecklistAnswersType,
+  ChecklistSuppliesType,
   StateType,
 } from "@/app/lib/definitions";
 import { ActionsServer } from "@/app/lib/actions/actions";
-import { CreateChecklist, SignChecklist } from "@/app/lib/schema";
+import {
+  CreateChecklist,
+  CreateChecklistSupplies,
+  SignChecklist,
+} from "@/app/lib/schema";
 
 export type ChecklistState = StateType<{
   ambulance?: string[];
@@ -22,12 +27,19 @@ export type ChecklistState = StateType<{
   checklist?: CheckListAmbulanceType;
 };
 
+export type ChecklistSuppliesState = StateType<{
+  shiftId?: string[];
+  success?: string[];
+}> & {
+  checklist?: ChecklistSuppliesType;
+};
+
 export type ChecklistAnswersState = StateType<{
   answers?: string[];
   success?: string[];
 }>;
 
-export async function createChecklist(
+export async function createChecklistAmbulance(
   prevState: ChecklistState,
   formDataChecklist: FormData
 ): Promise<ChecklistState> {
@@ -56,7 +68,7 @@ export async function createChecklist(
     bodyContent.append("notes", "");
     bodyContent.append("gasFile", formDataChecklist.get("gasFile") as File);
 
-    const actions = new ActionsServer<CheckListAmbulanceType>(endPoint, true);
+    const actions = new ActionsServer<CheckListAmbulanceType>(endPoint);
     const checklist = await actions.createWithFormData(bodyContent);
 
     return { message: "Checklist creado exitosamente.", checklist: checklist };
@@ -136,6 +148,36 @@ export async function signCheckListAmbulance(
     await actions.updateWithFormData(bodyContent);
 
     return { message: "Checklist aprobado exitosamente." };
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+}
+
+export async function createChecklistSupplies(
+  prevState: ChecklistSuppliesState,
+  formDataChecklist: FormData
+): Promise<ChecklistSuppliesState> {
+  const validatedChecklistFields = CreateChecklistSupplies.safeParse({
+    shiftId: formDataChecklist.get("shift"),
+  });
+
+  if (!validatedChecklistFields.success) {
+    return {
+      errors: validatedChecklistFields.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const endPoint = "/api/checklists/supply/create";
+
+    const actions = new ActionsServer<ChecklistSuppliesType>(endPoint);
+    const checklist = await actions.create(validatedChecklistFields.data);
+
+    return { message: "Checklist creado exitosamente.", checklist: checklist };
   } catch (error) {
     return {
       errors: {
