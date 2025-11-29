@@ -127,6 +127,15 @@ export type CheckListAmbulanceType = BaseType & {
   notes?: string;
 };
 
+export type CheckListSupplyType = BaseType & {
+  shift_id: string;
+  sign_paramedical_path?: string;
+  recipient_id: string;
+  sign_recipient_path: string;
+  notes: string;
+  ambulance_id: string;
+};
+
 export type StepItemType = {
   id: number;
   label: string;
@@ -172,6 +181,11 @@ export type ChecklistAnswersType = {
   valueText?: string;
 };
 
+export type ChecklistSupplyType = {
+  supplyId: string;
+  requiredQuantity: number;
+};
+
 export type ShiftType = BaseType & {
   name?: string;
   ambulance: AmbulanceType;
@@ -179,7 +193,7 @@ export type ShiftType = BaseType & {
   paramedical: UserType;
   driver: UserType;
   checklistAmbulance?: CheckListAmbulanceType;
-  checklistSupplies?: null;
+  checklistSupplies?: CheckListSupplyType;
 };
 
 export type SupplyPharmacyType = BaseType & {

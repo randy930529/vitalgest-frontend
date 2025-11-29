@@ -201,7 +201,13 @@ function PaginationButton({
   );
 }
 
-export function PaginationChecklist({ isLast }: { isLast: boolean }) {
+export function PaginationChecklist({
+  isLast,
+  link = "ambulances",
+}: {
+  isLast: boolean;
+  link?: string;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("step")) || 1;
@@ -214,7 +220,7 @@ export function PaginationChecklist({ isLast }: { isLast: boolean }) {
         href={
           currentPage - 1
             ? createPageURL(currentPage - 1, searchParams, pathname)
-            : `/checklists/ambulances/${id}`
+            : `/checklists/${link}/${id}/create`
         }
         direction="left"
       />

@@ -45,7 +45,7 @@ export default function ChecklistSuppliesForm({
     if (state.message && state.checklist) {
       toast.success(state.message);
       redirect(
-        `/checklists/${guard.id}/supplies/${state.checklist.id}/edit?step=1`
+        `/checklists/${guard.id}/supplies/${state.checklist.id}/edit?ambulance=${ambulance.id}&step=1`
       );
     }
   }, [state.message]);
