@@ -7,7 +7,7 @@ export default function NotFound() {
       <FaceFrownIcon className="w-10 text-gray-400" />
       <Notfound404
         error={404}
-        message="No se encontró la lista de chequeo solicitada."
+        message="No se encontró la guardia solicitada."
         goBack="/"
       />
     </main>

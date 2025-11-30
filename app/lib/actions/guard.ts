@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { CreateGuard, UpdateGuard } from "@/app/lib/schema";
 import { GuardType, ResponseAPIType, StateType } from "@/app/lib/definitions";
 import { verifySession } from "@/app/lib/dal";
+import { ActionsServer } from "@/app/lib/actions/actions";
 
 export type GuardState = StateType<{
   guardChief?: string[];
@@ -206,4 +207,34 @@ export async function deleteGuard(id: string) {
 
   revalidatePath("/dashboard/guards");
   return { message: "Guardia eliminada exitosamente." };
+}
+
+export async function closeGuard(
+  id: string,
+  guard: GuardType
+): Promise<GuardState> {
+  const { guardChief, delegation, state } = guard;
+  const date = new Date(guard.date).toISOString().split("T")[0];
+
+  try {
+    const endPoint = `${process.env.API_URL}/api/guards/edit/${id}`;
+
+    const bodyContent = {
+      delegationId: delegation.id,
+      guardChief: guardChief.id,
+      date,
+      state,
+    };
+
+    const actions = new ActionsServer<GuardType>(endPoint);
+    await actions.update(bodyContent);
+  } catch (error) {
+    return {
+      errors: {
+        success: [error instanceof Error ? error.message : String(error)],
+      },
+    };
+  }
+
+  return { message: "Cambios guardados exitosamente." };
 }

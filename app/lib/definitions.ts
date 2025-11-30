@@ -123,8 +123,17 @@ export type CheckListAmbulanceType = BaseType & {
   gas_path?: string;
   sign_operator_path?: string;
   recipient_id?: string;
-  sign_recipient_path?: null;
+  sign_recipient_path?: string;
   notes?: string;
+};
+
+export type CheckListSupplyType = BaseType & {
+  shift_id: string;
+  sign_paramedical_path?: string;
+  recipient_id: string;
+  sign_recipient_path: string;
+  notes: string;
+  ambulance_id: string;
 };
 
 export type StepItemType = {
@@ -158,12 +167,23 @@ export type ChecklistQuestionsType = BaseType & {
     | "bool_option_text";
 };
 
+export type ChecklistSuppliesType = BaseType & {
+  shift_id: string;
+  sign_paramedical_path?: string;
+  sign_recipient_path?: string;
+};
+
 export type ChecklistAnswersType = {
   questionId: string;
   type: ChecklistQuestionsType["type_response"];
   valueBool?: boolean;
   valueOption?: string;
   valueText?: string;
+};
+
+export type ChecklistSupplyType = {
+  supplyId: string;
+  requiredQuantity: number;
 };
 
 export type ShiftType = BaseType & {
@@ -173,7 +193,7 @@ export type ShiftType = BaseType & {
   paramedical: UserType;
   driver: UserType;
   checklistAmbulance?: CheckListAmbulanceType;
-  checklistSupplies?: null;
+  checklistSupplies?: CheckListSupplyType;
 };
 
 export type SupplyPharmacyType = BaseType & {

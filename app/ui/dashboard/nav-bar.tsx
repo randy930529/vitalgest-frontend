@@ -30,7 +30,7 @@ export default function NavBar({
           <span className="sr-only">Link administration</span>
           {/* <!-- Cog icon --> */}
           <Cog6ToothIcon className="w-8 h-8" />
-          <Tooltip id="admin-tooltip" content="Dashboard Administrativo" />
+          <Tooltip id="admin-tooltip" content="Panel Administrativo" />
         </Link>
       )}
       {/* <!-- Notifications --> */}

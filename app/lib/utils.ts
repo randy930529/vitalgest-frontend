@@ -7,6 +7,7 @@ import {
 import {
   ChecklistAnswersType,
   ChecklistQuestionsType,
+  ChecklistSupplyType,
   CustomMxState,
   StepItemType,
 } from "@/app/lib/definitions";
@@ -146,6 +147,34 @@ export const createStepAnswers = (
       question.type_response,
       value.toString()
     );
+    answers.push(answer);
+  });
+  return answers;
+};
+
+export const createSupplyAnswer = (
+  questionId: string,
+  answer: string
+): ChecklistSupplyType => {
+  return {
+    supplyId: questionId,
+    requiredQuantity: Number(answer),
+  };
+};
+
+export const createStepSupplyAnswers = (formData: FormData) => {
+  const answers: ChecklistSupplyType[] = [];
+
+  formData.keys().forEach((key) => {
+    const [field, id] = key.split("~");
+
+    if (field === "details") return;
+
+    const value = formData.get(key);
+
+    if (value === null) return;
+
+    const answer = createSupplyAnswer(id, value.toString());
     answers.push(answer);
   });
   return answers;

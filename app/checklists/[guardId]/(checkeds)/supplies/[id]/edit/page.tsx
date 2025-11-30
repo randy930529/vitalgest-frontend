@@ -1,46 +1,118 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations } from "@/app/lib/data";
-import { fetchAmbulanceById } from "@/app/lib/data/ambulances";
+import { notFound } from "next/navigation";
+import { CustomOptions } from "@/app/lib/definitions";
+import {
+  fetchAmbulanceAreasSteps,
+  fetchChecklistSuppliesQuestions,
+} from "@/app/lib/data/checklist";
+import { fetchUsers } from "@/app/lib/data/users";
+import Timeline from "@/app/ui/timeline";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
-import AmbulanceEditForm from "@/app/ui/dashboard/ambulances/edit/ambulance-edit-form";
+import NotesSignatureForm from "@/app/ui/checklists/supplies/edit/notes-signature-form";
+import ChecklistQuestionsForm from "@/app/ui/checklists/supplies/edit/checklist-questions-form";
 
 export const metadata: Metadata = {
-  title: "Editar Ambulancia",
+  title: "Área de Chequeo de Insumos",
 };
 
-export default async function EditAmbulancePage(props: {
-  params: Promise<{ id: string }>;
+export default async function EditCheckListInsumosPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ guardId: string; id: string }>;
+  searchParams: Promise<{
+    ambulance: string | undefined;
+    step: string | undefined;
+    notes: string | undefined;
+  }>;
 }) {
-  // (Página) Editar Ambulancia - [SSR]
-  const params = await props.params;
-  const id = params.id;
-  const ambulance = await fetchAmbulanceById(id);
+  // (Página) Editar el CheckList de Insumos - [SSR]
 
-  const fetchAmbulanceByIdAndDelegations = async () =>
-    await Promise.all([fetchAmbulanceById(id), fetchDelegations()]);
+  const { guardId, id } = await params;
+  const { ambulance, step, notes } = await searchParams;
+  const areaId = Number(step) || 0;
+
+  const data = !notes
+    ? await fetchChecklistSuppliesQuestions(ambulance || "", areaId)
+    : [];
+
+  if (!notes && !areaId) {
+    notFound();
+  }
+
+  const [[steps, maxSteps], users] = await Promise.all([
+    fetchAmbulanceAreasSteps(),
+    fetchUsers(),
+  ]);
+  const isLastQuestions = areaId >= maxSteps;
+
+  const tmProgress = (areaId / maxSteps) * 100;
+
+  const currentStep = steps.find(({ id }) => id === areaId);
+  if (currentStep) {
+    currentStep.status = "pending";
+  }
+  const title = currentStep?.label;
+  const customUsers = users.map<
+    CustomOptions & {
+      position?: string;
+    }
+  >(({ id, name, lastname, position }) => ({
+    id,
+    label: `${name} ${lastname}`,
+    value: id,
+    position,
+  }));
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+    <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <Breadcrumbs
         breadcrumbs={[
-          { label: "", href: "/dashboard" },
-          { label: "Ambulancias", href: "/dashboard/ambulances" },
+          { label: "", href: "/" },
           {
-            label: "Editar Ambulancia",
-            href: `/dashboard/ambulances/${id}/edit`,
+            label: "Chequeo de Ambulancia",
+            href: `/checklists/${guardId}/supplies/${id}/create`,
+          },
+          {
+            label: "Checklist",
+            href: `/checklists/${guardId}/supplies/${id}/edit?step=${step}`,
             active: true,
           },
         ]}
       />
-      <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/ambulances" />}>
+      <section className="md:space-y-0 p-4">
+        {isLastQuestions && notes ? (
+          <NotesSignatureForm title={"Notas"} usersOptions={customUsers}>
+            <Timeline
+              key={"tm-progress-" + tmProgress}
+              steps={steps}
+              currentStepId={areaId}
+              progress={tmProgress}
+              showStatus
+            />
+          </NotesSignatureForm>
+        ) : (
+          <ChecklistQuestionsForm
+            data={data}
+            isLastQuestions={isLastQuestions}
+            title={title}
+          >
+            <Timeline
+              key={"tm-progress-" + tmProgress}
+              steps={steps}
+              currentStepId={areaId}
+              progress={tmProgress}
+            />
+          </ChecklistQuestionsForm>
+        )}
+      </section>
+      {/* <Suspense fallback={<FormSkeleton goBackUrl="/checklists" />}>
         <WrapperForm
-          fetchData={fetchAmbulanceByIdAndDelegations}
-          WrappedComponent={AmbulanceEditForm}
+          fetchData={async () => {}}
+          WrappedComponent={EditChecklistAmbulanceForm}
         />
-      </Suspense>
-    </section>
+      </Suspense> */}
+    </div>
   );
 }

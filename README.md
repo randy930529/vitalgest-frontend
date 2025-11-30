@@ -25,4 +25,5 @@ VitalGest prioriza la experiencia del usuario y la protección de datos, ofrecie
 
 - Next.js
 - React
+- Tailwindcss
 - Otras librerías modernas del ecosistema frontend

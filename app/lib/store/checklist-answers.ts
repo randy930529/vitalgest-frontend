@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ChecklistAnswersType } from "@/app/lib/definitions";
+import {
+  ChecklistAnswersType,
+  ChecklistSupplyType,
+} from "@/app/lib/definitions";
 
 type ChecklistAmbulanceState = {
   answers: Record<string, ChecklistAnswersType[]>;
@@ -37,5 +40,36 @@ export const useChecklistAmbulanceStore = create<ChecklistAmbulanceStore>()(
       reset: () => set({ ...initState }),
     }),
     { name: "answers-checklist-ambulance" }
+  )
+);
+
+type ChecklistSupplyState = {
+  answers: Record<string, ChecklistSupplyType[]>;
+};
+
+type ChecklistSupplyActions = {
+  setAnswer: (id: string, valor: ChecklistSupplyType[]) => void;
+  getAnswer: (id: string) => ChecklistSupplyType[] | undefined;
+  reset: () => void;
+};
+
+type ChecklistSupplyStore = ChecklistSupplyState & ChecklistSupplyActions;
+
+const initSupplyState: ChecklistSupplyState = {
+  answers: {},
+};
+
+export const useChecklistSupplyStore = create<ChecklistSupplyStore>()(
+  persist<ChecklistSupplyStore>(
+    (set, get) => ({
+      ...initSupplyState,
+      setAnswer: (id: string, valor: ChecklistSupplyType[]) =>
+        set((state) => ({
+          answers: { ...state.answers, [id]: valor },
+        })),
+      getAnswer: (id: string) => get().answers[id],
+      reset: () => set({ ...initSupplyState }),
+    }),
+    { name: "answers-checklist-supply" }
   )
 );

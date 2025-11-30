@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import {
   CheckListAmbulanceType,
+  CheckListSupplyType,
   GuardType,
   ShiftType,
   UserType,
@@ -119,19 +120,21 @@ export function ResourceStats({ cardItems }: { cardItems: StatCardProps[] }) {
 export function CheckListStats({
   guardId,
   id,
+  ambulanceId,
   checklistAmbulance,
   checklistSupplies,
 }: {
   guardId: string;
   id: string;
+  ambulanceId: string;
   checklistAmbulance: CheckListAmbulanceType | undefined;
-  checklistSupplies: any;
+  checklistSupplies: CheckListSupplyType | undefined;
 }) {
   return (
     <ol className="flex flex-col justify-between gap-2">
       {checklistAmbulance ? (
         <>
-          {checklistAmbulance.notes ? (
+          {checklistAmbulance.recipient_id ? (
             <li key={`checklists-link_ambulance-${id}`}>
               <ChecklistsLinkCard
                 title="CheckList Ambulancia"
@@ -148,7 +151,7 @@ export function CheckListStats({
                 link="ambulances"
                 param="edit?step=1"
                 guardId={guardId}
-                id={id}
+                id={checklistAmbulance.id}
               />
             </li>
           )}
@@ -165,7 +168,7 @@ export function CheckListStats({
       )}
       {checklistSupplies ? (
         <>
-          {checklistSupplies.notes ? (
+          {checklistSupplies.recipient_id ? (
             <li key={`checklists-link_supplies-${id}`}>
               <ChecklistsLinkCard
                 title="CheckList Insumos"
@@ -180,9 +183,9 @@ export function CheckListStats({
               <ChecklistsLinkCard
                 title="CheckList Insumos"
                 link="supplies"
-                param="edit"
+                param={`edit?ambulance=${ambulanceId}&step=1`}
                 guardId={guardId}
-                id={id}
+                id={checklistSupplies.id}
               />
             </li>
           )}
@@ -235,6 +238,7 @@ export function ShiftStats({
             <CheckListStats
               guardId={guardId}
               id={id}
+              ambulanceId={ambulance.id}
               checklistAmbulance={checklistAmbulance}
               checklistSupplies={checklistSupplies}
             />
