@@ -142,6 +142,8 @@ export default function DelegationTable({
                   />
                   <TableActionDelete
                     id={delegation.id}
+                    title="Eliminar Delegación"
+                    question={`¿Está seguro que desea eliminar la ${delegation.name}?`}
                     actionDelete={deleteDelegation}
                   />
                 </TableActions>

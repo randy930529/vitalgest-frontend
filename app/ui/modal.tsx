@@ -73,7 +73,7 @@ export default function Modal({
           </div>
           {/* <!-- Modal body --> */}
           <div
-            className="modal-body p-4 sm:px-8 sm:py-5"
+            className="modal-body space-y-3 p-4 sm:px-8 sm:py-5"
             onClick={(e) => e.stopPropagation()}
           >
             {question && <p className="w-full text-center">{question}</p>}

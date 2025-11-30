@@ -139,6 +139,8 @@ export default function AmbulanceTable({
                   />
                   <TableActionDelete
                     id={ambulance.id}
+                    title="Eliminar Ambulancia"
+                    question={`¿Está seguro que desea eliminar la ambulancia: ${ambulance.number}?`}
                     actionDelete={deleteAmbulance}
                   />
                 </TableActions>
