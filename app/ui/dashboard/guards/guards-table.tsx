@@ -29,6 +29,7 @@ const customHeaders = [
 
 export default function GuardsTable({
   data,
+  readonly,
 }: {
   data: [
     GuardType[],
@@ -36,6 +37,7 @@ export default function GuardsTable({
     DelegationType[],
     [CustomOptions[], CustomOptions[], CustomOptions[]]
   ];
+  readonly?: boolean;
 }) {
   // (Component) Lista de guardias existentes - [CSR]
 
@@ -77,80 +79,88 @@ export default function GuardsTable({
             }}
           />
         )}
-        <ModalTrigger
-          title="Crear Guardia"
-          modelContent={
-            <GuardForm
-              guardChiefs={guardChiefs}
-              delegations={delegations}
-              ambulances={customAmbulances}
-              drivers={drivers}
-              paramedicals={paramedicals}
-            />
-          }
-        />
+        {!readonly && (
+          <ModalTrigger
+            title="Crear Guardia"
+            modelContent={
+              <GuardForm
+                guardChiefs={guardChiefs}
+                delegations={delegations}
+                ambulances={customAmbulances}
+                drivers={drivers}
+                paramedicals={paramedicals}
+              />
+            }
+          />
+        )}
       </Filters>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-4 py-3">
-                <div className="flex items-center">
-                  <input
-                    id="checkbox-all"
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    data-tooltip-id="checkbox-all-tooltip"
-                    onChange={(event) => {
-                      handleSelectAllChange(event.target.checked);
-                    }}
-                  />
-                  <Tooltip
-                    id="checkbox-all-tooltip"
-                    content="Seleccionar Todos"
-                    className="font-normal capitalize"
-                  />
-                  <label htmlFor="checkbox-all" className="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </th>
+              {!readonly && (
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-all"
+                      type="checkbox"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      data-tooltip-id="checkbox-all-tooltip"
+                      onChange={(event) => {
+                        handleSelectAllChange(event.target.checked);
+                      }}
+                    />
+                    <Tooltip
+                      id="checkbox-all-tooltip"
+                      content="Seleccionar Todos"
+                      className="font-normal capitalize"
+                    />
+                    <label htmlFor="checkbox-all" className="sr-only">
+                      checkbox
+                    </label>
+                  </div>
+                </th>
+              )}
               {customHeaders.map((header) => (
                 <th key={header.id} scope="col" className="px-4 py-3">
                   {header.label}
                 </th>
               ))}
-              <th
-                scope="col"
-                className="px-4 py-3 flex items-center justify-end"
-              >
-                Acciones
-              </th>
+              {!readonly && (
+                <th
+                  scope="col"
+                  className="px-4 py-3 flex items-center justify-end"
+                >
+                  Acciones
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             {guards?.map((guard) => (
               <tr key={guard.id} className="border-b dark:border-gray-700">
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id={`checkbox-table-${guard.id}`}
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      value={guard.id}
-                      checked={selectedIds.includes(guard.id)}
-                      onChange={(event) => {
-                        handleCheckboxChange(guard.id, event.target.checked);
-                      }}
-                    />
-                    <label
-                      htmlFor={`checkbox-table-${guard.id}`}
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
-                  </div>
-                </td>
+                {!readonly && (
+                  <td className="w-4 p-4">
+                    <div className="flex items-center">
+                      <input
+                        id={`checkbox-table-${guard.id}`}
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        value={guard.id}
+                        checked={selectedIds.includes(guard.id)}
+                        onChange={(event) => {
+                          handleCheckboxChange(guard.id, event.target.checked);
+                        }}
+                      />
+                      <label
+                        htmlFor={`checkbox-table-${guard.id}`}
+                        className="sr-only"
+                      >
+                        checkbox
+                      </label>
+                    </div>
+                  </td>
+                )}
                 <th
                   scope="row"
                   className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -164,17 +174,19 @@ export default function GuardsTable({
                 <td className="px-4 py-3">
                   <GuardStateShow state={guard.state} />
                 </td>
-                <TableActions>
-                  <TableActionEdit
-                    editLink={`/dashboard/guards/${guard.id}/edit`}
-                  />
-                  <TableActionDelete
-                    id={guard.id}
-                    title="Eliminar Guardia"
-                    question="¿Está seguro que desea eliminar la guardia?"
-                    actionDelete={deleteGuard}
-                  />
-                </TableActions>
+                {!readonly && (
+                  <TableActions>
+                    <TableActionEdit
+                      editLink={`/dashboard/guards/${guard.id}/edit`}
+                    />
+                    <TableActionDelete
+                      id={guard.id}
+                      title="Eliminar Guardia"
+                      question="¿Está seguro que desea eliminar la guardia?"
+                      actionDelete={deleteGuard}
+                    />
+                  </TableActions>
+                )}
               </tr>
             ))}
           </tbody>

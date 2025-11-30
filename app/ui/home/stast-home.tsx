@@ -276,7 +276,7 @@ export function GuardStats({ guard }: { guard: GuardType }) {
   return (
     <section className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-sm font-bold text-gray-800 md:text-xl">
+        <h2 className="text-xl md:text-2xl font-bold dark:text-white">
           Detalles de Guardia Actual
         </h2>
         <p className="flex gap-1 items-center bg-green-100 text-green-700 mx-2 px-3 py-1 rounded-full text-sm font-semibold">
