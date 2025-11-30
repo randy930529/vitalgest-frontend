@@ -55,8 +55,7 @@ export default async function Header({ user }: { user: UserType }) {
             VitalGest
           </h1>
           <p className="mt-4 text-lg font-medium text-pretty text-gray-300 sm:text-xl/8">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. A ea
-            consectetur aspernatur nam nulla vel placeat eveniet obcaecati.
+            Cruz Roja Mexicana
           </p>
         </div>
         <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
