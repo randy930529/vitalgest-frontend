@@ -35,9 +35,7 @@ export default function UserTable({
 }: {
   data: [UserType[], DelegationType[]];
 }) {
-  {
-    /* <div>(Component) Tabla interactiva de usuarios - [CSR]</div> */
-  }
+  // (Component) Tabla interactiva de usuarios - [CSR]
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [users, delegations] = data;
@@ -151,7 +149,13 @@ export default function UserTable({
                   <TableActionEdit
                     editLink={`/dashboard/users/${user.id}/edit`}
                   />
-                  <TableActionDelete id={user.id} actionDelete={deleteUser} />
+                  <TableActionDelete
+                    id={user.id}
+                    title="Eliminar Usuario"
+                    actionDelete={deleteUser}
+                    question={`¿Está seguro que desea eliminar el usuario ${user.name} ${user.lastname}?`}
+                    details="Esta accion desactivara permanentemente la cuenta del usuario. El usuario no podra acceder al sistema, pero su informacion se mantendra en la base de datos para fines históricos."
+                  />
                 </TableActions>
               </tr>
             ))}

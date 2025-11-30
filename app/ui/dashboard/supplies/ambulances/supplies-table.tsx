@@ -210,6 +210,8 @@ export default function AmbulanceSuppliesTable({
                   />
                   <TableActionDelete
                     id={supply.id}
+                    title="Eliminar Insumo"
+                    question={`¿Está seguro que desea eliminar el insumo: ${supply.category}?`}
                     actionDelete={handleDelete}
                   />
                 </TableActions>

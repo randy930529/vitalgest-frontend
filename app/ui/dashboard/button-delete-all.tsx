@@ -21,7 +21,12 @@ export default function TableActionDeleteAllSelected({
         content="Eliminar los Seleccionados"
         place="left"
       />
-      <TableActionDelete id={"ambulanceIds"} actionDelete={handleDelete} />
+      <TableActionDelete
+        id={"ambulanceIds"}
+        title="Eliminar Todos"
+        question={`¿Está seguro que desea eliminar los elementos seleccionados`}
+        actionDelete={handleDelete}
+      />
       <div className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-primary-700 text-xs font-bold text-white">
         {selectedIds.length}
       </div>

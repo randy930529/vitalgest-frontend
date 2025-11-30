@@ -168,7 +168,12 @@ export default function GuardsTable({
                   <TableActionEdit
                     editLink={`/dashboard/guards/${guard.id}/edit`}
                   />
-                  <TableActionDelete id={guard.id} actionDelete={deleteGuard} />
+                  <TableActionDelete
+                    id={guard.id}
+                    title="Eliminar Guardia"
+                    question="¿Está seguro que desea eliminar la guardia?"
+                    actionDelete={deleteGuard}
+                  />
                 </TableActions>
               </tr>
             ))}
