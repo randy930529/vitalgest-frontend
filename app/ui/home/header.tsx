@@ -9,7 +9,7 @@ export default async function Header({ user }: { user: UserType }) {
   const isAdmin = userRole === "admin" || userRole === "general_admin";
 
   return (
-    <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-8">
+    <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-10">
       <div className="flex justify-center items-center rounded-lg bg-white px-8 max-h-16 md:justify-between">
         <div className="hidden w-32 text-white pt-4 md:w-40 overflow-y-hidden md:block">
           <VitalGestLogo />
