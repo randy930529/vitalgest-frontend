@@ -9,9 +9,9 @@ export default async function Header({ user }: { user: UserType }) {
   const isAdmin = userRole === "admin" || userRole === "general_admin";
 
   return (
-    <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-8">
-      <div className="flex justify-between items-center rounded-lg py-4 px-8 max-h-24">
-        <div className="w-32 text-white md:w-40 overflow-y-hidden">
+    <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-10">
+      <div className="flex justify-center items-center rounded-lg bg-white px-8 max-h-16 md:justify-between">
+        <div className="hidden w-32 text-white pt-4 md:w-40 overflow-y-hidden md:block">
           <VitalGestLogo />
         </div>
         <div className="mr-8">
@@ -49,14 +49,13 @@ export default async function Header({ user }: { user: UserType }) {
           className="aspect-1097/845 w-274.25 bg-linear-to-tr from-[#ff4694] to-[#776fff] opacity-20"
         ></div>
       </div>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl mt-4 px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
             VitalGest
           </h1>
           <p className="mt-4 text-lg font-medium text-pretty text-gray-300 sm:text-xl/8">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. A ea
-            consectetur aspernatur nam nulla vel placeat eveniet obcaecati.
+            Cruz Roja Mexicana
           </p>
         </div>
         <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
