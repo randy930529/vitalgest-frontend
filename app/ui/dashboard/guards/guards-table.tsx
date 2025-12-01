@@ -30,6 +30,7 @@ const customHeaders = [
 export default function GuardsTable({
   data,
   readonly,
+  route,
 }: {
   data: [
     GuardType[],
@@ -38,6 +39,7 @@ export default function GuardsTable({
     [CustomOptions[], CustomOptions[], CustomOptions[]]
   ];
   readonly?: boolean;
+  route?: string;
 }) {
   // (Component) Lista de guardias existentes - [CSR]
 
@@ -177,7 +179,9 @@ export default function GuardsTable({
                 {!readonly && (
                   <TableActions>
                     <TableActionEdit
-                      editLink={`/dashboard/guards/${guard.id}/edit`}
+                      editLink={`${route ? route : "/dashboard/guards"}/${
+                        guard.id
+                      }/edit`}
                     />
                     <TableActionDelete
                       id={guard.id}

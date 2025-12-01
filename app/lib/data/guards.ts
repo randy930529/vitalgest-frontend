@@ -41,34 +41,27 @@ export async function fetchGuardsAndInlineGuardByUserMe(
 
     if (!guards.length) return [[], undefined];
 
-    const userId = user.id;
-    const delegationId = user.delegation?.id || user.delegationId;
+    const userGuards = getGuardsByUserId(guards, user.id);
+    const inlineGuard = getInlineGuard(userGuards);
 
-    const inlineGuard = getInlineGuard(guards, userId, delegationId);
-
-    return [guards, inlineGuard];
-
-    // TODO: Filtrar las guardias en curso donde aparesca el usuario
-    // const myOpenGuards = result.data.filter(({state,guardChief})=>state === "En curso" && (guardChief.id === userId))
+    return [userGuards, inlineGuard];
   } catch (error) {
     console.log("Database Error:", error);
     return [[], undefined];
   }
 }
 
-function getInlineGuard(
-  guards: GuardType[],
-  userId: string,
-  delegationId: string
-): GuardType | undefined {
-  return guards.find(
-    ({ delegation, guardChief, shifts, state }) =>
-      delegation.id === delegationId &&
-      state === "En curso" &&
-      (guardChief.id === userId ||
-        !!shifts.find(
-          ({ driver, paramedical }) =>
-            driver.id === userId || paramedical.id === userId
-        ))
+function getGuardsByUserId(guards: GuardType[], userId: string): GuardType[] {
+  return guards.filter(
+    ({ guardChief, shifts }) =>
+      guardChief.id === userId ||
+      shifts.some(
+        ({ driver, paramedical }) =>
+          driver.id === userId || paramedical.id === userId
+      )
   );
+}
+
+function getInlineGuard(guards: GuardType[]): GuardType | undefined {
+  return guards.find(({ state }) => state === "En curso");
 }

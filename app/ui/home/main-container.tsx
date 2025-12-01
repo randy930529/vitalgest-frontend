@@ -1,8 +1,8 @@
 import { UserType } from "@/app/lib/definitions";
 import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
-import { GuardStats } from "@/app/ui/home/stast-home";
 import { closeGuard } from "@/app/lib/actions/guard";
-import GuardsTableSection from "./guards-table-section";
+import { GuardStats } from "@/app/ui/home/stast-home";
+import GuardsTableSection from "@/app/ui/home/guards-table-section";
 
 export default async function MainContainer({ user }: { user: UserType }) {
   const [guards, inlineGuard] = await fetchGuardsAndInlineGuardByUserMe(user);

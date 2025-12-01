@@ -1,14 +1,14 @@
+import { Suspense } from "react";
 import { GuardType } from "@/app/lib/definitions";
-import GuardsTable from "../dashboard/guards/guards-table";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import {
   fetchDelegations,
   fetchUsersGuardChiefsDriversAndParamedical,
 } from "@/app/lib/data";
-import { Suspense } from "react";
-import { TableSkeleton } from "../dashboard/skeletons";
-import GuardForm from "../dashboard/guards/create/guard-form";
-import { WrapperTable } from "../dashboard/wrappers";
+import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { WrapperTable } from "@/app/ui/dashboard/wrappers";
+import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
+import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 
 export default async function GuardsTableSection({
   guards,
@@ -58,6 +58,7 @@ export default async function GuardsTableSection({
             fetchData={fetchGuardsGuardChiefsAndDelegations}
             WrappedComponent={GuardsTable}
             readonly={isClient}
+            route="/guards"
           />
         </Suspense>
       )}
