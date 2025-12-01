@@ -28,7 +28,7 @@ export function LinkSignout() {
 
   return (
     <form action={formSignOutAction}>
-      <button className="block w-full py-2 px-4 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+      <button className="block w-full py-2 px-4 text-sm text-left rounded-b-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
         Cerrar sesión
       </button>
     </form>
