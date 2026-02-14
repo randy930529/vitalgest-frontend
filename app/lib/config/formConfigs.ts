@@ -1,10 +1,9 @@
-// app/lib/config/formConfigs.ts
 /**
  * Configuración centralizada de todos los formularios de la aplicación
- * Single source of truth para estructuras de formularios
  */
 
-import type { FormInputType } from "@/app/lib/definitions";
+import type { FormFieldType, FormInputType } from "@/app/lib/definitions";
+import { customUnits } from "./selectOptions";
 
 export const formConfigs = {
   // Usuarios
@@ -41,6 +40,9 @@ export const formConfigs = {
     },
   } as const,
 
+  // Delegaciones
+  delegation: {} as const,
+
   // Ambulancias
   ambulance: {
     number: {
@@ -64,54 +66,35 @@ export const formConfigs = {
   } as const,
 
   // Suministros en Ambulancias
-  supplyAmbulance: {
-    area: {
-      type: "select",
-      title: "Área",
-      required: true,
-    },
-    name: {
-      type: "text",
-      title: "Nombre del Suministro",
-      required: true,
-      placeholder: "Suministro...",
-    },
-    quantity: {
-      type: "number",
-      title: "Cantidad",
-      required: true,
-      placeholder: "0",
-    },
-    unit: {
-      type: "select",
-      title: "Unidad de Medida",
-      required: true,
-    },
-  } as const,
+  supplyAmbulance: {} as const,
 
   // Suministros en Farmacias
   supplyPharmacy: {
-    name: {
+    category: {
       type: "text",
-      title: "Nombre",
+      title: "Categoría",
       required: true,
-      placeholder: "Medicamento...",
     },
-    quantity: {
+    specification: {
+      type: "text",
+      title: "Especificación",
+      required: true,
+    },
+    measurementUnit: {
+      type: "select",
+      title: "Unidad de Medida",
+      options: customUnits,
+      required: true,
+    },
+    expirationDate: {
+      type: "date",
+      title: "Fecha de Vencimiento",
+      required: true,
+    },
+    avaibleQuantity: {
       type: "number",
       title: "Cantidad",
       required: true,
-      placeholder: "0",
-    },
-    unit: {
-      type: "select",
-      title: "Unidad de Medida",
-      required: true,
-    },
-    expiryDate: {
-      type: "date",
-      title: "Fecha de Vencimiento",
-      required: false,
     },
   } as const,
 } as const;
@@ -125,10 +108,29 @@ export type FormConfig = FormInputType;
 
 /**
  * Función helper para obtener configuración y crear un nuevo objeto
- * Evita mutaciones directas
+ * - Devuelve una copia del objeto para evitar mutaciones accidentales
  */
 export function getFormConfig(key: FormConfigKey): FormConfig {
   return { ...formConfigs[key] };
+}
+
+/**
+ * Función helper para obtener campos de configuración en formato de formulario
+ * Permite agregar campos dinámicos específicos para cada formulario
+ * - Combina campos estáticos de la configuración con campos dinámicos proporcionados
+ * - Devuelve un array de campos listo para usar en componentes de formulario
+ */
+export function getFormConfigFields(
+  key: FormConfigKey,
+  dynamicField?: FormFieldType[],
+): FormFieldType[] {
+  const config = getFormConfig(key);
+  const fields = Object.keys(config).map((fieldName) => ({
+    name: fieldName,
+    ...config[fieldName],
+  }));
+
+  return [...fields, ...(dynamicField || [])] as FormFieldType[];
 }
 
 /**
