@@ -1,21 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { StateType } from "@/app/lib/definitions";
 import { CreateAmbulance, UpdateAmbulance } from "@/app/lib/schema";
-import { verifySession } from "@/app/lib/dal";
-
-export type AmbulanceState = StateType<{
-  number?: string[];
-  brand?: string[];
-  model?: string[];
-  delegationId?: string[];
-  success?: string[];
-}>;
+import { AmbulanceType } from "@/app/lib/definitions";
+import { AmbulanceState } from "@/app/lib/config/stateConfigs";
+import { ActionsServer } from "@/app/lib/actions/actions";
 
 export async function createAmbulance(
   prevState: AmbulanceState,
-  formAmbulanceData: FormData
+  formAmbulanceData: FormData,
 ): Promise<AmbulanceState> {
   const validatedAmbulanceFields = CreateAmbulance.safeParse({
     number: formAmbulanceData.get("number"),
@@ -31,37 +24,9 @@ export async function createAmbulance(
   }
 
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/ambulances/create`;
-    const bodyContent = validatedAmbulanceFields.data;
-    const config = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyContent),
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
+    const endPoint = `/api/ambulances/create`;
+    const actions = new ActionsServer<AmbulanceType>(endPoint, true);
+    await actions.create(validatedAmbulanceFields.data);
   } catch (error) {
     return {
       errors: {
@@ -77,7 +42,7 @@ export async function createAmbulance(
 export async function updateAmbulance(
   id: string,
   prevState: AmbulanceState,
-  formAmbulanceData: FormData
+  formAmbulanceData: FormData,
 ): Promise<AmbulanceState> {
   const validatedAmbulanceFields = UpdateAmbulance.safeParse({
     number: formAmbulanceData.get("number"),
@@ -93,37 +58,9 @@ export async function updateAmbulance(
   }
 
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/ambulances/edit/${id}`;
-    const bodyContent = validatedAmbulanceFields.data;
-    const config = {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyContent),
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
+    const endPoint = `/api/ambulances/edit/${id}`;
+    const actions = new ActionsServer<AmbulanceType>(endPoint, true);
+    await actions.update(validatedAmbulanceFields.data);
   } catch (error) {
     return {
       errors: {
@@ -138,36 +75,9 @@ export async function updateAmbulance(
 
 export async function deleteAmbulance(id: string) {
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/ambulances/delete/${id}`;
-
-    const config = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
+    const endPoint = `/api/ambulances/delete/${id}`;
+    const actions = new ActionsServer<AmbulanceType>(endPoint, true);
+    await actions.delete();
   } catch (error) {
     return {
       errors: {

@@ -1,23 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ResponseAPIType, ShiftType, StateType } from "@/app/lib/definitions";
+import { ShiftType } from "@/app/lib/definitions";
 import { CreateShift, UpdateShift } from "@/app/lib/schema";
-import { verifySession } from "@/app/lib/dal";
-
-export type ShiftState = StateType<{
-  ambulanceId?: string[];
-  guardId?: string[];
-  paramedicalId?: string[];
-  driverId?: string[];
-  success?: string[];
-}> & {
-  shift?: ShiftType;
-};
+import { ShiftState } from "@/app/lib/config/stateConfigs";
+import { ActionsServer } from "@/app/lib/actions/actions";
 
 export async function createShift(
   prevState: ShiftState,
-  formShiftData: FormData
+  formShiftData: FormData,
 ): Promise<ShiftState> {
   const validatedShiftFields = CreateShift.safeParse({
     ambulanceId: formShiftData.get("ambulance"),
@@ -33,43 +24,12 @@ export async function createShift(
   }
 
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/shifts/create`;
-    const bodyContent = validatedShiftFields.data;
-    console.log(bodyContent);
-    const config = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyContent),
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
-
-    const resut: ResponseAPIType<ShiftType> = await response.json();
+    const endPoint = `/api/shifts/create`;
+    const actions = new ActionsServer<ShiftType>(endPoint, true);
+    const response = await actions.create(validatedShiftFields.data);
 
     revalidatePath("/dashboard/guards");
-    return { message: "Turno asignado exitosamente.", shift: resut.data };
+    return { message: "Turno asignado exitosamente.", shift: response };
   } catch (error) {
     return {
       errors: {
@@ -82,7 +42,7 @@ export async function createShift(
 export async function updateShift(
   id: string,
   prevState: ShiftState,
-  formShiftData: FormData
+  formShiftData: FormData,
 ): Promise<ShiftState> {
   const validatedShiftFields = UpdateShift.safeParse({
     number: formShiftData.get("number"),
@@ -98,37 +58,9 @@ export async function updateShift(
   }
 
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/shifts/edit/${id}`;
-    const bodyContent = validatedShiftFields.data;
-    const config = {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyContent),
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
+    const endPoint = `/api/shifts/edit/${id}`;
+    const actions = new ActionsServer<ShiftType>(endPoint, true);
+    await actions.update(validatedShiftFields.data);
   } catch (error) {
     return {
       errors: {
@@ -143,36 +75,9 @@ export async function updateShift(
 
 export async function deleteShift(id: string) {
   try {
-    if (!process.env.API_URL) {
-      throw new Error(
-        "Las variables de conexión a la API no están configuradas."
-      );
-    }
-
-    // Obtener el token desde la cache usando cookies
-    const session = await verifySession();
-    const apiToken = session?.accessToken;
-
-    const endPoint = `${process.env.API_URL}/api/shifts/delete/${id}`;
-
-    const config = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    const response = await fetch(endPoint, config);
-
-    if (!response.ok) {
-      const resut = await response.json();
-      // Revisar "error": "CODE_LIST" para generar mensages persolalizados.
-      let errorMessage = resut.error
-        ? resut.error
-        : "Falló la comunicación con el api, intente más tarde.";
-      throw new Error(errorMessage);
-    }
+    const endPoint = `/api/shifts/delete/${id}`;
+    const actions = new ActionsServer<ShiftType>(endPoint, true);
+    await actions.delete();
   } catch (error) {
     return {
       errors: {

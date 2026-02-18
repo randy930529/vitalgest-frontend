@@ -5,7 +5,6 @@ import {
   ChecklistAnswersType,
   ChecklistSuppliesType,
   ChecklistSupplyType,
-  StateType,
 } from "@/app/lib/definitions";
 import { ActionsServer } from "@/app/lib/actions/actions";
 import {
@@ -13,36 +12,15 @@ import {
   CreateChecklistSupplies,
   SignChecklist,
 } from "@/app/lib/schema";
-
-export type ChecklistState = StateType<{
-  ambulance?: string[];
-  shift?: string[];
-  km?: string[];
-  notes?: string[];
-  gasFile?: string[];
-  signOperatorFile?: string[];
-  signRecipientFile?: string[];
-  recipientId?: string[];
-  success?: string[];
-}> & {
-  checklist?: CheckListAmbulanceType;
-};
-
-export type ChecklistSuppliesState = StateType<{
-  shiftId?: string[];
-  success?: string[];
-}> & {
-  checklist?: ChecklistSuppliesType;
-};
-
-export type ChecklistAnswersState = StateType<{
-  answers?: string[];
-  success?: string[];
-}>;
+import {
+  ChecklistState,
+  ChecklistAnswersState,
+  ChecklistSuppliesState,
+} from "@/app/lib/config/stateConfigs";
 
 export async function createChecklistAmbulance(
   prevState: ChecklistState,
-  formDataChecklist: FormData
+  formDataChecklist: FormData,
 ): Promise<ChecklistState> {
   const validatedChecklistFields = CreateChecklist.safeParse({
     ambulanceId: formDataChecklist.get("ambulance"),
@@ -85,7 +63,7 @@ export async function createChecklistAmbulance(
 export async function updateCheckListAmbulanceAnswers(
   id: string,
   prevState: ChecklistAnswersState,
-  answers: ChecklistAnswersType[]
+  answers: ChecklistAnswersType[],
 ): Promise<ChecklistAnswersState> {
   if (!answers.length) {
     return {
@@ -112,7 +90,7 @@ export async function updateCheckListAmbulanceAnswers(
 export async function signCheckListAmbulance(
   id: string,
   prevState: ChecklistState,
-  formDataChecklist: FormData
+  formDataChecklist: FormData,
 ): Promise<ChecklistState> {
   const validatedChecklistFields = SignChecklist.safeParse({
     recipientId: formDataChecklist.get("write-in-signature"),
@@ -133,7 +111,7 @@ export async function signCheckListAmbulance(
     const bodyContent = new FormData();
     bodyContent.append(
       "recipientId",
-      formDataChecklist.get("write-in-signature") as string
+      formDataChecklist.get("write-in-signature") as string,
     );
     bodyContent.append("notes", formDataChecklist.get("notes") as string);
     // bodyContent.append(
@@ -160,7 +138,7 @@ export async function signCheckListAmbulance(
 
 export async function createChecklistSupplies(
   prevState: ChecklistSuppliesState,
-  formDataChecklist: FormData
+  formDataChecklist: FormData,
 ): Promise<ChecklistSuppliesState> {
   const validatedChecklistFields = CreateChecklistSupplies.safeParse({
     shiftId: formDataChecklist.get("shift"),
@@ -191,7 +169,7 @@ export async function createChecklistSupplies(
 export async function updateCheckListSupplyAnswers(
   id: string,
   prevState: ChecklistAnswersState,
-  answers: ChecklistSupplyType[]
+  answers: ChecklistSupplyType[],
 ): Promise<ChecklistAnswersState> {
   if (!answers.length) {
     return {
@@ -219,7 +197,7 @@ export async function updateCheckListSupplyAnswers(
 export async function signCheckListSupply(
   id: string,
   prevState: ChecklistState,
-  formDataChecklist: FormData
+  formDataChecklist: FormData,
 ): Promise<ChecklistState> {
   const validatedChecklistFields = SignChecklist.safeParse({
     recipientId: formDataChecklist.get("write-in-signature"),
@@ -240,7 +218,7 @@ export async function signCheckListSupply(
     const bodyContent = new FormData();
     bodyContent.append(
       "recipientId",
-      formDataChecklist.get("write-in-signature") as string
+      formDataChecklist.get("write-in-signature") as string,
     );
     bodyContent.append("notes", formDataChecklist.get("notes") as string);
     // bodyContent.append(

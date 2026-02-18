@@ -1,11 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  StateType,
-  SupplyAmbulanceType,
-  SupplyPharmacyType,
-} from "@/app/lib/definitions";
+import { SupplyAmbulanceType, SupplyPharmacyType } from "@/app/lib/definitions";
 import {
   CreateSupplyInAmbulance,
   CreateSupplyInPharmacy,
@@ -13,31 +9,15 @@ import {
   UpdateSupplyInPharmacy,
 } from "@/app/lib/schema";
 import { ActionsServer } from "@/app/lib/actions/actions";
-
-export type SupplyInPharmacyState = StateType<{
-  pharmacy?: string[];
-  category?: string[];
-  specification?: string[];
-  avaibleQuantity?: string[];
-  expirationDate?: string[];
-  measurementUnit?: string[];
-  notes?: string[];
-  success?: string[];
-}>;
-
-export type SupplyInAmbulanceState = StateType<{
-  ambulanceId?: string[];
-  avaibleQuantity?: string[];
-  minQuantity?: string[];
-  areaId?: string[];
-  supplyId?: string[];
-  success?: string[];
-}>;
+import {
+  SupplyInPharmacyState,
+  SupplyInAmbulanceState,
+} from "@/app/lib/config/stateConfigs";
 
 /*--------------Gestión de insumos en las farmacias----------------------*/
 export async function createSupplyInPharmacy(
   prevState: SupplyInPharmacyState,
-  formDataSupply: FormData
+  formDataSupply: FormData,
 ): Promise<SupplyInPharmacyState> {
   const date = formDataSupply.get("expirationDate") as string;
 
@@ -79,7 +59,7 @@ export async function createSupplyInPharmacy(
 export async function updateSupplyInPharmacy(
   id: string,
   prevState: SupplyInPharmacyState,
-  formDataSupply: FormData
+  formDataSupply: FormData,
 ): Promise<SupplyInPharmacyState> {
   const date = formDataSupply.get("expirationDate") as string;
 
@@ -120,7 +100,7 @@ export async function updateSupplyInPharmacy(
 
 export async function deleteSupplyInPharmacy(
   id: string,
-  pharmacyId: string | number
+  pharmacyId: string | number,
 ): Promise<SupplyInPharmacyState> {
   try {
     const endPoint = `/api/supplies/delete/${id}`;
@@ -141,7 +121,7 @@ export async function deleteSupplyInPharmacy(
 /*-------------Gestión de insumos en las ambulancias---------------------*/
 export async function createSupplyInAmbulance(
   prevState: SupplyInAmbulanceState,
-  formDataSupply: FormData
+  formDataSupply: FormData,
 ): Promise<SupplyInAmbulanceState> {
   const validatedSupplyFields = CreateSupplyInAmbulance.safeParse({
     ambulanceId: formDataSupply.get("ambulance"),
@@ -182,7 +162,7 @@ export async function createSupplyInAmbulance(
 export async function updateSupplyInAmbulance(
   id: string,
   prevState: SupplyInAmbulanceState,
-  formDataSupply: FormData
+  formDataSupply: FormData,
 ): Promise<SupplyInAmbulanceState> {
   const validatedSupplyFields = UpdateSupplyInAmbulance.safeParse({
     ambulanceId: formDataSupply.get("ambulance"),
@@ -219,7 +199,7 @@ export async function updateSupplyInAmbulance(
 
 export async function deleteSupplyInAmbulance(
   id: string,
-  ambulanceId: string | number
+  ambulanceId: string | number,
 ): Promise<SupplyInAmbulanceState> {
   try {
     const endPoint = `/api/ambulances/supplies/delete/${id}`;
