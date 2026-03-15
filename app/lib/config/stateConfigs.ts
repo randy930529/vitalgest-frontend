@@ -81,7 +81,7 @@ export type ShiftState = StateType<{
   shift?: ShiftType;
 };
 
-export type SupplyInPharmacyState = StateType<{
+export type SupplyPharmacyState = StateType<{
   pharmacy?: string[];
   category?: string[];
   specification?: string[];
@@ -92,7 +92,7 @@ export type SupplyInPharmacyState = StateType<{
   success?: string[];
 }>;
 
-export type SupplyInAmbulanceState = StateType<{
+export type SupplyAmbulanceState = StateType<{
   ambulanceId?: string[];
   avaibleQuantity?: string[];
   minQuantity?: string[];
