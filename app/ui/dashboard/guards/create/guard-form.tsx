@@ -8,7 +8,8 @@ import {
   GuardType,
   ShiftType,
 } from "@/app/lib/definitions";
-import { createGuard, GuardState, updateGuard } from "@/app/lib/actions/guard";
+import { createGuard, updateGuard } from "@/app/lib/actions/guard";
+import { GuardState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import { CardsGroup, CardShift, CardWrapper } from "@/app/ui/cards";
 import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
@@ -152,7 +153,7 @@ function InitGuardForm({
   const updateDelegationWithId = updateGuard.bind(null, guard?.id || "");
   const [state, formAction] = useActionState(
     updateDelegationWithId,
-    initialState
+    initialState,
   );
 
   const datePicker = new Date(guard.date).toISOString().split("T")[0];

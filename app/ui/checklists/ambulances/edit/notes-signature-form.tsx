@@ -8,10 +8,10 @@ import { CustomOptions } from "@/app/lib/definitions";
 import { purgeDuplicateAnswers } from "@/app/lib/utils";
 import { useChecklistAmbulanceStore } from "@/app/lib/store/checklist-answers";
 import {
-  ChecklistAnswersState,
   signCheckListAmbulance,
   updateCheckListAmbulanceAnswers,
 } from "@/app/lib/actions/checklist";
+import { ChecklistAnswersState } from "@/app/lib/config/stateConfigs";
 import { FormSignature, FormTextarea } from "@/app/ui/dashboard/form-fields";
 import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
 
@@ -35,16 +35,16 @@ export default function NotesSignatureForm({
     updateCheckListAmbulanceAnswers.bind(null, id || "");
   const [state, formAction] = useActionState(
     updateCheckListAmbulanceAnswersWithId,
-    initialState
+    initialState,
   );
 
   const signCheckListAmbulanceWithId = signCheckListAmbulance.bind(
     null,
-    id || ""
+    id || "",
   );
   const [stateSign, formActionSign] = useActionState(
     signCheckListAmbulanceWithId,
-    initialState
+    initialState,
   );
 
   useEffect(() => {

@@ -4,10 +4,8 @@ import { useActionState, useEffect, useState } from "react";
 import { notFound, redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { ShiftType } from "@/app/lib/definitions";
-import {
-  ChecklistState,
-  createChecklistAmbulance,
-} from "@/app/lib/actions/checklist";
+import { createChecklistAmbulance } from "@/app/lib/actions/checklist";
+import { ChecklistState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import {
@@ -40,7 +38,7 @@ export default function ChecklistAmbulanceForm({
   const initialState: ChecklistState = { errors: {}, message: null };
   const [state, formAction] = useActionState(
     createChecklistAmbulance,
-    initialState
+    initialState,
   );
   console.log(state);
 
@@ -48,7 +46,7 @@ export default function ChecklistAmbulanceForm({
     if (state.message && state.checklist) {
       toast.success(state.message);
       redirect(
-        `/checklists/${guard.id}/ambulances/${state.checklist.id}/edit?step=1`
+        `/checklists/${guard.id}/ambulances/${state.checklist.id}/edit?step=1`,
       );
     }
   }, [state.message]);

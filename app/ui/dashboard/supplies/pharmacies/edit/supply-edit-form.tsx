@@ -7,10 +7,8 @@ import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import {
-  SupplyInPharmacyState,
-  updateSupplyInPharmacy,
-} from "@/app/lib/actions/supply";
+import { updateSupplyInPharmacy } from "@/app/lib/actions/supply";
+import { SupplyPharmacyState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import {
   FormDatepicker,
@@ -33,17 +31,17 @@ export default function SupplyEditForm({
       id,
       value: pharmacy.id,
       label: name,
-    })
+    }),
   );
 
   if (!supply) {
     return notFound();
   }
 
-  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
+  const initialState: SupplyPharmacyState = { errors: {}, message: null };
   const updateSupplyWithId = updateSupplyInPharmacy.bind(
     null,
-    supply?.id || ""
+    supply?.id || "",
   );
   const [state, formAction] = useActionState(updateSupplyWithId, initialState);
 
@@ -69,7 +67,7 @@ export default function SupplyEditForm({
       </h2>
       <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
         {`${supply.specification} - EXP. ${formatDateToDDMMYYYY(
-          supply.expiration_date
+          supply.expiration_date,
         )}`}
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">

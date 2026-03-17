@@ -2,7 +2,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { verifySession, verifyAuthorization } from "@/app/lib/dal";
 import type { ResponseAPIType, StateType } from "@/app/lib/definitions";
-import { ERROR_MESSAGES } from "../../config/constants";
+import { ERROR_MESSAGES } from "@/app/lib/config/constants";
 
 /**
  * Interfaz genérica para configuración de acciones.

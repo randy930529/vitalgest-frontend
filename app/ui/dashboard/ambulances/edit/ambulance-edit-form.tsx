@@ -6,7 +6,8 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { AmbulanceType, DelegationType } from "@/app/lib/definitions";
-import { AmbulanceState, updateAmbulance } from "@/app/lib/actions/ambulance";
+import { updateAmbulance } from "@/app/lib/actions/ambulance";
+import { AmbulanceState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import { FormInput } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
@@ -34,7 +35,7 @@ export default function AmbulanceEditForm({
   const updateAmbulanceWithId = updateAmbulance.bind(null, ambulance?.id || "");
   const [state, formAction] = useActionState(
     updateAmbulanceWithId,
-    initialState
+    initialState,
   );
 
   useEffect(() => {
