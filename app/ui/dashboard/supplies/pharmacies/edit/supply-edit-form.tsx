@@ -15,7 +15,7 @@ import {
   FormInputSingle,
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
-import { customUnits } from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { customUnits } from "@/app/lib/config/selectOptions";
 
 export default function SupplyEditForm({
   data,
@@ -112,7 +112,7 @@ export default function SupplyEditForm({
               key="select-measurementUnit"
               name="measurementUnit"
               title="Unidad de Medida"
-              options={customUnits}
+              options={[...customUnits]}
               defaultValue={supply.measurement_unit}
               errors={state.errors?.measurementUnit}
               required
