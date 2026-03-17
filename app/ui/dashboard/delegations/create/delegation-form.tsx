@@ -9,7 +9,7 @@ import {
 } from "@/app/lib/definitions";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import { getMunicipalitiesOfState } from "@/app/lib/utils";
-import { GenericForm } from "@/app/ui/components/GenericForm";
+import { GenericForm } from "@/app/ui/components/generic-form";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 
 export default function DelegationForm({

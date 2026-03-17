@@ -2,7 +2,7 @@
 
 import { DelegationType } from "@/app/lib/definitions";
 import { createAmbulance } from "@/app/lib/actions/ambulance";
-import { GenericForm } from "@/app/ui/components/GenericForm";
+import { GenericForm } from "@/app/ui/components/generic-form";
 import { getCustomDelegations } from "@/app/lib/utils";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 
