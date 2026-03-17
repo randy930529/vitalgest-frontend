@@ -11,9 +11,10 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
-import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";
 import { deleteDelegation } from "@/app/lib/actions/delegation";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.delegationForm;
 const customHeaders = [
   { id: 0, label: "Estado" },
   { id: 1, label: "Municipio" },
@@ -58,7 +59,7 @@ export default function DelegationTable({
         )}
         <ModalTrigger
           title="Crear Delegación"
-          modelContent={<DelegationForm customMxStates={customMxStates} />}
+          modelContent={<ModalComponent customMxStates={customMxStates} />}
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -113,7 +114,7 @@ export default function DelegationTable({
                       onChange={(event) => {
                         handleCheckboxChange(
                           delegation.id,
-                          event.target.checked
+                          event.target.checked,
                         );
                       }}
                     />

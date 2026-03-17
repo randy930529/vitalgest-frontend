@@ -17,9 +17,10 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
-import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.guardForm;
 const customHeaders = [
   { id: 0, label: "Jefe de Guardia" },
   { id: 1, label: "Fecha" },
@@ -36,7 +37,7 @@ export default function GuardsTable({
     GuardType[],
     AmbulanceType[],
     DelegationType[],
-    [CustomOptions[], CustomOptions[], CustomOptions[]]
+    [CustomOptions[], CustomOptions[], CustomOptions[]],
   ];
   readonly?: boolean;
   route?: string;
@@ -85,7 +86,7 @@ export default function GuardsTable({
           <ModalTrigger
             title="Crear Guardia"
             modelContent={
-              <GuardForm
+              <ModalComponent
                 guardChiefs={guardChiefs}
                 delegations={delegations}
                 ambulances={customAmbulances}
@@ -226,7 +227,7 @@ export function GuardStateShow({ state }: { state: GuardType["state"] }) {
             guardState?.bgColor === "bg-orange-500",
           "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300":
             guardState?.bgColor === "bg-red-500",
-        }
+        },
       )}
     >
       <span

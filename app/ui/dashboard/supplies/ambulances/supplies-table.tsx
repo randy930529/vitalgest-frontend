@@ -19,9 +19,10 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import SupplyForm from "@/app/ui/dashboard/supplies/ambulances/create/supply-form";
 import { SearchAmbulanceSupplies } from "@/app/ui/dashboard/search";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.supplyAmbulanceForm;
 const customHeaders = [
   { id: 0, label: "Categoría" },
   { id: 1, label: "Especificación" },
@@ -42,7 +43,7 @@ export default function AmbulanceSuppliesTable({
     string,
     AmbulanceAreaType[],
     SupplyPharmacyType[],
-    DelegationType[]
+    DelegationType[],
   ];
 }) {
   const [
@@ -93,7 +94,7 @@ export default function AmbulanceSuppliesTable({
         <ModalTrigger
           title="Crear Insumo"
           modelContent={
-            <SupplyForm
+            <ModalComponent
               ambulanceId={ambulanceId}
               ambulances={ambulances}
               areas={areas}

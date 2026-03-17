@@ -11,8 +11,9 @@ import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import AmbulanceForm from "@/app/ui/dashboard/ambulances/create/ambulance-form";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.ambulanceForm;
 const customHeaders = [
   { id: 0, label: "Numero" },
   { id: 1, label: "Marca" },
@@ -57,7 +58,7 @@ export default function AmbulanceTable({
         )}
         <ModalTrigger
           title="Crear Ambulancia"
-          modelContent={<AmbulanceForm delegations={delegatios} />}
+          modelContent={<ModalComponent delegations={delegatios} />}
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -112,7 +113,7 @@ export default function AmbulanceTable({
                       onChange={(event) => {
                         handleCheckboxChange(
                           ambulance.id,
-                          event.target.checked
+                          event.target.checked,
                         );
                       }}
                     />

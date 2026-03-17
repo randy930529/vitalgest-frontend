@@ -11,8 +11,9 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import ModalTrigger from "@/app/ui/button-modal";
-import UserForm from "@/app/ui/dashboard/users/create/user-form";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.userForm;
 export const customRoles = [
   { id: 0, value: "", label: "Seleccione un rol" },
   { id: 1, value: "general_admin", label: "Administrador General" },
@@ -67,7 +68,7 @@ export default function UserTable({
         )}
         <ModalTrigger
           title="Crear Usuario"
-          modelContent={<UserForm delegations={delegations} />}
+          modelContent={<ModalComponent delegations={delegations} />}
         />
       </Filters>
       <div className="overflow-x-auto">
@@ -168,7 +169,9 @@ export default function UserTable({
 }
 
 function UserActive(
-  { active }: { active: boolean | string | undefined | null } = { active: true }
+  { active }: { active: boolean | string | undefined | null } = {
+    active: true,
+  },
 ) {
   let userState = false;
   if (typeof active === "string") {
