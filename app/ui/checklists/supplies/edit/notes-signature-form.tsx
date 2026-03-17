@@ -7,10 +7,10 @@ import toast from "react-hot-toast";
 import { ChecklistSupplyType, CustomOptions } from "@/app/lib/definitions";
 import { useChecklistSupplyStore } from "@/app/lib/store/checklist-answers";
 import {
-  ChecklistAnswersState,
   signCheckListSupply,
   updateCheckListSupplyAnswers,
 } from "@/app/lib/actions/checklist";
+import { ChecklistAnswersState } from "@/app/lib/config/stateConfigs";
 import { FormSignature, FormTextarea } from "@/app/ui/dashboard/form-fields";
 import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
 
@@ -32,17 +32,17 @@ export default function NotesSignatureForm({
   const initialState: ChecklistAnswersState = { errors: {}, message: null };
   const updateCheckListAnswersWithId = updateCheckListSupplyAnswers.bind(
     null,
-    id || ""
+    id || "",
   );
   const [state, formAction] = useActionState(
     updateCheckListAnswersWithId,
-    initialState
+    initialState,
   );
 
   const signCheckListWithId = signCheckListSupply.bind(null, id || "");
   const [stateSign, formActionSign] = useActionState(
     signCheckListWithId,
-    initialState
+    initialState,
   );
 
   useEffect(() => {

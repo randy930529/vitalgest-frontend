@@ -12,9 +12,10 @@ import TablePagination from "@/app/ui/dashboard/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
 import { SearchPharmacieSupplies } from "@/app/ui/dashboard/search";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 
+const ModalComponent = modalComponents.supplyPharmacyForm;
 const customHeaders = [
   { id: 0, label: "Categoría" },
   { id: 1, label: "Especificación" },
@@ -68,7 +69,7 @@ export default function PharmacySuppliesTable({
         <ModalTrigger
           title="Crear Insumo"
           modelContent={
-            <SupplyForm pharmacyId={pharmacyId} delegations={delegations} />
+            <ModalComponent pharmacyId={pharmacyId} delegations={delegations} />
           }
         />
       </Filters>

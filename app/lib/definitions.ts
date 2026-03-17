@@ -215,3 +215,37 @@ export type SupplyAmbulanceType = BaseType & {
   area_id: number;
   ambulance_id: string;
 };
+
+export type FormFieldType =
+  | {
+      type: "text" | "email" | "password" | "number";
+      name: string;
+      title?: string;
+      required?: boolean;
+      placeholder?: string;
+      defaultValue?: string;
+    }
+  | {
+      type: "select";
+      name: string;
+      title?: string;
+      required?: boolean;
+      options: Array<{ id: string | number; value: string; label: string }>;
+      defaultValue?: string;
+    }
+  | {
+      type: "date";
+      name: string;
+      title?: string;
+      required?: boolean;
+      defaultValue?: string;
+    }
+  | {
+      type: "textarea";
+      name: string;
+      title?: string;
+      required?: boolean;
+      rows?: number;
+    }
+  | { type: "checkbox"; name: string; title: string; defaultChecked?: boolean }
+  | { type: "custom"; name: string; component: React.ReactNode };

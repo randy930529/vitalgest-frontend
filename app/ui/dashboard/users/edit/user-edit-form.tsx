@@ -5,12 +5,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { updateUser, UserState } from "@/app/lib/actions/user";
+import { updateUser } from "@/app/lib/actions/user";
+import { UserState } from "@/app/lib/config/stateConfigs";
 import { DelegationType, UserType } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { FormInput } from "@/app/ui/dashboard/form-fields";
-import { UserRolesSelect } from "@/app/ui/dashboard/users/create/user-form";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
+import { customRoles } from "../user-table";
+import { InlineErrors } from "@/app/ui/custom-errors";
 
 const customFormInput = {
   name: { type: "text", title: "Nombre", required: true },
@@ -74,7 +76,7 @@ export default function UserEditForm({
               {Object.keys(customFormInput)
                 .filter(
                   (key) =>
-                    key === "email" || key === "password" || key === "position"
+                    key === "email" || key === "password" || key === "position",
                 )
                 .map((name) => (
                   <FormInput
@@ -149,6 +151,47 @@ function UserStatusChecked({
         defaultChecked={isChecked}
         className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
       />
+    </div>
+  );
+}
+
+export function UserRolesSelect({
+  errors,
+  required,
+  defaultValue,
+}: {
+  errors?: string[];
+  required?: boolean;
+  defaultValue?: string;
+}) {
+  return (
+    <div>
+      <label
+        htmlFor="role"
+        className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >
+        Rol del Usuario
+        {required && <span className="text-red-600"> *</span>}
+      </label>
+      <select
+        id="role"
+        name="role"
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        required={required}
+        defaultValue={defaultValue}
+      >
+        {customRoles.map((rol) => (
+          <option
+            key={rol.value ? `${rol.id}-${rol.value}` : `${rol.id}-select`}
+            value={rol.value}
+          >
+            {rol.label}
+          </option>
+        ))}
+      </select>
+      {errors && (
+        <InlineErrors key="rol-error" errorId="rol-error" errors={errors} />
+      )}
     </div>
   );
 }

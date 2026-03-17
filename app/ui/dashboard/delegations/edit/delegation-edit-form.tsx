@@ -10,10 +10,8 @@ import {
   CustomOptions,
   DelegationType,
 } from "@/app/lib/definitions";
-import {
-  DelegationState,
-  updateDelegation,
-} from "@/app/lib/actions/delegation";
+import { updateDelegation } from "@/app/lib/actions/delegation";
+import { DelegationState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import { getMunicipalitiesOfState } from "@/app/lib/utils";
@@ -35,11 +33,11 @@ export default function DelegationEditForm({
   const initialState: DelegationState = { errors: {}, message: null };
   const updateDelegationWithId = updateDelegation.bind(
     null,
-    delegation?.id || ""
+    delegation?.id || "",
   );
   const [state, formAction] = useActionState(
     updateDelegationWithId,
-    initialState
+    initialState,
   );
 
   const currentMunicipality = `${delegation.municipality.id}-${delegation.municipality.name}`;
@@ -47,8 +45,8 @@ export default function DelegationEditForm({
     customMxStates.find(
       (mxState) =>
         !!mxState.municipalities?.find(
-          (municipality) => municipality.value === currentMunicipality
-        )
+          (municipality) => municipality.value === currentMunicipality,
+        ),
     )?.value || "";
 
   const [mxStateId, setMxStateId] = useState(currentMxState);
@@ -58,7 +56,7 @@ export default function DelegationEditForm({
 
   useEffect(() => {
     setCustomMunicipalities(
-      getMunicipalitiesOfState(mxStateId, customMxStates)
+      getMunicipalitiesOfState(mxStateId, customMxStates),
     );
   }, [mxStateId]);
 

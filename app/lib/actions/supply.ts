@@ -1,238 +1,273 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import {
-  StateType,
-  SupplyAmbulanceType,
-  SupplyPharmacyType,
-} from "@/app/lib/definitions";
+  SupplyPharmacyState,
+  SupplyAmbulanceState,
+} from "@/app/lib/config/stateConfigs";
 import {
-  CreateSupplyInAmbulance,
-  CreateSupplyInPharmacy,
-  UpdateSupplyInAmbulance,
-  UpdateSupplyInPharmacy,
-} from "@/app/lib/schema";
-import { ActionsServer } from "@/app/lib/actions/actions";
-
-export type SupplyInPharmacyState = StateType<{
-  pharmacy?: string[];
-  category?: string[];
-  specification?: string[];
-  avaibleQuantity?: string[];
-  expirationDate?: string[];
-  measurementUnit?: string[];
-  notes?: string[];
-  success?: string[];
-}>;
-
-export type SupplyInAmbulanceState = StateType<{
-  ambulanceId?: string[];
-  avaibleQuantity?: string[];
-  minQuantity?: string[];
-  areaId?: string[];
-  supplyId?: string[];
-  success?: string[];
-}>;
+  CreateSupplyInAmbulanceAction,
+  CreateSupplyInPharmacyAction,
+  DeleteSupplyInAmbulanceAction,
+  DeleteSupplyInPharmacyAction,
+  UpdateSupplyInAmbulanceAction,
+  UpdateSupplyInPharmacyAction,
+} from "@/app/lib/actions/services/supply";
 
 /*--------------Gestión de insumos en las farmacias----------------------*/
+
+// export async function createSupplyInPharmacy(
+//   prevState: SupplyPharmacyState,
+//   formDataSupply: FormData,
+// ): Promise<SupplyPharmacyState> {
+//   const date = formDataSupply.get("expirationDate") as string;
+
+//   const validatedSupplyFields = CreateSupplyPharmacy.safeParse({
+//     pharmacyId: formDataSupply.get("pharmacy"),
+//     category: formDataSupply.get("category"),
+//     specification: formDataSupply.get("specification"),
+//     avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
+//     expirationDate: new Date(date),
+//     measurementUnit: formDataSupply.get("measurementUnit"),
+//   });
+
+//   if (!validatedSupplyFields.success) {
+//     return {
+//       errors: validatedSupplyFields.error.flatten().fieldErrors,
+//     };
+//   }
+
+//   const pharmacyId = validatedSupplyFields.data.pharmacyId;
+//   try {
+//     const endPoint = `/api/supplies/create/pharmacy/${pharmacyId}`;
+//     const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
+//     await actions.create({
+//       ...validatedSupplyFields.data,
+//       expirationDate: date,
+//     });
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/pharmacies/${pharmacyId}`);
+//   return { message: "Insumo agregado exitosamente." };
+// }
+
 export async function createSupplyInPharmacy(
-  prevState: SupplyInPharmacyState,
-  formDataSupply: FormData
-): Promise<SupplyInPharmacyState> {
-  const date = formDataSupply.get("expirationDate") as string;
-
-  const validatedSupplyFields = CreateSupplyInPharmacy.safeParse({
-    pharmacyId: formDataSupply.get("pharmacy"),
-    category: formDataSupply.get("category"),
-    specification: formDataSupply.get("specification"),
-    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
-    expirationDate: new Date(date),
-    measurementUnit: formDataSupply.get("measurementUnit"),
-  });
-
-  if (!validatedSupplyFields.success) {
-    return {
-      errors: validatedSupplyFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const pharmacyId = validatedSupplyFields.data.pharmacyId;
-  try {
-    const endPoint = `/api/supplies/create/pharmacy/${pharmacyId}`;
-    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
-    await actions.create({
-      ...validatedSupplyFields.data,
-      expirationDate: date,
-    });
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/pharmacies/${pharmacyId}`);
-  return { message: "Insumo agregado exitosamente." };
+  prevState: SupplyPharmacyState,
+  formData: FormData,
+): Promise<SupplyPharmacyState> {
+  const pharmacyId = formData.get("pharmacy") as string;
+  const action = new CreateSupplyInPharmacyAction(pharmacyId);
+  return action.execute(prevState, formData);
 }
+
+// export async function updateSupplyInPharmacy(
+//   id: string,
+//   prevState: SupplyPharmacyState,
+//   formDataSupply: FormData,
+// ): Promise<SupplyPharmacyState> {
+//   const date = formDataSupply.get("expirationDate") as string;
+
+//   const validatedSupplyFields = UpdateSupplyPharmacy.safeParse({
+//     pharmacyId: formDataSupply.get("pharmacy"),
+//     category: formDataSupply.get("category"),
+//     specification: formDataSupply.get("specification"),
+//     avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
+//     expirationDate: new Date(date),
+//     measurementUnit: formDataSupply.get("measurementUnit"),
+//   });
+
+//   if (!validatedSupplyFields.success) {
+//     return {
+//       errors: validatedSupplyFields.error.flatten().fieldErrors,
+//     };
+//   }
+
+//   const pharmacyId = validatedSupplyFields.data.pharmacyId;
+//   try {
+//     const endPoint = `/api/supplies/edit/${id}`;
+//     const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
+//     await actions.update({
+//       ...validatedSupplyFields.data,
+//       expirationDate: date,
+//     });
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/pharmacies/${pharmacyId}`);
+//   return { message: "Cambios guardados exitosamente." };
+// }
 
 export async function updateSupplyInPharmacy(
   id: string,
-  prevState: SupplyInPharmacyState,
-  formDataSupply: FormData
-): Promise<SupplyInPharmacyState> {
-  const date = formDataSupply.get("expirationDate") as string;
-
-  const validatedSupplyFields = UpdateSupplyInPharmacy.safeParse({
-    pharmacyId: formDataSupply.get("pharmacy"),
-    category: formDataSupply.get("category"),
-    specification: formDataSupply.get("specification"),
-    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
-    expirationDate: new Date(date),
-    measurementUnit: formDataSupply.get("measurementUnit"),
-  });
-
-  if (!validatedSupplyFields.success) {
-    return {
-      errors: validatedSupplyFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const pharmacyId = validatedSupplyFields.data.pharmacyId;
-  try {
-    const endPoint = `/api/supplies/edit/${id}`;
-    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
-    await actions.update({
-      ...validatedSupplyFields.data,
-      expirationDate: date,
-    });
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/pharmacies/${pharmacyId}`);
-  return { message: "Cambios guardados exitosamente." };
+  prevState: SupplyPharmacyState,
+  formData: FormData,
+): Promise<SupplyPharmacyState> {
+  const pharmacyId = formData.get("pharmacy") as string;
+  const action = new UpdateSupplyInPharmacyAction(id, pharmacyId);
+  return action.execute(prevState, formData);
 }
+
+// export async function deleteSupplyInPharmacy(
+//   id: string,
+//   pharmacyId: string | number,
+// ): Promise<SupplyPharmacyState> {
+//   try {
+//     const endPoint = `/api/supplies/delete/${id}`;
+//     const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
+//     await actions.delete();
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/pharmacies?pharmacy=${pharmacyId}`);
+//   return { message: "Insumo eliminado exitosamente." };
+// }
 
 export async function deleteSupplyInPharmacy(
   id: string,
-  pharmacyId: string | number
-): Promise<SupplyInPharmacyState> {
-  try {
-    const endPoint = `/api/supplies/delete/${id}`;
-    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
-    await actions.delete();
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/pharmacies?pharmacy=${pharmacyId}`);
-  return { message: "Insumo eliminado exitosamente." };
+  pharmacyId: string,
+): Promise<SupplyPharmacyState> {
+  const action = new DeleteSupplyInPharmacyAction(id, pharmacyId);
+  return action.execute();
 }
 
 /*-------------Gestión de insumos en las ambulancias---------------------*/
+
+// export async function createSupplyInAmbulance(
+//   prevState: SupplyAmbulanceState,
+//   formDataSupply: FormData,
+// ): Promise<SupplyAmbulanceState> {
+//   const validatedSupplyFields = CreateSupplyAmbulance.safeParse({
+//     ambulanceId: formDataSupply.get("ambulance"),
+//     supplyId: formDataSupply.get("supply"),
+//     areaId: Number(formDataSupply.get("area")),
+//     avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
+//     minQuantity: Number(formDataSupply.get("minQuantity")),
+//   });
+
+//   if (!validatedSupplyFields.success) {
+//     return {
+//       errors: validatedSupplyFields.error.flatten().fieldErrors,
+//     };
+//   }
+
+//   const ambulanceId = validatedSupplyFields.data.ambulanceId;
+//   try {
+//     const endPoint = `/api/ambulances/supplies/create/${ambulanceId}`;
+
+//     const actions = new ActionsServer<SupplyAmbulanceType>(endPoint, true);
+//     await actions.create({
+//       ...validatedSupplyFields.data,
+//       avilableQuantity: validatedSupplyFields.data.avaibleQuantity,
+//       ambulanceId: undefined,
+//     });
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
+//   return { message: "Insumo agregado exitosamente." };
+// }
+
 export async function createSupplyInAmbulance(
-  prevState: SupplyInAmbulanceState,
-  formDataSupply: FormData
-): Promise<SupplyInAmbulanceState> {
-  const validatedSupplyFields = CreateSupplyInAmbulance.safeParse({
-    ambulanceId: formDataSupply.get("ambulance"),
-    supplyId: formDataSupply.get("supply"),
-    areaId: Number(formDataSupply.get("area")),
-    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
-    minQuantity: Number(formDataSupply.get("minQuantity")),
-  });
-
-  if (!validatedSupplyFields.success) {
-    return {
-      errors: validatedSupplyFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const ambulanceId = validatedSupplyFields.data.ambulanceId;
-  try {
-    const endPoint = `/api/ambulances/supplies/create/${ambulanceId}`;
-
-    const actions = new ActionsServer<SupplyAmbulanceType>(endPoint, true);
-    await actions.create({
-      ...validatedSupplyFields.data,
-      avilableQuantity: validatedSupplyFields.data.avaibleQuantity,
-      ambulanceId: undefined,
-    });
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
-  return { message: "Insumo agregado exitosamente." };
+  prevState: SupplyAmbulanceState,
+  formData: FormData,
+): Promise<SupplyAmbulanceState> {
+  const ambulanceId = formData.get("ambulance") as string;
+  const action = new CreateSupplyInAmbulanceAction(ambulanceId);
+  return action.execute(prevState, formData);
 }
+
+// export async function updateSupplyInAmbulance(
+//   id: string,
+//   prevState: SupplyAmbulanceState,
+//   formDataSupply: FormData,
+// ): Promise<SupplyAmbulanceState> {
+//   const validatedSupplyFields = UpdateSupplyAmbulance.safeParse({
+//     ambulanceId: formDataSupply.get("ambulance"),
+//     areaId: Number(formDataSupply.get("area")),
+//     avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
+//     minQuantity: Number(formDataSupply.get("minQuantity")),
+//   });
+
+//   if (!validatedSupplyFields.success) {
+//     return {
+//       errors: validatedSupplyFields.error.flatten().fieldErrors,
+//     };
+//   }
+
+//   const ambulanceId = validatedSupplyFields.data.ambulanceId;
+//   try {
+//     const endPoint = `/api/ambulances/supplies/edit/${id}`;
+
+//     const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
+//     await actions.update({
+//       ...validatedSupplyFields.data,
+//     });
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
+//   return { message: "Cambios guardados exitosamente." };
+// }
 
 export async function updateSupplyInAmbulance(
   id: string,
-  prevState: SupplyInAmbulanceState,
-  formDataSupply: FormData
-): Promise<SupplyInAmbulanceState> {
-  const validatedSupplyFields = UpdateSupplyInAmbulance.safeParse({
-    ambulanceId: formDataSupply.get("ambulance"),
-    areaId: Number(formDataSupply.get("area")),
-    avaibleQuantity: Number(formDataSupply.get("avaibleQuantity")),
-    minQuantity: Number(formDataSupply.get("minQuantity")),
-  });
-
-  if (!validatedSupplyFields.success) {
-    return {
-      errors: validatedSupplyFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const ambulanceId = validatedSupplyFields.data.ambulanceId;
-  try {
-    const endPoint = `/api/ambulances/supplies/edit/${id}`;
-
-    const actions = new ActionsServer<SupplyPharmacyType>(endPoint, true);
-    await actions.update({
-      ...validatedSupplyFields.data,
-    });
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
-  return { message: "Cambios guardados exitosamente." };
+  prevState: SupplyAmbulanceState,
+  formData: FormData,
+): Promise<SupplyAmbulanceState> {
+  const ambulanceId = formData.get("ambulance") as string;
+  const action = new UpdateSupplyInAmbulanceAction(id, ambulanceId);
+  return action.execute(prevState, formData);
 }
+
+// export async function deleteSupplyInAmbulance(
+//   id: string,
+//   ambulanceId: string | number,
+// ): Promise<SupplyAmbulanceState> {
+//   try {
+//     const endPoint = `/api/ambulances/supplies/delete/${id}`;
+//     const actions = new ActionsServer<SupplyAmbulanceType>(endPoint, true);
+//     await actions.delete();
+//   } catch (error) {
+//     return {
+//       errors: {
+//         success: [error instanceof Error ? error.message : String(error)],
+//       },
+//     };
+//   }
+
+//   revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
+//   return { message: "Insumo eliminado exitosamente." };
+// }
 
 export async function deleteSupplyInAmbulance(
   id: string,
-  ambulanceId: string | number
-): Promise<SupplyInAmbulanceState> {
-  try {
-    const endPoint = `/api/ambulances/supplies/delete/${id}`;
-    const actions = new ActionsServer<SupplyAmbulanceType>(endPoint, true);
-    await actions.delete();
-  } catch (error) {
-    return {
-      errors: {
-        success: [error instanceof Error ? error.message : String(error)],
-      },
-    };
-  }
-
-  revalidatePath(`/dashboard/supplies/ambulances?ambulance=${ambulanceId}`);
-  return { message: "Insumo eliminado exitosamente." };
+  ambulanceId: string,
+): Promise<SupplyAmbulanceState> {
+  const action = new DeleteSupplyInAmbulanceAction(id, ambulanceId);
+  return action.execute();
 }

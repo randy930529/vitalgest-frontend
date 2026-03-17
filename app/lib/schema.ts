@@ -41,7 +41,7 @@ const FormUserSchema = z.object({
     ["admin", "paramedical", "vehicle_operator", "head_guard", "general_admin"],
     {
       invalid_type_error: "Por favor seleccione un rol de usuario.",
-    }
+    },
   ),
   status: z.boolean({
     invalid_type_error: "Por favor seleccione el estado del usuario.",
@@ -148,21 +148,21 @@ const FormChecklistSchema = z.object({
     .instanceof(File, { message: "Por favor adjunte el vale de combustible." })
     .refine(
       (file: File) => !file || file.size <= MAX_FILE_SIZE,
-      "El archivo de combustible excede el tamaño máximo de 3 MB."
+      "El archivo de combustible excede el tamaño máximo de 3 MB.",
     )
     .refine(
       (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
-      "Formato no válido. Solo se permiten JPG, PNG o PDF."
+      "Formato no válido. Solo se permiten JPG, PNG o PDF.",
     ),
   signOperatorFile: z
     .instanceof(File, { message: "Por favor adjunte la firma del operador." })
     .refine(
       (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
-      "Formato no válido. Solo se permiten JPG, PNG o PDF."
+      "Formato no válido. Solo se permiten JPG, PNG o PDF.",
     )
     .refine(
       (file: File) => !file || file.size <= MAX_FILE_SIZE,
-      "La firma del operador excede el tamaño máximo de 5 MB."
+      "La firma del operador excede el tamaño máximo de 5 MB.",
     ),
   signRecipientFile: z
     .instanceof(File, { message: "Por favor adjunte la firma del receptor." })
@@ -171,7 +171,7 @@ const FormChecklistSchema = z.object({
     })
     .refine(
       (file: File) => !file || file.size <= MAX_FILE_SIZE,
-      "La firma del receptor excede el tamaño máximo de 5 MB."
+      "La firma del receptor excede el tamaño máximo de 5 MB.",
     ),
 });
 
@@ -273,14 +273,14 @@ export const CreateChecklistSupplies = FormChecklistSchema.omit({
   notes: true,
 });
 
-export const CreateSupplyInPharmacy = FormSupplySchema.omit({
+export const CreateSupplyPharmacy = FormSupplySchema.omit({
   id: true,
   supplyId: true,
   ambulanceId: true,
   areaId: true,
   minQuantity: true,
 });
-export const UpdateSupplyInPharmacy = FormSupplySchema.omit({
+export const UpdateSupplyPharmacy = FormSupplySchema.omit({
   id: true,
   supplyId: true,
   ambulanceId: true,
@@ -288,7 +288,7 @@ export const UpdateSupplyInPharmacy = FormSupplySchema.omit({
   minQuantity: true,
 });
 
-export const CreateSupplyInAmbulance = FormSupplySchema.omit({
+export const CreateSupplyAmbulance = FormSupplySchema.omit({
   id: true,
   category: true,
   expirationDate: true,
@@ -297,7 +297,7 @@ export const CreateSupplyInAmbulance = FormSupplySchema.omit({
   notes: true,
   specification: true,
 });
-export const UpdateSupplyInAmbulance = FormSupplySchema.omit({
+export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   id: true,
   category: true,
   expirationDate: true,

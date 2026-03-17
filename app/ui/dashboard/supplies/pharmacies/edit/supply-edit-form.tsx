@@ -7,17 +7,15 @@ import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import {
-  SupplyInPharmacyState,
-  updateSupplyInPharmacy,
-} from "@/app/lib/actions/supply";
+import { updateSupplyInPharmacy } from "@/app/lib/actions/supply";
+import { SupplyPharmacyState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import {
   FormDatepicker,
   FormInputSingle,
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
-import { customUnits } from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";
+import { customUnits } from "@/app/lib/config/selectOptions";
 
 export default function SupplyEditForm({
   data,
@@ -33,17 +31,17 @@ export default function SupplyEditForm({
       id,
       value: pharmacy.id,
       label: name,
-    })
+    }),
   );
 
   if (!supply) {
     return notFound();
   }
 
-  const initialState: SupplyInPharmacyState = { errors: {}, message: null };
+  const initialState: SupplyPharmacyState = { errors: {}, message: null };
   const updateSupplyWithId = updateSupplyInPharmacy.bind(
     null,
-    supply?.id || ""
+    supply?.id || "",
   );
   const [state, formAction] = useActionState(updateSupplyWithId, initialState);
 
@@ -69,7 +67,7 @@ export default function SupplyEditForm({
       </h2>
       <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
         {`${supply.specification} - EXP. ${formatDateToDDMMYYYY(
-          supply.expiration_date
+          supply.expiration_date,
         )}`}
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
@@ -114,7 +112,7 @@ export default function SupplyEditForm({
               key="select-measurementUnit"
               name="measurementUnit"
               title="Unidad de Medida"
-              options={customUnits}
+              options={[...customUnits]}
               defaultValue={supply.measurement_unit}
               errors={state.errors?.measurementUnit}
               required

@@ -9,6 +9,7 @@ import {
   ChecklistQuestionsType,
   ChecklistSupplyType,
   CustomMxState,
+  DelegationType,
   StepItemType,
 } from "@/app/lib/definitions";
 
@@ -46,7 +47,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 export const createPageURL = (
   pageNumber: number | string,
   searchParams: ReadonlyURLSearchParams,
-  pathname: string
+  pathname: string,
 ): string => {
   const params = new URLSearchParams(searchParams);
   params.delete("notes");
@@ -63,7 +64,7 @@ export const createPageURL = (
  */
 export const getMunicipalitiesOfState = (
   stateId: string | number,
-  STATES_WITH_MUNICIPALITIES: CustomMxState[]
+  STATES_WITH_MUNICIPALITIES: CustomMxState[],
 ): CustomMxState[] => {
   return (
     STATES_WITH_MUNICIPALITIES.find(({ value }) => value === stateId)
@@ -108,7 +109,7 @@ export const formatDateToDDMMYYYY = (dateString: string): string => {
 export const createAnswer = (
   questionId: string,
   type: ChecklistQuestionsType["type_response"],
-  answer: string
+  answer: string,
 ): ChecklistAnswersType => {
   return {
     questionId,
@@ -128,7 +129,7 @@ export const createAnswer = (
 
 export const createStepAnswers = (
   formData: FormData,
-  checklistQuestions: ChecklistQuestionsType[]
+  checklistQuestions: ChecklistQuestionsType[],
 ) => {
   const answers: ChecklistAnswersType[] = [];
 
@@ -145,7 +146,7 @@ export const createStepAnswers = (
     const answer = createAnswer(
       cleanKey,
       question.type_response,
-      value.toString()
+      value.toString(),
     );
     answers.push(answer);
   });
@@ -154,7 +155,7 @@ export const createStepAnswers = (
 
 export const createSupplyAnswer = (
   questionId: string,
-  answer: string
+  answer: string,
 ): ChecklistSupplyType => {
   return {
     supplyId: questionId,
@@ -203,7 +204,7 @@ export const getElapsedMessage = (dateStart: Date, dateEnd: Date): string => {
  *
  */
 export const purgeDuplicateAnswers = (
-  answers: Record<string, ChecklistAnswersType[]>
+  answers: Record<string, ChecklistAnswersType[]>,
 ): ChecklistAnswersType[] => {
   const answersMap = new Map<string, ChecklistAnswersType>();
 
@@ -228,4 +229,20 @@ export const purgeDuplicateAnswers = (
   });
 
   return Array.from(answersMap.values());
+};
+
+/**
+ * Transforma un array de delegaciones en un array de objetos con propiedades
+ * id, label y value para uso en componentes de selección o dropdowns.
+ * @param delegations - Array de delegaciones a transformar. Si no se proporciona o es undefined, retorna un array vacío.
+ * @returns Array de objetos con propiedades id, label y value mapeadas desde las delegaciones originales.
+ */
+export const getCustomDelegations = (delegations?: DelegationType[]) => {
+  if (!delegations) return [];
+
+  return delegations.map((delegation) => ({
+    id: delegation.id,
+    label: delegation.name,
+    value: delegation.id,
+  }));
 };

@@ -12,7 +12,8 @@ import {
   GuardType,
   ShiftType,
 } from "@/app/lib/definitions";
-import { GuardState, updateGuard } from "@/app/lib/actions/guard";
+import { updateGuard } from "@/app/lib/actions/guard";
+import { GuardState } from "@/app/lib/config/stateConfigs";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
 import AmbulanceAssignForm from "@/app/ui/dashboard/guards/create/ambulance-assign-form";
@@ -29,7 +30,7 @@ export default function GuardEditForm({
     ShiftType[],
     AmbulanceType[],
     DelegationType[],
-    [CustomOptions[], CustomOptions[], CustomOptions[]]
+    [CustomOptions[], CustomOptions[], CustomOptions[]],
   ];
 }) {
   // (Component) Formulario de edicion de guardias - [CSR]
@@ -55,7 +56,7 @@ export default function GuardEditForm({
   const updateDelegationWithId = updateGuard.bind(null, guard?.id || "");
   const [state, formAction] = useActionState(
     updateDelegationWithId,
-    initialState
+    initialState,
   );
 
   const date = formatDateToDDMMYYYY(guard?.date || "");

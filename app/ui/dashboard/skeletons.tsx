@@ -125,3 +125,41 @@ export function FormSkeleton({ goBackUrl }: { goBackUrl: string }) {
     </section>
   );
 }
+
+export function ModalFormSkeleton({
+  fields = 4,
+  columns = 2,
+}: {
+  fields?: number;
+  columns?: 1 | 2 | 3 | 4;
+}) {
+  const columnClasses: Record<number, string> = {
+    1: "sm:grid-cols-1",
+    2: "sm:grid-cols-2",
+    3: "sm:grid-cols-3",
+    4: "sm:grid-cols-4",
+  };
+
+  return (
+    <section
+      className={`mt-7 dark:bg-gray-800 relative overflow-hidden ${shimmer}`}
+    >
+      <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
+        <form className="w-full" action="">
+          <div className={`grid gap-4 mb-4 ${columnClasses[columns]}`}>
+            {Array.from({ length: fields }).map((_, index) => (
+              <div key={index}>
+                <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded w-1/2" />
+                <input
+                  type="text"
+                  disabled
+                  className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                />
+              </div>
+            ))}
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+}

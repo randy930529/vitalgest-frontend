@@ -10,10 +10,8 @@ import {
   SupplyAmbulanceType,
 } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import {
-  SupplyInAmbulanceState,
-  updateSupplyInAmbulance,
-} from "@/app/lib/actions/supply";
+import { updateSupplyInAmbulance } from "@/app/lib/actions/supply";
+import { SupplyAmbulanceState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
 import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
 
@@ -24,7 +22,7 @@ export default function SupplyEditForm({
     SupplyAmbulanceType | undefined,
     string | number,
     AmbulanceType[],
-    AmbulanceAreaType[]
+    AmbulanceAreaType[],
   ];
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
@@ -47,10 +45,10 @@ export default function SupplyEditForm({
     label: name,
   }));
 
-  const initialState: SupplyInAmbulanceState = { errors: {}, message: null };
+  const initialState: SupplyAmbulanceState = { errors: {}, message: null };
   const updateSupplyWithId = updateSupplyInAmbulance.bind(
     null,
-    supply?.id || ""
+    supply?.id || "",
   );
   const [state, formAction] = useActionState(updateSupplyWithId, initialState);
 
@@ -71,7 +69,7 @@ export default function SupplyEditForm({
       </h2>
       <p className="ms-6 font-semibold text-gray-500 dark:text-gray-400 text-center md:text-left">
         {`${supply.specification} - EXP. ${formatDateToDDMMYYYY(
-          supply.expiration_date
+          supply.expiration_date,
         )}`}
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
