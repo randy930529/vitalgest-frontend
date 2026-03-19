@@ -1,7 +1,7 @@
 import { GuardType } from "@/app/lib/definitions";
 import { BaseServerAction } from "@/app/lib/actions/core/base-action";
 import { GuardState } from "@/app/lib/config/stateConfigs";
-import { CreateGuard } from "@/app/lib/schema";
+import { CreateGuard, UpdateGuard } from "@/app/lib/schema";
 
 export class CreateGuardAction extends BaseServerAction<GuardType, GuardState> {
   constructor() {
@@ -44,7 +44,7 @@ export class UpdateGuardAction extends BaseServerAction<GuardType, GuardState> {
       adminOnly: true,
       revalidatePathAfter: ["/dashboard/guards"],
     });
-    this.setSchema(CreateGuard);
+    this.setSchema(UpdateGuard);
   }
 
   async execute(

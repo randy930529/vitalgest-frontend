@@ -3,7 +3,7 @@
 import { DelegationType } from "@/app/lib/definitions";
 import { createSupplyInPharmacy } from "@/app/lib/actions/supply";
 import { getCustomDelegations } from "@/app/lib/utils";
-import { GenericForm } from "@/app/ui/components/GenericForm";
+import { GenericForm } from "@/app/ui/components/generic-form";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 
 export default function SupplyForm({

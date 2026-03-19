@@ -2,7 +2,7 @@
 
 import { DelegationType } from "@/app/lib/definitions";
 import { createUser } from "@/app/lib/actions/user";
-import { GenericForm } from "@/app/ui/components/GenericForm";
+import { GenericForm } from "@/app/ui/components/generic-form";
 import { getCustomDelegations } from "@/app/lib/utils";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 

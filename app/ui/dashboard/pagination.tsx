@@ -98,7 +98,7 @@ function PaginationNumber({
     {
       "z-10 text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:bg-gray-700 dark:text-white":
         isActive,
-    }
+    },
   );
 
   return isActive || position === "middle" ? (
@@ -128,7 +128,7 @@ function PaginationArrow({
       "hover:bg-gray-100": !isDisabled,
       "ml-0 rounded-l-lg": direction === "left",
       "leading-tight rounded-r-lg": direction === "right",
-    }
+    },
   );
 
   const icon =
@@ -170,7 +170,7 @@ function PaginationButton({
     "text-white inline-flex items-center bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 sm:px-5 sm:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800",
     {
       "pointer-events-none text-gray-300 bg-primary-300": isDisabled,
-    }
+    },
   );
 
   const icon =
@@ -204,9 +204,11 @@ function PaginationButton({
 export function PaginationChecklist({
   isLast,
   link = "ambulances",
+  submitDisabled,
 }: {
   isLast: boolean;
   link?: string;
+  submitDisabled?: boolean;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -235,6 +237,7 @@ export function PaginationChecklist({
           /> */}
           <Button
             type="submit"
+            disabled={submitDisabled}
             className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
           >
             Enviar
