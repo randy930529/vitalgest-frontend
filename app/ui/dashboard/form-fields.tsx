@@ -6,6 +6,7 @@ import {
   FormInputType,
 } from "@/app/lib/definitions";
 import { InlineErrors } from "@/app/ui/custom-errors";
+import Signit from "@/app/ui/components/signit";
 
 export function FormInput({
   name,
@@ -85,7 +86,7 @@ export function FormSelect({
           htmlFor={name}
           className={clsx(
             "mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white",
-            { block: !inline }
+            { block: !inline },
           )}
         >
           {title}
@@ -98,7 +99,7 @@ export function FormSelect({
         defaultValue={defaultValue}
         className={clsx(
           "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
-          { "block w-full p-2.5": !inline }
+          { "block w-full p-2.5": !inline },
         )}
         required={required}
         disabled={disabled}
@@ -192,17 +193,20 @@ export function FormSignature(param: {
   title: string;
   usersOptions: (CustomOptions & {
     position?: string;
+    email?: string;
   })[];
   errors?: string[];
   required?: boolean;
+  onSignedChange?: (signed: boolean) => void;
 }) {
   const [position, setPosition] = useState("");
-  const { usersOptions, ...rest } = param;
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const { usersOptions, onSignedChange, ...rest } = param;
 
-  function handlePosition(userId: string) {
-    setPosition(
-      usersOptions.find(({ value }) => value === userId)?.position || ""
-    );
+  function handleSelectUser(userId: string) {
+    const user = usersOptions.find(({ value }) => value === userId);
+    setPosition(user?.position || "");
+    setSelectedUserEmail(user?.email || "");
   }
 
   return (
@@ -210,11 +214,11 @@ export function FormSignature(param: {
       <FormSelect
         {...rest}
         options={usersOptions}
-        handleOption={(_, value) => handlePosition(value)}
+        handleOption={(_, value) => handleSelectUser(value)}
         inline
         required
       />
-      <FormTextarea name={"sign-" + param.name} />
+      <Signit email={selectedUserEmail} onSignedChange={onSignedChange} />
       <p>
         Cargo: <span className="inline-block">{position}</span>
       </p>

@@ -5,7 +5,7 @@ import { CustomOptions } from "@/app/lib/definitions";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import Timeline from "@/app/ui/timeline";
 import ChecklistQuestionsForm from "@/app/ui/checklists/ambulances/edit/checklist-questions-form";
-import NotesSignatureForm from "@/app/ui/checklists/ambulances/edit/notes-signature-form";
+import ChecklistAmbulanceSign from "@/app/ui/checklists/ambulances/edit/notes-signature-form";
 import {
   fetchChecklistQuestions,
   fetchChecklistSteps,
@@ -54,11 +54,13 @@ export default async function EditCheckListAmbulancePage({
   const customUsers = users.map<
     CustomOptions & {
       position?: string;
+      email?: string;
     }
-  >(({ id, name, lastname, position }) => ({
+  >(({ id, name, lastname, position, email }) => ({
     id,
     label: `${name} ${lastname}`,
     value: id,
+    email: email,
     position,
   }));
 
@@ -80,7 +82,7 @@ export default async function EditCheckListAmbulancePage({
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm title={"Notas"} usersOptions={customUsers}>
+          <ChecklistAmbulanceSign title={"Notas"} usersOptions={customUsers}>
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}
@@ -88,7 +90,7 @@ export default async function EditCheckListAmbulancePage({
               progress={tmProgress}
               showStatus
             />
-          </NotesSignatureForm>
+          </ChecklistAmbulanceSign>
         ) : (
           <ChecklistQuestionsForm
             data={data}

@@ -9,7 +9,7 @@ import {
 import { fetchUsers } from "@/app/lib/data/users";
 import Timeline from "@/app/ui/timeline";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import NotesSignatureForm from "@/app/ui/checklists/supplies/edit/notes-signature-form";
+import ChecklistSupplySign from "@/app/ui/checklists/supplies/edit/notes-signature-form";
 import ChecklistQuestionsForm from "@/app/ui/checklists/supplies/edit/checklist-questions-form";
 
 export const metadata: Metadata = {
@@ -57,12 +57,14 @@ export default async function EditCheckListInsumosPage({
   const customUsers = users.map<
     CustomOptions & {
       position?: string;
+      email?: string;
     }
-  >(({ id, name, lastname, position }) => ({
+  >(({ id, name, lastname, position, email }) => ({
     id,
     label: `${name} ${lastname}`,
     value: id,
     position,
+    email,
   }));
 
   return (
@@ -83,7 +85,7 @@ export default async function EditCheckListInsumosPage({
       />
       <section className="md:space-y-0 p-4">
         {isLastQuestions && notes ? (
-          <NotesSignatureForm title={"Notas"} usersOptions={customUsers}>
+          <ChecklistSupplySign title={"Notas"} usersOptions={customUsers}>
             <Timeline
               key={"tm-progress-" + tmProgress}
               steps={steps}
@@ -91,7 +93,7 @@ export default async function EditCheckListInsumosPage({
               progress={tmProgress}
               showStatus
             />
-          </NotesSignatureForm>
+          </ChecklistSupplySign>
         ) : (
           <ChecklistQuestionsForm
             data={data}

@@ -249,3 +249,9 @@ export type FormFieldType =
     }
   | { type: "checkbox"; name: string; title: string; defaultChecked?: boolean }
   | { type: "custom"; name: string; component: React.ReactNode };
+
+export type VerifySignatureResult = {
+  approved: boolean;
+  signatureUrl?: string;
+  error?: string;
+};
