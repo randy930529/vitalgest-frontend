@@ -16,7 +16,7 @@ export default function LoginForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [errorMessage, formLoginAction, isPending] = useActionState(
     login,
-    undefined
+    undefined,
   );
   return (
     <form action={formLoginAction} className="space-y-3">
@@ -66,6 +66,9 @@ export default function LoginForm() {
         <Button
           className="text-white inline-flex items-center bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-700 w-full mt-6"
           aria-disabled={isPending}
+          isLoading={isPending}
+          disabled={isPending}
+          type="submit"
         >
           Iniciar Sesión
           <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
