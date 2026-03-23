@@ -279,6 +279,7 @@ export const CreateSupplyPharmacy = FormSupplySchema.omit({
   ambulanceId: true,
   areaId: true,
   minQuantity: true,
+  pharmacyId: true,
 });
 export const UpdateSupplyPharmacy = FormSupplySchema.omit({
   id: true,

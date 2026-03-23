@@ -33,7 +33,6 @@ export class CreateSupplyInPharmacyAction extends BaseServerAction<
     try {
       const expirationDate = formData.get("expirationDate") as string;
       const data = this.validate({
-        pharmacyId: formData.get("pharmacy"),
         category: formData.get("category"),
         specification: formData.get("specification"),
         avaibleQuantity: Number(formData.get("avaibleQuantity")),
