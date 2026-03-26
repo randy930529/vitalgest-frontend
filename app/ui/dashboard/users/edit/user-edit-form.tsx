@@ -11,7 +11,7 @@ import { DelegationType, UserType } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { FormInput } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
-import { customRoles } from "../user-table";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { InlineErrors } from "@/app/ui/custom-errors";
 
 const customFormInput = {
@@ -180,7 +180,7 @@ export function UserRolesSelect({
         required={required}
         defaultValue={defaultValue}
       >
-        {customRoles.map((rol) => (
+        {ROLE_MANAGER.selectOptions().map((rol) => (
           <option
             key={rol.value ? `${rol.id}-${rol.value}` : `${rol.id}-select`}
             value={rol.value}

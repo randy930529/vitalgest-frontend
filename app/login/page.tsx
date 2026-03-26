@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getSession } from "@/app/lib/dal";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { VitalGestLogo } from "@/app/ui/logos";
 import LoginForm from "@/app/ui/login-form";
 import { openSans } from "@/app/ui/fonts";
@@ -10,7 +11,7 @@ export default async function LoginPage() {
 
   if (session) {
     const userRole = session.user.role;
-    const isAdmin = userRole === "admin" || userRole === "general_admin";
+    const isAdmin = ROLE_MANAGER.isAdmin(userRole);
     if (isAdmin) {
       redirect("/dashboard");
     } else {

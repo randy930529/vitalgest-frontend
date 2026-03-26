@@ -5,6 +5,7 @@ import { createUser } from "@/app/lib/actions/user";
 import { GenericForm } from "@/app/ui/components/generic-form";
 import { getCustomDelegations } from "@/app/lib/utils";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 export default function UserForm({
   onClose,
@@ -21,6 +22,13 @@ export default function UserForm({
       name: "delegation",
       title: "Delegación",
       options: getCustomDelegations(delegations),
+      required: true,
+    },
+    {
+      type: "select",
+      name: "role",
+      title: "Rol",
+      options: [...ROLE_MANAGER.selectOptions()],
       required: true,
     },
   ]);

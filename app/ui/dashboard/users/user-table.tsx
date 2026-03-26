@@ -12,16 +12,9 @@ import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import ModalTrigger from "@/app/ui/button-modal";
 import { modalComponents } from "@/app/lib/config/modalConfig";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 const ModalComponent = modalComponents.userForm;
-export const customRoles = [
-  { id: 0, value: "", label: "Seleccione un rol" },
-  { id: 1, value: "general_admin", label: "Administrador General" },
-  { id: 2, value: "admin", label: "Administrador" },
-  { id: 3, value: "head_guard", label: "Jefe de Guardia" },
-  { id: 4, value: "vehicle_operator", label: "Operador de Ambulancia" },
-  { id: 5, value: "paramedical", label: "Paramédico" },
-];
 
 const customHeaders = [
   { id: 0, label: "Nombre" },
@@ -141,7 +134,7 @@ export default function UserTable({
                 <td className="px-4 py-3">{user.lastname}</td>
                 <td className="px-4 py-3">{user.email}</td>
                 <td className="px-4 py-3">
-                  {customRoles.find((rol) => user.role === rol.value)?.label}
+                  {ROLE_MANAGER.getLabel(user.role)}
                 </td>
                 <td className="px-4 py-3">
                   <UserActive active={user.status} />

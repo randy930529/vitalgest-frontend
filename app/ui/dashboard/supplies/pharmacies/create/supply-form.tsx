@@ -17,12 +17,18 @@ export default function SupplyForm({
 }) {
   // (Component) Formulario de Insumos - [CSR]
 
+  const pharmaciesOptions = delegations.map(({ name, pharmacy }) => ({
+    id: pharmacy.id,
+    label: name,
+    value: pharmacy.id,
+  }));
+
   const fields = getFormConfigFields("supplyPharmacy", [
     {
       type: "select",
       name: "pharmacy",
       title: "Delegación",
-      options: getCustomDelegations(delegations),
+      options: pharmaciesOptions,
       defaultValue: String(pharmacyId),
       required: true,
     },

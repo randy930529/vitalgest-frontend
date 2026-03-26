@@ -246,3 +246,13 @@ export const getCustomDelegations = (delegations?: DelegationType[]) => {
     value: delegation.id,
   }));
 };
+
+export const formatUserStatusLabel = (
+  status?: boolean | string | null,
+): "Activo" | "Inactivo" => {
+  if (typeof status === "string") {
+    return status.trim().toLowerCase() === "true" ? "Activo" : "Inactivo";
+  }
+
+  return status ? "Activo" : "Inactivo";
+};

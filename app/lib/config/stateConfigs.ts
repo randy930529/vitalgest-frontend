@@ -12,6 +12,9 @@ export type UserState = StateType<{
   name?: string[];
   lastname?: string[];
   email?: string[];
+  phone?: string[];
+  avatarUrl?: string[];
+  signatureFile?: string[];
   password?: string[];
   role?: string[];
   status?: string[];

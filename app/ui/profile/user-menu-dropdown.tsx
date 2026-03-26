@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 import clsx from "clsx";
 import { UserIcon } from "@heroicons/react/24/outline";
@@ -67,7 +68,7 @@ export default function UserMenuDropdown({
           "dropdown-open absolute top-0 z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl",
           {
             hidden: !isOpen,
-          }
+          },
         )}
       >
         <div className="py-3 px-4">
@@ -83,12 +84,13 @@ export default function UserMenuDropdown({
           aria-labelledby="dropdown"
         >
           <li>
-            <a
-              href="#"
+            <Link
+              href="/profile/edit"
               className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+              onClick={() => setIsOpen(false)}
             >
               Mi perfil
-            </a>
+            </Link>
           </li>
         </ul>
         <ul

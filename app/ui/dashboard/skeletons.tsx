@@ -163,3 +163,15 @@ export function ModalFormSkeleton({
     </section>
   );
 }
+
+export function ProfileEditSkeleton() {
+  return (
+    <section className="mt-7 animate-pulse space-y-6">
+      <div className="h-64 rounded-[36px] bg-slate-200/70" />
+      <div className="grid gap-6 xl:grid-cols-[380px,minmax(0,1fr)]">
+        <div className="h-[520px] rounded-[32px] bg-slate-200/70" />
+        <div className="h-[520px] rounded-[32px] bg-slate-200/70" />
+      </div>
+    </section>
+  );
+}
