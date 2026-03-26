@@ -255,3 +255,18 @@ export type VerifySignatureResult = {
   signatureUrl?: string;
   error?: string;
 };
+
+export type ImageUploaderValue = File | string | null;
+
+export type ProfileFormData = {
+  name: string;
+  lastname: string;
+  position?: string;
+  role: string;
+  status?: boolean | string;
+  email: string;
+  phone: string;
+  delegation: string;
+  avatar: ImageUploaderValue;
+  signature: ImageUploaderValue;
+};
