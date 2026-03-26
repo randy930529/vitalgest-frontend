@@ -8,7 +8,7 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import { UserType } from "@/app/lib/definitions";
-import UserMenuDropdown from "@/app/ui/dashboard/profile/user-menu-dropdown";
+import UserMenuDropdown from "@/app/ui/profile/user-menu-dropdown";
 
 export default function NavBar({
   user,
