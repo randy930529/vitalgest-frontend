@@ -73,7 +73,7 @@ export async function DashboardStats() {
 
 export function DashboardSections() {
   return (
-    <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+    <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
       <GuardsStats />
       <DelegationStats />
     </section>
@@ -92,7 +92,7 @@ export function GuardsStats() {
         </div>
       </header>
 
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-violet-100 bg-violet-50/80 p-3 text-center">
           <TruckIcon className="mx-auto mb-1 h-5 w-5 text-violet-600" />
           <p className="text-2xl font-semibold text-violet-900">1</p>
@@ -167,7 +167,7 @@ export function DelegationStats() {
         </div>
       </header>
 
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-sky-100 bg-sky-50/80 p-3 text-center">
           <BuildingOffice2Icon className="mx-auto mb-1 h-5 w-5 text-sky-600" />
           <p className="text-2xl font-semibold text-sky-900">1</p>
