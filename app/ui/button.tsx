@@ -98,18 +98,24 @@ export function FormButtons({
   showCancel = true,
 }: FormButtonsProps) {
   return (
-    <div className="w-full flex justify-end gap-4">
+    <div className="flex w-full flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
       {showCancel && (
         <Button
           type="reset"
           variant="secondary"
           onMouseDown={onCancel}
           disabled={isLoading}
+          additionalClassName="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 !bg-white px-5 text-sm font-semibold !text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
         >
           {cancelText}
         </Button>
       )}
-      <Button type="submit" variant="primary" isLoading={isLoading}>
+      <Button
+        type="submit"
+        variant="primary"
+        isLoading={isLoading}
+        additionalClassName="inline-flex h-12 items-center justify-center gap-2 rounded-2xl !bg-rose-500 px-5 text-sm font-semibold !text-white shadow-[0_20px_40px_-25px_rgba(244,63,94,0.8)] transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200"
+      >
         {submitText}
       </Button>
     </div>
