@@ -19,7 +19,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${montserrat.className}`}>
+      <body className={`${montserrat.className}`} data-top-gradient="moderno">
         <Toaster />
         {children}
         <Footer />
