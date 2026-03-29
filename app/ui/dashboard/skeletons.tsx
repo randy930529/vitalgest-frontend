@@ -175,3 +175,121 @@ export function ProfileEditSkeleton() {
     </section>
   );
 }
+
+export function DashboardKpiCardsSkeleton() {
+  return (
+    <section className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className={`relative h-28 overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+        >
+          <div className="flex h-full items-center justify-between p-5">
+            <div className="space-y-3">
+              <div className="h-3 w-24 rounded bg-slate-200" />
+              <div className="h-8 w-16 rounded bg-slate-300" />
+            </div>
+            <div className="h-12 w-12 rounded-2xl bg-slate-300" />
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export function DashboardChartsSkeleton() {
+  return (
+    <section className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <div
+        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-2 ${shimmer}`}
+      >
+        <div className="p-4">
+          <div className="h-4 w-40 rounded bg-slate-200" />
+          <div className="mt-2 h-3 w-64 rounded bg-slate-200" />
+          <div className="mt-4 flex gap-2">
+            <div className="h-7 w-14 rounded-full bg-slate-200" />
+            <div className="h-7 w-16 rounded-full bg-slate-200" />
+            <div className="h-7 w-16 rounded-full bg-slate-200" />
+          </div>
+          <div className="mt-5 h-[230px] rounded-2xl bg-slate-200/80" />
+        </div>
+      </div>
+      <div
+        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+      >
+        <div className="p-4">
+          <div className="h-4 w-36 rounded bg-slate-200" />
+          <div className="mt-2 h-3 w-52 rounded bg-slate-200" />
+          <div className="mt-5 h-[230px] rounded-full bg-slate-200/80" />
+        </div>
+      </div>
+      <div
+        className={`relative min-h-[340px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-3 ${shimmer}`}
+      >
+        <div className="p-4">
+          <div className="h-4 w-48 rounded bg-slate-200" />
+          <div className="mt-4 flex gap-2">
+            <div className="h-7 w-14 rounded-full bg-slate-200" />
+            <div className="h-7 w-16 rounded-full bg-slate-200" />
+            <div className="h-7 w-16 rounded-full bg-slate-200" />
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-2 py-1"
+              >
+                <div className="h-2.5 w-2.5 rounded-sm bg-slate-300" />
+                <div className="h-2.5 flex-1 rounded bg-slate-200" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 h-[230px] rounded-2xl bg-slate-200/80" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function DashboardOperationalSkeleton() {
+  return (
+    <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
+      <div
+        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+      >
+        <div className="p-6">
+          <div className="h-6 w-48 rounded bg-slate-200" />
+          <div className="mt-2 h-4 w-72 rounded bg-slate-200" />
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+          </div>
+          <div className="mt-6 space-y-3">
+            <div className="h-20 rounded-2xl bg-slate-200/80" />
+            <div className="h-20 rounded-2xl bg-slate-200/80" />
+          </div>
+          <div className="mt-6 h-28 rounded-2xl bg-slate-200/80" />
+          <div className="mt-6 h-16 rounded-2xl bg-slate-200/80" />
+        </div>
+      </div>
+      <div
+        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+      >
+        <div className="p-6">
+          <div className="h-6 w-48 rounded bg-slate-200" />
+          <div className="mt-2 h-4 w-72 rounded bg-slate-200" />
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+            <div className="h-24 rounded-2xl bg-slate-200/80" />
+          </div>
+          <div className="mt-6 space-y-3">
+            <div className="h-36 rounded-2xl bg-slate-200/80" />
+            <div className="h-36 rounded-2xl bg-slate-200/80" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
