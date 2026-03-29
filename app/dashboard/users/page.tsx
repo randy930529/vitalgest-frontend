@@ -19,7 +19,7 @@ export default async function UserPage() {
     await Promise.all([fetchUsers(), fetchDelegations()]);
 
   return (
-    <>
+    <section className="vital-shell">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
@@ -36,6 +36,6 @@ export default async function UserPage() {
           WrappedComponent={UserTable}
         />
       </Suspense>
-    </>
+    </section>
   );
 }

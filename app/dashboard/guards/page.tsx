@@ -28,7 +28,7 @@ export default async function GuardsPage() {
     ]);
 
   return (
-    <>
+    <section className="vital-shell">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
@@ -56,6 +56,6 @@ export default async function GuardsPage() {
           WrappedComponent={GuardsTable}
         />
       </Suspense>
-    </>
+    </section>
   );
 }

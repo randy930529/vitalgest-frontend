@@ -18,7 +18,7 @@ export default async function DelegationsPage() {
     await Promise.all([fetchDelegations(), fetchMxStates()]);
 
   return (
-    <>
+    <section className="vital-shell">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
@@ -42,6 +42,6 @@ export default async function DelegationsPage() {
           WrappedComponent={DelegationTable}
         />
       </Suspense>
-    </>
+    </section>
   );
 }

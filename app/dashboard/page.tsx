@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  // (Página) Resumen general del Dashboard - [SSR]
-
   return (
     <AdminDashboard>
       <DashboardStats />
