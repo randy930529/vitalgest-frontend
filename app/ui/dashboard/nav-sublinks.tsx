@@ -14,25 +14,44 @@ export default function NavSubLinks({
   children?: React.ReactNode;
 }) {
   const [dropdown, setDropdown] = useState(true);
+  const controlsId = `${name.toLowerCase().replace(/\s+/g, "-")}-submenu`;
 
   return (
-    <>
+    <div
+      className={clsx("relative flex shrink-0 flex-col md:w-full", {
+        "z-[70]": !dropdown,
+      })}
+    >
       <button
         type="button"
-        className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+        aria-expanded={!dropdown}
+        aria-controls={controlsId}
+        className="group relative z-[71] flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3"
         onClick={() => setDropdown(!dropdown)}
       >
         {icon && icon}
-        <span className="flex-1 text-center whitespace-nowrap">{name}</span>
-        <ChevronDownIcon className="w-6 h-6" />
+        <span className="hidden whitespace-nowrap text-center md:block">
+          {name}
+        </span>
+        <ChevronDownIcon
+          className={clsx("h-5 w-5 transition md:block", {
+            hidden: true,
+            "md:inline": true,
+            "rotate-180": !dropdown,
+          })}
+        />
       </button>
       <ul
-        className={clsx("py-2 space-y-2", {
-          hidden: dropdown,
-        })}
+        id={controlsId}
+        className={clsx(
+          "absolute right-0 top-full z-[72] mt-2 w-48 space-y-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_20px_40px_-25px_rgba(15,23,42,0.5)] backdrop-blur-sm md:static md:mt-0 md:w-full md:space-y-2 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-0",
+          {
+            hidden: dropdown,
+          },
+        )}
       >
         {children}
       </ul>
-    </>
+    </div>
   );
 }

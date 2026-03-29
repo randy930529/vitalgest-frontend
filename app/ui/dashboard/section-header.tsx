@@ -5,7 +5,10 @@ import { useSelectedLayoutSegment } from "next/navigation";
 const customSectionMeta: {
   [key: string]: { title: string; subtitle: string };
 } = {
-  null: { title: "Panel Administrativo", subtitle: "Resumen general" },
+  null: {
+    title: "Panel Administrativo",
+    subtitle: "Resumen general operativo",
+  },
   users: {
     title: "Gestión de Usuarios del Sistema",
     subtitle: "Administrar usuarios que tienen acceso al sistema",
@@ -34,10 +37,10 @@ export default function SectionHeader() {
 
   return (
     <div className="text-center md:text-left">
-      <h1 className="text-xl md:text-2xl font-bold dark:text-white">
+      <h1 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
         {title && title}
       </h1>
-      <p className="font-semibold text-gray-500 dark:text-gray-400 md:ms-2">
+      <p className="mt-1 text-sm font-medium text-slate-300 md:ms-0">
         {subtitle && subtitle}
       </p>
     </div>

@@ -64,7 +64,7 @@ export default function NavLinks() {
             icon={<LinkIcon className="w-6 h-6" />}
           >
             {link.sublinks.map((sublink) => (
-              <li key={sublink.name} className="pl-8">
+              <li key={sublink.name} className="w-full">
                 <NavLink key={"sub-" + sublink.name} link={sublink} />
               </li>
             ))}
@@ -77,15 +77,18 @@ export default function NavLinks() {
 
 function NavLink({ link }: { link: LinkProp }) {
   const LinkIcon = link.icon;
+  const labelClass = LinkIcon ? "hidden md:block" : "block";
+  const isSubLink = !LinkIcon;
+  const linkClass = isSubLink
+    ? "group flex h-[48px] w-full items-center justify-start gap-2 rounded-2xl bg-slate-50 px-4 text-sm font-semibold text-slate-800 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:justify-start md:px-3"
+    : "group flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3";
 
   return (
-    <Link
-      key={link.name}
-      href={link.href}
-      className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-    >
-      {LinkIcon && <LinkIcon className="w-6 h-6" />}
-      <p className="hidden md:block">{link.name}</p>
+    <Link key={link.name} href={link.href} className={linkClass}>
+      {LinkIcon && (
+        <LinkIcon className="h-5 w-5 text-slate-700 transition group-hover:text-rose-600" />
+      )}
+      <p className={labelClass}>{link.name}</p>
     </Link>
   );
 }

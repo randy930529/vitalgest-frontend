@@ -12,11 +12,13 @@ export default function UserMenuDropdown({
   email,
   name,
   lastname,
+  buttonClassName,
 }: {
   id: string;
   email: string;
   name: string;
   lastname: string;
+  buttonClassName?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -45,12 +47,15 @@ export default function UserMenuDropdown({
   }, [isOpen]);
 
   return (
-    <div ref={dropdownRef}>
+    <div ref={dropdownRef} className="relative z-[80]">
       <button
         id="user-menu-button"
         name="user"
         type="button"
-        className="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        className={
+          buttonClassName ||
+          "p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        }
         aria-expanded="false"
         data-tooltip-id="user-menu-tooltip"
         data-dropdown-toggle="user-menu-dropdown"
@@ -65,7 +70,7 @@ export default function UserMenuDropdown({
       <div
         id="user-menu-dropdown"
         className={clsx(
-          "dropdown-open absolute top-0 z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl",
+          "absolute right-0 top-full z-[90] mt-2 w-56 list-none divide-y divide-gray-100 rounded-xl bg-white text-base shadow dark:divide-gray-600 dark:bg-gray-700",
           {
             hidden: !isOpen,
           },
