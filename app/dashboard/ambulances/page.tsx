@@ -19,7 +19,7 @@ export default async function AmbulancePage() {
     await Promise.all([fetchAmbulances(), fetchDelegations()]);
 
   return (
-    <>
+    <section className="vital-shell">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
@@ -39,6 +39,6 @@ export default async function AmbulancePage() {
           WrappedComponent={AmbulanceTable}
         />
       </Suspense>
-    </>
+    </section>
   );
 }

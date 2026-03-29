@@ -17,10 +17,10 @@ export async function AdminDashboard({
 }: {
   children: React.ReactNode;
 }) {
-  // (Component) Tarjetas con estadísticas clave - [SSR]
-
   return (
-    <main className="bg-white mt-7 dark:bg-gray-800 relative sm:rounded-lg overflow-hidden">
+    <main className="relative overflow-hidden rounded-[30px] border border-white/80 bg-white/80 p-4 backdrop-blur-sm sm:p-6">
+      <div className="pointer-events-none absolute -top-16 right-0 h-44 w-44 rounded-full bg-rose-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-14 left-4 h-36 w-36 rounded-full bg-sky-400/10 blur-3xl" />
       {children}
     </main>
   );
@@ -33,46 +33,47 @@ export async function DashboardStats() {
     fetchAmbulances(),
     fetchGuards(),
   ]);
+
   const totalUsers = users.length;
   const totalDelegations = delegations.length;
   const totalAmbulances = ambulances.length;
   const totalGuardsActive = guards.filter(
-    ({ state }) => state === "En curso"
+    ({ state }) => state === "En curso",
   ).length;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <section className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         title="Total Usuarios"
         value={totalUsers}
         icon={UsersIcon}
-        color="bg-blue-500"
+        color="bg-slate-800"
       />
       <StatCard
         title="Delegaciones"
         value={totalDelegations}
         icon={BuildingOffice2Icon}
-        color="bg-green-500"
+        color="bg-emerald-600"
       />
       <StatCard
         title="Ambulancias"
         value={totalAmbulances}
         icon={TruckIcon}
-        color="bg-red-500"
+        color="bg-rose-500"
       />
       <StatCard
         title="Guardias Activas"
         value={totalGuardsActive}
         icon={ShieldCheckIcon}
-        color="bg-purple-500"
+        color="bg-sky-600"
       />
-    </div>
+    </section>
   );
 }
 
 export function DashboardSections() {
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
       <GuardsStats />
       <DelegationStats />
     </section>
@@ -81,169 +82,166 @@ export function DashboardSections() {
 
 export function GuardsStats() {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-800">Guardias Activas</h2>
-        <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-          2 Activas
+    <article className="rounded-[28px] border border-white/80 bg-white/90 p-6 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+      <header className="mb-6 flex items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold text-slate-900">
+          Guardias activas
+        </h2>
+        <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+          2 activas
+        </div>
+      </header>
+
+      <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="rounded-2xl border border-violet-100 bg-violet-50/80 p-3 text-center">
+          <TruckIcon className="mx-auto mb-1 h-5 w-5 text-violet-600" />
+          <p className="text-2xl font-semibold text-violet-900">1</p>
+          <p className="text-xs font-medium text-violet-700">Ambulancias</p>
+        </div>
+        <div className="rounded-2xl border border-sky-100 bg-sky-50/80 p-3 text-center">
+          <UsersIcon className="mx-auto mb-1 h-5 w-5 text-sky-600" />
+          <p className="text-2xl font-semibold text-sky-900">6</p>
+          <p className="text-xs font-medium text-sky-700">Personal</p>
+        </div>
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/80 p-3 text-center">
+          <ShieldCheckIcon className="mx-auto mb-1 h-5 w-5 text-emerald-600" />
+          <p className="text-2xl font-semibold text-emerald-900">2</p>
+          <p className="text-xs font-medium text-emerald-700">Turnos</p>
         </div>
       </div>
 
-      {/* Mini estadísticas */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="text-center p-3 bg-purple-50 rounded-lg">
-          <TruckIcon className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-purple-900">1</p>
-          <p className="text-xs text-purple-600">Ambulancias</p>
-        </div>
-        <div className="text-center p-3 bg-blue-50 rounded-lg">
-          <UsersIcon className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-blue-900">6</p>
-          <p className="text-xs text-blue-600">Personal</p>
-        </div>
-        <div className="text-center p-3 bg-green-50 rounded-lg">
-          <ShieldCheckIcon className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-green-900">2</p>
-          <p className="text-xs text-green-600">Turnos</p>
-        </div>
-      </div>
-
-      {/* Lista de guardias */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+      <div className="space-y-3" aria-label="Lista de guardias activas">
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition hover:border-slate-300 hover:bg-slate-100/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <ShieldCheckIcon className="w-5 h-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100">
+              <ShieldCheckIcon className="h-5 w-5 text-rose-600" />
             </div>
             <div>
-              <p className="font-semibold text-gray-800">Turno DF434F6</p>
-              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                <CalendarIcon className="w-3 h-3" />
+              <p className="font-semibold text-slate-800">Turno DF434F6</p>
+              <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                <CalendarIcon className="h-3 w-3" />
                 <span>Hace 2h</span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-xs font-medium text-green-600">Activa</span>
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-xs font-semibold text-emerald-700">
+              Activa
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition hover:border-slate-300 hover:bg-slate-100/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <ShieldCheckIcon className="w-5 h-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100">
+              <ShieldCheckIcon className="h-5 w-5 text-rose-600" />
             </div>
             <div>
-              <p className="font-semibold text-gray-800">Turno DF434F7</p>
-              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                <CalendarIcon className="w-3 h-3" />
+              <p className="font-semibold text-slate-800">Turno DF434F7</p>
+              <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                <CalendarIcon className="h-3 w-3" />
                 <span>Hace 4h</span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-xs font-medium text-green-600">Activa</span>
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-xs font-semibold text-emerald-700">
+              Activa
+            </span>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
 export function DelegationStats() {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-800">Delegaciones</h2>
-        <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-          1 Activas
+    <article className="rounded-[28px] border border-white/80 bg-white/90 p-6 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+      <header className="mb-6 flex items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold text-slate-900">Delegaciones</h2>
+        <div className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
+          1 activa
+        </div>
+      </header>
+
+      <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="rounded-2xl border border-sky-100 bg-sky-50/80 p-3 text-center">
+          <BuildingOffice2Icon className="mx-auto mb-1 h-5 w-5 text-sky-600" />
+          <p className="text-2xl font-semibold text-sky-900">1</p>
+          <p className="text-xs font-medium text-sky-700">Delegaciones</p>
+        </div>
+        <div className="rounded-2xl border border-rose-100 bg-rose-50/80 p-3 text-center">
+          <TruckIcon className="mx-auto mb-1 h-5 w-5 text-rose-600" />
+          <p className="text-2xl font-semibold text-rose-900">2</p>
+          <p className="text-xs font-medium text-rose-700">Ambulancias</p>
+        </div>
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/80 p-3 text-center">
+          <MapPinIcon className="mx-auto mb-1 h-5 w-5 text-emerald-600" />
+          <p className="text-2xl font-semibold text-emerald-900">1</p>
+          <p className="text-xs font-medium text-emerald-700">Estados</p>
         </div>
       </div>
 
-      {/* Mini estadísticas */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="text-center p-3 bg-blue-50 rounded-lg">
-          <BuildingOffice2Icon className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-blue-900">1</p>
-          <p className="text-xs text-blue-600">Delegaciones</p>
-        </div>
-        <div className="text-center p-3 bg-red-50 rounded-lg">
-          <TruckIcon className="w-5 h-5 text-red-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-red-900">2</p>
-          <p className="text-xs text-red-600">Ambulancias</p>
-        </div>
-        <div className="text-center p-3 bg-green-50 rounded-lg">
-          <MapPinIcon className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="text-2xl font-bold text-green-900">1</p>
-          <p className="text-xs text-green-600">Estados</p>
-        </div>
-      </div>
-
-      {/* Lista de delegaciones */}
       <div className="space-y-3">
-        <div className="p-4 bg-linear-to-r from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 rounded-lg transition-all border border-blue-200">
-          <div className="flex items-start justify-between mb-3">
+        <div className="rounded-2xl border border-slate-200 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(248,250,252,1))] p-4 transition hover:border-slate-300">
+          <div className="mb-3 flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BuildingOffice2Icon className="w-6 h-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100">
+                <BuildingOffice2Icon className="h-6 w-6 text-sky-600" />
               </div>
               <div>
-                <p className="font-bold text-gray-800">
-                  Delegación Ameca, Jalisco
+                <p className="font-semibold text-slate-800">
+                  Delegacion Ameca, Jalisco
                 </p>
-                <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                  <MapPinIcon className="w-3 h-3" />
+                <div className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+                  <MapPinIcon className="h-3 w-3" />
                   <span>Jalisco</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Ambulancias de la delegación */}
-          <div className="ml-15 space-y-2">
-            <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+          <div className="space-y-2 sm:ml-14">
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3">
               <div className="flex items-center gap-2">
-                <TruckIcon className="w-4 h-4 text-red-500" />
+                <TruckIcon className="h-4 w-4 text-rose-500" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-700">
+                  <p className="text-sm font-semibold text-slate-700">
                     Toyota Corolla
                   </p>
-                  <p className="text-xs text-gray-500">Placa: 1234dfde23</p>
+                  <p className="text-xs text-slate-500">Placa: 1234dfde23</p>
                 </div>
               </div>
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3">
               <div className="flex items-center gap-2">
-                <TruckIcon className="w-4 h-4 text-red-500" />
+                <TruckIcon className="h-4 w-4 text-rose-500" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-700">
+                  <p className="text-sm font-semibold text-slate-700">
                     Toyota Corolla
                   </p>
-                  <p className="text-xs text-gray-500">Placa: 1234dfde23</p>
+                  <p className="text-xs text-slate-500">Placa: 1234dfde23</p>
                 </div>
               </div>
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
             </div>
           </div>
 
-          {/* Contador de ambulancias */}
-          <div className="mt-3 ml-15 flex items-center gap-2 text-sm">
-            <div className="flex-1 bg-blue-100 rounded-full h-2">
-              <div
-                className="bg-blue-600 h-2 rounded-full"
-                style={{ width: "100%" }}
-              ></div>
+          <div className="mt-3 flex items-center gap-2 text-sm sm:ml-14">
+            <div className="h-2 flex-1 rounded-full bg-sky-100">
+              <div className="h-2 w-full rounded-full bg-sky-600" />
             </div>
-            <span className="text-xs font-semibold text-blue-700">
+            <span className="text-xs font-semibold text-sky-700">
               2 ambulancias
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -55,7 +55,7 @@ export default async function AmbulancesSuppliesPage({
     ]);
 
   return (
-    <>
+    <section className="vital-shell">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
@@ -86,6 +86,6 @@ export default async function AmbulancesSuppliesPage({
           WrappedComponent={AmbulanceSuppliesTable}
         />
       </Suspense>
-    </>
+    </section>
   );
 }

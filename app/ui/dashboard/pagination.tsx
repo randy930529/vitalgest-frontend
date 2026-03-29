@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { createPageURL, generatePagination } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
 
-const ITEMS_PER_PAGE = parseInt(process.env.ITEMS_PER_PAGE || "5");
+const ITEMS_PER_PAGE = Number(process.env.NEXT_PUBLIC_ITEMS_PER_PAGE ?? "10");
 
 export default function TablePagination({
   totalItems,
@@ -29,18 +29,16 @@ export default function TablePagination({
 
   return (
     <nav
-      className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+      className="flex flex-col items-start justify-between space-y-3 border-t border-slate-200/80 p-4 md:flex-row md:items-center md:space-y-0"
       aria-label="Table navigation"
     >
-      <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+      <span className="text-sm font-medium text-slate-500">
         Mostrando
-        <span className="font-semibold text-gray-900 ml-1 mr-1 dark:text-white">
+        <span className="ml-1 mr-1 font-semibold text-slate-900">
           {`${currentPage} - ${totalPages}`}
         </span>
         de
-        <span className="font-semibold text-gray-900 ml-1 dark:text-white">
-          {totalItems}
-        </span>
+        <span className="ml-1 font-semibold text-slate-900">{totalItems}</span>
       </span>
       <ul className="inline-flex items-stretch -space-x-px">
         <li>
@@ -94,9 +92,9 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   const className = clsx(
-    "flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white",
+    "flex items-center justify-center border border-slate-300 bg-white px-3 py-2 text-sm leading-tight text-slate-600 transition hover:bg-slate-100 hover:text-slate-800",
     {
-      "z-10 text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:bg-gray-700 dark:text-white":
+      "z-10 border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:text-rose-800":
         isActive,
     },
   );
@@ -122,9 +120,9 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = clsx(
-    "flex items-center justify-center h-full py-1.5 px-3 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white",
+    "flex h-full items-center justify-center border border-slate-300 bg-white px-3 py-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
     {
-      "pointer-events-none text-gray-300": isDisabled,
+      "pointer-events-none text-slate-300": isDisabled,
       "hover:bg-gray-100": !isDisabled,
       "ml-0 rounded-l-lg": direction === "left",
       "leading-tight rounded-r-lg": direction === "right",

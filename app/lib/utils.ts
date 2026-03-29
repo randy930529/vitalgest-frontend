@@ -256,3 +256,17 @@ export const formatUserStatusLabel = (
 
   return status ? "Activo" : "Inactivo";
 };
+
+/**
+ * Sanitiza cadenas de texto de formularios para evitar etiquetas y caracteres peligrosos.
+ * @param value Texto de entrada del usuario.
+ * @param maxLength Limite maximo del texto permitido.
+ * @returns Cadena limpia y recortada.
+ */
+export const sanitizeTextInput = (value: string, maxLength = 255): string => {
+  return value
+    .replace(/[<>"'`]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .slice(0, maxLength)
+    .trimStart();
+};

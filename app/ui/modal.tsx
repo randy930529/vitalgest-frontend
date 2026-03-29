@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
@@ -20,29 +24,49 @@ export default function Modal({
   details,
   onClose,
 }: ModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const originalOverflow = document.body.style.overflow;
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen, mounted]);
+
+  if (!isOpen) return null;
+  if (!mounted) return null;
+
+  const modalContent = (
     // <!-- Main modal -->
     <div
       id="defaultModal"
       tabIndex={-1}
       aria-hidden="true"
-      className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-modal h-full bg-black bg-opacity-50"
+      className="fixed inset-0 z-[120] flex h-screen w-screen items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50"
       onClick={onClose}
     >
-      <div className="relative p-4 w-full max-w-2xl h-full md:h-auto">
+      <div className="relative w-full max-w-2xl p-4 md:h-auto">
         {/* <!-- Modal content --> */}
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
+        <div className="relative rounded-lg bg-white shadow dark:bg-gray-800">
           {/* <!-- Modal header --> */}
           <div
             className={clsx(
-              "flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600 sm:px-8",
+              "flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 sm:px-8",
               {
                 "bg-blue-800": type === "edit",
                 "bg-red-400": type === "delete",
                 "bg-white": type === "info",
-              }
+              },
             )}
             onClick={(e) => e.stopPropagation()}
           >
@@ -51,7 +75,7 @@ export default function Modal({
                 "text-lg font-semibold text-gray-300 dark:text-white",
                 {
                   "text-gray-900": type === "info",
-                }
+                },
               )}
             >
               {title}
@@ -59,15 +83,15 @@ export default function Modal({
             <button
               type="button"
               className={clsx(
-                "text-gray-300 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white",
+                "ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-300 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
                 {
                   "text-gray-400": type === "info",
-                }
+                },
               )}
               data-modal-toggle="defaultModal"
               onClick={onClose}
             >
-              <XMarkIcon className="w-5 h-5" />
+              <XMarkIcon className="h-5 w-5" />
               <span className="sr-only">Close modal</span>
             </button>
           </div>
@@ -78,7 +102,7 @@ export default function Modal({
           >
             {question && <p className="w-full text-center">{question}</p>}
             {details && (
-              <div className="bg-orange-100 rounded-lg p-6">
+              <div className="rounded-lg bg-orange-100 p-6">
                 <p>{details}</p>
               </div>
             )}
@@ -88,4 +112,6 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

@@ -18,14 +18,14 @@ export function TableSkeleton({
 }) {
   return (
     <div
-      className={`mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden ${shimmer}`}
+      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
     >
       <Filters>
         <ModalTrigger title={title} modelContent={modelContent} />
       </Filters>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table className="w-full text-left text-sm text-slate-500">
+          <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
             <tr>
               <th scope="col" className="px-6 py-3">
                 <div className="h-4 bg-gray-300 rounded" />
@@ -61,7 +61,7 @@ export function TableSkeleton({
 export function FormSkeleton({ goBackUrl }: { goBackUrl: string }) {
   return (
     <section
-      className={`mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden ${shimmer}`}
+      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
     >
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />

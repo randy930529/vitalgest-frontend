@@ -13,19 +13,25 @@ import UserMenuDropdown from "@/app/ui/profile/user-menu-dropdown";
 export default function NavBar({
   user,
   showCog,
+  variant = "light",
 }: {
   user: UserType;
   showCog?: boolean;
+  variant?: "light" | "dark";
 }) {
   const { id, email, name, lastname } = user;
+  const iconButtonClass =
+    variant === "dark"
+      ? "mx-1 p-2 text-slate-100 rounded-lg hover:text-white hover:bg-white/15 focus:ring-2 focus:ring-white/35"
+      : "mx-1 p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600";
 
   return (
-    <nav className="flex relative items-center lg:order-2">
+    <nav className="relative flex w-full items-center justify-center md:w-auto md:justify-end lg:order-2">
       {showCog && (
         <Link
           href="/dashboard"
           data-tooltip-id="admin-tooltip"
-          className="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+          className={iconButtonClass}
         >
           <span className="sr-only">Link administration</span>
           {/* <!-- Cog icon --> */}
@@ -38,7 +44,7 @@ export default function NavBar({
         type="button"
         data-tooltip-id="notification-tooltip"
         data-dropdown-toggle="notification-dropdown"
-        className="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        className={iconButtonClass}
       >
         <span className="sr-only">View notifications</span>
         {/* <!-- Bell icon --> */}
@@ -49,7 +55,7 @@ export default function NavBar({
       <button
         type="button"
         data-tooltip-id="question-tooltip"
-        className="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        className={iconButtonClass}
       >
         <span className="sr-only">View help</span>
         {/* <!-- Bell icon --> */}
@@ -62,6 +68,7 @@ export default function NavBar({
         email={email}
         name={name}
         lastname={lastname}
+        buttonClassName={iconButtonClass}
       />
     </nav>
   );
