@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import type { ButtonVariant } from "./button-variants";
-import { buttonVariants } from "./button-variants";
+import type { ButtonVariant } from "@/app/ui/button-variants";
+import { buttonVariants } from "@/app/ui/button-variants";
+import { SaveIcon } from "@/app/ui/components/icons";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -86,6 +87,8 @@ interface FormButtonsProps {
   onCancel?: () => void;
   cancelText?: string;
   submitText?: string;
+  cancelIcon?: React.ReactNode;
+  submitIcon?: React.ReactNode;
   isLoading?: boolean;
   showCancel?: boolean;
 }
@@ -94,6 +97,8 @@ export function FormButtons({
   onCancel,
   cancelText = "Cancelar",
   submitText = "Guardar",
+  cancelIcon,
+  submitIcon = <SaveIcon className="h-4 w-4" />,
   isLoading = false,
   showCancel = true,
 }: FormButtonsProps) {
@@ -102,20 +107,18 @@ export function FormButtons({
       {showCancel && (
         <Button
           type="reset"
-          variant="secondary"
-          onMouseDown={onCancel}
+          variant="formSecondary"
+          onClick={onCancel}
           disabled={isLoading}
-          additionalClassName="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 !bg-white px-5 text-sm font-semibold !text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
         >
+          {cancelIcon ? (
+            <span className="mr-2 inline-flex">{cancelIcon}</span>
+          ) : null}
           {cancelText}
         </Button>
       )}
-      <Button
-        type="submit"
-        variant="primary"
-        isLoading={isLoading}
-        additionalClassName="inline-flex h-12 items-center justify-center gap-2 rounded-2xl !bg-rose-500 px-5 text-sm font-semibold !text-white shadow-[0_20px_40px_-25px_rgba(244,63,94,0.8)] transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200"
-      >
+      <Button type="submit" variant="formPrimary" isLoading={isLoading}>
+        {submitIcon ? <span className="inline-flex">{submitIcon}</span> : null}
         {submitText}
       </Button>
     </div>
