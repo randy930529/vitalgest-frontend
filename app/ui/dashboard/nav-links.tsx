@@ -77,16 +77,25 @@ export default function NavLinks() {
 
 function NavLink({ link }: { link: LinkProp }) {
   const LinkIcon = link.icon;
-  const labelClass = LinkIcon ? "hidden md:block" : "block";
+  const labelClass = LinkIcon ? "sr-only md:not-sr-only md:block" : "block";
   const isSubLink = !LinkIcon;
   const linkClass = isSubLink
     ? "group flex h-[48px] w-full items-center justify-start gap-2 rounded-2xl bg-slate-50 px-4 text-sm font-semibold text-slate-800 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:justify-start md:px-3"
     : "group flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3";
 
   return (
-    <Link key={link.name} href={link.href} className={linkClass}>
+    <Link
+      key={link.name}
+      href={link.href}
+      className={linkClass}
+      aria-label={link.name}
+      title={link.name}
+    >
       {LinkIcon && (
-        <LinkIcon className="h-5 w-5 text-slate-700 transition group-hover:text-rose-600" />
+        <LinkIcon
+          aria-hidden="true"
+          className="h-5 w-5 text-slate-700 transition group-hover:text-rose-600"
+        />
       )}
       <p className={labelClass}>{link.name}</p>
     </Link>
