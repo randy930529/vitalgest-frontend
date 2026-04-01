@@ -26,10 +26,10 @@ export class CreateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
         driverId: formData.get("driver"),
       });
 
-      await this.fetchAPI(data);
+      const shift = await this.fetchAPI(data);
       await this.revalidate();
 
-      return { message: "Turno asignado exitosamente." };
+      return { message: "Turno asignado exitosamente.", shift };
     } catch (error) {
       return this.handleError(error);
     }
