@@ -52,12 +52,12 @@ export default function Modal({
       id="defaultModal"
       tabIndex={-1}
       aria-hidden="true"
-      className="fixed inset-0 z-[120] flex h-screen w-screen items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50"
+      className="fixed inset-0 z-[120] flex h-screen w-screen items-start justify-center overflow-y-auto overflow-x-hidden bg-black/50 px-2 py-4 sm:px-4 sm:py-6"
       onClick={onClose}
     >
-      <div className="relative w-full max-w-2xl p-4 md:h-auto">
+      <div className="relative w-full max-w-2xl md:h-auto">
         {/* <!-- Modal content --> */}
-        <div className="relative rounded-lg bg-white shadow dark:bg-gray-800">
+        <div className="relative max-h-[calc(100vh-2rem)] overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800 sm:max-h-[calc(100vh-3rem)]">
           {/* <!-- Modal header --> */}
           <div
             className={clsx(
@@ -97,7 +97,7 @@ export default function Modal({
           </div>
           {/* <!-- Modal body --> */}
           <div
-            className="modal-body space-y-3 p-4 sm:px-8 sm:py-5"
+            className="modal-body max-h-[calc(100vh-6.5rem)] space-y-3 overflow-y-auto p-4 sm:max-h-[calc(100vh-8rem)] sm:px-8 sm:py-5"
             onClick={(e) => e.stopPropagation()}
           >
             {question && <p className="w-full text-center">{question}</p>}
