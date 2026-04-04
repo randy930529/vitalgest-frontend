@@ -11,10 +11,10 @@ import {
 } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { GuardDisplayInfo } from "./guard-info-card";
-import StepIndicator from "./step-indicator";
-import GuardCreationStep from "./steps/guard-creation-step";
-import ShiftsAssignmentStep from "./steps/shifts-assignment-step";
-import GuardSummaryStep from "./steps/guard-summary-step";
+import StepIndicator from "@/app/ui/dashboard/guards/create/step-indicator";
+import GuardCreationStep from "@/app/ui/dashboard/guards/create/steps/guard-creation-step";
+import ShiftsAssignmentStep from "@/app/ui/dashboard/guards/create/steps/shifts-assignment-step";
+import GuardSummaryStep from "@/app/ui/dashboard/guards/create/steps/guard-summary-step";
 
 type WizardStepType = 1 | 2 | 3;
 
@@ -37,10 +37,9 @@ export default function GuardCreationWizard({
 
   const [currentStep, setCurrentStep] = useState<WizardStepType>(1);
   const [guard, setGuard] = useState<GuardType | null>(null);
-  const [guardDisplayInfo, setGuardDisplayInfo] =
-    useState<GuardDisplayInfo>();
-  const [shifts, setShifts] = useState<ShiftType[]>([]);
+  const [guardDisplayInfo, setGuardDisplayInfo] = useState<GuardDisplayInfo>();
   const [isLoading, setIsLoading] = useState(false);
+  const [shifts, setShifts] = useState<ShiftType[]>([]);
   const [isStepContentVisible, setIsStepContentVisible] = useState(false);
 
   useEffect(() => {
@@ -155,7 +154,6 @@ export default function GuardCreationWizard({
             onGuardCreated={handleGuardCreated}
             existingGuard={guard || undefined}
             existingDisplayInfo={guardDisplayInfo}
-            isLoading={isLoading}
           />
         )}
 
@@ -169,7 +167,7 @@ export default function GuardCreationWizard({
             shifts={shifts}
             onShiftAdded={handleShiftAdded}
             onShiftRemoved={handleShiftRemoved}
-            isLoading={isLoading}
+            setIsLoading={setIsLoading}
           />
         )}
 

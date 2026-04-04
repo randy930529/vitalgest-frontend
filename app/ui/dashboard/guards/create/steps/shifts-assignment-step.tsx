@@ -20,7 +20,7 @@ interface ShiftsAssignmentStepProps {
   shifts: ShiftType[];
   onShiftAdded: (shift: ShiftType) => void;
   onShiftRemoved: (shiftId: string) => void;
-  isLoading?: boolean;
+  setIsLoading?: (loading: boolean) => void;
 }
 
 export default function ShiftsAssignmentStep({
@@ -32,12 +32,15 @@ export default function ShiftsAssignmentStep({
   shifts,
   onShiftAdded,
   onShiftRemoved,
-  isLoading = false,
+  setIsLoading,
 }: ShiftsAssignmentStepProps) {
   // (Component) Paso 2: Asignar turnos - [CSR]
 
   const initialState: ShiftState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(createShift, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    createShift,
+    initialState,
+  );
   const [showForm, setShowForm] = useState(false);
   const [formReset, setFormReset] = useState(0);
   const lastHandledShiftIdRef = useRef<string | null>(null);
@@ -62,6 +65,10 @@ export default function ShiftsAssignmentStep({
     state.errors?.success &&
       state.errors?.success.map((error: string) => toast.error(error));
   }, [state.errors?.success]);
+
+  useEffect(() => {
+    setIsLoading?.(isLoading);
+  }, [isLoading]);
 
   return (
     <div className="space-y-6">
@@ -175,6 +182,7 @@ export default function ShiftsAssignmentStep({
                 type="button"
                 onClick={() => setShowForm(false)}
                 variant="formSecondary"
+                disabled={isLoading}
                 additionalClassName="h-11 rounded-xl px-4 text-sm"
               >
                 Cancelar
@@ -182,11 +190,11 @@ export default function ShiftsAssignmentStep({
 
               <Button
                 type="submit"
-                disabled={isLoading}
                 variant="formPrimary"
+                isLoading={isLoading}
                 additionalClassName="h-11 rounded-xl px-4 text-sm"
               >
-                {isLoading ? "Guardando..." : "Guardar Turno"}
+                Guardar Turno
               </Button>
             </div>
           </div>

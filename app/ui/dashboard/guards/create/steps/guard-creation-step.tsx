@@ -22,7 +22,6 @@ interface GuardCreationStepProps {
   onGuardCreated: (guard: GuardType, displayInfo?: GuardDisplayInfo) => void;
   existingGuard?: GuardType;
   existingDisplayInfo?: GuardDisplayInfo;
-  isLoading?: boolean;
 }
 
 export default function GuardCreationStep({
@@ -31,13 +30,15 @@ export default function GuardCreationStep({
   onGuardCreated,
   existingGuard,
   existingDisplayInfo,
-  isLoading = false,
 }: GuardCreationStepProps) {
   // (Component) Paso 1: Crear guardia - [CSR]
 
   const initialState: GuardState = { errors: {}, message: null };
   const dateStart = new Date().toISOString().split("T")[0];
-  const [state, formAction] = useActionState(createGuard, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    createGuard,
+    initialState,
+  );
   const [isMounted, setIsMounted] = useState(false);
   const [guardDisplayInfo, setGuardDisplayInfo] = useState<GuardDisplayInfo>();
   const guardToDisplay = state.guard || existingGuard;
@@ -68,7 +69,9 @@ export default function GuardCreationStep({
     const guardChiefSelect = form.elements.namedItem(
       "guardChief",
     ) as HTMLSelectElement | null;
-    const dateInput = form.elements.namedItem("date") as HTMLInputElement | null;
+    const dateInput = form.elements.namedItem(
+      "date",
+    ) as HTMLInputElement | null;
 
     const delegationName =
       delegationSelect?.selectedOptions?.[0]?.text?.trim() || "-";
@@ -144,10 +147,10 @@ export default function GuardCreationStep({
             <Button
               type="submit"
               variant="formPrimary"
-              disabled={isLoading}
+              isLoading={isLoading}
               additionalClassName="h-11 rounded-xl px-6 text-sm"
             >
-              {isLoading ? "Creando..." : "Crear Guardia"}
+              Crear Guardia
             </Button>
           </div>
         )}
