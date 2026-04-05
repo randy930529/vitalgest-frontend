@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import {
@@ -42,12 +42,27 @@ export default function GuardCreationWizard({
   const [isLoading, setIsLoading] = useState(false);
   const [shifts, setShifts] = useState<ShiftType[]>([]);
   const [isStepContentVisible, setIsStepContentVisible] = useState(false);
+  const wizardRootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsStepContentVisible(false);
     const timeoutId = setTimeout(() => setIsStepContentVisible(true), 30);
 
     return () => clearTimeout(timeoutId);
+  }, [currentStep]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      const modalBody = wizardRootRef.current?.closest(".modal-body");
+
+      if (modalBody instanceof HTMLElement) {
+        modalBody.scrollTo({ top: 0, behavior: "auto" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+    });
+
+    return () => cancelAnimationFrame(animationFrameId);
   }, [currentStep]);
 
   const steps: StepItemType[] = [
@@ -131,7 +146,10 @@ export default function GuardCreationWizard({
   };
 
   return (
-    <div className="w-full space-y-6 rounded-[24px] border border-white/80 bg-white/90 p-4 pt-0 backdrop-blur-sm sm:p-6 sm:pt-0">
+    <div
+      ref={wizardRootRef}
+      className="w-full space-y-6 rounded-[24px] border border-white/80 bg-white/90 p-4 pt-0 backdrop-blur-sm sm:p-6 sm:pt-0"
+    >
       <div className="flex flex-col gap-3 rounded-2xl bg-gradient-to-r from-slate-50 via-white to-blue-50/70 sm:flex-row sm:items-center sm:justify-between">
         <span className="inline-flex max-w-max items-center rounded-full border border-primary-100 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
           Paso {currentStep} de {steps.length}
