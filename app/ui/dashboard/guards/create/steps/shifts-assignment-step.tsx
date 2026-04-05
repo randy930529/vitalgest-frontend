@@ -13,7 +13,7 @@ import GuardInfoCard, {
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import {
   CheckCircleIcon,
-  PlusCircleIcon,
+  PlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
@@ -117,7 +117,7 @@ export default function ShiftsAssignmentStep({
           variant="formSecondary"
           additionalClassName="h-11 rounded-xl px-4 text-sm"
         >
-          <PlusCircleIcon className="mr-2 h-5 w-5" />
+          <PlusIcon className="mr-2 h-5 w-5" />
           Agregar Turno
         </Button>
       )}
