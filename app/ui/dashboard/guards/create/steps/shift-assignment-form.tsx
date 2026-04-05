@@ -188,7 +188,7 @@ export default function ShiftAssignmentForm({
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex flex-col justify-end gap-3 pt-4 sm:flex-row">
           <Button
             type="button"
             onClick={onCancel}

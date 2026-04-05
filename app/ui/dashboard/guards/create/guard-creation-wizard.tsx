@@ -234,10 +234,10 @@ export default function GuardCreationWizard({
               isLoading
             }
             variant="formPrimary"
-            additionalClassName="h-11 rounded-xl px-5 text-sm"
+            additionalClassName="h-11 rounded-xl px-2 text-sm"
           >
             Siguiente
-            <ArrowRightIcon className="ml-2 h-4 w-4" />
+            <ArrowRightIcon className="ml-1 h-4 w-4 sm:ml-2" />
           </Button>
         )}
       </div>

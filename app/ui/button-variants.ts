@@ -28,6 +28,12 @@ export const buttonVariants = {
     "text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
 
   /**
+   * Botón primario para acciones de formulario
+   */
+  formPrimary:
+    "inline-flex h-12 items-center justify-center gap-0.5 rounded-2xl bg-rose-500 px-5 text-sm font-semibold text-white shadow-[0_20px_40px_-25px_rgba(244,63,94,0.8)] transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200 sm:gap-2",
+
+  /**
    * Botón secundario para acciones de formulario
    */
   formSecondary:
@@ -64,12 +70,6 @@ export const buttonVariants = {
    */
   login:
     "text-white inline-flex items-center bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-700 w-full mt-6",
-
-  /**
-   * Botón primario para acciones de formulario
-   */
-  formPrimary:
-    "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-rose-500 px-5 text-sm font-semibold text-white shadow-[0_20px_40px_-25px_rgba(244,63,94,0.8)] transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200",
 } as const;
 
 /**

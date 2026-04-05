@@ -230,8 +230,8 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
       className={`rounded-xl border border-slate-200 p-4 ${colorMap[color]}`}
     >
       <div className="mb-2">{icon}</div>
-      <p className="text-sm font-medium opacity-75">{label}</p>
-      <p className="text-2xl font-bold">{value}</p>
+      <p className="hidden text-sm font-medium opacity-75 md:block">{label}</p>
+      <p className="text-2xl text-center font-bold md:text-left">{value}</p>
     </div>
   );
 }
