@@ -6,10 +6,16 @@ import { CustomOptions, GuardType, ShiftType } from "@/app/lib/definitions";
 import { createShift } from "@/app/lib/actions/shift";
 import { ShiftState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
+import { SaveIcon } from "@/app/ui/components/icons";
 import GuardInfoCard, {
   GuardDisplayInfo,
 } from "@/app/ui/dashboard/guards/create/guard-info-card";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import {
+  CheckCircleIcon,
+  PlusCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 interface ShiftsAssignmentStepProps {
   guard: GuardType;
@@ -111,19 +117,7 @@ export default function ShiftsAssignmentStep({
           variant="formSecondary"
           additionalClassName="h-11 rounded-xl px-4 text-sm"
         >
-          <svg
-            className="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
+          <PlusCircleIcon className="mr-2 h-5 w-5" />
           Agregar Turno
         </Button>
       )}
@@ -194,6 +188,7 @@ export default function ShiftsAssignmentStep({
                 isLoading={isLoading}
                 additionalClassName="h-11 rounded-xl px-4 text-sm"
               >
+                <SaveIcon className="mr-2 h-4 w-4" />
                 Guardar Turno
               </Button>
             </div>
@@ -205,19 +200,7 @@ export default function ShiftsAssignmentStep({
       {shifts.length === 0 && !showForm && (
         <div className="rounded-[28px] border border-dashed border-rose-200/80 bg-rose-50/20 p-6 shadow-[0_18px_38px_-30px_rgba(244,63,94,0.35)]">
           <div className="rounded-2xl bg-white/65 py-10 text-center backdrop-blur-[1px]">
-            <svg
-              className="mx-auto mb-4 h-12 w-12 text-slate-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <CheckCircleIcon className="mx-auto mb-4 h-12 w-12 text-slate-300" />
             <p className="text-lg font-medium text-slate-500">
               No hay turnos asignados todavia
             </p>
@@ -243,13 +226,7 @@ function ShiftCard({
         className="absolute right-2 top-2 text-slate-400 transition-colors hover:text-red-500"
         title="Eliminar turno"
       >
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <XMarkIcon className="h-5 w-5" />
       </button>
 
       <div className="space-y-2 pr-6">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import {
   CustomOptions,
   DelegationType,
@@ -189,7 +190,8 @@ export default function GuardCreationWizard({
           variant="formSecondary"
           additionalClassName="h-11 rounded-xl px-4 text-sm"
         >
-          ← Anterior
+          <ArrowLeftIcon className="mr-2 h-4 w-4" />
+          Anterior
         </Button>
 
         <Button
@@ -211,7 +213,8 @@ export default function GuardCreationWizard({
             variant="formPrimary"
             additionalClassName="h-11 rounded-xl px-5 text-sm"
           >
-            Siguiente →
+            Siguiente
+            <ArrowRightIcon className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

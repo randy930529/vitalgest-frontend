@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { SaveIcon } from "@/app/ui/components/icons";
 import {
   CustomOptions,
   DelegationType,
@@ -150,6 +151,7 @@ export default function GuardCreationStep({
               isLoading={isLoading}
               additionalClassName="h-11 rounded-xl px-6 text-sm"
             >
+              <SaveIcon className="mr-2 h-4 w-4" />
               Crear Guardia
             </Button>
           </div>

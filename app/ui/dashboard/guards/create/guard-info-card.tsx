@@ -1,5 +1,12 @@
+import type { ReactNode } from "react";
 import { GuardType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import {
+  BuildingOffice2Icon,
+  CalendarDaysIcon,
+  CheckIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export type GuardDisplayInfo = {
   delegationName?: string;
@@ -43,15 +50,29 @@ export default function GuardInfoCard({
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <InfoItem label="Delegacion" icon="🏢" value={delegationName} />
-        <InfoItem label="Jefe de Guardia" icon="👤" value={guardChiefName} />
-        <InfoItem label="Fecha" icon="📅" value={date} />
-        <div>
-          <p className="mb-1 text-sm font-medium text-slate-500">✓ Estado</p>
-          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
+        <InfoItem
+          label="Delegacion"
+          value={delegationName}
+          icon={<BuildingOffice2Icon className="h-4 w-4 text-slate-500" />}
+        />
+        <InfoItem
+          label="Jefe de Guardia"
+          value={guardChiefName}
+          icon={<UserCircleIcon className="h-4 w-4 text-slate-500" />}
+        />
+        <InfoItem
+          label="Fecha"
+          value={date}
+          icon={<CalendarDaysIcon className="h-4 w-4 text-slate-500" />}
+        />
+        <InfoItem
+          label="Estado"
+          icon={<CheckIcon className="h-4 w-4 text-slate-500" />}
+        >
+          <p className="w-max rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
             {state}
-          </span>
-        </div>
+          </p>
+        </InfoItem>
       </div>
     </div>
   );
@@ -61,19 +82,25 @@ function InfoItem({
   label,
   value,
   icon,
+  children,
 }: {
   label: string;
-  value: string;
-  icon: string;
+  value?: string;
+  icon: ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <div>
-      <p className="mb-1 text-sm font-medium text-slate-500">
-        {icon} {label}
+      <p className="mb-1 inline-flex items-center gap-1 text-sm font-medium text-slate-500">
+        {icon}
+        {label}
       </p>
-      <p className="text-base font-semibold leading-tight text-slate-900">
-        {value}
-      </p>
+      {value && (
+        <p className="text-base font-semibold leading-tight text-slate-900">
+          {value}
+        </p>
+      )}
+      {children}
     </div>
   );
 }

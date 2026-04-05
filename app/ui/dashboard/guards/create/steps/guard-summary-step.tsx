@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import {
+  CheckCircleIcon,
+  TruckIcon,
+  UserGroupIcon,
+  HeartIcon,
+} from "@heroicons/react/24/outline";
 import { GuardType, ShiftType } from "@/app/lib/definitions";
 import GuardInfoCard, {
   GuardDisplayInfo,
@@ -96,19 +103,19 @@ export default function GuardSummaryStep({
         <StatCard
           label="Ambulancias"
           value={shifts.length}
-          icon="🚑"
+          icon={<TruckIcon className="h-7 w-7" />}
           color="blue"
         />
         <StatCard
           label="Conductores"
           value={new Set(shifts.map((s) => s.driver?.id)).size}
-          icon="🧑‍🚀"
+          icon={<UserGroupIcon className="h-7 w-7" />}
           color="green"
         />
         <StatCard
           label="Paramédicos"
           value={new Set(shifts.map((s) => s.paramedical?.id)).size}
-          icon="⚕️"
+          icon={<HeartIcon className="h-7 w-7" />}
           color="purple"
         />
       </div>
@@ -142,17 +149,7 @@ export default function GuardSummaryStep({
             </>
           ) : (
             <>
-              <svg
-                className="mr-2 h-5 w-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <CheckCircleIcon className="mr-2 h-5 w-5" />
               Confirmar y Finalizar
             </>
           )}
@@ -185,7 +182,10 @@ function ShiftSummaryCard({ shift, index }: ShiftSummaryCardProps) {
             Ambulancia
           </p>
           <p className="text-sm font-bold text-slate-900">
-            🚑 {shift.ambulance?.number}
+            <span className="inline-flex items-center gap-1">
+              <TruckIcon className="h-4 w-4" />
+              {shift.ambulance?.number}
+            </span>
           </p>
           {shift.ambulance?.brand && (
             <p className="text-xs text-slate-600">
@@ -214,7 +214,7 @@ function ShiftSummaryCard({ shift, index }: ShiftSummaryCardProps) {
 interface StatCardProps {
   label: string;
   value: number;
-  icon: string;
+  icon: ReactNode;
   color: "blue" | "green" | "purple";
 }
 
@@ -229,7 +229,7 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
     <div
       className={`rounded-xl border border-slate-200 p-4 ${colorMap[color]}`}
     >
-      <div className="text-2xl mb-2">{icon}</div>
+      <div className="mb-2">{icon}</div>
       <p className="text-sm font-medium opacity-75">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
     </div>
