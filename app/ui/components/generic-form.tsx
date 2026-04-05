@@ -34,6 +34,8 @@ export interface GenericFormProps<
   /** Texto personalizado de botones */
   submitText?: string;
   cancelText?: string;
+  submitIcon?: React.ReactNode;
+  cancelIcon?: React.ReactNode;
 
   /** Campos condicionales basados en estado */
   conditionalFields?: Record<string, (state: T) => boolean>;
@@ -54,6 +56,8 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
   showButtons = true,
   submitText = "Guardar",
   cancelText = "Cancelar",
+  submitIcon,
+  cancelIcon,
   conditionalFields = {},
   onValidate,
 }: GenericFormProps<T>) {
@@ -149,6 +153,8 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
           onCancel={onCancel}
           submitText={submitText}
           cancelText={cancelText}
+          submitIcon={submitIcon}
+          cancelIcon={cancelIcon}
           isLoading={isLoading}
         />
       )}

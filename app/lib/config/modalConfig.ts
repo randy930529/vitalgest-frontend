@@ -3,7 +3,7 @@ import { ModalFormSkeleton } from "@/app/ui/dashboard/skeletons";
 
 export const modalComponents = {
   guardForm: dynamic(
-    () => import("@/app/ui/dashboard/guards/create/guard-form"),
+    () => import("@/app/ui/dashboard/guards/create/guard-creation-wizard"),
     {
       ssr: false,
       loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),

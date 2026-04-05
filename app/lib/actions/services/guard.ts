@@ -26,10 +26,10 @@ export class CreateGuardAction extends BaseServerAction<GuardType, GuardState> {
         date: new Date(date),
       });
 
-      await this.fetchAPI({ ...data, date });
+      const guard = await this.fetchAPI({ ...data, date });
       await this.revalidate();
 
-      return { message: "Guardia creada exitosamente." };
+      return { message: "Guardia creada exitosamente.", guard };
     } catch (error) {
       return this.handleError(error);
     }

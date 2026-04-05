@@ -24,6 +24,9 @@ export default function NavSubLinks({
     >
       <button
         type="button"
+        aria-label={name}
+        title={name}
+        aria-haspopup="menu"
         aria-expanded={!dropdown}
         aria-controls={controlsId}
         className="group relative z-[71] flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3"
@@ -34,15 +37,16 @@ export default function NavSubLinks({
           {name}
         </span>
         <ChevronDownIcon
-          className={clsx("h-5 w-5 transition md:block", {
-            hidden: true,
-            "md:inline": true,
+          aria-hidden="true"
+          className={clsx("hidden h-5 w-5 transition md:inline", {
             "rotate-180": !dropdown,
           })}
         />
       </button>
       <ul
         id={controlsId}
+        role="menu"
+        aria-label={`Submenu ${name}`}
         className={clsx(
           "absolute right-0 top-full z-[72] mt-2 w-48 space-y-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_20px_40px_-25px_rgba(15,23,42,0.5)] backdrop-blur-sm md:static md:mt-0 md:w-full md:space-y-2 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-0",
           {

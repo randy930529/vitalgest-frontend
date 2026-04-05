@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 import {
   AmbulanceAreaType,
@@ -56,6 +57,37 @@ export default function AmbulanceSuppliesTable({
   ] = data;
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [animateHighlightedRow, setAnimateHighlightedRow] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const highlightedSupplyId = searchParams.get("supply");
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!highlightedSupplyId || !tableWrapperRef.current) return;
+
+    const row = tableWrapperRef.current.querySelector<HTMLTableRowElement>(
+      `tr[data-supply-row="${highlightedSupplyId}"]`,
+    );
+
+    if (!row) return;
+
+    row.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    setAnimateHighlightedRow(true);
+    const timer = window.setTimeout(() => {
+      setAnimateHighlightedRow(false);
+
+      const nextParams = new URLSearchParams(searchParams.toString());
+      nextParams.delete("supply");
+      const nextQuery = nextParams.toString();
+      const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+      router.replace(nextUrl, { scroll: false });
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [highlightedSupplyId, pathname, router, searchParams]);
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -103,7 +135,7 @@ export default function AmbulanceSuppliesTable({
           }
         />
       </Filters>
-      <div className="overflow-x-auto">
+      <div ref={tableWrapperRef} className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
           <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
             <tr>
@@ -150,7 +182,19 @@ export default function AmbulanceSuppliesTable({
               </tr>
             )}
             {suppliesAmbulance?.map((supply) => (
-              <tr key={supply.id} className="border-b border-slate-200">
+              <tr
+                key={supply.id}
+                data-supply-row={supply.id}
+                className={`border-b border-slate-200 ${
+                  highlightedSupplyId === supply.id
+                    ? `bg-rose-50/60 ring-1 ring-inset ring-rose-200 ${
+                        animateHighlightedRow
+                          ? "animate-[pulse_1s_ease-in-out_2]"
+                          : ""
+                      }`
+                    : ""
+                }`}
+              >
                 <td className="w-4 p-4">
                   <div className="flex items-center">
                     <input
