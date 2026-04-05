@@ -53,16 +53,16 @@ export class UpdateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
   ): Promise<ShiftState> {
     try {
       const data = this.validate({
-        number: formData.get("number"),
-        brand: formData.get("brand"),
-        model: formData.get("model"),
-        delegationId: formData.get("delegation"),
+        ambulanceId: formData.get("ambulance"),
+        guardId: formData.get("guard"),
+        paramedicalId: formData.get("paramedical"),
+        driverId: formData.get("driver"),
       });
 
-      await this.fetchAPI(data);
+      const shift = await this.fetchAPI(data);
       await this.revalidate();
 
-      return { message: "Cambios guardados exitosamente." };
+      return { message: "Turno actualizado exitosamente.", shift };
     } catch (error) {
       return this.handleError(error);
     }

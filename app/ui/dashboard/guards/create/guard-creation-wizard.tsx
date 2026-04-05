@@ -108,9 +108,14 @@ export default function GuardCreationWizard({
 
   const handleShiftAdded = (newShift: ShiftType) => {
     setShifts((prev) => {
-      if (prev.some((shift) => shift.id === newShift.id)) {
-        return prev;
+      const existingIndex = prev.findIndex((shift) => shift.id === newShift.id);
+
+      if (existingIndex >= 0) {
+        const next = [...prev];
+        next[existingIndex] = newShift;
+        return next;
       }
+
       return [...prev, newShift];
     });
   };

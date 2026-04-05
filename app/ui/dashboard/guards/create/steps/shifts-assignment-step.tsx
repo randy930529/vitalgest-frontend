@@ -1,21 +1,18 @@
 "use client";
 
-import { useState, useActionState, useEffect, useRef } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
 import { CustomOptions, GuardType, ShiftType } from "@/app/lib/definitions";
-import { createShift } from "@/app/lib/actions/shift";
-import { ShiftState } from "@/app/lib/config/stateConfigs";
 import { Button } from "@/app/ui/button";
-import { SaveIcon } from "@/app/ui/components/icons";
 import GuardInfoCard, {
   GuardDisplayInfo,
 } from "@/app/ui/dashboard/guards/create/guard-info-card";
-import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import {
   CheckCircleIcon,
+  PencilSquareIcon,
   PlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import ShiftAssignmentForm from "@/app/ui/dashboard/guards/create/steps/shift-assignment-form";
 
 interface ShiftsAssignmentStepProps {
   guard: GuardType;
@@ -42,15 +39,11 @@ export default function ShiftsAssignmentStep({
 }: ShiftsAssignmentStepProps) {
   // (Component) Paso 2: Asignar turnos - [CSR]
 
-  const initialState: ShiftState = { errors: {}, message: null };
-  const [state, formAction, isLoading] = useActionState(
-    createShift,
-    initialState,
-  );
+  const [isLoading, setLocalIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [formReset, setFormReset] = useState(0);
-  const lastHandledShiftIdRef = useRef<string | null>(null);
+  const [editingShiftId, setEditingShiftId] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const editingShift = shifts.find((shift) => shift.id === editingShiftId);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => setIsMounted(true), 20);
@@ -58,23 +51,28 @@ export default function ShiftsAssignmentStep({
   }, []);
 
   useEffect(() => {
-    if (state.shift && state.shift.id !== lastHandledShiftIdRef.current) {
-      lastHandledShiftIdRef.current = state.shift.id;
-      onShiftAdded(state.shift);
-      toast.success("Turno asignado correctamente");
-      setShowForm(false);
-      setFormReset((prev) => prev + 1);
-    }
-  }, [state.shift, onShiftAdded]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
-
-  useEffect(() => {
     setIsLoading?.(isLoading);
-  }, [isLoading]);
+  }, [isLoading, setIsLoading]);
+
+  const handleCreateShift = () => {
+    setEditingShiftId(null);
+    setShowForm(true);
+  };
+
+  const handleEditShift = (shiftId: string) => {
+    setEditingShiftId(shiftId);
+    setShowForm(true);
+  };
+
+  const handleCancelForm = () => {
+    setEditingShiftId(null);
+    setShowForm(false);
+  };
+
+  const handleSavedShift = () => {
+    setEditingShiftId(null);
+    setShowForm(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -102,6 +100,8 @@ export default function ShiftsAssignmentStep({
               <ShiftCard
                 key={shift.id}
                 shift={shift}
+                isEditing={editingShiftId === shift.id}
+                onEdit={() => handleEditShift(shift.id)}
                 onRemove={() => onShiftRemoved(shift.id)}
               />
             ))}
@@ -113,7 +113,7 @@ export default function ShiftsAssignmentStep({
       {!showForm && (
         <Button
           type="button"
-          onClick={() => setShowForm(true)}
+          onClick={handleCreateShift}
           variant="formSecondary"
           additionalClassName="h-11 rounded-xl px-4 text-sm"
         >
@@ -123,77 +123,20 @@ export default function ShiftsAssignmentStep({
       )}
 
       {showForm && (
-        <form action={formAction} className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 shadow-[0_20px_40px_-30px_rgba(15,23,42,0.35)]">
-            <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-              Nuevo Turno
-            </h4>
-
-            <input
-              type="text"
-              name="guard"
-              defaultValue={guard.id}
-              className="hidden"
-            />
-
-            <FormSelect
-              key={`ambulance-${formReset}`}
-              name="ambulance"
-              title="Ambulancia"
-              options={[
-                { id: "", label: "Seleccione Ambulancia", value: "" },
-                ...ambulances,
-              ]}
-              required
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormSelect
-                key={`driver-${formReset}`}
-                name="driver"
-                title="Chofer"
-                options={[
-                  { id: "", label: "Seleccione Chofer", value: "" },
-                  ...drivers,
-                ]}
-                required
-              />
-
-              <FormSelect
-                key={`paramedic-${formReset}`}
-                name="paramedical"
-                title="Paramédico"
-                options={[
-                  { id: "", label: "Seleccione Paramédico", value: "" },
-                  ...paramedics,
-                ]}
-                required
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-2">
-              <Button
-                type="button"
-                onClick={() => setShowForm(false)}
-                variant="formSecondary"
-                disabled={isLoading}
-                additionalClassName="h-11 rounded-xl px-4 text-sm"
-              >
-                Cancelar
-              </Button>
-
-              <Button
-                type="submit"
-                variant="formPrimary"
-                isLoading={isLoading}
-                additionalClassName="h-11 rounded-xl px-4 text-sm"
-              >
-                <SaveIcon className="mr-2 h-4 w-4" />
-                Guardar Turno
-              </Button>
-            </div>
-          </div>
-        </form>
+        <ShiftAssignmentForm
+          guardId={guard.id}
+          shifts={shifts}
+          ambulances={ambulances}
+          drivers={drivers}
+          paramedics={paramedics}
+          editingShift={editingShift}
+          onSaved={(savedShift) => {
+            onShiftAdded(savedShift);
+            handleSavedShift();
+          }}
+          onCancel={handleCancelForm}
+          setIsLoading={setLocalIsLoading}
+        />
       )}
 
       {/* Empty State */}
@@ -213,16 +156,37 @@ export default function ShiftsAssignmentStep({
 
 function ShiftCard({
   shift,
+  isEditing,
+  onEdit,
   onRemove,
 }: {
   shift: ShiftType;
+  isEditing?: boolean;
+  onEdit: () => void;
   onRemove: () => void;
 }) {
   return (
-    <div className="relative rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-[0_20px_35px_-24px_rgba(15,23,42,0.45)]">
+    <div
+      className={`relative rounded-2xl border bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-[0_20px_35px_-24px_rgba(15,23,42,0.45)] ${
+        isEditing ? "border-blue-300 ring-1 ring-blue-200" : "border-slate-200"
+      }`}
+      role="button"
+      tabIndex={0}
+      onClick={onEdit}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onEdit();
+        }
+      }}
+      title="Editar turno"
+    >
       <button
         type="button"
-        onClick={onRemove}
+        onClick={(event) => {
+          event.stopPropagation();
+          onRemove();
+        }}
         className="absolute right-2 top-2 text-slate-400 transition-colors hover:text-red-500"
         title="Eliminar turno"
       >
@@ -249,9 +213,15 @@ function ShiftCard({
         </div>
 
         <div className="border-t border-slate-100 pt-2">
-          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
-            Asignado
-          </span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
+              Asignado
+            </span>
+            <span className="inline-flex items-center text-xs font-medium text-slate-500">
+              <PencilSquareIcon className="mr-1 h-4 w-4" />
+              Editar
+            </span>
+          </div>
         </div>
       </div>
     </div>
