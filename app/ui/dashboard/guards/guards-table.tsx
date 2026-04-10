@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import clsx from "clsx";
 import {
   AmbulanceType,
   CustomOptions,
@@ -19,6 +18,7 @@ import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import { modalComponents } from "@/app/lib/config/modalConfig";
+import { Badge } from "@/app/ui/badges";
 
 const ModalComponent = modalComponents.guardForm;
 const customHeaders = [
@@ -56,6 +56,7 @@ export default function GuardsTable({
     value: id,
   }));
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const allSelected = guards.length > 0 && selectedIds.length === guards.length;
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -77,8 +78,8 @@ export default function GuardsTable({
           <TableActionDeleteAllSelected
             selectedIds={selectedIds}
             actionDelete={async (ids: string[]) => {
-              //TODO: Implement bulk delete action
-              console.log(ids, "TODO: Implement bulk delete action");
+              await Promise.all(ids.map((id) => deleteGuard(id)));
+              setSelectedIds([]);
             }}
           />
         )}
@@ -97,9 +98,20 @@ export default function GuardsTable({
           />
         )}
       </Filters>
+      {!readonly && (
+        <p className="px-4 py-2 text-xs text-slate-500" aria-live="polite">
+          {selectedIds.length > 0
+            ? `${selectedIds.length} elemento(s) seleccionado(s)`
+            : "Selecciona elementos para acciones masivas"}
+        </p>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
-          <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
+          <caption className="sr-only">
+            Tabla de historial de guardias con selección, estado y acciones de
+            edición o eliminación.
+          </caption>
+          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
             <tr>
               {!readonly && (
                 <th scope="col" className="px-4 py-3">
@@ -107,8 +119,10 @@ export default function GuardsTable({
                     <input
                       id="checkbox-all"
                       type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
                       data-tooltip-id="checkbox-all-tooltip"
+                      aria-label="Seleccionar todas las guardias"
+                      checked={allSelected}
                       onChange={(event) => {
                         handleSelectAllChange(event.target.checked);
                       }}
@@ -130,10 +144,7 @@ export default function GuardsTable({
                 </th>
               ))}
               {!readonly && (
-                <th
-                  scope="col"
-                  className="px-4 py-3 flex items-center justify-end"
-                >
+                <th scope="col" className="px-4 py-3 text-right">
                   Acciones
                 </th>
               )}
@@ -141,15 +152,19 @@ export default function GuardsTable({
           </thead>
           <tbody>
             {guards?.map((guard) => (
-              <tr key={guard.id} className="border-b border-slate-200">
+              <tr
+                key={guard.id}
+                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
+              >
                 {!readonly && (
                   <td className="w-4 p-4">
                     <div className="flex items-center">
                       <input
                         id={`checkbox-table-${guard.id}`}
                         type="checkbox"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
                         value={guard.id}
+                        aria-label={`Seleccionar guardia de ${guard.guardChief?.name || "sin jefe"} con fecha ${formatDateToDDMMYYYY(guard.date)}`}
                         checked={selectedIds.includes(guard.id)}
                         onChange={(event) => {
                           handleCheckboxChange(guard.id, event.target.checked);
@@ -166,15 +181,15 @@ export default function GuardsTable({
                 )}
                 <th
                   scope="row"
-                  className="whitespace-nowrap px-4 py-3 font-medium text-slate-900"
+                  className="whitespace-nowrap px-4 py-3.5 font-medium text-slate-900"
                 >
                   {guard.guardChief?.name}
                 </th>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">
                   {formatDateToDDMMYYYY(guard.date)}
                 </td>
-                <td className="px-4 py-3">{"Turnos"}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">{"Turnos"}</td>
+                <td className="px-4 py-3.5">
                   <GuardStateShow state={guard.state} />
                 </td>
                 {!readonly && (
@@ -203,39 +218,14 @@ export default function GuardsTable({
 }
 
 export function GuardStateShow({ state }: { state: GuardType["state"] }) {
-  const customGuardsStates = {
-    customStates: [
-      { label: "Nueva", bgColor: "bg-green-500" },
-      { label: "En curso", bgColor: "bg-orange-500" },
-      { label: "Cerrada", bgColor: "bg-red-500" },
-    ],
-    get(state: string) {
-      return this.customStates.find(({ label }) => label === state);
-    },
+  const variantMap: Record<
+    GuardType["state"],
+    "neutral" | "warning" | "success"
+  > = {
+    Nueva: "neutral",
+    "En curso": "warning",
+    Cerrada: "success",
   };
 
-  const guardState = customGuardsStates.get(state);
-
-  return (
-    <span
-      className={clsx(
-        "inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full",
-        {
-          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300":
-            guardState?.bgColor === "bg-green-500",
-          "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300":
-            guardState?.bgColor === "bg-orange-500",
-          "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300":
-            guardState?.bgColor === "bg-red-500",
-        },
-      )}
-    >
-      <span
-        className={clsx("w-2 h-2 me-1 bg-green-500 rounded-full", {
-          [`${guardState?.bgColor}`]: guardState?.bgColor,
-        })}
-      ></span>
-      {guardState?.label}
-    </span>
-  );
+  return <Badge title={state} variant={variantMap[state]} />;
 }
