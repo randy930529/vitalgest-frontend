@@ -38,8 +38,8 @@ export async function HeaderStats({ user }: { user: UserType }) {
       (guardChief.id === user.id ||
         !!shifts.find(
           ({ driver, paramedical }) =>
-            driver.id === user.id || paramedical.id === user.id
-        ))
+            driver.id === user.id || paramedical.id === user.id,
+        )),
   );
 
   const [dateGuardOnly, guardChief, ambulance] = guardOnly
@@ -48,7 +48,7 @@ export async function HeaderStats({ user }: { user: UserType }) {
         guardOnly.guardChief.id === user.id,
         guardOnly.shifts.find(
           ({ driver, paramedical }) =>
-            driver.id === user.id || paramedical.id === user.id
+            driver.id === user.id || paramedical.id === user.id,
         )?.ambulance,
       ]
     : ["", false, undefined];
@@ -56,17 +56,17 @@ export async function HeaderStats({ user }: { user: UserType }) {
   const ambulancesInGuard =
     guardOnly?.shifts?.reduce(
       (acc, shift) => acc + shift.ambulance.number + ", ",
-      ""
+      "",
     ) || "";
 
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <li>
         <StatCardHome
           title="Delegación"
           value={delegationNameShort}
           icon={BuildingOffice2Icon}
-          color="bg-green-500"
+          color="bg-emerald-600"
         />
       </li>
       {guardOnly && (
@@ -76,7 +76,7 @@ export async function HeaderStats({ user }: { user: UserType }) {
               title="Guardia Activa"
               value={dateGuardOnly}
               icon={ShieldCheckIcon}
-              color="bg-purple-500"
+              color="bg-sky-600"
             />
           </li>
           {ambulance && (
@@ -85,17 +85,17 @@ export async function HeaderStats({ user }: { user: UserType }) {
                 title="Ambulancia"
                 value={ambulance.number}
                 icon={TruckIcon}
-                color="bg-red-500"
+                color="bg-rose-500"
               />
             </li>
           )}
           {guardChief && (
             <li>
               <CardAmbulancesGuard
-                title={"Ambulancias en Turno"}
+                title="Ambulancias en turno"
                 value={ambulancesInGuard.trim().slice(0, -1)}
                 icon={TruckIcon}
-                color="bg-red-100"
+                color="bg-rose-500"
               />
             </li>
           )}
@@ -212,7 +212,10 @@ export function ShiftStats({
   shifts: ShiftType[];
 }) {
   return (
-    <ul className="space-y-4">
+    <ul
+      className="space-y-4 md:mx-6"
+      aria-label="Turnos de la guardia en curso"
+    >
       {shifts.map(
         ({
           id,
@@ -225,9 +228,12 @@ export function ShiftStats({
           checklistAmbulance,
           checklistSupplies,
         }) => (
-          <li key={"shift-" + id} className="flex gap-4 md:gap-8">
+          <li
+            key={"shift-" + id}
+            className="flex flex-col gap-3 md:flex-row md:gap-8"
+          >
             <ShiftCard
-              title={name || ""}
+              title={name || "Turno operativo"}
               value={updatedAt || updated_at}
               color="purple"
               icon={ShieldCheckIcon}
@@ -243,7 +249,7 @@ export function ShiftStats({
               checklistSupplies={checklistSupplies}
             />
           </li>
-        )
+        ),
       )}
     </ul>
   );
@@ -274,18 +280,18 @@ export function GuardStats({ guard }: { guard: GuardType }) {
   ];
 
   return (
-    <section className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-bold dark:text-white">
+    <section className="rounded-2xl border border-slate-200/70 bg-white p-4 shadow-[0_20px_40px_-30px_rgba(15,23,42,0.25)] sm:p-6">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h3 className="text-lg font-bold text-slate-900 sm:text-xl">
           Detalles de Guardia Actual
-        </h2>
-        <p className="flex gap-1 items-center bg-green-100 text-green-700 mx-2 px-3 py-1 rounded-full text-sm font-semibold">
-          <CalendarIcon className="w-3 h-3" />
+        </h3>
+        <p className="mx-2 flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
+          <CalendarIcon className="h-3 w-3" />
           <span>{date}</span>
         </p>
       </div>
 
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-8">
+      <div className="flex flex-col justify-between items-center gap-4 md:flex-row md:gap-8">
         <ResourceStats cardItems={customCard} />
         <ShiftStats guardId={guard.id} shifts={guard.shifts} />
       </div>

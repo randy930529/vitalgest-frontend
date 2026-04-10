@@ -59,7 +59,6 @@ function DeleteForm({
 
   function handleSubmit() {
     formAction();
-    state.message = "Eliminado exitosamente.";
   }
 
   return (
@@ -88,11 +87,12 @@ function ButtonToggleDelete({ onClose }: { onClose?: () => void }) {
   return (
     <button
       type="submit"
-      className="rounded-md border p-2 mr-2 bg-red-200 hover:bg-red-300"
+      className="mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-300 bg-rose-50 text-rose-700 transition hover:bg-rose-100"
       onClick={onClose}
+      aria-label="Eliminar registro"
     >
       <span className="sr-only">Eliminar</span>
-      <TrashIcon className="w-5" />
+      <TrashIcon className="w-4" />
     </button>
   );
 }

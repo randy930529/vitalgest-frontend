@@ -13,6 +13,41 @@ import { Button } from "@/app/ui/button";
 import { Badge } from "@/app/ui/badges";
 import { StatCardProps } from "@/app/ui/dashboard/cards";
 
+const toneClasses: Record<
+  string,
+  {
+    softBg: string;
+    softText: string;
+    iconBg: string;
+    iconText: string;
+  }
+> = {
+  purple: {
+    softBg: "bg-violet-50",
+    softText: "text-violet-700",
+    iconBg: "bg-violet-100",
+    iconText: "text-violet-700",
+  },
+  blue: {
+    softBg: "bg-sky-50",
+    softText: "text-sky-700",
+    iconBg: "bg-sky-100",
+    iconText: "text-sky-700",
+  },
+  green: {
+    softBg: "bg-emerald-50",
+    softText: "text-emerald-700",
+    iconBg: "bg-emerald-100",
+    iconText: "text-emerald-700",
+  },
+  red: {
+    softBg: "bg-rose-50",
+    softText: "text-rose-700",
+    iconBg: "bg-rose-100",
+    iconText: "text-rose-700",
+  },
+};
+
 export function CardWrapper({
   children,
   isColumn,
@@ -72,11 +107,25 @@ export function ResourceCard({
   icon: Icon,
   color,
 }: StatCardProps) {
+  const tone = toneClasses[color] ?? toneClasses.blue;
+
   return (
-    <div className={`text-center px-8 py-3 bg-${color}-50 rounded-lg md:p-3`}>
-      <Icon className={`w-5 h-5 text-${color}-600 mx-auto mb-1`} />
-      <p className={`text-2xl font-bold text-${color}-900`}>{value}</p>
-      <p className={`hidden text-xs text-${color}-600 md:block`}>{title}</p>
+    <div
+      className={clsx(
+        "min-w-20 rounded-xl border border-slate-200 px-4 py-3 text-center md:min-w-24",
+        tone.softBg,
+      )}
+    >
+      <Icon className={clsx("mx-auto mb-1 h-5 w-5", tone.softText)} />
+      <p className="text-xl font-bold text-slate-900">{value}</p>
+      <p
+        className={clsx(
+          "hidden text-[11px] font-medium md:block",
+          tone.softText,
+        )}
+      >
+        {title}
+      </p>
     </div>
   );
 }
@@ -94,6 +143,7 @@ export function ShiftCard({
   driver: UserType;
   paramedical: UserType;
 }) {
+  const tone = toneClasses[color] ?? toneClasses.purple;
   const timeElapsed = getElapsedMessage(new Date(value), new Date());
   const driverName = fullName(driver.name, driver.lastname);
   const paramedicalName = fullName(paramedical.name, paramedical.lastname);
@@ -107,12 +157,15 @@ export function ShiftCard({
   }
 
   return (
-    <div className="flex flex-col gap-1 justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+    <div className="flex flex-col justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors hover:bg-slate-100">
       <div className="flex items-center gap-3">
         <div
-          className={`w-10 h-10 bg-${color}-100 rounded-full flex items-center justify-center`}
+          className={clsx(
+            "flex h-10 w-10 items-center justify-center rounded-full",
+            tone.iconBg,
+          )}
         >
-          <Icon className={`w-5 h-5 text-${color}-600`} />
+          <Icon className={clsx("h-5 w-5", tone.iconText)} />
         </div>
         <div>
           <p className="font-semibold text-gray-800">{title}</p>
@@ -126,7 +179,7 @@ export function ShiftCard({
         ambulanceNumber={ambulanceNumber}
         driverName={driverName}
         paramedicalName={paramedicalName}
-        color="purple"
+        color={color}
       />
     </div>
   );
@@ -143,11 +196,13 @@ export function TeamCard({
   paramedicalName: string;
   color: string;
 }) {
+  const tone = toneClasses[color] ?? toneClasses.purple;
+
   return (
     <>
       <p className="flex gap-2 font-light">
         <span>
-          <TruckIcon className={`w-5 h-5 text-${color}-600 mx-auto mb-1`} />
+          <TruckIcon className={clsx("mx-auto mb-1 h-5 w-5", tone.iconText)} />
         </span>
         {ambulanceNumber}
       </p>
@@ -188,14 +243,24 @@ export function ChecklistsLinkCard({
     : "#";
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg shadow-md p-2 hover:shadow-lg transition-shadow">
-      <Link
-        className="rounded-lg font-medium text-xs text-blue-500 p-2 dark:text-blue-500 hover:text-blue-700 hover:shadow-lg transition-shadow"
-        href={checklistUrl}
-      >
-        {title}
-        <ArrowRightIcon className="mx-2 inline-block w-4 h-4" />
-      </Link>
+    <div className="flex flex-col gap-2 rounded-lg p-2 shadow-md transition-shadow hover:shadow-lg">
+      {isChecked || !link ? (
+        <span
+          className="rounded-lg p-2 text-xs font-medium text-slate-500"
+          aria-label={`${title} completado`}
+        >
+          {title}
+        </span>
+      ) : (
+        <Link
+          className="rounded-lg p-2 text-xs font-medium text-blue-600 transition hover:text-blue-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          href={checklistUrl}
+          aria-label={`Abrir ${title}`}
+        >
+          {title}
+          <ArrowRightIcon className="mx-2 inline-block h-4 w-4" />
+        </Link>
+      )}
       <div className="mx-2">
         <Badge
           title={checklistStatus}
