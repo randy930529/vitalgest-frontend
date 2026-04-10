@@ -4,10 +4,10 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Filters from "@/app/ui/dashboard/table-filters";
 import ModalTrigger from "@/app/ui/button-modal";
 import TablePagination from "@/app/ui/dashboard/pagination";
+import { skeletonShimmerClass } from "@/app/ui/skeleton";
 
-// Loading animation
-const shimmer =
-  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
+// Shared loading animation class
+const shimmer = skeletonShimmerClass;
 
 export function TableSkeleton({
   title,

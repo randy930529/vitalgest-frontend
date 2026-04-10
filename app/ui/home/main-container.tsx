@@ -1,32 +1,27 @@
+import { Suspense } from "react";
 import { UserType } from "@/app/lib/definitions";
-import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
-import { closeGuard } from "@/app/lib/actions/guard";
-import { GuardStats } from "@/app/ui/home/stast-home";
-import GuardsTableSection from "@/app/ui/home/guards-table-section";
+import {
+  CurrentGuardSection,
+  GuardHistorySection,
+} from "@/app/ui/home/home-sections-async";
+import {
+  CurrentGuardSkeleton,
+  GuardHistorySkeleton,
+} from "@/app/ui/home/home-skeletons";
 
-export default async function MainContainer({ user }: { user: UserType }) {
-  const [guards, inlineGuard] = await fetchGuardsAndInlineGuardByUserMe(user);
-
-  if (inlineGuard?.shifts) {
-    const isGuardCompleted = inlineGuard.shifts.every(
-      ({ checklistAmbulance, checklistSupplies }) =>
-        checklistAmbulance?.recipient_id && checklistSupplies?.recipient_id
-    );
-    if (isGuardCompleted) {
-      inlineGuard.state = "Cerrada";
-      await closeGuard(inlineGuard.id, inlineGuard);
-    }
-  }
-
-  const isClient =
-    user.role === "paramedical" || user.role === "vehicle_operator";
-
+export default function MainContainer({ user }: { user: UserType }) {
   return (
-    <main className="flex flex-col gap-4 my-4 p-8">
-      <div className="flex grow flex-col gap-4 md:flex-row">
-        {inlineGuard && <GuardStats guard={inlineGuard} />}
-      </div>
-      <GuardsTableSection guards={guards} isClient={isClient} />
+    <main
+      id="home-main"
+      className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-3 pb-8 pt-5 sm:px-5 md:gap-8 md:pb-12 md:pt-8"
+    >
+      <Suspense fallback={<CurrentGuardSkeleton />}>
+        <CurrentGuardSection user={user} />
+      </Suspense>
+
+      <Suspense fallback={<GuardHistorySkeleton />}>
+        <GuardHistorySection user={user} />
+      </Suspense>
     </main>
   );
 }

@@ -1,66 +1,84 @@
 import Image from "next/image";
+import Link from "next/link";
 import { UserType } from "@/app/lib/definitions";
-import { VitalGestLogo } from "@/app/ui/logos";
-import NavBar from "@/app/ui/dashboard/nav-bar";
 import { HeaderStats } from "@/app/ui/home/stast-home";
 
 export default async function Header({ user }: { user: UserType }) {
-  const userRole = user.role;
-  const isAdmin = userRole === "admin" || userRole === "general_admin";
-
   return (
-    <header className="relative isolate overflow-hidden bg-gray-900 py-6 sm:py-10">
-      <div className="flex justify-center items-center rounded-lg bg-white px-8 max-h-16 md:justify-between">
-        <div className="hidden w-32 text-white pt-4 md:w-40 overflow-y-hidden md:block">
-          <VitalGestLogo />
-        </div>
-        <div className="mr-8">
-          <NavBar user={user} showCog={isAdmin} />
-        </div>
+    <header className="relative isolate overflow-hidden" role="banner">
+      <div className="absolute inset-0 -z-20">
+        <Image
+          src="/images/image-banner.jpg"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+          alt="Personal y ambulancias de la Cruz Roja Mexicana en operación"
+        />
       </div>
-      <Image
-        src={"/images/image-banner.jpg"}
-        width={2830}
-        height={1500}
-        className="absolute inset-0 -z-10 size-full object-cover object-right md:object-center"
-        alt="Grupo de personas de la Cruz Roja Mexicana, reunidos frente a una ambulancia llevando uniformes o chalecos con el símbolo de la Cruz Roja."
-      />
-      <div
-        aria-hidden="true"
-        className="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl"
-      >
-        <div
-          style={{
-            clipPath:
-              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-          }}
-          className="aspect-1097/845 w-274.25 bg-linear-to-tr from-[#ff4694] to-[#776fff] opacity-20"
-        ></div>
-      </div>
-      <div
-        aria-hidden="true"
-        className="absolute -top-52 left-1/2 -z-10 -translate-x-1/2 transform-gpu blur-3xl sm:-top-112 sm:ml-16 sm:translate-x-0"
-      >
-        <div
-          style={{
-            clipPath:
-              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-          }}
-          className="aspect-1097/845 w-274.25 bg-linear-to-tr from-[#ff4694] to-[#776fff] opacity-20"
-        ></div>
-      </div>
-      <div className="mx-auto max-w-7xl mt-4 px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:mx-0">
-          <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            VitalGest
-          </h1>
-          <p className="mt-4 text-lg font-medium text-pretty text-gray-300 sm:text-xl/8">
-            Cruz Roja Mexicana
-          </p>
-        </div>
-        <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-          <HeaderStats user={user} />
-        </div>
+
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-950/78 via-slate-900/62 to-blue-950/68" />
+
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 pb-8 pt-20 sm:px-5 sm:pb-10 sm:pt-24 md:gap-8 md:pt-24">
+        <section
+          aria-labelledby="home-hero-title"
+          className="grid gap-5 rounded-3xl border border-white/20 bg-slate-900/35 p-4 text-white shadow-[0_30px_70px_-45px_rgba(15,23,42,0.95)] backdrop-blur-md md:grid-cols-[1.2fr,1fr] md:gap-8 md:p-7"
+        >
+          <div>
+            <p className="inline-flex items-center rounded-full border border-white/35 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.14em] text-slate-100">
+              Centro Operativo Digital
+            </p>
+            <h1
+              id="home-hero-title"
+              className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl"
+            >
+              Cruz Roja Mexicana
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm text-slate-100/90 sm:text-base">
+              Valida tu guardia en curso, completa checklist y administra el
+              historial de guardias.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="#guardia-curso-title"
+                className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100"
+              >
+                Crear guardia
+              </Link>
+              <Link
+                href="#guardia-curso-title"
+                className="inline-flex items-center rounded-xl border border-white/40 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                Continuar checklist
+              </Link>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-100/90 sm:text-sm">
+              <Link
+                href="#guardia-curso-title"
+                className="underline-offset-4 hover:underline"
+              >
+                Ver guardia actual
+              </Link>
+              <Link
+                href="#historial-guardias-title"
+                className="underline-offset-4 hover:underline"
+              >
+                Ir al historial
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/20 bg-slate-950/35 p-3 sm:p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-rose-100">
+              Resumen operativo
+            </h2>
+            <div className="mt-3">
+              <HeaderStats user={user} />
+            </div>
+          </div>
+        </section>
       </div>
     </header>
   );

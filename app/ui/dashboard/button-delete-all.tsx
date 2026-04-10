@@ -6,7 +6,7 @@ export default function TableActionDeleteAllSelected({
   actionDelete,
 }: {
   selectedIds: string[];
-  actionDelete: (id: string[]) => Promise<void>;
+  actionDelete: (id: string[]) => Promise<void | any>;
 }) {
   const handleDelete = actionDelete.bind(null, selectedIds);
 
@@ -24,10 +24,10 @@ export default function TableActionDeleteAllSelected({
       <TableActionDelete
         id={"ambulanceIds"}
         title="Eliminar Todos"
-        question={`¿Está seguro que desea eliminar los elementos seleccionados`}
+        question="¿Está seguro de que desea eliminar los elementos seleccionados?"
         actionDelete={handleDelete}
       />
-      <div className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-primary-700 text-xs font-bold text-white">
+      <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-rose-600 text-xs font-bold text-white">
         {selectedIds.length}
       </div>
     </div>

@@ -12,6 +12,7 @@ import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import { modalComponents } from "@/app/lib/config/modalConfig";
+import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
 
 const ModalComponent = modalComponents.ambulanceForm;
 const customHeaders = [
@@ -30,6 +31,8 @@ export default function AmbulanceTable({
 
   const [ambulances, delegatios] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const allSelected =
+    ambulances.length > 0 && selectedIds.length === ambulances.length;
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
     if (checked) {
@@ -51,8 +54,13 @@ export default function AmbulanceTable({
           <TableActionDeleteAllSelected
             selectedIds={selectedIds}
             actionDelete={async (ids: string[]) => {
-              //TODO: Implement bulk delete action
-              console.log(ids, "TODO: Implement bulk delete action");
+              return runBulkDeleteWithFeedback({
+                ids,
+                deleteAction: deleteAmbulance,
+                setFailedSelection: setSelectedIds,
+                pluralLabel: "ambulancia(s)",
+                singularLabel: "la ambulancia",
+              });
             }}
           />
         )}
@@ -61,17 +69,28 @@ export default function AmbulanceTable({
           modelContent={<ModalComponent delegations={delegatios} />}
         />
       </Filters>
+      <p className="px-4 py-2 text-xs text-slate-500" aria-live="polite">
+        {selectedIds.length > 0
+          ? `${selectedIds.length} ambulancia(s) seleccionada(s)`
+          : "Selecciona ambulancias para acciones masivas"}
+      </p>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
-          <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
+          <caption className="sr-only">
+            Tabla de ambulancias con selección y acciones de edición o
+            eliminación.
+          </caption>
+          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
                   <input
                     id="checkbox-all"
                     type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
                     data-tooltip-id="checkbox-all-tooltip"
+                    checked={allSelected}
+                    aria-label="Seleccionar todas las ambulancias"
                     onChange={(event) => {
                       handleSelectAllChange(event.target.checked);
                     }}
@@ -91,25 +110,26 @@ export default function AmbulanceTable({
                   {header.label}
                 </th>
               ))}
-              <th
-                scope="col"
-                className="px-4 py-3 flex items-center justify-end"
-              >
+              <th scope="col" className="px-4 py-3 text-right">
                 Acciones
               </th>
             </tr>
           </thead>
           <tbody>
             {ambulances?.map((ambulance) => (
-              <tr key={ambulance.id} className="border-b border-slate-200">
+              <tr
+                key={ambulance.id}
+                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
+              >
                 <td className="w-4 p-4">
                   <div className="flex items-center">
                     <input
                       id={`checkbox-table-${ambulance.id}`}
                       type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
                       value={ambulance.id}
                       checked={selectedIds.includes(ambulance.id)}
+                      aria-label={`Seleccionar ambulancia ${ambulance.number}`}
                       onChange={(event) => {
                         handleCheckboxChange(
                           ambulance.id,
@@ -127,13 +147,13 @@ export default function AmbulanceTable({
                 </td>
                 <th
                   scope="row"
-                  className="whitespace-nowrap px-4 py-3 font-medium text-slate-900"
+                  className="whitespace-nowrap px-4 py-3.5 font-medium text-slate-900"
                 >
                   {ambulance.number}
                 </th>
-                <td className="px-4 py-3">{ambulance.brand}</td>
-                <td className="px-4 py-3">{ambulance.model}</td>
-                <td className="px-4 py-3">{ambulance.delegation?.name}</td>
+                <td className="px-4 py-3.5">{ambulance.brand}</td>
+                <td className="px-4 py-3.5">{ambulance.model}</td>
+                <td className="px-4 py-3.5">{ambulance.delegation?.name}</td>
                 <TableActions>
                   <TableActionEdit
                     editLink={`/dashboard/ambulances/${ambulance.id}/edit`}

@@ -26,6 +26,10 @@ export default function TablePagination({
   };
 
   const allPages = generatePagination(currentPage, totalPages);
+  const startItem =
+    totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endItem =
+    totalItems === 0 ? 0 : Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
   return (
     <nav
@@ -35,7 +39,7 @@ export default function TablePagination({
       <span className="text-sm font-medium text-slate-500">
         Mostrando
         <span className="ml-1 mr-1 font-semibold text-slate-900">
-          {`${currentPage} - ${totalPages}`}
+          {`${startItem} - ${endItem}`}
         </span>
         de
         <span className="ml-1 font-semibold text-slate-900">{totalItems}</span>
@@ -132,12 +136,12 @@ function PaginationArrow({
   const icon =
     direction === "left" ? (
       <>
-        <span className="sr-only">Previous</span>
+        <span className="sr-only">Página anterior</span>
         <ChevronLeftIcon className="w-5 h-5" />
       </>
     ) : (
       <>
-        <span className="sr-only">Next</span>
+        <span className="sr-only">Página siguiente</span>
         <ChevronRightIcon className="w-5 h-5" />
       </>
     );

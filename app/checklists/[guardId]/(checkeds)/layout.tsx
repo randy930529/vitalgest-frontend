@@ -1,5 +1,8 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { getSession } from "@/app/lib/dal";
 import { CruzRojaLogo } from "@/app/ui/logos";
+import TopMenuBar from "@/app/ui/home/top-menu-bar";
 import ChecklistSubTitle from "@/app/checklists/[guardId]/(checkeds)/checklist-subtitle";
 
 export default async function DashboardLayout({
@@ -7,9 +10,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
-    <main className="bg-white mt-7 dark:bg-gray-800">
-      <section className="flex flex-col md:flex-row items-center justify-center md:justify-between md:space-y-0 px-3 sm:px-5">
+    <main className="mt-16 bg-white dark:bg-gray-800 sm:mt-20">
+      <TopMenuBar user={session.user} />
+      <section className="flex flex-col items-center justify-center px-3 md:flex-row md:justify-between md:space-y-0 sm:px-5">
         <div className="hidden md:block">
           <CruzRojaLogo />
           <h2 className="text-xl md:text-2xl font-bold dark:text-white md:ms-6">

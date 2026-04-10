@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { GuardType } from "@/app/lib/definitions";
+import { GuardType, UserType } from "@/app/lib/definitions";
+import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import {
   fetchDelegations,
@@ -9,14 +10,24 @@ import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
+import { EmptyStateCard, ErrorStateCard } from "@/app/ui/state-feedback";
 
 export default async function GuardsTableSection({
-  guards,
+  user,
   isClient,
 }: {
-  guards: GuardType[];
+  user: UserType;
   isClient?: boolean;
 }) {
+  let guards: GuardType[] = [];
+  let hasLoadError = false;
+
+  try {
+    [guards] = await fetchGuardsAndInlineGuardByUserMe(user);
+  } catch (error) {
+    hasLoadError = true;
+  }
+
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
       guards,
@@ -26,18 +37,38 @@ export default async function GuardsTableSection({
     ]);
 
   return (
-    <section className="bg-white rounded-lg min-w-full">
-      <div className="text-center md:text-left">
-        <h1 className="text-xl md:text-2xl font-bold dark:text-white">
-          Mi Historial de Guardias
-        </h1>
-        {!guards.length && (
-          <p className="text-gray-500 dark:text-gray-400 md:ms-2">
-            No se obtuvieron guardias para mostrar.
-          </p>
+    <section className="min-w-full rounded-[28px] border border-white/80 bg-white/90 p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] sm:p-6">
+      <header className="text-left">
+        <h2
+          id="historial-guardias-title"
+          className="text-xl font-bold text-slate-900 md:text-2xl"
+        >
+          Historial de guardias
+        </h2>
+        <p className="mt-1 text-sm text-slate-600 md:text-base">
+          Consulta tus guardias anteriores y estatus.
+        </p>
+        {hasLoadError && (
+          <div className="mt-3">
+            <ErrorStateCard
+              title="No fue posible cargar el historial de guardias."
+              description="Recarga la página o inténtalo de nuevo en unos minutos."
+            />
+          </div>
         )}
-      </div>
-      {!!guards.length && (
+
+        {!hasLoadError && !guards.length && (
+          <div className="mt-3">
+            <EmptyStateCard
+              title="No se obtuvieron guardias para mostrar."
+              description="Crea una guardia para comenzar a registrar turnos y su operación diaria."
+              actionLabel="Ir a crear guardia"
+              actionHref="/dashboard/guards"
+            />
+          </div>
+        )}
+      </header>
+      {!hasLoadError && !!guards.length && (
         <Suspense
           fallback={
             <TableSkeleton
