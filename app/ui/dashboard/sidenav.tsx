@@ -10,7 +10,7 @@ export default function SideNav() {
         href="/"
       >
         <div className="w-32 md:w-40">
-          <VitalGestLogo />
+          <VitalGestLogo width={124} height={124} />
         </div>
       </Link>
       <div className="isolate flex grow flex-row flex-nowrap items-center justify-between rounded-[24px] border border-white/70 bg-white/90 p-2 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm md:flex-col md:items-stretch md:justify-start md:gap-0 md:space-y-2 md:space-x-0">
