@@ -19,9 +19,12 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${montserrat.className}`} data-top-gradient="moderno">
+      <body
+        className={`${montserrat.className} flex min-h-screen flex-col`}
+        data-top-gradient="moderno"
+      >
         <Toaster />
-        {children}
+        <div className="flex-1">{children}</div>
         <Footer />
       </body>
     </html>
