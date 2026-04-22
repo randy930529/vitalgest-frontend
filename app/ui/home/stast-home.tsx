@@ -151,7 +151,7 @@ export function CheckListStats({
                 link="ambulances"
                 param="edit?step=1"
                 guardId={guardId}
-                id={checklistAmbulance.id}
+                id={id}
               />
             </li>
           )}
@@ -185,7 +185,7 @@ export function CheckListStats({
                 link="supplies"
                 param={`edit?ambulance=${ambulanceId}&step=1`}
                 guardId={guardId}
-                id={checklistSupplies.id}
+                id={id}
               />
             </li>
           )}

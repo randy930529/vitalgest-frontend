@@ -216,7 +216,7 @@ export function PaginationChecklist({
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("step")) || 1;
   const isNotes = !!searchParams.get("notes");
-  const { id } = useParams<{ id: string }>();
+  const { guardId, id } = useParams<{ guardId: string; id: string }>();
 
   return (
     <div className="flex w-full justify-between gap-4">
@@ -224,35 +224,20 @@ export function PaginationChecklist({
         href={
           currentPage - 1
             ? createPageURL(currentPage - 1, searchParams, pathname)
-            : `/checklists/${link}/${id}/create`
+            : `/checklists/${guardId}/${link}/${id}/create`
         }
         direction="left"
       />
       {isLast && isNotes ? (
-        <>
-          {/* <PaginationButton
-            href={createPageURL(currentPage + 1, searchParams, pathname)}
-            direction="right"
-            title="Guardar"
-            isDisabled={isLast}
-            hasIcon={false}
-          /> */}
-          <Button
-            type="submit"
-            disabled={submitDisabled}
-            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
-          >
-            Enviar
-          </Button>
-        </>
+        <Button
+          type="submit"
+          disabled={submitDisabled}
+          className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
+        >
+          Enviar
+        </Button>
       ) : (
         <>
-          {/* <Button
-            type="submit"
-            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 md:px-5 md:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800"
-          >
-            Guardar
-          </Button> */}
           <PaginationButton href="next" direction="right" />
         </>
       )}
