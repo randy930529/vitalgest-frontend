@@ -100,7 +100,6 @@ export function FormSelect({
         className={clsx(
           "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
           { "block w-full p-2.5": !inline },
-          { "cursor-not-allowed opacity-50": disabled },
         )}
         required={required}
         disabled={disabled}
@@ -129,12 +128,10 @@ export function FormCheckbox({
   name,
   title,
   isChecked,
-  onChange,
 }: {
   name: string;
   title: string;
   isChecked: boolean;
-  onChange?: () => void;
 }) {
   const [checked, setChecked] = useState(isChecked);
 
@@ -149,10 +146,7 @@ export function FormCheckbox({
         name={name}
         className="sr-only peer"
         defaultChecked={checked}
-        onChange={() => {
-          setChecked(!checked);
-          onChange?.();
-        }}
+        onChange={() => setChecked(!checked)}
       />
       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600 dark:peer-checked:bg-green-600"></div>
       <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -216,19 +210,43 @@ export function FormSignature(param: {
   }
 
   return (
-    <>
-      <FormSelect
-        {...rest}
-        options={usersOptions}
-        handleOption={(_, value) => handleSelectUser(value)}
-        inline
-        required
-      />
+    <div className="space-y-3">
+      <label
+        htmlFor={rest.name}
+        className="block text-sm font-semibold text-slate-800"
+      >
+        {rest.title}
+        {rest.required !== false && <span className="text-rose-600"> *</span>}
+      </label>
+      <select
+        id={rest.name}
+        name={rest.name}
+        defaultValue={""}
+        required={rest.required !== false}
+        onChange={(event) => handleSelectUser(event.target.value)}
+        className="block h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none transition focus:border-rose-300 focus:ring-4 focus:ring-rose-100"
+      >
+        {usersOptions.map(({ id, value, label }) => (
+          <option key={id} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+      {rest.errors && (
+        <InlineErrors
+          key={`${rest.name}-error`}
+          errorId={`${rest.name}-error`}
+          errors={rest.errors}
+        />
+      )}
       <Signit email={selectedUserEmail} onSignedChange={onSignedChange} />
-      <p>
-        Cargo: <span className="inline-block">{position}</span>
+      <p className="text-base text-slate-800">
+        <span className="font-medium">Cargo:</span>{" "}
+        <span className="inline-block text-slate-900">
+          {position || "No definido"}
+        </span>
       </p>
-    </>
+    </div>
   );
 }
 
@@ -241,7 +259,6 @@ export function FormInputSingle({
   required,
   placeholder,
   handleOption,
-  disabled,
 }: {
   name: string;
   type: string;
@@ -251,7 +268,6 @@ export function FormInputSingle({
   required?: boolean;
   placeholder?: string;
   handleOption?: (name: string, value: string) => void;
-  disabled?: boolean;
 }) {
   return (
     <>
@@ -270,16 +286,12 @@ export function FormInputSingle({
         name={name}
         id={name}
         defaultValue={initialValue || ""}
-        className={clsx(
-          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
-          { "cursor-not-allowed opacity-50": disabled },
-        )}
+        className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-0.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
         placeholder={placeholder || title}
         onChange={(e) =>
           handleOption && handleOption(e.target.name, e.target.value)
         }
         required={required}
-        disabled={disabled}
       />
       {errors && (
         <InlineErrors
@@ -342,21 +354,38 @@ export function FormInputSetter({
 
     case "bool_text":
       return (
-        <FormInputBoolText
-          key={`question-checkbox-${name}`}
-          name={name}
-          title={title || ""}
-          type={type}
-        />
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={`bool~${name}`}
+            title={title || ""}
+            isChecked
+          />
+          <FormInputSingle
+            key={`question-input-${name}`}
+            type={type}
+            name={name}
+            placeholder={title}
+          />
+        </>
       );
 
     case "bool_option":
       return (
-        <FormInputBoolOption
-          name={name}
-          title={title || ""}
-          customFormInput={customOptios}
-        />
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={`bool~${name}`}
+            title={title || ""}
+            isChecked
+          />
+          <FormSelect
+            key={`question-select-${name}`}
+            name={`option~${name}`}
+            options={customOptios}
+            inline
+          />
+        </>
       );
 
     case "option":
@@ -392,12 +421,26 @@ export function FormInputSetter({
 
     case "bool_option_text":
       return (
-        <FormInputBoolOptionText
-          title={title || ""}
-          name={name}
-          type={type}
-          customFormInput={customOptios}
-        />
+        <>
+          <FormCheckbox
+            key={`question-checkbox-${name}`}
+            name={`bool~${name}`}
+            title={title || ""}
+            isChecked
+          />
+          <FormSelect
+            key={`question-select-${name}`}
+            name={`option~${name}`}
+            options={customOptios}
+            inline
+          />
+          <FormInputSingle
+            key={`question-input-${name}`}
+            type={type}
+            name={name}
+            placeholder={title}
+          />
+        </>
       );
 
     default:
@@ -498,118 +541,6 @@ export function FormUploadFile({
           errors={errors}
         />
       )}
-    </>
-  );
-}
-
-export function FormInputBoolOption({
-  title,
-  name,
-  customFormInput,
-}: {
-  title: string;
-  name: string;
-  customFormInput: {
-    id: number;
-    value: string;
-    label: string;
-  }[];
-}) {
-  const [disabled, setDisabled] = useState(false);
-
-  return (
-    <>
-      <FormCheckbox
-        key={`question-checkbox-${name}`}
-        name={`bool~${name}`}
-        title={title || ""}
-        isChecked
-        onChange={() => setDisabled(!disabled)}
-      />
-      <FormSelect
-        key={`question-select-${name}`}
-        name={`option~${name}`}
-        options={customFormInput}
-        inline
-        disabled={disabled}
-      />
-    </>
-  );
-}
-
-export function FormInputBoolText({
-  title,
-  name,
-  type,
-}: {
-  title: string;
-  name: string;
-  type: string;
-}) {
-  const [disabled, setDisabled] = useState(false);
-
-  return (
-    <>
-      <FormCheckbox
-        key={`question-checkbox-${name}`}
-        name={`bool~${name}`}
-        title={title || ""}
-        isChecked
-        onChange={() => setDisabled(!disabled)}
-      />
-      <div>
-        <FormInputSingle
-          key={`question-input-${name}`}
-          type={type}
-          name={name}
-          placeholder={title}
-          disabled={disabled}
-        />
-      </div>
-    </>
-  );
-}
-
-export function FormInputBoolOptionText({
-  title,
-  name,
-  type,
-  customFormInput,
-}: {
-  title: string;
-  name: string;
-  type: string;
-  customFormInput: {
-    id: number;
-    value: string;
-    label: string;
-  }[];
-}) {
-  const [disabled, setDisabled] = useState(false);
-
-  return (
-    <>
-      <FormCheckbox
-        key={`question-checkbox-${name}`}
-        name={`bool~${name}`}
-        title={title || ""}
-        isChecked
-        onChange={() => setDisabled(!disabled)}
-      />
-      <FormSelect
-        key={`question-select-${name}`}
-        name={`option~${name}`}
-        options={customFormInput}
-        inline
-        disabled={disabled}
-      />
-      <FormInputSingle
-        key={`question-input-${name}`}
-        type={type}
-        name={name}
-        placeholder={title}
-        disabled={disabled}
-      />
     </>
   );
 }
