@@ -6,9 +6,11 @@ import toast from "react-hot-toast";
 import { ShiftType } from "@/app/lib/definitions";
 import { createChecklistSupplies } from "@/app/lib/actions/checklist";
 import { ChecklistSuppliesState } from "@/app/lib/config/stateConfigs";
-import { Button } from "@/app/ui/button";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import { FormSelect } from "@/app/ui/dashboard/form-fields";
+import {
+  ChecklistStartButton,
+  FormSelect,
+} from "@/app/ui/dashboard/form-fields";
 import { Timer } from "@/app/ui/checklists/ambulances/create/checklist-ambulance-form";
 
 export default function ChecklistSuppliesForm({
@@ -33,11 +35,10 @@ export default function ChecklistSuppliesForm({
     },
   };
   const initialState: ChecklistSuppliesState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(
+  const [state, formAction, loading] = useActionState(
     createChecklistSupplies,
     initialState,
   );
-  console.log(state);
 
   useEffect(() => {
     if (state.message && state.checklist) {
@@ -54,7 +55,7 @@ export default function ChecklistSuppliesForm({
   }, [state.errors?.success]);
 
   return (
-    <section className="flex md:flex-row items-center justify-center md:justify-between md:space-y-0 p-4 relative shadow-md sm:rounded-lg overflow-hidden">
+    <section className="relative flex items-center justify-center overflow-hidden p-3 shadow-md sm:rounded-lg sm:p-4 md:flex-row md:justify-between md:space-y-0">
       <form className="w-full" action={formAction}>
         <input
           type="text"
@@ -62,7 +63,7 @@ export default function ChecklistSuppliesForm({
           defaultValue={data.id}
           className="hidden"
         />
-        <div className="grid gap-4 sm: mb-4 sm:grid-flow-row sm:grid-cols-3">
+        <div className="grid gap-3 sm:mb-4 sm:grid-flow-row sm:grid-cols-3 sm:gap-4">
           <p className="font-semibold text-center md:ms-6">
             Ambulancia: <span className="font-normal">{ambulance.number}</span>
           </p>
@@ -75,15 +76,15 @@ export default function ChecklistSuppliesForm({
             </p>
           </div>
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex justify-center gap-1 w-3/5 font-semibold md:justify-start">
+            <div className="flex w-full justify-center gap-1 font-semibold md:w-auto md:justify-start">
               <div>Hora:</div>
-              <div className="w-1/3">
+              <div>
                 <Timer />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-0.5 sm:gap-0">
             <FormSelect
               key={guardShif.id}
               name={guardShif.id}
@@ -111,12 +112,9 @@ export default function ChecklistSuppliesForm({
               defaultValue={paramedical.id}
             />
           </div>
-          <Button
-            type="submit"
-            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800 sm:max-w-fit max-h-10 sm:col-span-2 sm:place-self-center"
-          >
+          <ChecklistStartButton pending={loading}>
             Comenzar revisión
-          </Button>
+          </ChecklistStartButton>
         </div>
       </form>
     </section>
