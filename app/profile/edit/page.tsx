@@ -9,25 +9,24 @@ export const metadata: Metadata = {
   title: "Mi Perfil",
 };
 
-async function ProfileFormLoader() {
-  const session = await verifySession();
-
-  return <ProfileForm user={session.user} />;
-}
-
 export default async function EditProfilePage() {
+  const session = await verifySession();
+  const isAdmin =
+    session.user.role === "admin" || session.user.role === "general_admin";
+  const homeHref = isAdmin ? "/dashboard" : "/";
+
   return (
-    <main className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+    <div className="space-y-4 p-1 sm:p-0">
       <Breadcrumbs
         breadcrumbs={[
-          { label: "", href: "/" },
+          { label: "", href: homeHref },
           { label: "Mi perfil", href: "/profile/edit", active: true },
         ]}
       />
 
       <Suspense fallback={<ProfileEditSkeleton />}>
-        <ProfileFormLoader />
+        <ProfileForm user={session.user} />
       </Suspense>
-    </main>
+    </div>
   );
 }
