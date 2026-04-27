@@ -1,5 +1,6 @@
-import { JSX, useState } from "react";
+import { ChangeEvent, JSX, useState } from "react";
 import clsx from "clsx";
+import { ArrowRightIcon, PaperClipIcon } from "@heroicons/react/24/outline";
 import {
   ChecklistQuestionsType,
   CustomOptions,
@@ -7,6 +8,7 @@ import {
 } from "@/app/lib/definitions";
 import { InlineErrors } from "@/app/ui/custom-errors";
 import Signit from "@/app/ui/components/signit";
+import { Button } from "@/app/ui/button";
 
 export function FormInput({
   name,
@@ -85,7 +87,7 @@ export function FormSelect({
         <label
           htmlFor={name}
           className={clsx(
-            "mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white",
+            "mb-1.5 mt-3 text-sm font-medium text-gray-900 dark:text-white sm:mb-2 sm:mt-4",
             { block: !inline },
           )}
         >
@@ -210,19 +212,43 @@ export function FormSignature(param: {
   }
 
   return (
-    <>
-      <FormSelect
-        {...rest}
-        options={usersOptions}
-        handleOption={(_, value) => handleSelectUser(value)}
-        inline
-        required
-      />
+    <div className="space-y-3">
+      <label
+        htmlFor={rest.name}
+        className="block text-sm font-semibold text-slate-800"
+      >
+        {rest.title}
+        {rest.required !== false && <span className="text-rose-600"> *</span>}
+      </label>
+      <select
+        id={rest.name}
+        name={rest.name}
+        defaultValue={""}
+        required={rest.required !== false}
+        onChange={(event) => handleSelectUser(event.target.value)}
+        className="block h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none transition focus:border-rose-300 focus:ring-4 focus:ring-rose-100"
+      >
+        {usersOptions.map(({ id, value, label }) => (
+          <option key={id} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+      {rest.errors && (
+        <InlineErrors
+          key={`${rest.name}-error`}
+          errorId={`${rest.name}-error`}
+          errors={rest.errors}
+        />
+      )}
       <Signit email={selectedUserEmail} onSignedChange={onSignedChange} />
-      <p>
-        Cargo: <span className="inline-block">{position}</span>
+      <p className="text-base text-slate-800">
+        <span className="font-medium">Cargo:</span>{" "}
+        <span className="inline-block text-slate-900">
+          {position || "No definido"}
+        </span>
       </p>
-    </>
+    </div>
   );
 }
 
@@ -490,15 +516,22 @@ export function FormUploadFile({
   required?: boolean;
   acceptFile?: string;
 }) {
+  const [fileName, setFileName] = useState("");
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const selectedFileName = event.target.files?.[0]?.name || "";
+    setFileName(selectedFileName);
+  }
+
   return (
-    <>
+    <div className="space-y-2">
       {title && (
         <label
           htmlFor={name}
-          className="text-sm font-bold text-gray-900 dark:text-white"
+          className="block text-sm font-semibold text-slate-800"
         >
           {title}
-          {required && <span className="text-red-600"> *</span>}
+          {required && <span className="text-rose-600"> *</span>}
         </label>
       )}
 
@@ -506,10 +539,27 @@ export function FormUploadFile({
         type="file"
         name={name}
         id={name}
-        className="block w-3/5 text-sm text-gray-900 border border-gray-300 rounded cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+        className="sr-only"
         accept={acceptFile}
         required={required}
+        onChange={handleChange}
       />
+
+      <label
+        htmlFor={name}
+        className="group flex w-full min-w-0 cursor-pointer flex-col items-start gap-3 rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] transition hover:border-rose-300 hover:bg-slate-50/70 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <span className="inline-flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1">
+          <PaperClipIcon className="h-5 w-5 shrink-0 text-rose-500" />
+          <span className="block max-w-full truncate text-slate-600">
+            {fileName || "Seleccione el archivo del vale"}
+          </span>
+        </span>
+        <span className="inline-flex w-full items-center justify-center rounded-full border border-white/80 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition group-hover:text-rose-600 sm:w-auto sm:shrink-0">
+          {fileName ? "Cambiar archivo" : "Seleccionar"}
+        </span>
+      </label>
+
       {errors && (
         <InlineErrors
           key={`${name}-error`}
@@ -517,6 +567,27 @@ export function FormUploadFile({
           errors={errors}
         />
       )}
-    </>
+    </div>
+  );
+}
+
+export function ChecklistStartButton({
+  children = "Comenzar revisión",
+  pending,
+}: {
+  children?: React.ReactNode;
+  pending: boolean;
+}) {
+  return (
+    <Button
+      type="submit"
+      variant="formPrimary"
+      className="w-full justify-center sm:col-span-2 sm:w-auto sm:place-self-center"
+      isLoading={pending}
+      disabled={pending}
+    >
+      <span>{children}</span>
+      <ArrowRightIcon className="h-4 w-4" />
+    </Button>
   );
 }

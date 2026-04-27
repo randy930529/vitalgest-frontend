@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useActionState } from "react";
+import clsx from "clsx";
+import { CameraIcon } from "@heroicons/react/24/outline";
 import { verifySignature } from "@/app/lib/actions/signit";
 import { Button } from "@/app/ui/button";
 import { VerifySignatureResult } from "@/app/lib/definitions";
@@ -53,21 +55,29 @@ export default function Signit({
   }
 
   const canSign = email && email.length > 0;
-  console.log(canSign, email);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center gap-3">
+    <div
+      className={clsx(
+        "group flex flex-col items-center justify-center gap-3 rounded-[28px] border border-dashed p-5 text-center transition",
+        signedUrl
+          ? "border-slate-200 bg-white shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] hover:border-rose-300 hover:bg-slate-50/70"
+          : showForm
+            ? "border-slate-200 bg-white shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)]"
+            : "border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.95),rgba(255,255,255,1))] shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] hover:border-rose-300 hover:bg-slate-50/70",
+      )}
+    >
       {signedUrl ? (
-        <div className="flex flex-col items-center gap-3">
+        <div className="relative flex w-full items-center justify-center rounded-[22px] bg-[radial-gradient(circle_at_top,_rgba(254,242,242,0.9),_rgba(255,255,255,1)_58%)] p-5">
           <img
             src={signedUrl}
             alt="Firma"
-            className="h-20 w-auto object-contain"
+            className="h-24 w-auto object-contain"
           />
-          <div className="flex gap-2">
-            <Button
+          <div className="absolute bottom-3 right-3">
+            <button
               type="button"
-              variant="secondary"
+              className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:text-rose-600"
               onClick={() => {
                 setSignedUrl(null);
                 setShowForm(false);
@@ -76,8 +86,9 @@ export default function Signit({
                 state.error = undefined;
               }}
             >
+              <CameraIcon className="h-4 w-4 text-rose-500" />
               Reiniciar
-            </Button>
+            </button>
           </div>
         </div>
       ) : showForm ? (
@@ -102,7 +113,7 @@ export default function Signit({
                 handleSubmit();
               }
             }}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            className="block h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-rose-300 focus:ring-4 focus:ring-rose-100"
           />
 
           {state.error && (
@@ -114,7 +125,7 @@ export default function Signit({
           <div className="flex w-full justify-between gap-2">
             <Button
               type="button"
-              variant="secondary"
+              variant="formSecondary"
               onClick={() => {
                 setShowForm(false);
                 setPassword("");
@@ -124,7 +135,7 @@ export default function Signit({
             </Button>
             <Button
               type="button"
-              variant="primary"
+              variant="formPrimary"
               onClick={handleSubmit}
               disabled={!canSign || isPending}
             >
@@ -136,14 +147,15 @@ export default function Signit({
         <div className="flex flex-col items-center gap-3">
           <Button
             type="button"
-            variant="primary"
+            variant="formPrimary"
+            className="group-hover:bg-rose-500"
             onClick={() => setShowForm(true)}
             disabled={!canSign}
           >
             Firmar
           </Button>
           {!canSign && (
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="max-w-sm text-sm leading-6 text-slate-500">
               Seleccione una persona para habilitar la firma.
             </p>
           )}

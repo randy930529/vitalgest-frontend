@@ -5,7 +5,7 @@ import { HeaderStats } from "@/app/ui/home/stast-home";
 
 export default async function Header({ user }: { user: UserType }) {
   return (
-    <header className="relative isolate overflow-hidden" role="banner">
+    <header className="relative isolate overflow-hidden md:pt-4" role="banner">
       <div className="absolute inset-0 -z-20">
         <Image
           src="/images/image-banner.jpg"

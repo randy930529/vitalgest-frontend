@@ -65,7 +65,7 @@ export default async function EditCheckListAmbulancePage({
   }));
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 pt-0">
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/" },
@@ -112,6 +112,6 @@ export default async function EditCheckListAmbulancePage({
           WrappedComponent={EditChecklistAmbulanceForm}
         />
       </Suspense> */}
-    </div>
+    </section>
   );
 }

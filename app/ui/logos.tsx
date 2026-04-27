@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { openSans } from "@/app/ui/fonts";
 
-export function VitalGestLogo() {
+export function VitalGestLogo({ width = 92, height = 92 }) {
   return (
     <div
-      className={`${openSans.className} flex flex-row items-center leading-none text-white`}
+      className={`${openSans.className} flex flex-row justify-center items-center leading-none text-white`}
     >
       <Image
         src="/images/logo-vital-gest_red.svg"
-        width={185}
-        height={261}
+        width={width}
+        height={height}
         className="hidden md:block"
         alt="Logo del sistema de gestión VitalGest, un escudo y una cruz roja sobre fondo transparente"
         priority
@@ -18,15 +18,15 @@ export function VitalGestLogo() {
   );
 }
 
-export function CruzRojaLogo() {
+export function CruzRojaLogo({ width = 100, height = 130 }) {
   return (
     <div
       className={`${openSans.className} flex flex-row items-center leading-none text-white`}
     >
       <Image
         src="/images/logo-cruz-roja.png"
-        width={100}
-        height={130}
+        width={width}
+        height={height}
         className="hidden md:block"
         alt="Logo de la Cruz Roja, cruz roja sobre fondo blanco"
         priority

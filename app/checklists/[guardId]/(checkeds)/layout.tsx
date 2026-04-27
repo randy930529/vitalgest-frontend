@@ -19,7 +19,7 @@ export default async function DashboardLayout({
   return (
     <main className="mt-16 bg-white dark:bg-gray-800 sm:mt-20">
       <TopMenuBar user={session.user} />
-      <section className="flex flex-col items-center justify-center px-3 md:flex-row md:justify-between md:space-y-0 sm:px-5">
+      <header className="flex flex-col items-center justify-center px-3 pt-4 md:flex-row md:justify-between md:space-y-0 sm:px-5">
         <div className="hidden md:block">
           <CruzRojaLogo />
           <h2 className="text-xl md:text-2xl font-bold dark:text-white md:ms-6">
@@ -42,7 +42,7 @@ export default async function DashboardLayout({
           alt="Escudo rojo con una ambulancia  dentro del escudo vista de perfil lateral."
           priority
         />
-      </section>
+      </header>
       {children}
     </main>
   );
