@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { getSession } from "@/app/lib/dal";
 import { fetchSuppliesByPharmacyId } from "@/app/lib/data/supplies";
+import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
@@ -19,12 +20,15 @@ export default async function PharmacySuppliesPage({
 }: {
   searchParams: Promise<{
     pharmacy: string;
+    page?: number;
+    display?: number;
   }>;
 }) {
   // (Página) Gestionar insumos en farmacia - [SSR]
 
-  let { pharmacy: pharmacyId } = await searchParams;
-  const delegations = await fetchDelegations();
+  let { pharmacy: pharmacyId, page = 1, display = 6 } = await searchParams;
+
+  const { data: delegations } = await fetchDelegations();
 
   if (!pharmacyId) {
     const delegationId = (await getSession())?.user.delegationId;
@@ -41,7 +45,7 @@ export default async function PharmacySuppliesPage({
 
   const fetchsuppliesByPharmacyId = async () =>
     Promise.all([
-      fetchSuppliesByPharmacyId(pharmacyId),
+      fetchSuppliesByPharmacyId(pharmacyId, getPaginationParams(page, display)),
       delegations,
       pharmacyId,
     ]);

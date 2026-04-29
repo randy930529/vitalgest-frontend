@@ -5,7 +5,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import { CustomOptions } from "@/app/lib/definitions";
 import { FormSignature, FormTextarea } from "@/app/ui/dashboard/form-fields";
-import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
+import { PaginationChecklist } from "@/app/ui/components/pagination";
 
 export type NotesSignatureFormProps = {
   children?: React.ReactNode;

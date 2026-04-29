@@ -29,6 +29,12 @@ export type ResponseAPIType<T> = {
   success: boolean;
   data: T;
   error?: string;
+  totalRecords?: number;
+};
+
+export type PaginatedResult<T> = {
+  data: T[];
+  totalRecords: number;
 };
 
 export type StateType<T> = {
@@ -50,13 +56,16 @@ export type SessionType = {
   refreshToken: string;
 };
 
-export type MxState = {
+export type MxStateType = {
   id: number;
   name: string;
-  municipalities: {
-    id: number;
-    name: string;
-  }[];
+  municipalities: MunicipalityType[];
+};
+
+export type MunicipalityType = {
+  id: number;
+  name: string;
+  state_id: number;
 };
 
 export type CustomOptions = {

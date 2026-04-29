@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchUserById } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
@@ -19,7 +19,10 @@ export default async function EditUserPage(props: {
   const params = await props.params;
   const id = params.id;
   const fetchUserByIdAndDelegations = async () =>
-    await Promise.all([fetchUserById(id), fetchDelegations()]);
+    await Promise.all([
+      fetchUserById(id),
+      fetchDelegations().then((result) => result.data),
+    ]);
 
   return (
     <main className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">

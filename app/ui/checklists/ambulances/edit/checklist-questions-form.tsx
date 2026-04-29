@@ -6,7 +6,7 @@ import { ChecklistQuestionsType } from "@/app/lib/definitions";
 import { createPageURL, createStepAnswers } from "@/app/lib/utils";
 import { useChecklistAmbulanceStore } from "@/app/lib/store/checklist-answers";
 import { FormInputSetter } from "@/app/ui/dashboard/form-fields";
-import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
+import { PaginationChecklist } from "@/app/ui/components/pagination";
 
 export default function ChecklistQuestionsForm({
   children,
@@ -27,7 +27,7 @@ export default function ChecklistQuestionsForm({
   const isNotes = !!searchParams.get("notes");
 
   checklistQuestions.sort(
-    (a, b) => (a.order_subcategory || 0) - (b.order_subcategory || 0)
+    (a, b) => (a.order_subcategory || 0) - (b.order_subcategory || 0),
   );
 
   const subcategoryQuestionsMap = new Map<string, ChecklistQuestionsType[]>();

@@ -7,22 +7,23 @@ import {
   AmbulanceAreaType,
   AmbulanceType,
   DelegationType,
+  PaginatedResult,
   SupplyAmbulanceType,
   SupplyPharmacyType,
 } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { deleteSupplyInAmbulance } from "@/app/lib/actions/supply";
+import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 import { Badge } from "@/app/ui/badges";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import { SearchAmbulanceSupplies } from "@/app/ui/dashboard/search";
-import { modalComponents } from "@/app/lib/config/modalConfig";
-import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
 
 const ModalComponent = modalComponents.supplyAmbulanceForm;
 const customHeaders = [
@@ -41,7 +42,7 @@ export default function AmbulanceSuppliesTable({
 }: {
   data: [
     AmbulanceType[],
-    SupplyAmbulanceType[],
+    PaginatedResult<SupplyAmbulanceType>,
     string,
     AmbulanceAreaType[],
     SupplyPharmacyType[],
@@ -50,7 +51,7 @@ export default function AmbulanceSuppliesTable({
 }) {
   const [
     ambulances,
-    suppliesAmbulance,
+    { data: suppliesAmbulance, totalRecords },
     ambulanceId,
     areas,
     suppliesPharmacy,
@@ -286,7 +287,7 @@ export default function AmbulanceSuppliesTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={suppliesAmbulance.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
+import {
+  DelegationType,
+  PaginatedResult,
+  SupplyPharmacyType,
+} from "@/app/lib/definitions";
 import { deleteSupplyInPharmacy } from "@/app/lib/actions/supply";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
@@ -29,9 +33,9 @@ const customHeaders = [
 export default function PharmacySuppliesTable({
   data,
 }: {
-  data: [SupplyPharmacyType[], DelegationType[], string];
+  data: [PaginatedResult<SupplyPharmacyType>, DelegationType[], string];
 }) {
-  const [supplies, delegations, pharmacyId] = data;
+  const [{ data: supplies, totalRecords }, delegations, pharmacyId] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const allSelected =
     supplies.length > 0 && selectedIds.length === supplies.length;
@@ -195,7 +199,7 @@ export default function PharmacySuppliesTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={supplies.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

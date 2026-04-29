@@ -43,7 +43,7 @@ export default async function EditCheckListInsumosPage({
 
   const [[steps, maxSteps], users] = await Promise.all([
     fetchAmbulanceAreasSteps(),
-    fetchUsers(),
+    fetchUsers().then((res) => res.data),
   ]);
   const isLastQuestions = areaId >= maxSteps;
 

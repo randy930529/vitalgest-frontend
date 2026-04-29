@@ -12,7 +12,7 @@ import {
   ShiftType,
   UserType,
 } from "@/app/lib/definitions";
-import { fetchDelegationById } from "@/app/lib/data";
+import { fetchDelegationById } from "@/app/lib/data/delegations";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { ChecklistsLinkCard, ResourceCard, ShiftCard } from "@/app/ui/cards";
@@ -26,7 +26,7 @@ export async function HeaderStats({ user }: { user: UserType }) {
   const delegationId = user.delegationId;
   const [delegation, guards] = await Promise.all([
     fetchDelegationById(delegationId),
-    fetchGuards(),
+    fetchGuards().then((result) => result.data),
   ]);
   const delegationNameShort =
     delegation?.name?.replace("Delegación ", "") || "";

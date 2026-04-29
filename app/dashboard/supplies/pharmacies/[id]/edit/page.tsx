@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
@@ -18,7 +18,10 @@ export default async function PharmacySuppliesEditPage(props: {
   const id = params.id;
 
   const fetchSupplyByIdAndDelegations = async () =>
-    await Promise.all([fetchSupplyById(id), fetchDelegations()]);
+    await Promise.all([
+      fetchSupplyById(id),
+      fetchDelegations().then((result) => result.data),
+    ]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">

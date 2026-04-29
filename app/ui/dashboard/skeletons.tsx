@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Filters from "@/app/ui/dashboard/table-filters";
 import ModalTrigger from "@/app/ui/button-modal";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import { skeletonShimmerClass } from "@/app/ui/skeleton";
 
 // Shared loading animation class

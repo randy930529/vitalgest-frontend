@@ -4,7 +4,7 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import ChecklistSuppliesForm from "@/app/ui/checklists/supplies/create/checklist-supplies-form";
-import { fetchShiftById } from "@/app/lib/data";
+import { fetchShiftById } from "@/app/lib/data/shifts";
 
 export const metadata: Metadata = {
   title: "Chequeo de Insumos",

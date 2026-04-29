@@ -1,6 +1,6 @@
 "use server";
 
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchGuards } from "@/app/lib/data/guards";
 import {

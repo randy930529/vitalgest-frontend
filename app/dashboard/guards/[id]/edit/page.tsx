@@ -1,19 +1,17 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import {
-  fetchDelegations,
-  fetchShiftsByGuardId,
-  fetchUsersGuardChiefsDriversAndParamedical,
-} from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchGuardById } from "@/app/lib/data/guards";
+import { fetchShiftsByGuardId } from "@/app/lib/data/shifts";
+import { fetchAmbulances } from "@/app/lib/data/ambulances";
+import { fetchStaffMembers } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import GuardEditForm from "@/app/ui/dashboard/guards/edit/guard-edit-form";
-import { fetchAmbulances } from "@/app/lib/data/ambulances";
 
 export const metadata: Metadata = {
-  title: "Editar Delegación",
+  title: "Editar Guardia",
 };
 
 export default async function EditGuardPage(props: {
@@ -28,9 +26,9 @@ export default async function EditGuardPage(props: {
     await Promise.all([
       fetchGuardById(id),
       fetchShiftsByGuardId(id),
-      fetchAmbulances(),
-      fetchDelegations(),
-      fetchUsersGuardChiefsDriversAndParamedical(),
+      fetchAmbulances().then((result) => result.data),
+      fetchDelegations().then((result) => result.data),
+      fetchStaffMembers(),
     ]);
 
   return (

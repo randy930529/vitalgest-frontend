@@ -32,7 +32,9 @@ export default async function EditCheckListAmbulancePage({
   const { step, notes } = await searchParams;
   const param = Number(step) || undefined;
 
-  const data = !notes ? await fetchChecklistQuestions(param) : [];
+  const data = !notes
+    ? await fetchChecklistQuestions(param).then((res) => res.data)
+    : [];
 
   if (!notes && (!Number(step) || !data.length)) {
     notFound();
@@ -40,7 +42,7 @@ export default async function EditCheckListAmbulancePage({
 
   const [[steps, maxSteps], users] = await Promise.all([
     fetchChecklistSteps(),
-    fetchUsers(),
+    fetchUsers().then((res) => res.data),
   ]);
   const isLastQuestions = Number(step) >= maxSteps;
 
