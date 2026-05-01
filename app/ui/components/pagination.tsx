@@ -162,12 +162,14 @@ function PaginationButton({
   isDisabled,
   title,
   hasIcon = true,
+  isLoading = false,
 }: {
   href: string;
   direction: "left" | "right";
   isDisabled?: boolean;
   title?: string;
   hasIcon?: boolean;
+  isLoading?: boolean;
 }) {
   const className = clsx(
     "text-white inline-flex items-center bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 sm:px-5 sm:py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800",
@@ -198,7 +200,7 @@ function PaginationButton({
       {icon}
     </Link>
   ) : (
-    <Button type="submit" className={className}>
+    <Button type="submit" className={className} isLoading={isLoading}>
       {icon}
     </Button>
   );
@@ -239,7 +241,11 @@ export function PaginationChecklist({
         </Button>
       ) : (
         <>
-          <PaginationButton href="next" direction="right" />
+          <PaginationButton
+            href="next"
+            direction="right"
+            isLoading={!!submitDisabled}
+          />
         </>
       )}
     </div>

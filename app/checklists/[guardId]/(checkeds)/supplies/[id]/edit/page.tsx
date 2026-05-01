@@ -11,6 +11,10 @@ import Timeline from "@/app/ui/timeline";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import ChecklistSupplySign from "@/app/ui/checklists/supplies/edit/notes-signature-form";
 import ChecklistQuestionsForm from "@/app/ui/checklists/supplies/edit/checklist-questions-form";
+import {
+  ChecklistNotesSkeleton,
+  ChecklistQuestionsSkeleton,
+} from "@/app/ui/dashboard/skeletons";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Insumos",
@@ -31,6 +35,47 @@ export default async function EditCheckListInsumosPage({
 
   const { guardId, id } = await params;
   const { ambulance, step, notes } = await searchParams;
+
+  return (
+    <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: "", href: "/" },
+          {
+            label: "Chequeo de Ambulancia",
+            href: `/checklists/${guardId}/supplies/${id}/create`,
+          },
+          {
+            label: "Checklist",
+            href: `/checklists/${guardId}/supplies/${id}/edit?step=${step}`,
+            active: true,
+          },
+        ]}
+      />
+      <Suspense
+        fallback={
+          notes ? <ChecklistNotesSkeleton /> : <ChecklistQuestionsSkeleton />
+        }
+      >
+        <ChecklistSuppliesEditor
+          ambulance={ambulance}
+          step={step}
+          notes={notes}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ChecklistSuppliesEditor({
+  ambulance,
+  step,
+  notes,
+}: {
+  ambulance?: string;
+  step?: string;
+  notes?: string;
+}) {
   const areaId = Number(step) || 0;
 
   const data = !notes
@@ -68,53 +113,31 @@ export default async function EditCheckListInsumosPage({
   }));
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-      <Breadcrumbs
-        breadcrumbs={[
-          { label: "", href: "/" },
-          {
-            label: "Chequeo de Ambulancia",
-            href: `/checklists/${guardId}/supplies/${id}/create`,
-          },
-          {
-            label: "Checklist",
-            href: `/checklists/${guardId}/supplies/${id}/edit?step=${step}`,
-            active: true,
-          },
-        ]}
-      />
-      <section className="md:space-y-0 p-4">
-        {isLastQuestions && notes ? (
-          <ChecklistSupplySign title={"Notas"} usersOptions={customUsers}>
-            <Timeline
-              key={"tm-progress-" + tmProgress}
-              steps={steps}
-              currentStepId={areaId}
-              progress={tmProgress}
-              showStatus
-            />
-          </ChecklistSupplySign>
-        ) : (
-          <ChecklistQuestionsForm
-            data={data}
-            isLastQuestions={isLastQuestions}
-            title={title}
-          >
-            <Timeline
-              key={"tm-progress-" + tmProgress}
-              steps={steps}
-              currentStepId={areaId}
-              progress={tmProgress}
-            />
-          </ChecklistQuestionsForm>
-        )}
-      </section>
-      {/* <Suspense fallback={<FormSkeleton goBackUrl="/checklists" />}>
-        <WrapperForm
-          fetchData={async () => {}}
-          WrappedComponent={EditChecklistAmbulanceForm}
-        />
-      </Suspense> */}
-    </div>
+    <section className="md:space-y-0 p-4">
+      {isLastQuestions && notes ? (
+        <ChecklistSupplySign title={"Notas"} usersOptions={customUsers}>
+          <Timeline
+            key={"tm-progress-" + tmProgress}
+            steps={steps}
+            currentStepId={areaId}
+            progress={tmProgress}
+            showStatus
+          />
+        </ChecklistSupplySign>
+      ) : (
+        <ChecklistQuestionsForm
+          data={data}
+          isLastQuestions={isLastQuestions}
+          title={title}
+        >
+          <Timeline
+            key={"tm-progress-" + tmProgress}
+            steps={steps}
+            currentStepId={areaId}
+            progress={tmProgress}
+          />
+        </ChecklistQuestionsForm>
+      )}
+    </section>
   );
 }

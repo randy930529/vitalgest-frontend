@@ -164,6 +164,119 @@ export function ModalFormSkeleton({
   );
 }
 
+export function ChecklistCreateSkeleton() {
+  return (
+    <section
+      className={`relative mt-5 overflow-hidden rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-4 shadow-sm sm:p-6 ${shimmer}`}
+    >
+      <div className="grid gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="space-y-2 text-center">
+              <div className="mx-auto h-4 w-24 rounded bg-slate-200" />
+              <div className="mx-auto h-6 w-36 rounded bg-slate-300" />
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,450px)_1fr]">
+          <div className="space-y-6">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="space-y-3">
+                <div className="h-5 w-36 rounded bg-slate-200" />
+                <div className="h-12 w-full rounded-xl border border-slate-200 bg-white/80" />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-center lg:justify-center">
+            <div className="h-14 w-full max-w-[250px] rounded-2xl bg-rose-300/90" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function ChecklistQuestionsSkeleton() {
+  return (
+    <section className={`relative md:space-y-0 p-4 ${shimmer}`}>
+      <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="p-4 md:col-span-1 md:row-span-1">
+          <ol className="flex flex-col justify-evenly gap-2 relative">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <li key={index} className="flex flex-row gap-2 items-center">
+                <div className="h-6 w-6 rounded-full border border-slate-300 bg-white" />
+                <div className="h-6 flex-1 rounded-[10px] bg-slate-200/90" />
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div className="flex flex-col gap-2 p-4 md:col-span-3 md:row-span-1">
+          <div className="h-7 w-[360px] max-w-full rounded bg-slate-300" />
+          <div className="space-y-4 px-3 py-3 md:px-6">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-[52px,minmax(0,1fr),104px] items-center gap-3 md:gap-4"
+              >
+                <div className="flex justify-center">
+                  <div className="h-5 w-10 rounded-full bg-slate-300 md:w-12" />
+                </div>
+                <div className="h-4 rounded w-16 bg-slate-200/90 md:w-[min(340px,80%)]" />
+                <div className="justify-self-end h-5 w-14 rounded-xl border border-slate-200 bg-white/90 md:w-[104px]" />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex items-center justify-between gap-4 pt-2">
+            <div className="h-11 w-[110px] rounded-lg bg-slate-300" />
+            <div className="h-11 w-[110px] rounded-lg bg-slate-200/90" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function ChecklistNotesSkeleton() {
+  return (
+    <section className={`relative overflow-hidden md:space-y-0 p-4 ${shimmer}`}>
+      <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="p-4 md:col-span-1 md:row-span-1">
+          <ol className="flex flex-col justify-evenly gap-2 relative">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <li key={index} className="flex flex-row gap-2 items-center">
+                <div className="h-6 w-6 rounded-full border border-slate-300 bg-white" />
+                <div className="h-6 flex-1 rounded-[10px] bg-slate-200/90" />
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div className="flex flex-col gap-2 p-4 md:col-span-3 md:row-span-1">
+          <div className="h-7 w-[360px] max-w-full rounded bg-slate-300" />
+          <div className="h-32 rounded-2xl bg-slate-200/90" />
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="space-y-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <div className="h-20 rounded-2xl bg-slate-200" />
+            </div>
+            <div className="space-y-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <div className="h-20 rounded-2xl bg-slate-200" />
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-between gap-4 pt-2">
+            <div className="h-11 w-[110px] rounded-lg bg-slate-300" />
+            <div className="h-11 w-[110px] rounded-lg bg-slate-200/90" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function ProfileEditSkeleton() {
   return (
     <section className="mt-7 animate-pulse space-y-6">

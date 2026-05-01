@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SupplyAmbulanceType } from "@/app/lib/definitions";
 import { createPageURL, createStepSupplyAnswers } from "@/app/lib/utils";
@@ -23,6 +23,7 @@ export default function ChecklistQuestionsForm({
   const searchParams = useSearchParams();
   const router = useRouter();
   const { getAnswer, setAnswer } = useChecklistSupplyStore();
+  const [isPending, startTransition] = useTransition();
 
   const isNotes = !!searchParams.get("notes");
 
@@ -58,8 +59,10 @@ export default function ChecklistQuestionsForm({
   }
 
   function handleSubmit(formData: FormData) {
-    handleAnswers(formData);
-    handleNextPage();
+    startTransition(() => {
+      handleAnswers(formData);
+      handleNextPage();
+    });
   }
 
   return (
@@ -106,7 +109,11 @@ export default function ChecklistQuestionsForm({
         TODO: Corregir ir anterior en la primera pagina //por cambios en la
         ruta de /checklist/ambulances/shiftId a /checklist/ambulances/shiftId/create.
         */}
-        <PaginationChecklist isLast={isLastQuestions} link="supplies" />
+        <PaginationChecklist
+          isLast={isLastQuestions}
+          link="supplies"
+          submitDisabled={isPending}
+        />
       </div>
     </form>
   );

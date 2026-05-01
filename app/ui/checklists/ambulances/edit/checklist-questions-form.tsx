@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChecklistQuestionsType } from "@/app/lib/definitions";
 import { createPageURL, createStepAnswers } from "@/app/lib/utils";
@@ -23,6 +23,7 @@ export default function ChecklistQuestionsForm({
   const searchParams = useSearchParams();
   const router = useRouter();
   const { getAnswer, setAnswer } = useChecklistAmbulanceStore();
+  const [isPending, startTransition] = useTransition();
 
   const isNotes = !!searchParams.get("notes");
 
@@ -61,8 +62,10 @@ export default function ChecklistQuestionsForm({
   }
 
   function handleSubmit(formData: FormData) {
-    handleAnswers(formData);
-    handleNextPage();
+    startTransition(() => {
+      handleAnswers(formData);
+      handleNextPage();
+    });
   }
 
   return (
@@ -103,7 +106,10 @@ export default function ChecklistQuestionsForm({
         ))}
       </div>
       <div className="md:p-4 md:col-span-4 md:row-span-1">
-        <PaginationChecklist isLast={isLastQuestions} />
+        <PaginationChecklist
+          isLast={isLastQuestions}
+          submitDisabled={isPending}
+        />
       </div>
     </form>
   );
