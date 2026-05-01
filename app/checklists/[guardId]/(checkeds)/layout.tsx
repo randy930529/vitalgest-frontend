@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getSession } from "@/app/lib/dal";
 import { CruzRojaLogo } from "@/app/ui/logos";
 import TopMenuBar from "@/app/ui/home/top-menu-bar";
 import ChecklistSubTitle from "@/app/checklists/[guardId]/(checkeds)/checklist-subtitle";
+import ImageLoading from "@/app/ui/components/image-loading";
 
 export default async function DashboardLayout({
   children,
@@ -21,7 +21,7 @@ export default async function DashboardLayout({
       <TopMenuBar user={session.user} />
       <header className="flex flex-col items-center justify-center px-3 pt-4 md:flex-row md:justify-between md:space-y-0 sm:px-5">
         <div className="hidden md:block">
-          <CruzRojaLogo />
+          <CruzRojaLogo width={100} height={32} />
           <h2 className="text-xl md:text-2xl font-bold dark:text-white md:ms-6">
             VitalGest
           </h2>
@@ -35,12 +35,13 @@ export default async function DashboardLayout({
           </h2>
           <ChecklistSubTitle />
         </div>
-        <Image
+        <ImageLoading
           src="/images/ambulancia.svg"
           width={90}
           height={90}
-          alt="Escudo rojo con una ambulancia  dentro del escudo vista de perfil lateral."
+          alt="Escudo rojo con una ambulancia dentro del escudo vista de perfil lateral."
           priority
+          skeletonClassName="rounded-lg"
         />
       </header>
       {children}

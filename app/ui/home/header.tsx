@@ -1,13 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
 import { UserType } from "@/app/lib/definitions";
 import { HeaderStats } from "@/app/ui/home/stast-home";
+import ImageLoading from "@/app/ui/components/image-loading";
 
 export default async function Header({ user }: { user: UserType }) {
   return (
     <header className="relative isolate overflow-hidden md:pt-4" role="banner">
       <div className="absolute inset-0 -z-20">
-        <Image
+        <ImageLoading
           src="/images/image-banner.jpg"
           fill
           priority
