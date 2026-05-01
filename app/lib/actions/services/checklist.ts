@@ -4,7 +4,7 @@ import {
   ChecklistSuppliesType,
   ChecklistSupplyType,
 } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import {
   ChecklistAnswersState,
   ChecklistState,

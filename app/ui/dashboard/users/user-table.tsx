@@ -2,12 +2,16 @@
 
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { DelegationType, UserType } from "@/app/lib/definitions";
+import {
+  DelegationType,
+  PaginatedResult,
+  UserType,
+} from "@/app/lib/definitions";
 import { deleteUser } from "@/app/lib/actions/user";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -28,12 +32,12 @@ const customHeaders = [
 export default function UserTable({
   data,
 }: {
-  data: [UserType[], DelegationType[]];
+  data: [PaginatedResult<UserType>, DelegationType[]];
 }) {
   // (Component) Tabla interactiva de usuarios - [CSR]
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [users, delegations] = data;
+  const [{ data: users, totalRecords }, delegations] = data;
   const allSelected = users.length > 0 && selectedIds.length === users.length;
 
   function handleCheckboxChange(checkedId: string, checked: boolean) {
@@ -175,7 +179,7 @@ export default function UserTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={users.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

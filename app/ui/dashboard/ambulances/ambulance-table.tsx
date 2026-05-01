@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { AmbulanceType, DelegationType } from "@/app/lib/definitions";
+import {
+  AmbulanceType,
+  DelegationType,
+  PaginatedResult,
+} from "@/app/lib/definitions";
 import { deleteAmbulance } from "@/app/lib/actions/ambulance";
 import ModalTrigger from "@/app/ui/button-modal";
 import Filters from "@/app/ui/dashboard/table-filters";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
@@ -25,11 +29,11 @@ const customHeaders = [
 export default function AmbulanceTable({
   data,
 }: {
-  data: [AmbulanceType[], DelegationType[]];
+  data: [PaginatedResult<AmbulanceType>, DelegationType[]];
 }) {
   // (Component) Tabla interactiva de ambulancias - [CSR]
 
-  const [ambulances, delegatios] = data;
+  const [{ data: ambulances, totalRecords }, delegations] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const allSelected =
     ambulances.length > 0 && selectedIds.length === ambulances.length;
@@ -66,7 +70,7 @@ export default function AmbulanceTable({
         )}
         <ModalTrigger
           title="Crear Ambulancia"
-          modelContent={<ModalComponent delegations={delegatios} />}
+          modelContent={<ModalComponent delegations={delegations} />}
         />
       </Filters>
       <p className="px-4 py-2 text-xs text-slate-500" aria-live="polite">
@@ -170,7 +174,7 @@ export default function AmbulanceTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={ambulances.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

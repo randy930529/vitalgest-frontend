@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchShiftById } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { ChecklistCreateSkeleton } from "@/app/ui/dashboard/skeletons";
 import ChecklistAmbulanceForm from "@/app/ui/checklists/ambulances/create/checklist-ambulance-form";
+import { fetchShiftById } from "@/app/lib/data/shifts";
 
 export const metadata: Metadata = {
   title: "Chequeo de Ambulancia",
@@ -31,8 +31,7 @@ export default async function CheckListAmbulancePage(props: {
           },
         ]}
       />
-      {/* TODO: prepara un sketelo apropiado para formulario de checklist */}
-      <Suspense fallback={<FormSkeleton goBackUrl="/ckecklists" />}>
+      <Suspense fallback={<ChecklistCreateSkeleton />}>
         <WrapperForm
           fetchData={async () => await fetchShiftById(id)}
           WrappedComponent={ChecklistAmbulanceForm}

@@ -1,17 +1,23 @@
-import { CustomOptions, UserType } from "@/app/lib/definitions";
-import { DataFetch } from "@/app/lib/data/data";
+import {
+  CustomOptions,
+  PaginatedResult,
+  UserType,
+} from "@/app/lib/definitions";
+import { DataFetch } from "@/app/lib/core/base-data";
 
-export async function fetchUsers(): Promise<UserType[]> {
+export async function fetchUsers(
+  params?: Record<string, string | number | boolean>,
+): Promise<PaginatedResult<UserType>> {
   try {
     const endPoint = "/api/adm/get-all/users/all";
 
     const dataFetching = new DataFetch<UserType>(endPoint);
-    const users = await dataFetching.getAll();
+    const users = await dataFetching.getAll(params);
 
     return users;
   } catch (err) {
     console.log("API Error[GET USERS]:", err);
-    return [];
+    return { data: [], totalRecords: 0 };
   }
 }
 
@@ -20,7 +26,7 @@ export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
     const endPoint = "/api/adm/get-all/users/all";
 
     const dataFetching = new DataFetch<UserType>(endPoint, true);
-    const users = await dataFetching.getAll();
+    const { data: users } = await dataFetching.getAll();
 
     if (!users) return [];
 
@@ -39,7 +45,7 @@ export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
         id,
         value: id,
         label: `${name} ${lastname}`,
-      })
+      }),
     ) || {
       id: 0,
       value: "",
@@ -64,5 +70,36 @@ export async function fetchUserById(id: string): Promise<UserType | undefined> {
   } catch (error) {
     console.log("Database Error:", error);
     return;
+  }
+}
+
+export async function fetchStaffMembers(): Promise<
+  [CustomOptions[], CustomOptions[], CustomOptions[]]
+> {
+  try {
+    const endPoint = "/api/adm/get-all/users/all";
+
+    const dataFetching = new DataFetch<UserType>(endPoint, true);
+    const { data: users } = await dataFetching.getAll();
+
+    const userByRolesMap = new Map<string, CustomOptions[]>();
+    users.forEach(({ id, role, name, lastname }) => {
+      const customUsers = userByRolesMap.get(role) ?? [];
+      customUsers.push({
+        id,
+        value: id,
+        label: `${name} ${lastname}`,
+      });
+      userByRolesMap.set(role, customUsers);
+    });
+
+    return [
+      userByRolesMap.get("head_guard") || [],
+      userByRolesMap.get("vehicle_operator") || [],
+      userByRolesMap.get("paramedical") || [],
+    ];
+  } catch (err) {
+    console.log("API Error[GET STAFF MEMBERS]:", err);
+    return [[], [], []];
   }
 }

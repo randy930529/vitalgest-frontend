@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegationById, fetchMxStates } from "@/app/lib/data";
+import { fetchMxStates } from "@/app/lib/data/locations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
 import DelegationEditForm from "@/app/ui/dashboard/delegations/edit/delegation-edit-form";
+import { fetchDelegationById } from "@/app/lib/data/delegations";
 
 export const metadata: Metadata = {
   title: "Editar Delegación",

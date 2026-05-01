@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { CustomMxState, DelegationType } from "@/app/lib/definitions";
+import {
+  CustomMxState,
+  DelegationType,
+  PaginatedResult,
+} from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
@@ -26,12 +30,12 @@ const customHeaders = [
 export default function DelegationTable({
   data,
 }: {
-  data: [DelegationType[], CustomMxState[]];
+  data: [PaginatedResult<DelegationType>, CustomMxState[]];
 }) {
   // (Component) Lista de delegaciones existentes - [CSR]
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [delegations, customMxStates] = data;
+  const [{ data: delegations, totalRecords }, customMxStates] = data;
   const allSelected =
     delegations.length > 0 && selectedIds.length === delegations.length;
 
@@ -173,7 +177,7 @@ export default function DelegationTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={delegations.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

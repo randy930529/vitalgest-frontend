@@ -5,7 +5,7 @@ import {
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { cache } from "react";
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchUsers } from "@/app/lib/data/users";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
@@ -18,10 +18,10 @@ import { DashboardSections } from "@/app/ui/dashboard/stats-cards";
 
 const getDashboardCoreData = cache(async () => {
   const [users, delegations, ambulances, guards] = await Promise.all([
-    fetchUsers(),
-    fetchDelegations(),
-    fetchAmbulances(),
-    fetchGuards(),
+    fetchUsers().then((result) => result.data),
+    fetchDelegations().then((result) => result.data),
+    fetchAmbulances().then((result) => result.data),
+    fetchGuards().then((result) => result.data),
   ]);
 
   return { users, delegations, ambulances, guards };
@@ -32,7 +32,7 @@ const getDashboardSuppliesData = cache(async () => {
 
   const ambulanceSupplies = await Promise.all(
     ambulances.map(async (ambulance) => {
-      const supplies = await fetchSuppliesByAmbulanceId(ambulance.id);
+      const { data: supplies } = await fetchSuppliesByAmbulanceId(ambulance.id);
       return { ambulance, supplies };
     }),
   );

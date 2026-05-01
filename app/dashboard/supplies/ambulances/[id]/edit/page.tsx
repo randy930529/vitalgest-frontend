@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchAmbulanceSupplyById } from "@/app/lib/data/supplies";
 import {
   fetchAmbulanceAreas,
@@ -25,8 +25,8 @@ export default async function AmbulanceSupplyEditPage({
 
   if (!ambulanceId) {
     const [delegations, ambulances] = await Promise.all([
-      fetchDelegations(),
-      fetchAmbulances(),
+      fetchDelegations().then((result) => result.data),
+      fetchAmbulances().then((result) => result.data),
     ]);
     ambulanceId = ambulances[0]?.id || "";
 
@@ -39,8 +39,8 @@ export default async function AmbulanceSupplyEditPage({
     await Promise.all([
       fetchAmbulanceSupplyById(id),
       ambulanceId,
-      fetchAmbulances(),
-      fetchAmbulanceAreas(),
+      fetchAmbulances().then((result) => result.data),
+      fetchAmbulanceAreas().then((result) => result.data),
     ]);
 
   return (

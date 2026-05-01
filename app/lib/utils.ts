@@ -232,6 +232,33 @@ export const purgeDuplicateAnswers = (
 };
 
 /**
+ * Extrae pasos únicos de un array utilizando una clave y una función de mapeo,
+ * y opcionalmente los ordena usando una función de comparación.
+ *
+ * @template T Tipo de los elementos de entrada
+ * @param {T[]} items Array de elementos fuente
+ * @param {(item: T) => string} keyFn Función que produce una clave única por elemento
+ * @param {(item: T) => StepItemType} mapFn Función que transforma un elemento en un StepItemType
+ * @param {(a: StepItemType, b: StepItemType) => number} [sortFn] Función opcional para ordenar los pasos
+ * @returns {StepItemType[]} Lista de pasos únicos y ordenados según `sortFn` si se proporciona
+ */
+export const extractUniqueSteps = <T, U extends StepItemType = StepItemType>(
+  items: T[],
+  keyFn: (item: T) => string,
+  mapFn: (item: T) => U,
+  sortFn?: (a: U, b: U) => number,
+): U[] => {
+  if (!items || items.length === 0) return [];
+
+  const steps = Array.from(
+    new Map(items.map<[string, U]>((it) => [keyFn(it), mapFn(it)])).values(),
+  );
+
+  if (sortFn) steps.sort(sortFn);
+  return steps;
+};
+
+/**
  * Transforma un array de delegaciones en un array de objetos con propiedades
  * id, label y value para uso en componentes de selección o dropdowns.
  * @param delegations - Array de delegaciones a transformar. Si no se proporciona o es undefined, retorna un array vacío.
@@ -269,4 +296,82 @@ export const sanitizeTextInput = (value: string, maxLength = 255): string => {
     .replace(/\s{2,}/g, " ")
     .slice(0, maxLength)
     .trimStart();
+};
+
+/**
+ * Calcula el offset a partir del número de página.
+ * @param pageNumber Número de página (comienza en 1)
+ * @param limit Cantidad de items por página
+ * @returns Offset para usar en la solicitud a la API
+ */
+export const calculateOffset = (
+  pageNumber: number = 1,
+  limit: number = 10,
+): number => {
+  return (Math.max(1, pageNumber) - 1) * limit;
+};
+
+export const getPaginationParams = (
+  pageNumber?: number,
+  itemsPerPage?: number,
+  defaultItemsPerPage = 6,
+) => {
+  const limit = itemsPerPage ?? defaultItemsPerPage;
+  const offset = calculateOffset(pageNumber, limit);
+
+  return { offset, limit };
+};
+
+/**
+ * Calcula el número de página a partir del offset.
+ * @param offset Offset desde la API
+ * @param limit Cantidad de items por página
+ * @returns Número de página (comienza en 1)
+ */
+export const calculatePageFromOffset = (
+  offset: number = 0,
+  limit: number = 10,
+): number => {
+  return Math.floor(offset / limit) + 1;
+};
+
+/**
+ * Crea una URL de paginación usando offset y limit
+ * @param offset Offset a usar
+ * @param limit Límite de items por página
+ * @param searchParams Parámetros de búsqueda actuales
+ * @param pathname Ruta base
+ * @returns URL completa con los parámetros de paginación
+ */
+export const createPaginationURL = (
+  offset: number,
+  limit: number,
+  searchParams: ReadonlyURLSearchParams,
+  pathname: string,
+): string => {
+  const params = new URLSearchParams(searchParams);
+  params.set("offset", offset.toString());
+  params.set("limit", limit.toString());
+  return `${pathname}?${params.toString()}`;
+};
+
+/**
+ * Genera array de offsets para paginación
+ * @param currentOffset Offset actual
+ * @param totalItems Total de items
+ * @param itemsPerPage Items por página
+ * @returns Array de offsets/páginas para mostrar
+ */
+export const generatePaginationOffsets = (
+  currentOffset: number,
+  totalItems: number,
+  itemsPerPage: number = 10,
+) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const currentPage = calculatePageFromOffset(currentOffset, itemsPerPage);
+
+  return generatePagination(currentPage, totalPages).map((page) => {
+    if (page === "...") return "...";
+    return calculateOffset(page as number, itemsPerPage);
+  });
 };

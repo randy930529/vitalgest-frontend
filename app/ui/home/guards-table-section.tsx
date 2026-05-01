@@ -1,16 +1,14 @@
 import { Suspense } from "react";
-import { GuardType, UserType } from "@/app/lib/definitions";
+import { GuardType, PaginatedResult, UserType } from "@/app/lib/definitions";
 import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
-import {
-  fetchDelegations,
-  fetchUsersGuardChiefsDriversAndParamedical,
-} from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 import { EmptyStateCard, ErrorStateCard } from "@/app/ui/state-feedback";
+import { fetchStaffMembers } from "@/app/lib/data/users";
 
 export default async function GuardsTableSection({
   user,
@@ -19,7 +17,7 @@ export default async function GuardsTableSection({
   user: UserType;
   isClient?: boolean;
 }) {
-  let guards: GuardType[] = [];
+  let guards: PaginatedResult<GuardType> = { data: [], totalRecords: 0 };
   let hasLoadError = false;
 
   try {
@@ -31,9 +29,9 @@ export default async function GuardsTableSection({
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
       guards,
-      fetchAmbulances(),
-      fetchDelegations(),
-      fetchUsersGuardChiefsDriversAndParamedical(),
+      fetchAmbulances().then((result) => result.data),
+      fetchDelegations().then((result) => result.data),
+      fetchStaffMembers(),
     ]);
 
   return (
@@ -57,7 +55,7 @@ export default async function GuardsTableSection({
           </div>
         )}
 
-        {!hasLoadError && !guards.length && (
+        {!hasLoadError && !guards.data.length && (
           <div className="mt-3">
             <EmptyStateCard
               title="No se obtuvieron guardias para mostrar."
@@ -68,7 +66,7 @@ export default async function GuardsTableSection({
           </div>
         )}
       </header>
-      {!hasLoadError && !!guards.length && (
+      {!hasLoadError && !!guards.data.length && (
         <Suspense
           fallback={
             <TableSkeleton

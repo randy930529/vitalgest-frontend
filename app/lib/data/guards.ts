@@ -1,25 +1,27 @@
-import { GuardType, UserType } from "@/app/lib/definitions";
-import { DataFetch } from "@/app/lib/data/data";
+import { GuardType, PaginatedResult, UserType } from "@/app/lib/definitions";
+import { DataFetch } from "@/app/lib/core/base-data";
 
-export async function fetchGuards(): Promise<GuardType[]> {
+export async function fetchGuards(
+  params?: Record<string, string | number | boolean>,
+): Promise<PaginatedResult<GuardType>> {
   try {
     const endPoint = "/api/guards/many/all";
 
     const dataFetching = new DataFetch<GuardType>(endPoint);
-    const guards = await dataFetching.getAll();
+    const guards = await dataFetching.getAll(params);
 
     return guards;
   } catch (err) {
     console.log("API Error[GET GUARDS]:", err);
-    return [];
+    return { data: [], totalRecords: 0 };
   }
 }
 
 export async function fetchGuardById(
-  id: string
+  id: string,
 ): Promise<GuardType | undefined> {
   try {
-    const endPoint = `${process.env.API_URL}/api/guards/one/${id}`;
+    const endPoint = `/api/guards/one/${id}`;
 
     const dataFetching = new DataFetch<GuardType>(endPoint, true);
     const guard = await dataFetching.getOne();
@@ -32,22 +34,22 @@ export async function fetchGuardById(
 }
 
 export async function fetchGuardsAndInlineGuardByUserMe(
-  user: UserType
-): Promise<[GuardType[], GuardType | undefined]> {
+  user: UserType,
+): Promise<[PaginatedResult<GuardType>, GuardType | undefined]> {
   try {
-    const endPoint = `${process.env.API_URL}/api/guards/many/all`;
+    const endPoint = "/api/guards/many/all";
     const dataFetching = new DataFetch<GuardType>(endPoint);
     const guards = await dataFetching.getAll();
 
-    if (!guards.length) return [[], undefined];
+    if (!guards.data.length) return [{ data: [], totalRecords: 0 }, undefined];
 
-    const userGuards = getGuardsByUserId(guards, user.id);
+    const userGuards = getGuardsByUserId(guards.data, user.id);
     const inlineGuard = getInlineGuard(userGuards);
 
-    return [userGuards, inlineGuard];
+    return [{ data: userGuards, totalRecords: userGuards.length }, inlineGuard];
   } catch (error) {
     console.log("Database Error:", error);
-    return [[], undefined];
+    return [{ data: [], totalRecords: 0 }, undefined];
   }
 }
 
@@ -57,8 +59,8 @@ function getGuardsByUserId(guards: GuardType[], userId: string): GuardType[] {
       guardChief.id === userId ||
       shifts.some(
         ({ driver, paramedical }) =>
-          driver.id === userId || paramedical.id === userId
-      )
+          driver.id === userId || paramedical.id === userId,
+      ),
   );
 }
 

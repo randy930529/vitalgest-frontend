@@ -1,5 +1,5 @@
 import { UserType } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import { UserState } from "@/app/lib/config/stateConfigs";
 import { CreateUser, UpdateProfile, UpdateUser } from "@/app/lib/schema";
 

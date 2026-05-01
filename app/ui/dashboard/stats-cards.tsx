@@ -6,9 +6,11 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { fetchDelegations } from "@/app/lib/data";
-import { fetchGuards } from "@/app/lib/data/guards";
-import { fetchAmbulances } from "@/app/lib/data/ambulances";
+import {
+  AmbulanceType,
+  DelegationType,
+  GuardType,
+} from "@/app/lib/definitions";
 import { DASHBOARD_SECTIONS_COPY } from "@/app/lib/config/dashboard-copy";
 
 export async function AdminDashboard({
@@ -32,9 +34,9 @@ export function DashboardSections({
   criticalUnitCount,
   topCriticalSupplies,
 }: {
-  guards: Awaited<ReturnType<typeof fetchGuards>>;
-  delegations: Awaited<ReturnType<typeof fetchDelegations>>;
-  ambulances: Awaited<ReturnType<typeof fetchAmbulances>>;
+  guards: GuardType[];
+  delegations: DelegationType[];
+  ambulances: AmbulanceType[];
   criticalUnitCount: number;
   topCriticalSupplies: {
     supplyId: string;
@@ -68,8 +70,8 @@ export function GuardsStats({
   criticalUnitCount,
   topCriticalSupplies,
 }: {
-  guards: Awaited<ReturnType<typeof fetchGuards>>;
-  ambulances: Awaited<ReturnType<typeof fetchAmbulances>>;
+  guards: GuardType[];
+  ambulances: AmbulanceType[];
   criticalUnitCount: number;
   topCriticalSupplies: {
     supplyId: string;
@@ -264,9 +266,9 @@ export function DelegationStats({
   delegations,
   ambulances,
 }: {
-  guards: Awaited<ReturnType<typeof fetchGuards>>;
-  delegations: Awaited<ReturnType<typeof fetchDelegations>>;
-  ambulances: Awaited<ReturnType<typeof fetchAmbulances>>;
+  guards: GuardType[];
+  delegations: DelegationType[];
+  ambulances: AmbulanceType[];
 }) {
   const activeGuards = guards.filter(({ state }) => state === "En curso");
   const activeAmbulanceIds = new Set(

@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChecklistQuestionsType } from "@/app/lib/definitions";
 import { createPageURL, createStepAnswers } from "@/app/lib/utils";
 import { useChecklistAmbulanceStore } from "@/app/lib/store/checklist-answers";
 import { FormInputSetter } from "@/app/ui/dashboard/form-fields";
-import { PaginationChecklist } from "@/app/ui/dashboard/pagination";
+import { PaginationChecklist } from "@/app/ui/components/pagination";
 
 export default function ChecklistQuestionsForm({
   children,
@@ -23,11 +23,12 @@ export default function ChecklistQuestionsForm({
   const searchParams = useSearchParams();
   const router = useRouter();
   const { getAnswer, setAnswer } = useChecklistAmbulanceStore();
+  const [isPending, startTransition] = useTransition();
 
   const isNotes = !!searchParams.get("notes");
 
   checklistQuestions.sort(
-    (a, b) => (a.order_subcategory || 0) - (b.order_subcategory || 0)
+    (a, b) => (a.order_subcategory || 0) - (b.order_subcategory || 0),
   );
 
   const subcategoryQuestionsMap = new Map<string, ChecklistQuestionsType[]>();
@@ -61,8 +62,10 @@ export default function ChecklistQuestionsForm({
   }
 
   function handleSubmit(formData: FormData) {
-    handleAnswers(formData);
-    handleNextPage();
+    startTransition(() => {
+      handleAnswers(formData);
+      handleNextPage();
+    });
   }
 
   return (
@@ -103,7 +106,10 @@ export default function ChecklistQuestionsForm({
         ))}
       </div>
       <div className="md:p-4 md:col-span-4 md:row-span-1">
-        <PaginationChecklist isLast={isLastQuestions} />
+        <PaginationChecklist
+          isLast={isLastQuestions}
+          submitDisabled={isPending}
+        />
       </div>
     </form>
   );

@@ -1,6 +1,6 @@
 "use server";
 
-import { fetchDelegations } from "@/app/lib/data";
+import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchGuards } from "@/app/lib/data/guards";
 import {
@@ -10,11 +10,11 @@ import {
 
 export async function fetchChartDataByRange(range: DashboardRange) {
   try {
-    const [guards, ambulances, delegations] = await Promise.all([
-      fetchGuards(),
-      fetchAmbulances(),
-      fetchDelegations(),
-    ]);
+    const [guardsResult, ambulancesResult, delegationsResult] =
+      await Promise.all([fetchGuards(), fetchAmbulances(), fetchDelegations()]);
+    const guards = guardsResult.data;
+    const ambulances = ambulancesResult.data;
+    const delegations = delegationsResult.data;
     const { trendData, delegationData } = buildChartDataForRange({
       range,
       guards,

@@ -1,5 +1,5 @@
 import { DelegationType } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import { DelegationState } from "@/app/lib/config/stateConfigs";
 import { CreateDelegation, UpdateDelegation } from "@/app/lib/schema";
 

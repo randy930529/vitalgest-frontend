@@ -7,12 +7,13 @@ import {
   CustomOptions,
   DelegationType,
   GuardType,
+  PaginatedResult,
 } from "@/app/lib/definitions";
 import { deleteGuard } from "@/app/lib/actions/guard";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
-import TablePagination from "@/app/ui/dashboard/pagination";
+import TablePagination from "@/app/ui/components/pagination";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
@@ -34,7 +35,7 @@ export default function GuardsTable({
   route,
 }: {
   data: [
-    GuardType[],
+    PaginatedResult<GuardType>,
     AmbulanceType[],
     DelegationType[],
     [CustomOptions[], CustomOptions[], CustomOptions[]],
@@ -45,7 +46,7 @@ export default function GuardsTable({
   // (Component) Lista de guardias existentes - [CSR]
 
   const [
-    guards,
+    { data: guards, totalRecords },
     ambulances,
     delegations,
     [guardChiefs, drivers, paramedicals],
@@ -212,7 +213,7 @@ export default function GuardsTable({
           </tbody>
         </table>
       </div>
-      <TablePagination totalItems={guards.length} />
+      <TablePagination totalItems={totalRecords} />
     </main>
   );
 }

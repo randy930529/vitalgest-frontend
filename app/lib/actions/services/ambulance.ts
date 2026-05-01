@@ -1,5 +1,5 @@
 import { AmbulanceType } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import { AmbulanceState } from "@/app/lib/config/stateConfigs";
 import { CreateAmbulance, UpdateAmbulance } from "@/app/lib/schema";
 

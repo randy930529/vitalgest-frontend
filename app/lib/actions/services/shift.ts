@@ -1,5 +1,5 @@
 import { ShiftType } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import { ShiftState } from "@/app/lib/config/stateConfigs";
 import { CreateShift } from "@/app/lib/schema";
 

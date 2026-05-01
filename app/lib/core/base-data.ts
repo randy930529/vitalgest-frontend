@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { verifyAuthorization, verifySession } from "@/app/lib/dal";
-import { ResponseAPIType } from "@/app/lib/definitions";
+import { ResponseAPIType, PaginatedResult } from "@/app/lib/definitions";
+
+const ITEMS_PER_PAGE = Number(process.env.ITEMS_PER_PAGE ?? "6");
 
 export class DataFetch<T> {
   private endPoint: string;
@@ -11,7 +13,7 @@ export class DataFetch<T> {
   constructor(endPoint: string, adminOnly: boolean = false) {
     if (!process.env.API_URL || !URL.canParse(process.env.API_URL)) {
       throw new Error(
-        "Las variables de conexión a la API no están configuradas."
+        "Las variables de conexión a la API no están configuradas.",
       );
     }
 
@@ -80,41 +82,61 @@ export class DataFetch<T> {
    * está marcada como solo administrador (admin-only), asegura que el usuario tenga los
    * permisos necesarios.
    *
-   * @returns Una promesa que se resuelve en un arreglo de elementos de tipo T, o un arreglo vacío
-   *          si la autorización falla o la solicitud a la API no tiene éxito. Devuelve un arreglo
-   *          vacío en caso de fallo de autorización o respuesta fallida de la API.
+   * @param {Record<string, string | number | boolean>} [params] - Opcionalmente puede recibir un objeto con parámetros de consulta para la solicitud a la API.
+   * Estos parámetros se agregarán a la URL como query params (p. ej. { offset, limit }).
+   *
+   * @returns Una promesa que se resuelve en un objeto con `data` (array de T) y `totalRecords`.
+   *          Si `totalRecords` no viene en la respuesta del API, usa ITEMS_PER_PAGE como fallback.
    */
-  public async getAll(): Promise<T[]> {
+  public async getAll(
+    params?: Record<string, string | number | boolean>,
+  ): Promise<PaginatedResult<T>> {
     const authorizedUser = await this.authorize();
-    if (!authorizedUser) return [];
+    if (!authorizedUser) return { data: [], totalRecords: 0 };
 
-    const fetchFromApi = cache(async (): Promise<ResponseAPIType<T[]>> => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${this.apiToken}`,
-          "Content-Type": "application/json",
-        },
-      };
-      const response = await fetch(this.endPoint, config);
+    const fetchFromApi = cache(
+      async (
+        paramsArg?: Record<string, string | number | boolean>,
+      ): Promise<ResponseAPIType<T[]>> => {
+        const url = new URL(this.endPoint);
+        if (paramsArg) {
+          Object.entries(paramsArg).forEach(([k, v]) =>
+            url.searchParams.append(k, String(v)),
+          );
+        }
 
-      if (!response.ok) {
-        console.log(await response.json());
-        return {
-          success: false,
-          data: [],
-          error: "No se pudo obtener las datos desde la API.",
+        const config = {
+          headers: {
+            Authorization: `Bearer ${this.apiToken}`,
+            "Content-Type": "application/json",
+          },
         };
-      }
+        const response = await fetch(url.href, config);
 
-      return response.json();
-    });
+        if (!response.ok) {
+          console.log(await response.json());
+          return {
+            success: false,
+            data: [],
+            error: "No se pudo obtener las datos desde la API.",
+            totalRecords: 0,
+          };
+        }
 
-    const result = await fetchFromApi();
+        return response.json();
+      },
+    );
+
+    const result = await fetchFromApi(params);
     console.log(result);
+
     if (!result.success) {
       throw new Error(result.error);
     }
 
-    return result.data;
+    return {
+      data: result.data,
+      totalRecords: result.totalRecords ?? ITEMS_PER_PAGE,
+    };
   }
 }

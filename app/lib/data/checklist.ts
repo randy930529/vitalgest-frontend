@@ -1,25 +1,31 @@
 import {
   AmbulanceAreaType,
   ChecklistQuestionsType,
+  PaginatedResult,
   StepItemType,
   SupplyAmbulanceType,
 } from "@/app/lib/definitions";
-import { DataFetch } from "@/app/lib/data/data";
+import { DataFetch } from "@/app/lib/core/base-data";
+import { extractUniqueSteps } from "@/app/lib/utils";
 
 export async function fetchChecklistQuestions(
-  category?: number
-): Promise<ChecklistQuestionsType[]> {
+  category?: number,
+): Promise<PaginatedResult<ChecklistQuestionsType>> {
   try {
-    const categoryParam = category ? `?category=${category}` : "";
-    const endPoint = `/api/checklists/ambulance/questions${categoryParam}`;
+    const endPoint = `/api/checklists/ambulance/questions`;
 
     const dataFetching = new DataFetch<ChecklistQuestionsType>(endPoint);
-    const checklistQuestions = await dataFetching.getAll();
+    const checklistQuestions = category
+      ? (await dataFetching.getAll({ category })) || {
+          data: [],
+          totalRecords: 0,
+        }
+      : await dataFetching.getAll();
 
     return checklistQuestions;
   } catch (err) {
     console.log("API Error[GET QUESTIONS]:", err);
-    return [];
+    return { data: [], totalRecords: 0 };
   }
 }
 
@@ -28,23 +34,20 @@ export async function fetchChecklistSteps(): Promise<[StepItemType[], number]> {
     const endPoint = "/api/checklists/ambulance/questions";
 
     const dataFetching = new DataFetch<ChecklistQuestionsType>(endPoint);
-    const checklistQuestions = await dataFetching.getAll();
+    const { data: checklistQuestions } = await dataFetching.getAll();
 
     if (!checklistQuestions.length) return [[], 0];
 
-    //TODO: Extrar esta logica como utilidad------------------
-    const steps = Array.from(
-      new Map(
-        checklistQuestions.map<[string, StepItemType]>(
-          ({ order_category, name_category }) => [
-            `${order_category}-${name_category}`,
-            { id: order_category, label: name_category },
-          ]
-        )
-      ).values()
+    const steps = extractUniqueSteps(
+      checklistQuestions,
+      ({ order_category, name_category }) =>
+        `${order_category}-${name_category}`,
+      ({ order_category, name_category }) => ({
+        id: order_category,
+        label: name_category,
+      }),
+      (a, b) => a.id - b.id,
     );
-    steps.sort((a, b) => a.id - b.id);
-    // -------------------------------------------------------
 
     return [steps, steps.length];
   } catch (err) {
@@ -61,23 +64,19 @@ export async function fetchAmbulanceAreasSteps(): Promise<
     const endPoint = "/api/ambulances/areas";
 
     const dataFetching = new DataFetch<AmbulanceAreaType>(endPoint);
-    const checklistAreas = await dataFetching.getAll();
+    const { data: checklistAreas } = await dataFetching.getAll();
 
     if (!checklistAreas.length) return [[], 0];
 
-    //TODO: Extrar esta logica como utilidad------------------
-    const steps = Array.from(
-      new Map(
-        checklistAreas.map<[string, StepAreaItemType]>(
-          ({ id, order, name }) => [
-            `${id}-${name}`,
-            { id: Number(id), label: name, order },
-          ]
-        )
-      ).values()
+    const steps = extractUniqueSteps<
+      (typeof checklistAreas)[0],
+      StepAreaItemType
+    >(
+      checklistAreas,
+      ({ id, name }) => `${id}-${name}`,
+      ({ id, order, name }) => ({ id: Number(id), label: name, order }),
+      (a, b) => a.order - b.order,
     );
-    steps.sort((a, b) => a.order - b.order);
-    // -------------------------------------------------------
 
     return [steps, steps.length];
   } catch (err) {
@@ -88,16 +87,16 @@ export async function fetchAmbulanceAreasSteps(): Promise<
 
 export async function fetchChecklistSuppliesQuestions(
   ambulanceId: string,
-  areaId: number
+  areaId: number,
 ): Promise<SupplyAmbulanceType[]> {
   try {
     const endPoint = `/api/ambulances/supplies/${ambulanceId}`;
 
     const dataFetching = new DataFetch<SupplyAmbulanceType>(endPoint);
-    const suppliesAmbulance = await dataFetching.getAll();
+    const { data: suppliesAmbulance } = await dataFetching.getAll();
 
     const SupplyAmbulanceByAreaId = suppliesAmbulance.filter(
-      ({ area_id }) => area_id === areaId
+      ({ area_id }) => area_id === areaId,
     );
 
     return SupplyAmbulanceByAreaId;

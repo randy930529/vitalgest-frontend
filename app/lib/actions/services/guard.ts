@@ -1,5 +1,5 @@
 import { GuardType } from "@/app/lib/definitions";
-import { BaseServerAction } from "@/app/lib/actions/core/base-action";
+import { BaseServerAction } from "@/app/lib/core/base-action";
 import { GuardState } from "@/app/lib/config/stateConfigs";
 import { CreateGuard, UpdateGuard } from "@/app/lib/schema";
 
