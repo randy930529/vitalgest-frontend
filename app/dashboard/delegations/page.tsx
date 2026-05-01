@@ -16,14 +16,16 @@ export const metadata: Metadata = {
 export default async function DelegationsPage({
   searchParams,
 }: {
-  searchParams: { page?: number; display?: number };
+  searchParams: Promise<{ page?: string; display?: string }>;
 }) {
   // (Página) Gestionar delegaciones - [SSR]
 
-  const { page = 1, display = 6 } = searchParams;
+  const { page, display } = await searchParams;
   const fetchDataDelegationsAndMXStates = async () =>
     await Promise.all([
-      fetchDelegations(getPaginationParams(page, display)),
+      fetchDelegations(
+        getPaginationParams(Number(page) || 1, Number(display) || 6),
+      ),
       fetchMxStates(),
     ]);
 

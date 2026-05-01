@@ -16,14 +16,16 @@ export const metadata: Metadata = {
 export default async function AmbulancePage({
   searchParams,
 }: {
-  searchParams: { page?: number; display?: number };
+  searchParams: Promise<{ page?: string; display?: string }>;
 }) {
   // (Página) Listado de ambulancias - [SSR]
 
-  const { page = 1, display = 6 } = searchParams;
+  const { page, display } = await searchParams;
   const fetchAmbulancesAndDelegations = async () =>
     await Promise.all([
-      fetchAmbulances(getPaginationParams(page, display)),
+      fetchAmbulances(
+        getPaginationParams(Number(page) || 1, Number(display) || 6),
+      ),
       fetchDelegations().then((result) => result.data),
     ]);
 

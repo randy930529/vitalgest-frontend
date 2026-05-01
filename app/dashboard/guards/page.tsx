@@ -18,14 +18,14 @@ export const metadata: Metadata = {
 export default async function GuardsPage({
   searchParams,
 }: {
-  searchParams: { page?: number; display?: number };
+  searchParams: Promise<{ page?: string; display?: string }>;
 }) {
   // (Página) Gestionar guardias - [SSR]
 
-  const { page = 1, display = 6 } = searchParams;
+  const { page, display } = await searchParams;
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
-      fetchGuards(getPaginationParams(page, display)),
+      fetchGuards(getPaginationParams(Number(page) || 1, Number(display) || 6)),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
       fetchStaffMembers(),

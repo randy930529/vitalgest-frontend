@@ -17,14 +17,14 @@ export const metadata: Metadata = {
 export default async function UserPage({
   searchParams,
 }: {
-  searchParams: { page?: number; display?: number };
+  searchParams: Promise<{ page?: string; display?: string }>;
 }) {
   // (Página) Listado de usuarios - [SSR]
 
-  const { page = 1, display = 6 } = searchParams;
+  const { page, display } = await searchParams;
   const fetchDataUsersAndDelegations = async () =>
     await Promise.all([
-      fetchUsers(getPaginationParams(page, display)),
+      fetchUsers(getPaginationParams(Number(page) || 1, Number(display) || 6)),
       fetchDelegations().then((result) => result.data),
     ]);
 
