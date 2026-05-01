@@ -10,11 +10,11 @@ import {
 
 export async function fetchChartDataByRange(range: DashboardRange) {
   try {
-    const [guards, ambulances, delegations] = await Promise.all([
-      fetchGuards(),
-      fetchAmbulances(),
-      fetchDelegations(),
-    ]);
+    const [guardsResult, ambulancesResult, delegationsResult] =
+      await Promise.all([fetchGuards(), fetchAmbulances(), fetchDelegations()]);
+    const guards = guardsResult.data;
+    const ambulances = ambulancesResult.data;
+    const delegations = delegationsResult.data;
     const { trendData, delegationData } = buildChartDataForRange({
       range,
       guards,
