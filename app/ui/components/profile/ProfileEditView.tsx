@@ -106,7 +106,7 @@ export function ProfileEditView({
       <div className="mx-auto max-w-7xl space-y-8">
         <div className="overflow-hidden rounded-[36px] bg-slate-950 text-white shadow-[0_35px_80px_-45px_rgba(15,23,42,0.8)]">
           <div className="relative isolate overflow-hidden px-6 py-8 sm:px-8 lg:px-10">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(15,23,42,0.95),rgba(30,41,59,0.78)),radial-gradient(circle_at_top_right,rgba(248,113,113,0.42),transparent_30%)]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-indigo-700 to-blue-700" />
             <div className="absolute right-0 top-0 h-44 w-44 rounded-full bg-rose-500/20 blur-3xl" />
             <div className="absolute left-10 bottom-0 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl" />
 

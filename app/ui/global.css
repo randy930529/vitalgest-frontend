@@ -53,54 +53,6 @@ body {
   background-color: transparent;
 }
 
-.vital-panel {
-  border: 1px solid var(--vital-border);
-  border-radius: 1rem;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-}
-
-.vital-card {
-  border: 1px solid var(--vital-border);
-  border-radius: 0.9rem;
-  padding: 1rem;
-  background-color: var(--vital-bg-surface);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.vital-card:hover {
-  transform: translateY(-2px);
-  border-color: #fda4af;
-  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.12);
-}
-
-.vital-top-gradient {
-  background-image: linear-gradient(
-    135deg,
-    var(--vital-top-grad-from),
-    var(--vital-top-grad-to)
-  );
-  box-shadow: 0 30px 60px -40px rgba(8, 47, 73, 0.55);
-  position: relative;
-  overflow: visible;
-}
-
-.vital-top-gradient::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at 100% 0%,
-    var(--vital-top-grad-highlight),
-    transparent 45%
-  );
-  pointer-events: none;
-}
-
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
