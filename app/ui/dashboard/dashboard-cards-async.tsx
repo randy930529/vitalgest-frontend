@@ -11,7 +11,7 @@ import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchSuppliesByAmbulanceId } from "@/app/lib/data/supplies";
 import { buildChartDataByRange } from "@/app/lib/dashboard-analytics";
-import { DASHBOARD_KPI_COPY } from "@/app/lib/config/dashboard-copy";
+import { DASHBOARD_KPI_COPY } from "@/app/lib/config/dashboardCopy";
 import { StatCard } from "@/app/ui/dashboard/cards";
 import OperationsCharts from "@/app/ui/dashboard/operations-charts";
 import { DashboardSections } from "@/app/ui/dashboard/stats-cards";

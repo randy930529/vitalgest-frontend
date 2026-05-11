@@ -11,7 +11,7 @@ import {
   DelegationType,
   GuardType,
 } from "@/app/lib/definitions";
-import { DASHBOARD_SECTIONS_COPY } from "@/app/lib/config/dashboard-copy";
+import { DASHBOARD_SECTIONS_COPY } from "@/app/lib/config/dashboardCopy";
 
 export async function AdminDashboard({
   children,

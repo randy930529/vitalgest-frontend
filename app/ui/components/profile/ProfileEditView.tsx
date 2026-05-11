@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { UserIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { UserIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { formatUserStatusLabel } from "@/app/lib/utils";
 import { ImageUploader } from "@/app/ui/components/profile/ImageUploader";
@@ -243,19 +243,19 @@ export function ProfileEditView({
                   </h2>
                   <p className="text-sm text-slate-500">
                     Actualiza tus datos de contacto para que el equipo pueda
-                    identificarte y comunicarse contigo correctamente.
+                    identificarte y comunicarse contigo.
                   </p>
                 </div>
 
                 <div className="grid gap-4">
-                  <TextField
+                  {/* <TextField
                     label="Correo electronico"
                     name="email"
                     value={value.email}
                     placeholder="usuario@vitalgest.mx"
                     icon={<EnvelopeIcon className="h-5 w-5" />}
                     onChange={handleTextFieldChange}
-                  />
+                  /> */}
                   <TextField
                     label="Telefono"
                     name="phone"
