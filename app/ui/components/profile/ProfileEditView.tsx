@@ -160,7 +160,9 @@ export function ProfileEditView({
                 emptyTitle="Sube una foto de perfil"
                 emptyDescription="Arrastra una imagen o selecciona un archivo JPG, PNG o WEBP. Se recomienda formato cuadrado."
                 buttonLabel="Seleccionar imagen"
-                onChange={(file) => onFieldChange("avatar", file)}
+                onChange={(file) =>
+                  onFieldChange("avatar", file as ProfileFormData["avatar"])
+                }
                 meta={
                   <p className="text-xs text-slate-400">
                     Resolucion sugerida: 600 x 600 px
@@ -268,7 +270,12 @@ export function ProfileEditView({
                 emptyTitle="Sube la firma del usuario"
                 emptyDescription="Usa fondo transparente o blanco para obtener mejor resultado al incrustarla en documentos."
                 buttonLabel="Seleccionar firma"
-                onChange={(file) => onFieldChange("signature", file)}
+                onChange={(file) =>
+                  onFieldChange(
+                    "signature",
+                    file as ProfileFormData["signature"],
+                  )
+                }
                 meta={
                   <p className="text-xs text-slate-400">
                     Formato recomendado: PNG horizontal, 1200 x 500 px

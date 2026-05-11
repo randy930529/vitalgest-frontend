@@ -32,7 +32,7 @@ function getPreviewSource(value: ImageUploaderValue) {
     return value;
   }
 
-  return URL.createObjectURL(value);
+  return URL.createObjectURL(value as Blob);
 }
 
 export function ImageUploader({
