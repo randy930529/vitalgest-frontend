@@ -1,3 +1,4 @@
+import { File } from "buffer";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import {
   CheckCircleIcon,
@@ -12,6 +13,7 @@ import {
   DelegationType,
   StepItemType,
 } from "@/app/lib/definitions";
+import { UploadFileState } from "@/app/lib/config/stateConfigs";
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   if (totalPages <= 7) {
@@ -375,3 +377,26 @@ export const generatePaginationOffsets = (
     return calculateOffset(page as number, itemsPerPage);
   });
 };
+
+export async function uploadImageToCloud(
+  uploadUrl: string,
+  file: File,
+): Promise<UploadFileState> {
+  try {
+    const response = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type || "application/octet-stream",
+      },
+      body: await file.arrayBuffer(),
+    });
+
+    if (response.ok) return { message: "Imagen guardada exitosamente." };
+    return { errors: { file: ["A ocurrido un error al guardar la imagen."] } };
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return {
+      errors: { file: ["Error al guardar la imagen."] },
+    };
+  }
+}

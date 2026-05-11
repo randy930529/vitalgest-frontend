@@ -9,7 +9,7 @@ export async function fetchUsers(
   params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<UserType>> {
   try {
-    const endPoint = "/api/adm/get-all/users/all";
+    const endPoint = "/api/adm/get-all/users";
 
     const dataFetching = new DataFetch<UserType>(endPoint);
     const users = await dataFetching.getAll(params);
@@ -23,7 +23,7 @@ export async function fetchUsers(
 
 export async function fetchUsersGuardChief(): Promise<CustomOptions[]> {
   try {
-    const endPoint = "/api/adm/get-all/users/all";
+    const endPoint = "/api/adm/get-all/users";
 
     const dataFetching = new DataFetch<UserType>(endPoint, true);
     const { data: users } = await dataFetching.getAll();
@@ -77,7 +77,7 @@ export async function fetchStaffMembers(): Promise<
   [CustomOptions[], CustomOptions[], CustomOptions[]]
 > {
   try {
-    const endPoint = "/api/adm/get-all/users/all";
+    const endPoint = "/api/adm/get-all/users";
 
     const dataFetching = new DataFetch<UserType>(endPoint, true);
     const { data: users } = await dataFetching.getAll();

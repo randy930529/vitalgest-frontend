@@ -129,7 +129,6 @@ export class UpdateSignatureAction extends BaseServerAction<
 
       return { message: "Firma actualizada exitosamente." };
     } catch (error) {
-      console.log(error);
       return this.handleError(error);
     }
   }
