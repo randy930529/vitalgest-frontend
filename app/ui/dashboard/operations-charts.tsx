@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { fetchChartDataByRange } from "@/app/lib/actions/dashboard";
-import { DASHBOARD_CHART_COPY } from "@/app/lib/config/dashboard-copy";
+import { DASHBOARD_CHART_COPY } from "@/app/lib/config/dashboardCopy";
 import {
   DASHBOARD_RANGE_OPTIONS,
   type DashboardRange,

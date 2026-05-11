@@ -1,3 +1,5 @@
+import { File } from "buffer";
+
 export type BaseType = {
   id: string;
   createdAt: string;
@@ -278,4 +280,9 @@ export type ProfileFormData = {
   delegation: string;
   avatar: ImageUploaderValue;
   signature: ImageUploaderValue;
+};
+
+export type SignatureType = {
+  uploadUrl: string;
+  key: string;
 };

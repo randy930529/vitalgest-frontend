@@ -1,5 +1,6 @@
 import { File } from "buffer";
 import { z } from "zod";
+import { FILE_UPLOAD } from "@/app/lib/config/constants";
 
 const FormUserSchema = z.object({
   id: z.string().uuid(),
@@ -117,9 +118,6 @@ const FormShiftSchema = z.object({
   }),
 });
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB
-const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
-
 const FormChecklistSchema = z.object({
   id: z.string().uuid(),
   recipientId: z.string().uuid(),
@@ -147,30 +145,30 @@ const FormChecklistSchema = z.object({
   gasFile: z
     .instanceof(File, { message: "Por favor adjunte el vale de combustible." })
     .refine(
-      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      (file: File) => !file || file.size <= FILE_UPLOAD.MAX_FILE_SIZE,
       "El archivo de combustible excede el tamaño máximo de 3 MB.",
     )
     .refine(
-      (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
+      (file: File) => FILE_UPLOAD.typeOfFile(file.type),
       "Formato no válido. Solo se permiten JPG, PNG o PDF.",
     ),
   signOperatorFile: z
     .instanceof(File, { message: "Por favor adjunte la firma del operador." })
     .refine(
-      (file: File) => ACCEPTED_FILE_TYPES.includes(file.type),
+      (file: File) => FILE_UPLOAD.typeOfFile(file.type),
       "Formato no válido. Solo se permiten JPG, PNG o PDF.",
     )
     .refine(
-      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      (file: File) => !file || file.size <= FILE_UPLOAD.MAX_FILE_SIZE,
       "La firma del operador excede el tamaño máximo de 5 MB.",
     ),
   signRecipientFile: z
     .instanceof(File, { message: "Por favor adjunte la firma del receptor." })
-    .refine((file: File) => ACCEPTED_FILE_TYPES.includes(file.type), {
+    .refine((file: File) => FILE_UPLOAD.typeOfFile(file.type), {
       message: "Formato no válido. Solo se permiten JPG, PNG o PDF.",
     })
     .refine(
-      (file: File) => !file || file.size <= MAX_FILE_SIZE,
+      (file: File) => !file || file.size <= FILE_UPLOAD.MAX_FILE_SIZE,
       "La firma del receptor excede el tamaño máximo de 5 MB.",
     ),
 });
@@ -224,72 +222,6 @@ const FormSupplySchema = z.object({
     .max(1000, { message: "Las notas no deben exceder los 1000 caracteres." })
     .optional()
     .nullable(),
-});
-
-const FormProfileSchema = z.object({
-  name: z
-    .string({
-      invalid_type_error: "Por favor ingrese el nombre del usuario.",
-    })
-    .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
-    .trim(),
-  lastname: z
-    .string({
-      required_error: "Por favor ingrese los apellidos del usuario.",
-    })
-    .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
-    .max(50, { message: "El apellido no debe exceder los 50 caracteres." })
-    .regex(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/, {
-      message:
-        "El apellido solo puede contener letras, espacios, guiones o apóstrofes",
-    })
-    .trim(),
-  email: z
-    .string()
-    .email({ message: "Por favor ingrese un correo electrónico válido." })
-    .trim(),
-  phone: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || /^[0-9+()\-\s]{7,20}$/.test(value),
-      "Por favor ingrese un teléfono válido.",
-    )
-    .optional(),
-  avatarFile: z
-    .instanceof(File, { message: "Por favor adjunte la imagen de perfil." })
-    .refine((file: File) => ACCEPTED_FILE_TYPES.includes(file.type), {
-      message: "Formato no válido. Solo se permiten JPG o PNG.",
-    })
-    .refine(
-      (file: File) => !file || file.size <= MAX_FILE_SIZE,
-      `La imagen de perfil excede el tamaño máximo de ${MAX_FILE_SIZE} MB.`,
-    ),
-  signatureFile: z
-    .instanceof(File, { message: "Por favor adjunte la firma." })
-    .refine((file: File) => ACCEPTED_FILE_TYPES.includes(file.type), {
-      message: "Formato no válido. Solo se permiten JPG o PNG.",
-    })
-    .refine(
-      (file: File) => !file || file.size <= MAX_FILE_SIZE,
-      `La firma excede el tamaño máximo de ${MAX_FILE_SIZE} MB.`,
-    ),
-  password: z
-    .string()
-    .trim()
-    .refine(
-      (value) =>
-        !value ||
-        (value.length >= 8 &&
-          /[a-zA-Z]/.test(value) &&
-          /[0-9]/.test(value) &&
-          /[@$!%#?&]/.test(value)),
-      {
-        message:
-          "La contraseña debe tener al menos 8 caracteres, un número y un carácter especial.",
-      },
-    )
-    .optional(),
 });
 
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
@@ -374,5 +306,3 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   specification: true,
   supplyId: true,
 });
-
-export const UpdateProfile = FormProfileSchema;

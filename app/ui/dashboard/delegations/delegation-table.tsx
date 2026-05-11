@@ -23,7 +23,7 @@ const ModalComponent = modalComponents.delegationForm;
 const customHeaders = [
   { id: 0, label: "Estado" },
   { id: 1, label: "Municipio" },
-  { id: 2, label: "Registrado por" },
+  // { id: 2, label: "Registrado por" },
   { id: 3, label: "Fecha de Registro" },
 ];
 
@@ -157,7 +157,7 @@ export default function DelegationTable({
                   {delegation.name}
                 </th>
                 <td className="px-4 py-3.5">{delegation.municipality?.name}</td>
-                <td className="px-4 py-3.5">{/*delegation.userToRegister*/}</td>
+                {/*<td className="px-4 py-3.5">{delegation.userToRegister}</td>*/}
                 <td className="px-4 py-3.5">
                   {formatDateToDDMMYYYY(delegation.createdAt)}
                 </td>

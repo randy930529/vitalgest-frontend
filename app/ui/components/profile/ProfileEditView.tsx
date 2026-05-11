@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { UserIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { UserIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { formatUserStatusLabel } from "@/app/lib/utils";
 import { ImageUploader } from "@/app/ui/components/profile/ImageUploader";
@@ -160,7 +160,9 @@ export function ProfileEditView({
                 emptyTitle="Sube una foto de perfil"
                 emptyDescription="Arrastra una imagen o selecciona un archivo JPG, PNG o WEBP. Se recomienda formato cuadrado."
                 buttonLabel="Seleccionar imagen"
-                onChange={(file) => onFieldChange("avatar", file)}
+                onChange={(file) =>
+                  onFieldChange("avatar", file as ProfileFormData["avatar"])
+                }
                 meta={
                   <p className="text-xs text-slate-400">
                     Resolucion sugerida: 600 x 600 px
@@ -211,8 +213,7 @@ export function ProfileEditView({
                     Informacion general
                   </h2>
                   <p className="text-sm text-slate-500">
-                    Aqui puedes actualizar tu nombre y apellidos. El rol y la
-                    delegacion se muestran solo como referencia.
+                    Aqui puedes actualizar tu nombre y apellidos.
                   </p>
                 </div>
 
@@ -243,19 +244,11 @@ export function ProfileEditView({
                   </h2>
                   <p className="text-sm text-slate-500">
                     Actualiza tus datos de contacto para que el equipo pueda
-                    identificarte y comunicarse contigo correctamente.
+                    comunicarse contigo.
                   </p>
                 </div>
 
                 <div className="grid gap-4">
-                  <TextField
-                    label="Correo electronico"
-                    name="email"
-                    value={value.email}
-                    placeholder="usuario@vitalgest.mx"
-                    icon={<EnvelopeIcon className="h-5 w-5" />}
-                    onChange={handleTextFieldChange}
-                  />
                   <TextField
                     label="Telefono"
                     name="phone"
@@ -277,7 +270,12 @@ export function ProfileEditView({
                 emptyTitle="Sube la firma del usuario"
                 emptyDescription="Usa fondo transparente o blanco para obtener mejor resultado al incrustarla en documentos."
                 buttonLabel="Seleccionar firma"
-                onChange={(file) => onFieldChange("signature", file)}
+                onChange={(file) =>
+                  onFieldChange(
+                    "signature",
+                    file as ProfileFormData["signature"],
+                  )
+                }
                 meta={
                   <p className="text-xs text-slate-400">
                     Formato recomendado: PNG horizontal, 1200 x 500 px

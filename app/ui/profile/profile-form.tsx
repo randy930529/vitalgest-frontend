@@ -11,6 +11,7 @@ import {
 } from "@/app/lib/definitions";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import { ProfileEditView } from "@/app/ui/components/profile/ProfileEditView";
+import ChangePassword from "@/app/ui/profile/change-password";
 
 type UserProfileExtra = {
   phone?: string;
@@ -27,7 +28,6 @@ export default function ProfileForm({ user }: { user: UserType }) {
       ? "/dashboard"
       : "/";
 
-  const [password, setPassword] = useState("");
   const [formValue, setFormValue] = useState<ProfileFormData>({
     name: profileUser.name || "",
     lastname: profileUser.lastname || "",
@@ -45,7 +45,8 @@ export default function ProfileForm({ user }: { user: UserType }) {
   });
 
   const initialState: UserState = { errors: {}, message: null };
-  const [state, formAction] = useActionState(updateProfile, initialState);
+  const updateUserWithId = updateProfile.bind(null, profileUser?.id || "");
+  const [state, formAction] = useActionState(updateUserWithId, initialState);
 
   useFormNotifications({ state });
 
@@ -71,15 +72,10 @@ export default function ProfileForm({ user }: { user: UserType }) {
 
     data.append("name", formValue.name.trim());
     data.append("lastname", formValue.lastname.trim());
-    data.append("email", formValue.email.trim());
     data.append("phone", formValue.phone.trim());
 
     if (typeof formValue.avatar === "string" && formValue.avatar.trim()) {
       data.append("avatarUrl", formValue.avatar.trim());
-    }
-
-    if (password.trim()) {
-      data.append("password", password.trim());
     }
 
     appendImageValueToFormData(data, "avatarFile", formValue.avatar);
@@ -99,29 +95,7 @@ export default function ProfileForm({ user }: { user: UserType }) {
         onCancel={() => router.push(cancelPath)}
         title="Editar perfil"
         subtitle="Actualiza la información visible del usuario, su foto y su firma para documentos internos."
-        extraHeaderContent={
-          <div className="max-w-lg rounded-2xl border border-white/10 bg-white/5 p-4">
-            <label
-              htmlFor="profile-password"
-              className="block text-sm font-semibold text-white"
-            >
-              Nueva contraseña (opcional)
-            </label>
-            <input
-              id="profile-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Dejar vacío para no cambiar"
-              className="mt-2 h-11 w-full rounded-xl border border-white/20 bg-white/10 px-3 text-sm text-white placeholder:text-slate-300 outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-200/40"
-            />
-            {state.errors?.password?.length ? (
-              <p className="mt-2 text-xs text-rose-200">
-                {state.errors.password[0]}
-              </p>
-            ) : null}
-          </div>
-        }
+        extraHeaderContent={<ChangePassword userId={profileUser?.id || ""} />}
       />
     </div>
   );

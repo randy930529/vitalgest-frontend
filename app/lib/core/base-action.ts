@@ -9,7 +9,7 @@ import { ERROR_MESSAGES } from "@/app/lib/config/constants";
  */
 export interface ActionConfig {
   endpoint: string;
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   adminOnly?: boolean;
   revalidatePathAfter?: string[];
 }
@@ -186,7 +186,7 @@ export abstract class BaseServerAction<TData, TState extends StateType<any>> {
   protected handleError(error: unknown): TState {
     let actionError: ActionError;
 
-    if (error instanceof Error && "type" in error) {
+    if (error instanceof Object && "type" in error) {
       actionError = error as ActionError;
     } else {
       actionError = {
