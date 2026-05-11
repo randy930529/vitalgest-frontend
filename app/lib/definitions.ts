@@ -25,6 +25,9 @@ export type UserType = {
   status?: boolean;
   delegationId: string;
   delegation: DelegationType;
+  signature?: string;
+  photo?: string;
+  phone?: string;
 };
 
 export type ResponseAPIType<T> = {
