@@ -114,3 +114,8 @@ export type SupplyAmbulanceState = StateType<{
   supplyId?: string[];
   success?: string[];
 }>;
+
+export type UploadFileState = StateType<{
+  file?: string[];
+  success?: string[];
+}>;

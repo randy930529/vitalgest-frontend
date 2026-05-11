@@ -46,7 +46,10 @@ export default function ProfileForm({ user }: { user: UserType }) {
 
   const initialState: UserState = { errors: {}, message: null };
   const updateUserWithId = updateProfile.bind(null, profileUser?.id || "");
-  const [state, formAction] = useActionState(updateUserWithId, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    updateUserWithId,
+    initialState,
+  );
 
   useFormNotifications({ state });
 
@@ -92,6 +95,7 @@ export default function ProfileForm({ user }: { user: UserType }) {
         value={formValue}
         onFieldChange={updateField}
         onSubmit={handleSubmit}
+        isSubmitting={isLoading}
         onCancel={() => router.push(cancelPath)}
         title="Editar perfil"
         subtitle="Actualiza la información visible del usuario, su foto y su firma para documentos internos."

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { UserIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { ProfileFormData } from "@/app/lib/definitions";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { formatUserStatusLabel } from "@/app/lib/utils";
 import { ImageUploader } from "@/app/ui/components/profile/ImageUploader";
-import { SaveIcon } from "@/app/ui/components/icons";
-import { ProfileFormData } from "@/app/lib/definitions";
+import { FormButtons } from "@/app/ui/button";
 
 type ProfileEditViewProps = {
   value: ProfileFormData;
@@ -17,6 +17,7 @@ type ProfileEditViewProps = {
   title?: string;
   subtitle?: string;
   extraHeaderContent?: ReactNode;
+  isSubmitting?: boolean;
 };
 
 type FieldProps = {
@@ -90,6 +91,7 @@ export function ProfileEditView({
   title = "Editar perfil",
   subtitle = "Actualiza la informacion visible del usuario, su foto y la firma que se usara en documentos internos.",
   extraHeaderContent,
+  isSubmitting,
 }: ProfileEditViewProps) {
   const userPosition =
     value.position?.trim() || ROLE_MANAGER.getLabel(value.role);
@@ -284,22 +286,11 @@ export function ProfileEditView({
               />
             </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-rose-500 px-5 text-sm font-semibold text-white shadow-[0_20px_40px_-25px_rgba(244,63,94,0.8)] transition hover:bg-rose-600"
-              >
-                <SaveIcon className="h-4 w-4" />
-                Guardar cambios
-              </button>
-            </div>
+            <FormButtons
+              onCancel={onCancel}
+              submitText={"Guardar cambios"}
+              isLoading={isSubmitting}
+            />
           </form>
         </div>
       </div>
