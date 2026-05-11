@@ -53,7 +53,7 @@ export async function updateProfile(
   }
 
   if (signatureResult?.signature) {
-    const signatureFile = formData.get("signatureFile") as File;
+    const signatureFile = formData.get("signatureFile") as unknown as File;
     const uploadResult = await uploadImageToCloud(
       signatureResult.signature.uploadUrl,
       signatureFile,
