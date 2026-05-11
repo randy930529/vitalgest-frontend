@@ -1,7 +1,7 @@
 import { UserType } from "@/app/lib/definitions";
 import { BaseServerAction } from "@/app/lib/core/base-action";
 import { UserState } from "@/app/lib/config/stateConfigs";
-import { CreateUser, UpdateProfile, UpdateUser } from "@/app/lib/schema";
+import { CreateUser, UpdateUser } from "@/app/lib/schema";
 
 export class CreateUserAction extends BaseServerAction<UserType, UserState> {
   constructor() {
@@ -26,7 +26,7 @@ export class CreateUserAction extends BaseServerAction<UserType, UserState> {
         delegation: formData.get("delegation"),
       });
 
-      await this.fetchAPI(data);
+      await this.fetchAPI({ ...data, delegationId: data.delegation });
       await this.revalidate();
 
       return { message: "Usuario creado exitosamente." };
@@ -86,56 +86,6 @@ export class DeleteUserAction extends BaseServerAction<UserType, UserState> {
       await this.revalidate();
 
       return { message: "Usuario eliminado exitosamente." };
-    } catch (error) {
-      return this.handleError(error);
-    }
-  }
-}
-
-export class UpdateProfileAction extends BaseServerAction<UserType, UserState> {
-  constructor() {
-    super({
-      endpoint: "/api/profile/update",
-      method: "PUT",
-      adminOnly: false,
-      revalidatePathAfter: ["/profile", "/profile/edit"],
-    });
-    this.setSchema(UpdateProfile);
-  }
-
-  async execute(prevState: UserState, formData: FormData): Promise<UserState> {
-    if (process.env.ENABLE_PROFILE_API !== "true") {
-      return {
-        errors: {
-          success: [
-            "La API de perfil aún no está habilitada. La interfaz ya está preparada.",
-          ],
-        },
-      };
-    }
-
-    try {
-      const data = this.validate({
-        name: formData.get("name"),
-        lastname: formData.get("lastname"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        avatarFile: formData.get("avatarUrl"),
-        signatureFile: formData.get("signatureFile"),
-        password: formData.get("password"),
-      });
-
-      const bodyFormData = new FormData();
-      bodyFormData.append("name", data.name as string);
-      bodyFormData.append("lastname", data.lastname as string);
-      bodyFormData.append("email", data.email as string);
-      bodyFormData.append("avatarFile", data.avatarFile as File);
-      bodyFormData.append("signatureFile", data.signatureFile as File);
-
-      await this.fetchAPIWithFormData(bodyFormData);
-      await this.revalidate();
-
-      return { message: "Perfil actualizado exitosamente." };
     } catch (error) {
       return this.handleError(error);
     }
