@@ -97,6 +97,20 @@ export const formConfigs = {
       required: true,
     },
   } as const,
+  changePassword: {
+    password: {
+      type: "password",
+      title: "Contraseña actual",
+      required: true,
+      placeholder: "Entre su contraseña actual",
+    },
+    newPassword: {
+      type: "password",
+      title: "Nueva contraseña",
+      required: true,
+      placeholder: "Entre la nueva contraseña",
+    },
+  } as const,
 } as const;
 
 /**

@@ -41,4 +41,11 @@ export const modalComponents = {
       loading: () => ModalFormSkeleton({ fields: 6, columns: 2 }),
     },
   ),
+  changePasswordForm: dynamic(
+    () => import("@/app/ui/profile/change-password-form"),
+    {
+      ssr: false,
+      loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),
+    },
+  ),
 };
