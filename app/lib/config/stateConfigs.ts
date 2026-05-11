@@ -5,6 +5,7 @@ import {
   ChecklistSuppliesType,
   GuardType,
   ShiftType,
+  SignatureType,
   StateType,
 } from "@/app/lib/definitions";
 
@@ -22,6 +23,16 @@ export type UserState = StateType<{
   delegation?: string[];
   success?: string[];
 }>;
+
+export type UploadSignatureState = StateType<{
+  mime?: string[];
+  ext?: string[];
+  size?: string[];
+  success?: string[];
+  key?: string[];
+}> & {
+  signature?: SignatureType;
+};
 
 export type DelegationState = StateType<{
   state?: string[];

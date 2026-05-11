@@ -211,8 +211,7 @@ export function ProfileEditView({
                     Informacion general
                   </h2>
                   <p className="text-sm text-slate-500">
-                    Aqui puedes actualizar tu nombre y apellidos. El rol y la
-                    delegacion se muestran solo como referencia.
+                    Aqui puedes actualizar tu nombre y apellidos.
                   </p>
                 </div>
 
@@ -243,19 +242,11 @@ export function ProfileEditView({
                   </h2>
                   <p className="text-sm text-slate-500">
                     Actualiza tus datos de contacto para que el equipo pueda
-                    identificarte y comunicarse contigo.
+                    comunicarse contigo.
                   </p>
                 </div>
 
                 <div className="grid gap-4">
-                  {/* <TextField
-                    label="Correo electronico"
-                    name="email"
-                    value={value.email}
-                    placeholder="usuario@vitalgest.mx"
-                    icon={<EnvelopeIcon className="h-5 w-5" />}
-                    onChange={handleTextFieldChange}
-                  /> */}
                   <TextField
                     label="Telefono"
                     name="phone"
