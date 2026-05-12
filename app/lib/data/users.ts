@@ -73,11 +73,11 @@ export async function fetchUserById(id: string): Promise<UserType | undefined> {
   }
 }
 
-export async function fetchStaffMembers(): Promise<
-  [CustomOptions[], CustomOptions[], CustomOptions[]]
-> {
+export async function fetchStaffMembers(
+  delegationId: string,
+): Promise<[CustomOptions[], CustomOptions[], CustomOptions[]]> {
   try {
-    const endPoint = "/api/adm/get-all/users";
+    const endPoint = `/api/delegations/members/${delegationId}`;
 
     const dataFetching = new DataFetch<UserType>(endPoint, true);
     const { data: users } = await dataFetching.getAll();
