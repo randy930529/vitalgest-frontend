@@ -1,8 +1,13 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { CustomOptions } from "@/app/lib/definitions";
-import { fetchUsers } from "@/app/lib/data/users";
+import { getSession } from "@/app/lib/dal";
+import { fetchDelegationMembers } from "@/app/lib/data/delegations";
+import {
+  fetchChecklistQuestions,
+  fetchChecklistSteps,
+} from "@/app/lib/data/checklist";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import Timeline from "@/app/ui/timeline";
 import ChecklistQuestionsForm from "@/app/ui/checklists/ambulances/edit/checklist-questions-form";
@@ -11,10 +16,6 @@ import {
   ChecklistNotesSkeleton,
   ChecklistQuestionsSkeleton,
 } from "@/app/ui/dashboard/skeletons";
-import {
-  fetchChecklistQuestions,
-  fetchChecklistSteps,
-} from "@/app/lib/data/checklist";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Ambulancia",
@@ -71,6 +72,12 @@ async function ChecklistAmbulanceEditor({
 }) {
   const param = Number(step) || undefined;
 
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+  const authorizedUser = session.user;
+
   const data = !notes
     ? await fetchChecklistQuestions(param).then((res) => res.data)
     : [];
@@ -81,7 +88,7 @@ async function ChecklistAmbulanceEditor({
 
   const [[steps, maxSteps], users] = await Promise.all([
     fetchChecklistSteps(),
-    fetchUsers().then((res) => res.data),
+    fetchDelegationMembers(authorizedUser.delegationId).then((res) => res.data),
   ]);
   const isLastQuestions = Number(step) >= maxSteps;
 

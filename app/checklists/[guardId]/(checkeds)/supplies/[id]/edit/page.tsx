@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { CustomOptions } from "@/app/lib/definitions";
+import { getSession } from "@/app/lib/dal";
 import {
   fetchAmbulanceAreasSteps,
   fetchChecklistSuppliesQuestions,
 } from "@/app/lib/data/checklist";
-import { fetchUsers } from "@/app/lib/data/users";
+import { fetchDelegationMembers } from "@/app/lib/data/delegations";
 import Timeline from "@/app/ui/timeline";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import ChecklistSupplySign from "@/app/ui/checklists/supplies/edit/notes-signature-form";
@@ -78,6 +79,12 @@ async function ChecklistSuppliesEditor({
 }) {
   const areaId = Number(step) || 0;
 
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+  const authorizedUser = session.user;
+
   const data = !notes
     ? await fetchChecklistSuppliesQuestions(ambulance || "", areaId)
     : [];
@@ -88,7 +95,7 @@ async function ChecklistSuppliesEditor({
 
   const [[steps, maxSteps], users] = await Promise.all([
     fetchAmbulanceAreasSteps(),
-    fetchUsers().then((res) => res.data),
+    fetchDelegationMembers(authorizedUser.delegationId).then((res) => res.data),
   ]);
   const isLastQuestions = areaId >= maxSteps;
 

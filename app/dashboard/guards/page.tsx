@@ -1,10 +1,12 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchStaffMembers } from "@/app/lib/data/users";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { getPaginationParams } from "@/app/lib/utils";
+import { getSession } from "@/app/lib/dal";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
@@ -28,7 +30,14 @@ export default async function GuardsPage({
       fetchGuards(getPaginationParams(Number(page) || 1, Number(display) || 6)),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
-      fetchStaffMembers(),
+      (async () => {
+        const session = await getSession();
+        if (!session) {
+          redirect("/login");
+        }
+        const authorizedUser = session.user;
+        return fetchStaffMembers(authorizedUser.delegationId);
+      })(),
     ]);
 
   return (
