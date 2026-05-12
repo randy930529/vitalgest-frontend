@@ -1,11 +1,15 @@
-import { DelegationType, PaginatedResult } from "@/app/lib/definitions";
+import {
+  DelegationType,
+  PaginatedResult,
+  UserType,
+} from "@/app/lib/definitions";
 import { DataFetch } from "@/app/lib/core/base-data";
 
 export async function fetchDelegations(
   params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<DelegationType>> {
   try {
-    const endPoint = "/api/delegations/many/all";
+    const endPoint = "/api/delegations/many";
 
     const dataFetching = new DataFetch<DelegationType>(endPoint);
     const delegations = await dataFetching.getAll(params);
@@ -30,5 +34,22 @@ export async function fetchDelegationById(
   } catch (error) {
     console.log("Database Error:", error);
     return;
+  }
+}
+
+export async function fetchDelegationMembers(
+  delegationId: string,
+  params?: Record<string, string | number | boolean>,
+): Promise<PaginatedResult<UserType>> {
+  try {
+    const endPoint = `/api/delegations/members/${delegationId}`;
+
+    const dataFetching = new DataFetch<UserType>(endPoint);
+    const members = await dataFetching.getAll(params);
+
+    return members;
+  } catch (err) {
+    console.log("API Error[GET DELEGATION MEMBERS]:", err);
+    return { data: [], totalRecords: 0 };
   }
 }

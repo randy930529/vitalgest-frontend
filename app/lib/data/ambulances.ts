@@ -9,7 +9,7 @@ export async function fetchAmbulances(
   params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<AmbulanceType>> {
   try {
-    const endPoint = "/api/ambulances/many/all";
+    const endPoint = "/api/ambulances/many";
 
     const dataFetching = new DataFetch<AmbulanceType>(endPoint, true);
     const ambulances = await dataFetching.getAll(params);
@@ -40,7 +40,7 @@ export async function fetchAmbulancesByDelegationId(
   delegationId: string,
 ): Promise<PaginatedResult<AmbulanceType>> {
   try {
-    const endPoint = "/api/ambulances/many/all";
+    const endPoint = "/api/ambulances/many";
 
     const dataFetching = new DataFetch<AmbulanceType>(endPoint, true);
     const ambulances = await dataFetching.getAll();
