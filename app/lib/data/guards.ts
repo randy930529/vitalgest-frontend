@@ -5,7 +5,7 @@ export async function fetchGuards(
   params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<GuardType>> {
   try {
-    const endPoint = "/api/guards/many/all";
+    const endPoint = "/api/guards/many";
 
     const dataFetching = new DataFetch<GuardType>(endPoint);
     const guards = await dataFetching.getAll(params);
@@ -37,7 +37,7 @@ export async function fetchGuardsAndInlineGuardByUserMe(
   user: UserType,
 ): Promise<[PaginatedResult<GuardType>, GuardType | undefined]> {
   try {
-    const endPoint = "/api/guards/many/all";
+    const endPoint = "/api/guards/many";
     const dataFetching = new DataFetch<GuardType>(endPoint);
     const guards = await dataFetching.getAll();
 
