@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { SessionPayload, UserType } from "./definitions";
 import { refreshAccessToken } from "./dal";
 
-const lifeTime = Number(process.env.SESSION_LIFETIME || 8);
-const secretKey = process.env.SESSION_SECRET;
+const lifeTime = Number(process.env.NEXTSESSION_LIFETIME || 8);
+const secretKey = process.env.NEXTSESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: SessionPayload) {
@@ -30,7 +30,7 @@ export async function decrypt(session: string | undefined = "") {
 export async function createSession(
   user: UserType,
   accessToken: string,
-  refreshToken: string
+  refreshToken: string,
 ) {
   // Ej. 7 días × 24 horas × 60 minutos × 60 segundos × 1000 milisegundos
   const expiresAt = new Date(Date.now() + lifeTime * 60 * 60 * 1000);

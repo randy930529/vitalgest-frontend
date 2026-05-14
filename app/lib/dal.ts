@@ -15,7 +15,7 @@ export const getSession = cache(
     const cookie = (await cookies()).get("session")?.value;
     const session = await decrypt(cookie);
     return session;
-  }
+  },
 );
 
 export const verifySession = cache(async (): Promise<SessionType> => {
@@ -72,11 +72,11 @@ function getTokensFromCookieHeader(response: Response): [string, string] {
 export const getLoggedInUser = cache(
   async (
     email: string,
-    password: string
+    password: string,
   ): Promise<
     [user: UserType, accessToken: string, refreshToken: string] | undefined
   > => {
-    const endPoint = `${process.env.API_URL}/api/auth/login/user`;
+    const endPoint = `${process.env.NEXTAPI_URL}/api/auth/login/user`;
 
     try {
       const response = await fetch(endPoint, {
@@ -103,14 +103,14 @@ export const getLoggedInUser = cache(
       console.log("Failed to fetch user:", error);
       return;
     }
-  }
+  },
 );
 
 export async function refreshAccessToken(
-  token: string
+  token: string,
 ): Promise<{ accessToken: string; refreshToken: string } | string | undefined> {
   try {
-    const endPoint = `${process.env.API_URL}/api/auth/refresh/token`;
+    const endPoint = `${process.env.NEXTAPI_URL}/api/auth/refresh/token`;
     const config = {
       method: "POST",
       headers: {
