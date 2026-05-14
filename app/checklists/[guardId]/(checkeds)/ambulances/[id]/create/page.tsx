@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { ChecklistCreateSkeleton } from "@/app/ui/dashboard/skeletons";
+import { ChecklistCreateSkeleton } from "@/app/ui/components/skeletons";
 import ChecklistAmbulanceForm from "@/app/ui/checklists/ambulances/create/checklist-ambulance-form";
 import { fetchShiftById } from "@/app/lib/data/shifts";
 

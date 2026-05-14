@@ -15,7 +15,7 @@ import ChecklistQuestionsForm from "@/app/ui/checklists/supplies/edit/checklist-
 import {
   ChecklistNotesSkeleton,
   ChecklistQuestionsSkeleton,
-} from "@/app/ui/dashboard/skeletons";
+} from "@/app/ui/components/skeletons";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Insumos",

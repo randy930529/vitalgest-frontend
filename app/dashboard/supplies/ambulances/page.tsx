@@ -11,7 +11,7 @@ import {
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import SupplyForm from "@/app/ui/dashboard/supplies/ambulances/create/supply-form";
 import AmbulanceSuppliesTable from "@/app/ui/dashboard/supplies/ambulances/supplies-table";

@@ -9,7 +9,7 @@ import { getPaginationParams } from "@/app/lib/utils";
 import { getSession } from "@/app/lib/dal";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 

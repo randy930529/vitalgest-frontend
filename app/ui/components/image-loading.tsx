@@ -1,8 +1,8 @@
 "use client";
 
-import Image, { ImageProps } from "next/image";
 import { useState } from "react";
-import { skeletonShimmerClass } from "@/app/ui/skeleton";
+import Image, { ImageProps } from "next/image";
+import { ImageLoadingSkeleton } from "@/app/ui/components/skeletons";
 
 interface ImageWithSkeletonProps extends Omit<ImageProps, "onLoad"> {
   skeletonClassName?: string;
@@ -35,15 +35,7 @@ export default function ImageLoading({
     <div className={`relative ${containerClass} ${imageContainerClassName}`}>
       {/* Skeleton - Visible mientras carga */}
       {!isLoaded && (
-        <div
-          className={`
-            absolute inset-0
-            ${skeletonShimmerClass}
-            bg-slate-200
-            ${skeletonClassName}
-          `}
-          aria-hidden="true"
-        />
+        <ImageLoadingSkeleton skeletonClassName={skeletonClassName} />
       )}
 
       {/* Imagen - Se muestra cuando termina de cargar */}

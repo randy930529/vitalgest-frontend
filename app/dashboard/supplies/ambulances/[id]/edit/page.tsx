@@ -7,7 +7,7 @@ import {
 } from "@/app/lib/data/ambulances";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { FormSkeleton } from "@/app/ui/components/skeletons";
 import SupplyEditForm from "@/app/ui/dashboard/supplies/ambulances/edit/supply-edit-form";
 
 export default async function AmbulanceSupplyEditPage({

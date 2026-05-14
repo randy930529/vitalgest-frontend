@@ -4,7 +4,7 @@ import { fetchStaffMembers } from "@/app/lib/data/users";
 import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchDelegations } from "@/app/lib/data/delegations";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
