@@ -400,3 +400,23 @@ export async function uploadImageToCloud(
     };
   }
 }
+
+/**
+ * Crea y retorna la URL absoluta de una firma almacenada en el cloud.
+ *
+ * @param signaturePathname - Ruta de la firma cargada en el usuario.
+ * @returns URL completa (string) apuntando al recurso de la firma en el cloud.
+ * @throws Error si la variable de entorno NEXTCLOUD_SIGNATURES_URL no es valida.
+ */
+export default function createSignatureURL(
+  signaturePathname: string,
+): string | undefined {
+  if (!signaturePathname) return;
+
+  const signatureUrl = process.env.NEXTCLOUD_SIGNATURES_URL;
+  if (!signatureUrl || !URL.canParse(signatureUrl)) {
+    throw new Error("La variable del cloud no está configurada correctamente.");
+  }
+
+  return new URL(signaturePathname, signatureUrl).href;
+}
