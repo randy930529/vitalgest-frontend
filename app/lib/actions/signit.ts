@@ -2,6 +2,8 @@
 
 import { VerifySignatureResult } from "@/app/lib/definitions";
 import { getLoggedInUser } from "@/app/lib/dal";
+import { fetchUserById } from "@/app/lib/data/users";
+import createSignatureURL from "@/app/lib/utils";
 
 export async function verifySignature(
   prevState: VerifySignatureResult,
@@ -20,10 +22,10 @@ export async function verifySignature(
     return { approved: false, error: "Contraseña incorrecta." };
   }
 
-  const [user] = result;
+  const [userSignature] = result;
+  const user = await fetchUserById(userSignature.id);
   const signatureUrl =
-    (user as any).firmaUrl ||
-    (user as any).signatureUrl ||
+    createSignatureURL(user?.signature || "") ||
     "/images/logo-vital-gest_red.svg";
 
   return { approved: true, signatureUrl };

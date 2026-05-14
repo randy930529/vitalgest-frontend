@@ -13,16 +13,13 @@ import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import { ProfileEditView } from "@/app/ui/components/profile/ProfileEditView";
 import ChangePassword from "@/app/ui/profile/change-password";
 
-type UserProfileExtra = {
-  phone?: string;
+type UserProfileExtra = UserType & {
   avatarUrl?: string;
-  firmaUrl?: string;
-  signatureUrl?: string;
 };
 
 export default function ProfileForm({ user }: { user: UserType }) {
   const router = useRouter();
-  const profileUser = user as UserType & UserProfileExtra;
+  const profileUser = user as UserProfileExtra;
   const cancelPath =
     profileUser.role === "admin" || profileUser.role === "general_admin"
       ? "/dashboard"
@@ -38,10 +35,7 @@ export default function ProfileForm({ user }: { user: UserType }) {
     phone: profileUser.phone || "",
     delegation: profileUser.delegation?.name || "",
     avatar: profileUser.avatarUrl || null,
-    signature:
-      profileUser.signatureUrl ||
-      profileUser.firmaUrl ||
-      "/images/logo-vital-gest_red.svg",
+    signature: profileUser.signature || "",
   });
 
   const initialState: UserState = { errors: {}, message: null };

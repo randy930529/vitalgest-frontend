@@ -269,7 +269,7 @@ export function ProfileEditView({
                 hint="Imagen que se imprimira en formatos y validaciones internas"
                 value={value.signature}
                 aspect="wide"
-                emptyTitle="Sube la firma del usuario"
+                emptyTitle="Sube tu firma aquí"
                 emptyDescription="Usa fondo transparente o blanco para obtener mejor resultado al incrustarla en documentos."
                 buttonLabel="Seleccionar firma"
                 onChange={(file) =>
@@ -280,7 +280,7 @@ export function ProfileEditView({
                 }
                 meta={
                   <p className="text-xs text-slate-400">
-                    Formato recomendado: PNG horizontal, 1200 x 500 px
+                    Formato recomendado: PNG horizontal
                   </p>
                 }
               />
