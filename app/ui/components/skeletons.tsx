@@ -1,13 +1,14 @@
 import { ReactElement } from "react";
 import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { PencilSquareIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Filters from "@/app/ui/dashboard/table-filters";
 import ModalTrigger from "@/app/ui/button-modal";
 import TablePagination from "@/app/ui/components/pagination";
-import { skeletonShimmerClass } from "@/app/ui/skeleton";
 
 // Shared loading animation class
-const shimmer = skeletonShimmerClass;
+const shimmer =
+  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
 
 export function TableSkeleton({
   title,
@@ -405,4 +406,54 @@ export function DashboardOperationalSkeleton() {
       </div>
     </section>
   );
+}
+
+export function ImageLoadingSkeleton({
+  skeletonClassName,
+}: {
+  skeletonClassName?: string;
+}) {
+  return (
+    <div
+      className={clsx(
+        `flex items-center justify-center absolute inset-0`,
+        shimmer,
+        "bg-slate-200",
+        skeletonClassName,
+      )}
+      aria-hidden="true"
+    >
+      <PhotoIcon className="h-12 w-12 text-slate-400" />
+    </div>
+  );
+}
+
+export function SkeletonPanel({
+  children,
+  className,
+  ariaLabel,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  ariaLabel?: string;
+}) {
+  return (
+    <section
+      aria-label={ariaLabel}
+      className={clsx(
+        "relative overflow-hidden rounded-[28px] border border-white/80 bg-white/90 p-6 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)]",
+        className,
+      )}
+    >
+      <div className="animate-pulse space-y-4">{children}</div>
+    </section>
+  );
+}
+
+export function SkeletonLine({ className }: { className?: string }) {
+  return <div className={clsx("rounded bg-slate-200", className)} />;
+}
+
+export function SkeletonBlock({ className }: { className?: string }) {
+  return <div className={clsx("rounded-2xl bg-slate-200/80", className)} />;
 }
