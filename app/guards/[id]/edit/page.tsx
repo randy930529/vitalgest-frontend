@@ -6,7 +6,7 @@ import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchGuardById } from "@/app/lib/data/guards";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { FormSkeleton } from "@/app/ui/components/skeletons";
 import GuardEditForm from "@/app/ui/dashboard/guards/edit/guard-edit-form";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchShiftsByGuardId } from "@/app/lib/data/shifts";

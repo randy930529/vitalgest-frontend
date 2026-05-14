@@ -6,7 +6,7 @@ import { getSession } from "@/app/lib/dal";
 import { fetchSuppliesByPharmacyId } from "@/app/lib/data/supplies";
 import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import PharmacySuppliesTable from "@/app/ui/dashboard/supplies/pharmacies/supplies-table";
 import SupplyForm from "@/app/ui/dashboard/supplies/pharmacies/create/supply-form";

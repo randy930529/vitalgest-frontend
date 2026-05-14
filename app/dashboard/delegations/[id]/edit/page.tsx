@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { fetchMxStates } from "@/app/lib/data/locations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { FormSkeleton } from "@/app/ui/components/skeletons";
 import DelegationEditForm from "@/app/ui/dashboard/delegations/edit/delegation-edit-form";
 import { fetchDelegationById } from "@/app/lib/data/delegations";
 

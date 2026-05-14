@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchUsers } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import UserTable from "@/app/ui/dashboard/users/user-table";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import UserForm from "@/app/ui/dashboard/users/create/user-form";

@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { verifySession } from "@/app/lib/dal";
 import ProfileForm from "@/app/ui/profile/profile-form";
-import { ProfileEditSkeleton } from "@/app/ui/dashboard/skeletons";
+import { ProfileEditSkeleton } from "@/app/ui/components/skeletons";
 
 export const metadata: Metadata = {
   title: "Mi Perfil",

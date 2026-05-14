@@ -10,7 +10,7 @@ import {
   DashboardChartsSkeleton,
   DashboardKpiCardsSkeleton,
   DashboardOperationalSkeleton,
-} from "@/app/ui/dashboard/skeletons";
+} from "@/app/ui/components/skeletons";
 
 export const metadata: Metadata = {
   title: "Panel Administrativo",

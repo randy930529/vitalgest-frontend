@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { fetchMxStates } from "@/app/lib/data/locations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { TableSkeleton } from "@/app/ui/dashboard/skeletons";
+import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import DelegationTable from "@/app/ui/dashboard/delegations/delegation-table";
 import DelegationForm from "@/app/ui/dashboard/delegations/create/delegation-form";

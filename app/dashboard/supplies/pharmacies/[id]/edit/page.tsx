@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { FormSkeleton } from "@/app/ui/components/skeletons";
 import { fetchSupplyById } from "@/app/lib/data/supplies";
 import SupplyEditForm from "@/app/ui/dashboard/supplies/pharmacies/edit/supply-edit-form";
 

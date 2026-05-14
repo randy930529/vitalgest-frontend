@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { ModalFormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { ModalFormSkeleton } from "@/app/ui/components/skeletons";
 
 export const modalComponents = {
   guardForm: dynamic(

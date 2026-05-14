@@ -15,7 +15,7 @@ import ChecklistAmbulanceSign from "@/app/ui/checklists/ambulances/edit/notes-si
 import {
   ChecklistNotesSkeleton,
   ChecklistQuestionsSkeleton,
-} from "@/app/ui/dashboard/skeletons";
+} from "@/app/ui/components/skeletons";
 
 export const metadata: Metadata = {
   title: "Área de Chequeo de Ambulancia",

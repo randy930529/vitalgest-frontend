@@ -1,4 +1,8 @@
-import { SkeletonBlock, SkeletonLine, SkeletonPanel } from "@/app/ui/skeleton";
+import {
+  SkeletonBlock,
+  SkeletonLine,
+  SkeletonPanel,
+} from "@/app/ui/components/skeletons";
 
 export function CurrentGuardSkeleton() {
   return (

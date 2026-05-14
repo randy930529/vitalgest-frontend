@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchUserById } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import { FormSkeleton } from "@/app/ui/dashboard/skeletons";
+import { FormSkeleton } from "@/app/ui/components/skeletons";
 import UserEditForm from "@/app/ui/dashboard/users/edit/user-edit-form";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 
