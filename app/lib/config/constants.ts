@@ -143,3 +143,8 @@ export const FILE_UPLOAD = {
     );
   },
 } as const;
+
+export const STYLES = {
+  inputFocus: "focus:border-rose-300 focus:ring-4 focus:ring-rose-100",
+  boxShadow: "shadow-[0_20px_45px_-30px_rgba(244,63,94,0.45)]",
+} as const;

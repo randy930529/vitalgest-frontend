@@ -4,6 +4,10 @@ import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { verifySession } from "@/app/lib/dal";
 import ProfileForm from "@/app/ui/profile/profile-form";
 import { ProfileEditSkeleton } from "@/app/ui/components/skeletons";
+import { UserType } from "@/app/lib/definitions";
+import { fetchUserById } from "@/app/lib/data/users";
+import { notFound } from "next/navigation";
+import createSignatureURL from "@/app/lib/utils";
 
 export const metadata: Metadata = {
   title: "Mi Perfil",
@@ -25,8 +29,27 @@ export default async function EditProfilePage() {
       />
 
       <Suspense fallback={<ProfileEditSkeleton />}>
-        <ProfileForm user={session.user} />
+        <LoadUserInfo id={session.user.id} WrappedComponent={ProfileForm} />
       </Suspense>
     </div>
   );
+}
+
+async function LoadUserInfo({
+  id,
+  WrappedComponent,
+}: {
+  id: string;
+  WrappedComponent: React.ComponentType<{
+    user: UserType;
+  }>;
+}) {
+  const user = await fetchUserById(id);
+  if (!user) notFound();
+
+  if (user.signature) {
+    user.signature = createSignatureURL(user.signature);
+  }
+
+  return <WrappedComponent user={user} />;
 }

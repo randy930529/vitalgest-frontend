@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { createPageURL, generatePagination } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
 
-const ITEMS_PER_PAGE = Number(process.env.ITEMS_PER_PAGE ?? "10");
+const ITEMS_PER_PAGE = Number(process.env.NEXTITEMS_PER_PAGE ?? "10");
 
 export default function TablePagination({
   totalItems,

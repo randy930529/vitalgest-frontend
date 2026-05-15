@@ -21,9 +21,9 @@ export default async function LoginPage() {
 
   return (
     <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2 p-4 md:-mt-32">
         <div className="flex h-20 w-full justify-center rounded-lg md:h-36">
-          <VitalGestLogo width={124} height={124} />
+          <VitalGestLogo width={120} height={120} />
         </div>
         <h1 className={`${openSans.className} text-2xl text-center`}>
           VitalGest

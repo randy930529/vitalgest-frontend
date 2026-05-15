@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 import { CameraIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { ImageUploaderValue } from "@/app/lib/definitions";
 
@@ -143,8 +144,10 @@ export function ImageUploader({
                   : "aspect-[16/7]",
               ].join(" ")}
             >
-              <img
+              <Image
                 src={previewSrc}
+                width={200}
+                height={200}
                 alt={label}
                 className={[
                   "h-full w-full",

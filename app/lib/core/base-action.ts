@@ -33,7 +33,7 @@ export abstract class BaseServerAction<TData, TState extends StateType<any>> {
   private token?: string;
 
   constructor(config: ActionConfig) {
-    const ENV_API_URL = process.env.API_URL;
+    const ENV_API_URL = process.env.NEXTAPI_URL;
 
     if (!ENV_API_URL || !URL.canParse(ENV_API_URL)) {
       throw new Error("La conexión a la API no está configurada.");

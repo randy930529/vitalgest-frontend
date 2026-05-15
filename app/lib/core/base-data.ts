@@ -2,7 +2,7 @@ import { cache } from "react";
 import { verifyAuthorization, verifySession } from "@/app/lib/dal";
 import { ResponseAPIType, PaginatedResult } from "@/app/lib/definitions";
 
-const ITEMS_PER_PAGE = Number(process.env.ITEMS_PER_PAGE ?? "6");
+const ITEMS_PER_PAGE = Number(process.env.NEXTITEMS_PER_PAGE ?? "6");
 
 export class DataFetch<T> {
   private endPoint: string;
@@ -11,13 +11,13 @@ export class DataFetch<T> {
   private apiToken?: string;
 
   constructor(endPoint: string, adminOnly: boolean = false) {
-    if (!process.env.API_URL || !URL.canParse(process.env.API_URL)) {
+    if (!process.env.NEXTAPI_URL || !URL.canParse(process.env.NEXTAPI_URL)) {
       throw new Error(
         "Las variables de conexión a la API no están configuradas.",
       );
     }
 
-    this.apiUrl = process.env.API_URL;
+    this.apiUrl = process.env.NEXTAPI_URL;
 
     if (!URL.canParse(endPoint, this.apiUrl)) {
       throw new Error("No se configuró correctamente la ruta del api.");

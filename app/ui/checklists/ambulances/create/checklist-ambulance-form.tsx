@@ -93,6 +93,7 @@ export default function ChecklistAmbulanceForm({
                 type="number"
                 title="Km: "
                 placeholder="0"
+                required
               />
             </div>
           </div>
