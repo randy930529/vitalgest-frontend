@@ -19,7 +19,7 @@ import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import { modalComponents } from "@/app/lib/config/modalConfig";
-import { Badge } from "@/app/ui/badges";
+import { Badge } from "@/app/ui/components/badges";
 
 const ModalComponent = modalComponents.guardForm;
 const customHeaders = [

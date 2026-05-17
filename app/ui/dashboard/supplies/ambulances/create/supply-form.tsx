@@ -9,7 +9,7 @@ import {
 } from "@/app/lib/definitions";
 import { createSupplyInAmbulance } from "@/app/lib/actions/supply";
 import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
-import { Badge } from "@/app/ui/badges";
+import { Badge } from "@/app/ui/components/badges";
 import { GenericForm } from "@/app/ui/components/generic-form";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 
