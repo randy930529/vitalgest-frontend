@@ -11,7 +11,6 @@ import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchSuppliesByAmbulanceId } from "@/app/lib/data/supplies";
 import { buildChartDataByRange } from "@/app/lib/dashboard-analytics";
-import { DASHBOARD_KPI_COPY } from "@/app/lib/config/dashboardCopy";
 import { StatCard } from "@/app/ui/dashboard/cards";
 import OperationsCharts from "@/app/ui/dashboard/operations-charts";
 import { DashboardSections } from "@/app/ui/dashboard/stats-cards";
@@ -77,25 +76,25 @@ export async function DashboardKpiCards() {
   return (
     <section className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        title={DASHBOARD_KPI_COPY.totalUsers}
+        title={"Total Usuarios"}
         value={users.length}
         icon={UsersIcon}
         color="bg-slate-800"
       />
       <StatCard
-        title={DASHBOARD_KPI_COPY.delegations}
+        title={"Delegaciones"}
         value={delegations.length}
         icon={BuildingOffice2Icon}
         color="bg-emerald-600"
       />
       <StatCard
-        title={DASHBOARD_KPI_COPY.ambulances}
+        title={"Ambulancias"}
         value={ambulances.length}
         icon={TruckIcon}
         color="bg-rose-500"
       />
       <StatCard
-        title={DASHBOARD_KPI_COPY.activeGuards}
+        title={"Guardias Activas"}
         value={totalGuardsActive}
         icon={ShieldCheckIcon}
         color="bg-sky-600"

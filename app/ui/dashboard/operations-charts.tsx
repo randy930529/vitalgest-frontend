@@ -1,26 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import clsx from "clsx";
 import { fetchChartDataByRange } from "@/app/lib/actions/dashboard";
-import { DASHBOARD_CHART_COPY } from "@/app/lib/config/dashboardCopy";
 import {
   DASHBOARD_RANGE_OPTIONS,
   type DashboardRange,
   type TrendPoint,
 } from "@/app/lib/dashboard-analytics";
-
+import { Badge, BadgeVariant } from "@/app/ui/components/badges";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Pie,
-  PieChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+  AreaGraphic,
+  BarGraphic,
+  PieGraphic,
+} from "@/app/ui/components/graphics";
 
 const DELEGATION_COLORS = [
   "#0ea5e9",
@@ -84,6 +77,35 @@ function ChartContainer({
   );
 }
 
+export function ChartHeader({
+  title,
+  subtitle,
+  badge,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  badge?: { text: string; type: BadgeVariant };
+  children?: React.ReactNode;
+}) {
+  return (
+    <header
+      className={clsx("mb-3", {
+        "mb-6 flex items-center justify-between gap-3": !!badge,
+      })}
+    >
+      <div>
+        <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-900">
+          {title}
+        </h3>
+        {subtitle && <p className="mt-1 text-xs text-slate-500">{subtitle}</p>}
+      </div>
+      {badge && <Badge title={badge.text} variant={badge.type} />}
+      {children}
+    </header>
+  );
+}
+
 export default function OperationsCharts({
   trendDataByRange,
   delegationDataByRange,
@@ -112,45 +134,47 @@ export default function OperationsCharts({
 
   const statusData = [
     {
-      name: DASHBOARD_CHART_COPY.statusSeries.active,
+      name: "Activas",
       value: activeGuards,
       fill: "#0ea5e9",
     },
     {
-      name: DASHBOARD_CHART_COPY.statusSeries.pending,
+      name: "Pendientes",
       value: pendingGuards,
       fill: "#f59e0b",
     },
     {
-      name: DASHBOARD_CHART_COPY.statusSeries.critical,
+      name: "Críticas",
       value: criticalSupplyCount,
       fill: "#f43f5e",
     },
   ];
 
-  const renderRangeButtons = () => (
-    <div className="mt-3 flex flex-wrap items-center gap-2">
-      {DASHBOARD_RANGE_OPTIONS.map((option) => {
-        const isActive = option.key === range;
-        return (
-          <button
-            key={option.key}
-            type="button"
-            onClick={() => setRange(option.key)}
-            disabled={isLoading}
-            className={`rounded-full border px-3 py-1 text-xs font-semibold transition disabled:opacity-50 ${
-              isActive
-                ? "border-sky-200 bg-sky-500 text-white shadow-sm"
-                : "border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-600"
-            }`}
-            aria-pressed={isActive}
-          >
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
+  function RenderRangeButtons() {
+    return (
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {DASHBOARD_RANGE_OPTIONS.map((option) => {
+          const isActive = option.key === range;
+          return (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => setRange(option.key)}
+              disabled={isLoading}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold transition disabled:opacity-50 ${
+                isActive
+                  ? "border-sky-200 bg-sky-500 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-600"
+              }`}
+              aria-pressed={isActive}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   // Transformar datos de formato por-tiempo a formato por-delegación
   const delegationChartData = useMemo(() => {
@@ -184,142 +208,74 @@ export default function OperationsCharts({
 
   return (
     <section className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
-      <article className="min-h-[320px] rounded-[24px] border border-white/80 bg-white/90 p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm xl:col-span-2">
-        <header className="mb-3">
-          <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-900">
-            {DASHBOARD_CHART_COPY.trendTitle}
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">
-            {DASHBOARD_CHART_COPY.trendDescription}
-          </p>
-          {renderRangeButtons()}
-        </header>
+      <DashboardArticle
+        title="Tendencia de cobertura"
+        subtitle="Evolucion de cobertura operativa basada en registros recientes."
+        childrenHeader={<RenderRangeButtons />}
+        extraClassName="xl:col-span-2"
+      >
         <ChartContainer>
           {({ width, height }) => (
-            <AreaChart
-              width={width}
-              height={height}
-              data={trendData}
-              margin={{ top: 8, right: 10, left: -18, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="coverageFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="slot" tick={{ fill: "#64748b", fontSize: 12 }} />
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-              />
-              <Tooltip
-                cursor={{ stroke: "#93c5fd", strokeWidth: 1 }}
-                formatter={(value) => [
-                  `${Number(value ?? 0)}%`,
-                  DASHBOARD_CHART_COPY.tooltipCoverage,
-                ]}
-                contentStyle={{ borderRadius: 12, borderColor: "#cbd5e1" }}
-              />
-              <Area
-                type="monotone"
-                dataKey="cobertura"
-                stroke="#2563eb"
-                strokeWidth={2}
-                fill="url(#coverageFill)"
-              />
-            </AreaChart>
+            <AreaGraphic width={width} height={height} data={trendData} />
           )}
         </ChartContainer>
-      </article>
+      </DashboardArticle>
 
-      <article className="min-h-[320px] rounded-[24px] border border-white/80 bg-white/90 p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
-        <header className="mb-3">
-          <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-900">
-            {DASHBOARD_CHART_COPY.operationalTitle}
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">
-            {DASHBOARD_CHART_COPY.operationalDescription}
-          </p>
-        </header>
+      <DashboardArticle
+        title="Estado operativo"
+        subtitle="Distribución actual de guardias y alertas."
+      >
         <ChartContainer>
           {({ width, height }) => (
-            <PieChart width={width} height={height}>
-              <Pie
-                data={statusData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={45}
-                outerRadius={76}
-                paddingAngle={2}
-              />
-              <Tooltip
-                contentStyle={{ borderRadius: 12, borderColor: "#cbd5e1" }}
-              />
-            </PieChart>
+            <PieGraphic width={width} height={height} data={statusData} />
           )}
         </ChartContainer>
-      </article>
+      </DashboardArticle>
 
-      <article className="min-h-[340px] rounded-[24px] border border-white/80 bg-white/90 p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm xl:col-span-3">
-        <header className="mb-3">
-          <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-900">
-            {DASHBOARD_CHART_COPY.delegationTitle}
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">
-            {DASHBOARD_CHART_COPY.delegationDescription}
-          </p>
-          {renderRangeButtons()}
-        </header>
+      <DashboardArticle
+        title="Cobertura por delegacion"
+        subtitle="Cobertura promedio por delegación en el periodo seleccionado."
+        childrenHeader={<RenderRangeButtons />}
+        extraClassName="xl:col-span-3"
+      >
         <ChartContainer>
           {({ width, height }) => (
-            <BarChart
+            <BarGraphic
               width={width}
               height={height}
               data={delegationChartData}
-              margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis
-                dataKey="name"
-                tick={{ fill: "#64748b", fontSize: 11 }}
-                angle={-15}
-                textAnchor="end"
-                height={80}
-              />
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-              />
-              <Tooltip
-                formatter={(value) => [
-                  `${Number(value ?? 0)}%`,
-                  DASHBOARD_CHART_COPY.tooltipCoverage,
-                ]}
-                contentStyle={{ borderRadius: 12, borderColor: "#cbd5e1" }}
-              />
-              <Bar
-                dataKey="cobertura"
-                fill="#0ea5e9"
-                isAnimationActive={true}
-                shape={(props: any) => {
-                  const { x, y, width, height, payload } = props;
-                  return (
-                    <rect
-                      x={x}
-                      y={y}
-                      width={width}
-                      height={height}
-                      fill={payload?.fill || "#0ea5e9"}
-                    />
-                  );
-                }}
-              />
-            </BarChart>
+            />
           )}
         </ChartContainer>
-      </article>
+      </DashboardArticle>
     </section>
+  );
+}
+
+function DashboardArticle({
+  title,
+  subtitle,
+  extraClassName,
+  children,
+  childrenHeader,
+}: {
+  title: string;
+  subtitle?: string;
+  extraClassName?: string;
+  children?: React.ReactNode;
+  childrenHeader?: React.ReactNode;
+}) {
+  return (
+    <article
+      className={clsx(
+        "min-h-[320px] rounded-[24px] border border-white/80 bg-white/90 p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm",
+        extraClassName,
+      )}
+    >
+      <ChartHeader title={title} subtitle={subtitle}>
+        {childrenHeader}
+      </ChartHeader>
+      {children}
+    </article>
   );
 }
