@@ -289,3 +289,10 @@ export type SignatureType = {
   uploadUrl: string;
   key: string;
 };
+
+export type ToneVariants =
+  | "success"
+  | "warning"
+  | "danger"
+  | "neutral"
+  | "default";
