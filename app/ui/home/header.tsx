@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { UserType } from "@/app/lib/definitions";
 import { HeaderStats } from "@/app/ui/home/stast-home";
 import ImageLoading from "@/app/ui/components/image-loading";
+import HeaderStatsSkeleton from "@/app/ui/components/skeletons";
 
 export default async function Header({ user }: { user: UserType }) {
   return (
@@ -75,7 +77,9 @@ export default async function Header({ user }: { user: UserType }) {
               Resumen operativo
             </h2>
             <div className="mt-3">
-              <HeaderStats user={user} />
+              <Suspense fallback={<HeaderStatsSkeleton />}>
+                <HeaderStats user={user} />
+              </Suspense>
             </div>
           </div>
         </section>

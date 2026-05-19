@@ -457,3 +457,28 @@ export function SkeletonLine({ className }: { className?: string }) {
 export function SkeletonBlock({ className }: { className?: string }) {
   return <div className={clsx("rounded-2xl bg-slate-200/80", className)} />;
 }
+
+export default function HeaderStatsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <SkeletonBlock
+        className={clsx(
+          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
+          shimmer,
+        )}
+      />
+      <SkeletonBlock
+        className={clsx(
+          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
+          shimmer,
+        )}
+      />
+      <SkeletonBlock
+        className={clsx(
+          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
+          shimmer,
+        )}
+      />
+    </div>
+  );
+}
