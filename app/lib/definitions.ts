@@ -129,16 +129,32 @@ export type AmbulanceAreaType = BaseType & {
   order: number;
 };
 
+export type ChecklistAnswersComponentsType = {
+  id: string;
+  type: ChecklistQuestionsType["type_response"];
+  value_bool: ChecklistAnswersType["valueBool"];
+  value_option: ChecklistAnswersType["valueOption"];
+  value_text: ChecklistAnswersType["valueText"];
+};
+
+export type AnswersType = {
+  id: string;
+  question: ChecklistQuestionsType;
+  components: ChecklistAnswersComponentsType;
+};
+
 export type CheckListAmbulanceType = BaseType & {
   ambulance_id: string;
-  shift_id: string;
+  shift: ShiftType;
   time: string;
   km: number;
   gas_path?: string;
   sign_operator_path?: string;
-  recipient_id?: string;
+  recipient?: UserType;
   sign_recipient_path?: string;
   notes?: string;
+  ambulance: AmbulanceType;
+  answers: AnswersType[];
 };
 
 export type CheckListSupplyType = BaseType & {

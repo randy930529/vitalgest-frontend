@@ -134,7 +134,7 @@ export function CheckListStats({
     <ol className="flex flex-col justify-between gap-2">
       {checklistAmbulance ? (
         <>
-          {checklistAmbulance.recipient_id ? (
+          {checklistAmbulance.recipient ? (
             <li key={`checklists-link_ambulance-${id}`}>
               <ChecklistsLinkCard
                 title="CheckList Ambulancia"
