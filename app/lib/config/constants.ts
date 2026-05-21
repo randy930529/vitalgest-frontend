@@ -64,6 +64,7 @@ export const ERROR_MESSAGES = {
     MISSING_GUARD_ID: "Falta el ID de guardia.",
     MISSING_GUARD_CHIEF: "Falta el jefe de guardia.",
     MISSING_DATE: "Falta la fecha.",
+    STATE_NOT_ALLOWED: "Acción no permitida para el estado de la guardia.",
 
     INVALID_GUARD_ID: "ID de guardia inválido.",
     INVALID_GUARD_CHIEF: "Jefe de guardia inválido.",
@@ -72,6 +73,7 @@ export const ERROR_MESSAGES = {
     USER_NOT_GUARD_CHIEF: "No eres jefe de guardia.",
     DATE_EXPIRED: "La fecha ya expiró.",
     GUARD_ALREADY_EXISTS: "La guardia ya existe.",
+    CHECKLIST_AMBULANCE_NOT_FOUND: "Checklist de ambulancia no encontrado.",
   },
   get(code: string): string {
     return (

@@ -7,7 +7,7 @@ import { ProfileEditSkeleton } from "@/app/ui/components/skeletons";
 import { UserType } from "@/app/lib/definitions";
 import { fetchUserById } from "@/app/lib/data/users";
 import { notFound } from "next/navigation";
-import createSignatureURL from "@/app/lib/utils";
+import { createSignatureURL } from "@/app/lib/utils";
 
 export const metadata: Metadata = {
   title: "Mi Perfil",

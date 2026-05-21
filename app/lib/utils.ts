@@ -378,10 +378,10 @@ export const generatePaginationOffsets = (
   });
 };
 
-export async function uploadImageToCloud(
+export const uploadImageToCloud = async (
   uploadUrl: string,
   file: File,
-): Promise<UploadFileState> {
+): Promise<UploadFileState> => {
   try {
     const response = await fetch(uploadUrl, {
       method: "PUT",
@@ -399,7 +399,7 @@ export async function uploadImageToCloud(
       errors: { file: ["Error al guardar la imagen."] },
     };
   }
-}
+};
 
 /**
  * Crea y retorna la URL absoluta de una firma almacenada en el cloud.
@@ -408,9 +408,9 @@ export async function uploadImageToCloud(
  * @returns URL completa (string) apuntando al recurso de la firma en el cloud.
  * @throws Error si la variable de entorno NEXTCLOUD_SIGNATURES_URL no es valida.
  */
-export default function createSignatureURL(
+export const createSignatureURL = (
   signaturePathname: string,
-): string | undefined {
+): string | undefined => {
   if (!signaturePathname) return;
 
   const signatureUrl = process.env.NEXTCLOUD_SIGNATURES_URL;
@@ -419,4 +419,4 @@ export default function createSignatureURL(
   }
 
   return new URL(signaturePathname, signatureUrl).href;
-}
+};
