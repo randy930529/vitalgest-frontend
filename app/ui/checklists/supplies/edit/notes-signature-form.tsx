@@ -1,7 +1,10 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { ChecklistSupplyType, CustomOptions } from "@/app/lib/definitions";
+import {
+  AnswersChecklistSupplyType,
+  CustomOptions,
+} from "@/app/lib/definitions";
 import { useChecklistSupplyStore } from "@/app/lib/store/checklist-answers";
 import {
   signCheckListSupply,
@@ -26,7 +29,7 @@ export default function ChecklistSupplySign({
   const { answers, reset } = useChecklistSupplyStore();
 
   const prepareAnswers = () => {
-    const allAnswers: ChecklistSupplyType[] = [];
+    const allAnswers: AnswersChecklistSupplyType[] = [];
     Object.values(answers).forEach((stepAnswers) => {
       allAnswers.push(...stepAnswers);
     });

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   ChecklistAnswersType,
-  ChecklistSupplyType,
+  AnswersChecklistSupplyType,
 } from "@/app/lib/definitions";
 
 type ChecklistAmbulanceState = {
@@ -39,17 +39,17 @@ export const useChecklistAmbulanceStore = create<ChecklistAmbulanceStore>()(
       getAnswer: (id: string) => get().answers[id],
       reset: () => set({ ...initState }),
     }),
-    { name: "answers-checklist-ambulance" }
-  )
+    { name: "answers-checklist-ambulance" },
+  ),
 );
 
 type ChecklistSupplyState = {
-  answers: Record<string, ChecklistSupplyType[]>;
+  answers: Record<string, AnswersChecklistSupplyType[]>;
 };
 
 type ChecklistSupplyActions = {
-  setAnswer: (id: string, valor: ChecklistSupplyType[]) => void;
-  getAnswer: (id: string) => ChecklistSupplyType[] | undefined;
+  setAnswer: (id: string, valor: AnswersChecklistSupplyType[]) => void;
+  getAnswer: (id: string) => AnswersChecklistSupplyType[] | undefined;
   reset: () => void;
 };
 
@@ -63,13 +63,13 @@ export const useChecklistSupplyStore = create<ChecklistSupplyStore>()(
   persist<ChecklistSupplyStore>(
     (set, get) => ({
       ...initSupplyState,
-      setAnswer: (id: string, valor: ChecklistSupplyType[]) =>
+      setAnswer: (id: string, valor: AnswersChecklistSupplyType[]) =>
         set((state) => ({
           answers: { ...state.answers, [id]: valor },
         })),
       getAnswer: (id: string) => get().answers[id],
       reset: () => set({ ...initSupplyState }),
     }),
-    { name: "answers-checklist-supply" }
-  )
+    { name: "answers-checklist-supply" },
+  ),
 );

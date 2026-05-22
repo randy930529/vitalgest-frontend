@@ -2,7 +2,7 @@ import {
   CheckListAmbulanceType,
   ChecklistAnswersType,
   ChecklistSuppliesType,
-  ChecklistSupplyType,
+  AnswersChecklistSupplyType,
 } from "@/app/lib/definitions";
 import { BaseServerAction } from "@/app/lib/core/base-action";
 import {
@@ -179,11 +179,11 @@ export class CreateChecklistSuppliesAction extends BaseServerAction<
 }
 
 export class UpdateCheckListSupplyAnswersAction extends BaseServerAction<
-  ChecklistSupplyType[],
+  AnswersChecklistSupplyType[],
   ChecklistAnswersState
 > {
-  private answers: ChecklistSupplyType[];
-  constructor(id: string, answers: ChecklistSupplyType[]) {
+  private answers: AnswersChecklistSupplyType[];
+  constructor(id: string, answers: AnswersChecklistSupplyType[]) {
     super({
       endpoint: `/api/checklists/supply/answers/${id}`,
       method: "PUT",

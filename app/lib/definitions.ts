@@ -137,10 +137,27 @@ export type ChecklistAnswersComponentsType = {
   value_text: ChecklistAnswersType["valueText"];
 };
 
-export type AnswersType = {
+export type CheckListAmbulanceAnswersType = {
   id: string;
   question: ChecklistQuestionsType;
   components: ChecklistAnswersComponentsType;
+};
+
+export type CheckListSupplyAnswersType = {
+  id: string;
+  checklist_id: string;
+  category: string;
+  specification: string;
+  avaible_quantity: number;
+  min_quantity: number;
+  required_quantity: number;
+  measurement_unit: string;
+  area_id: number;
+  area: {
+    name: string;
+    section: string;
+    order: number;
+  };
 };
 
 export type CheckListAmbulanceType = BaseType & {
@@ -154,7 +171,7 @@ export type CheckListAmbulanceType = BaseType & {
   sign_recipient_path?: string;
   notes?: string;
   ambulance: AmbulanceType;
-  answers: AnswersType[];
+  answers: CheckListAmbulanceAnswersType[];
 };
 
 export type CheckListSupplyType = BaseType & {
@@ -164,6 +181,7 @@ export type CheckListSupplyType = BaseType & {
   sign_recipient_path: string;
   notes: string;
   ambulance_id: string;
+  answers: CheckListSupplyAnswersType[];
 };
 
 export type StepItemType = {
@@ -211,7 +229,7 @@ export type ChecklistAnswersType = {
   valueText?: string;
 };
 
-export type ChecklistSupplyType = {
+export type AnswersChecklistSupplyType = {
   supplyId: string;
   requiredQuantity: number;
 };

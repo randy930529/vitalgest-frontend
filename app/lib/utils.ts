@@ -8,7 +8,7 @@ import {
 import {
   ChecklistAnswersType,
   ChecklistQuestionsType,
-  ChecklistSupplyType,
+  AnswersChecklistSupplyType,
   CustomMxState,
   DelegationType,
   StepItemType,
@@ -158,7 +158,7 @@ export const createStepAnswers = (
 export const createSupplyAnswer = (
   questionId: string,
   answer: string,
-): ChecklistSupplyType => {
+): AnswersChecklistSupplyType => {
   return {
     supplyId: questionId,
     requiredQuantity: Number(answer),
@@ -166,7 +166,7 @@ export const createSupplyAnswer = (
 };
 
 export const createStepSupplyAnswers = (formData: FormData) => {
-  const answers: ChecklistSupplyType[] = [];
+  const answers: AnswersChecklistSupplyType[] = [];
 
   formData.keys().forEach((key) => {
     const [field, id] = key.split("~");

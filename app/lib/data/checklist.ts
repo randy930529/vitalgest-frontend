@@ -2,6 +2,7 @@ import {
   AmbulanceAreaType,
   CheckListAmbulanceType,
   ChecklistQuestionsType,
+  CheckListSupplyType,
   PaginatedResult,
   StepItemType,
   SupplyAmbulanceType,
@@ -108,31 +109,26 @@ export async function fetchChecklistSuppliesQuestions(
 }
 
 export async function fetchChecklistSuppliesCompleted(
-  ambulanceId: string,
-  areaId: number,
-): Promise<SupplyAmbulanceType[]> {
+  checklistId: string,
+): Promise<CheckListSupplyType | undefined> {
   try {
-    const endPoint = `/api/ambulances/supplies/${ambulanceId}`;
+    const endPoint = `/api/checklists/supply/${checklistId}`;
 
-    const dataFetching = new DataFetch<SupplyAmbulanceType>(endPoint);
-    const { data: suppliesAmbulance } = await dataFetching.getAll();
+    const dataFetching = new DataFetch<CheckListSupplyType>(endPoint);
+    const checklistSupplies = await dataFetching.getOne();
 
-    const SupplyAmbulanceByAreaId = suppliesAmbulance.filter(
-      ({ area_id }) => area_id === areaId,
-    );
-
-    return SupplyAmbulanceByAreaId;
+    return checklistSupplies;
   } catch (err) {
     console.log("API Error[GET CHECKLIST SUPPLIES]:", err);
-    return [];
+    return;
   }
 }
 
-export async function fetchChecklistAmbulanceCompleted(
-  ambulanceId: string,
+export async function fetchChecklistAmbulance(
+  checklistId: string,
 ): Promise<CheckListAmbulanceType | undefined> {
   try {
-    const endPoint = `/api/checklists/ambulance/${ambulanceId}`;
+    const endPoint = `/api/checklists/ambulance/${checklistId}`;
 
     const dataFetching = new DataFetch<CheckListAmbulanceType>(endPoint);
     const checklistAmbulance = await dataFetching.getOne();
