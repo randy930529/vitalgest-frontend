@@ -3,7 +3,7 @@
 import { GuardType } from "@/app/lib/definitions";
 import { GuardState } from "@/app/lib/config/stateConfigs";
 import {
-  CloseGuardAction,
+  GuardSetStateAction,
   CreateGuardAction,
   DeleteGuardAction,
   UpdateGuardAction,
@@ -31,10 +31,20 @@ export async function deleteGuard(id: string): Promise<GuardState> {
   return action.execute();
 }
 
+export async function initGuard(
+  id: string,
+  guard: GuardType,
+  prevState: GuardState,
+): Promise<GuardState> {
+  const action = new GuardSetStateAction(id, guard, "En curso");
+  return action.execute(prevState);
+}
+
 export async function closeGuard(
   id: string,
   guard: GuardType,
+  prevState: GuardState,
 ): Promise<GuardState> {
-  const action = new CloseGuardAction(id, guard);
-  return action.execute({});
+  const action = new GuardSetStateAction(id, guard, "Cerrada");
+  return action.execute(prevState);
 }

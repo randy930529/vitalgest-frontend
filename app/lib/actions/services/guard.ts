@@ -92,9 +92,13 @@ export class DeleteGuardAction extends BaseServerAction<GuardType, GuardState> {
   }
 }
 
-export class CloseGuardAction extends BaseServerAction<GuardType, GuardState> {
+export class GuardSetStateAction extends BaseServerAction<
+  GuardType,
+  GuardState
+> {
   private guard: GuardType;
-  constructor(id: string, guard: GuardType) {
+  private newState: GuardType["state"];
+  constructor(id: string, guard: GuardType, newState: GuardType["state"]) {
     super({
       endpoint: `/api/guards/edit/${id}`,
       method: "PUT",
@@ -103,23 +107,26 @@ export class CloseGuardAction extends BaseServerAction<GuardType, GuardState> {
     });
     this.setSchema(CreateGuard);
     this.guard = guard;
+    this.newState = newState;
   }
 
   async execute(prevState: GuardState): Promise<GuardState> {
     try {
-      const { guardChief, delegation, state, date } = this.guard;
+      const { guardChief, delegation, date } = this.guard;
       const dateStr = new Date(date).toISOString().split("T")[0];
 
       await this.fetchAPI({
         delegationId: delegation.id,
         guardChief: guardChief.id,
         date: dateStr,
-        state,
+        state: this.newState,
       });
 
       await this.revalidate();
 
-      return { message: "Guardia cerrada exitosamente." };
+      return {
+        message: `Guardia ${this.newState.toLowerCase()} exitosamente.`,
+      };
     } catch (error) {
       return this.handleError(error);
     }

@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition, useActionState } from "react";
 import Link from "next/link";
 import {
   EyeIcon,
@@ -10,6 +11,8 @@ import {
   NumberedListIcon,
 } from "@heroicons/react/24/outline";
 import { GuardType } from "@/app/lib/definitions";
+import { closeGuard, initGuard } from "@/app/lib/actions/guard";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import ModalTrigger from "@/app/ui/button-modal";
 import { Button } from "@/app/ui/button";
 
@@ -42,8 +45,37 @@ function GuardDetail({
   guard: GuardType;
   onClose?: () => void;
 }) {
-  function handleIniciarGuardia(guardiaId: string | undefined) {}
-  function handleCerrarGuardia(selectedGuardia: string | undefined) {}
+  const initialState = { errors: {}, message: null };
+
+  const closeGuardAction = closeGuard.bind(null, guard.id, guard);
+  const initGuardAction = initGuard.bind(null, guard.id, guard);
+
+  const [stateClosed, actionCloseGuard, isLoadingClosed] = useActionState(
+    closeGuardAction,
+    initialState,
+  );
+  const [stateInitialized, actionInitGuard, isLoadingInitialized] =
+    useActionState(initGuardAction, initialState);
+
+  useFormNotifications({
+    state: stateInitialized,
+  });
+  useFormNotifications({
+    state: stateClosed,
+  });
+
+  function handleCloseGuard() {
+    startTransition(() => {
+      actionCloseGuard();
+    });
+  }
+
+  function handleInitGuard() {
+    startTransition(() => {
+      actionInitGuard();
+    });
+  }
+
   return (
     <section className="w-full  p-0">
       <div className="p-6">
@@ -192,7 +224,9 @@ function GuardDetail({
           <Button
             type="submit"
             variant="formPrimary"
-            onClick={() => handleIniciarGuardia(guard?.id)}
+            onClick={handleInitGuard}
+            disabled={isLoadingInitialized}
+            isLoading={isLoadingInitialized}
           >
             Iniciar Guardia
           </Button>
@@ -201,7 +235,9 @@ function GuardDetail({
           <Button
             type="submit"
             variant="formPrimary"
-            onClick={() => handleCerrarGuardia(guard?.id)}
+            onClick={handleCloseGuard}
+            disabled={isLoadingClosed}
+            isLoading={isLoadingClosed}
           >
             <span className="inline-flex">
               <LockClosedIcon className="w-4 h-4 mr-1" />
