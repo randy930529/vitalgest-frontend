@@ -19,7 +19,8 @@ import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import { modalComponents } from "@/app/lib/config/modalConfig";
-import { Badge } from "@/app/ui/badges";
+import { Badge } from "@/app/ui/components/badges";
+import { TableActionDetail } from "@/app/ui/dashboard/guards/botton-guard-detail";
 
 const ModalComponent = modalComponents.guardForm;
 const customHeaders = [
@@ -195,6 +196,10 @@ export default function GuardsTable({
                 </td>
                 {!readonly && (
                   <TableActions>
+                    <TableActionDetail
+                      guard={guard}
+                      title="Detalles de la Guardia"
+                    />
                     <TableActionEdit
                       editLink={`${route ? route : "/dashboard/guards"}/${
                         guard.id

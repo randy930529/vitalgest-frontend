@@ -1,6 +1,8 @@
 import {
   AmbulanceAreaType,
+  CheckListAmbulanceType,
   ChecklistQuestionsType,
+  CheckListSupplyType,
   PaginatedResult,
   StepItemType,
   SupplyAmbulanceType,
@@ -103,5 +105,37 @@ export async function fetchChecklistSuppliesQuestions(
   } catch (err) {
     console.log("API Error[GET SUPPLIES AMBULANCE]:", err);
     return [];
+  }
+}
+
+export async function fetchChecklistSupplies(
+  checklistId: string,
+): Promise<CheckListSupplyType | undefined> {
+  try {
+    const endPoint = `/api/checklists/supply/${checklistId}`;
+
+    const dataFetching = new DataFetch<CheckListSupplyType>(endPoint);
+    const checklistSupplies = await dataFetching.getOne();
+
+    return checklistSupplies;
+  } catch (err) {
+    console.log("API Error[GET CHECKLIST SUPPLIES]:", err);
+    return;
+  }
+}
+
+export async function fetchChecklistAmbulance(
+  checklistId: string,
+): Promise<CheckListAmbulanceType | undefined> {
+  try {
+    const endPoint = `/api/checklists/ambulance/${checklistId}`;
+
+    const dataFetching = new DataFetch<CheckListAmbulanceType>(endPoint);
+    const checklistAmbulance = await dataFetching.getOne();
+
+    return checklistAmbulance;
+  } catch (err) {
+    console.log("API Error[GET CHECKLIST AMBULANCE]:", err);
+    return;
   }
 }

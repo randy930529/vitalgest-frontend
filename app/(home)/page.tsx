@@ -13,12 +13,6 @@ export default async function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.85),_rgba(241,245,249,1))]">
-      <a
-        href="#home-main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-[140] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-900"
-      >
-        Saltar al contenido principal
-      </a>
       <TopMenuBar user={session.user} />
       <Header user={session.user} />
       <MainContainer user={session.user} />

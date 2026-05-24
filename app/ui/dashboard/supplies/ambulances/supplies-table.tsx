@@ -15,7 +15,7 @@ import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { deleteSupplyInAmbulance } from "@/app/lib/actions/supply";
 import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
 import { modalComponents } from "@/app/lib/config/modalConfig";
-import { Badge } from "@/app/ui/badges";
+import { Badge } from "@/app/ui/components/badges";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";

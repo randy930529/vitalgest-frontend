@@ -3,7 +3,7 @@
 import { VerifySignatureResult } from "@/app/lib/definitions";
 import { getLoggedInUser } from "@/app/lib/dal";
 import { fetchUserById } from "@/app/lib/data/users";
-import createSignatureURL from "@/app/lib/utils";
+import { createSignatureURL } from "@/app/lib/utils";
 
 export async function verifySignature(
   prevState: VerifySignatureResult,

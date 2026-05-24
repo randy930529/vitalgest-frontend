@@ -129,25 +129,61 @@ export type AmbulanceAreaType = BaseType & {
   order: number;
 };
 
+export type ChecklistAnswersComponentsType = {
+  id: string;
+  type: ChecklistQuestionsType["type_response"];
+  value_bool: ChecklistAnswersType["valueBool"];
+  value_option: ChecklistAnswersType["valueOption"];
+  value_text: ChecklistAnswersType["valueText"];
+};
+
+export type CheckListAmbulanceAnswersType = {
+  id: string;
+  question: ChecklistQuestionsType;
+  components: ChecklistAnswersComponentsType;
+};
+
+export type CheckListSupplyAnswersType = {
+  id: string;
+  checklist_id: string;
+  category: string;
+  specification: string;
+  avaible_quantity: number;
+  min_quantity: number;
+  required_quantity: number;
+  measurement_unit: string;
+  area_id: number;
+  area: {
+    name: string;
+    section: string;
+    order: number;
+  };
+};
+
 export type CheckListAmbulanceType = BaseType & {
-  ambulance_id: string;
-  shift_id: string;
+  shift: ShiftType;
   time: string;
   km: number;
   gas_path?: string;
-  sign_operator_path?: string;
-  recipient_id?: string;
+  recipient?: UserType;
+  deliverer?: UserType;
+  sign_deliverer_path?: string;
   sign_recipient_path?: string;
   notes?: string;
+  ambulance: AmbulanceType;
+  answers: CheckListAmbulanceAnswersType[];
 };
 
 export type CheckListSupplyType = BaseType & {
-  shift_id: string;
+  shift: ShiftType;
   sign_paramedical_path?: string;
-  recipient_id: string;
-  sign_recipient_path: string;
+  recipient?: UserType;
+  deliverer?: UserType;
+  sign_deliverer_path?: string;
+  sign_recipient_path?: string;
   notes: string;
   ambulance_id: string;
+  answers: CheckListSupplyAnswersType[];
 };
 
 export type StepItemType = {
@@ -195,7 +231,7 @@ export type ChecklistAnswersType = {
   valueText?: string;
 };
 
-export type ChecklistSupplyType = {
+export type AnswersChecklistSupplyType = {
   supplyId: string;
   requiredQuantity: number;
 };
@@ -289,3 +325,10 @@ export type SignatureType = {
   uploadUrl: string;
   key: string;
 };
+
+export type ToneVariants =
+  | "success"
+  | "warning"
+  | "danger"
+  | "neutral"
+  | "default";

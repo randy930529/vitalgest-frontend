@@ -7,10 +7,10 @@ import {
   UsersIcon,
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
-import { ShiftType, UserType } from "@/app/lib/definitions";
+import { ShiftType, ToneVariants, UserType } from "@/app/lib/definitions";
 import { getElapsedMessage } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
-import { Badge } from "@/app/ui/badges";
+import { Badge, BadgeVariant } from "@/app/ui/components/badges";
 import { StatCardProps } from "@/app/ui/dashboard/cards";
 
 const toneClasses: Record<
@@ -268,6 +268,103 @@ export function ChecklistsLinkCard({
           pending={param.startsWith("edit")}
         />
       </div>
+    </div>
+  );
+}
+
+export function AlertCard({
+  title,
+  subtitle,
+  alertType,
+  alertIcon: Icon,
+  badge,
+  children,
+}: {
+  title: string;
+  subtitle?: React.ReactNode;
+  alertType: ToneVariants;
+  alertIcon?: React.ElementType;
+  badge?: { text: string; type: BadgeVariant };
+  children?: React.ReactNode;
+}) {
+  const alertTone = {
+    success: "emerald",
+    warning: "orange",
+    danger: "rose",
+    neutral: "slate",
+    default: "sky",
+  }[alertType];
+
+  return (
+    <div
+      className={clsx(
+        "flex items-center justify-between rounded-2xl border p-4",
+        `bg-${alertTone}-50/70 border-${alertTone}-200`,
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className={clsx(
+            "flex h-10 w-10 items-center justify-center rounded-xl",
+            `bg-${alertTone}-100 text-${alertTone}-600`,
+          )}
+        >
+          {Icon && <Icon className="h-5 w-5" />}
+        </div>
+        <div>
+          <p className="font-semibold text-slate-800">{title}</p>
+          <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+            {subtitle}
+          </div>
+        </div>
+      </div>
+      {badge && (
+        <Badge
+          title={badge.text}
+          variant={badge.type}
+          extraClassName="bg-white"
+        />
+      )}
+      {children}
+    </div>
+  );
+}
+
+export function SummaryCard({
+  title,
+  subtitle,
+  summaryType,
+  summaryIcon: Icon,
+}: {
+  title: string;
+  subtitle?: string;
+  summaryType: ToneVariants;
+  summaryIcon?: React.ElementType;
+}) {
+  const summaryTone = {
+    success: "emerald",
+    warning: "orange",
+    danger: "rose",
+    neutral: "slate",
+    default: "sky",
+  }[summaryType];
+
+  return (
+    <div
+      className={clsx(
+        "rounded-2xl border p-3 text-center",
+        `border-${summaryTone}-100 bg-${summaryTone}-50/70 text-${summaryTone}-600`,
+      )}
+    >
+      {Icon && <Icon className="mx-auto mb-1 h-5 w-5" />}
+      <p className={clsx("text-2xl font-semibold", `text-${summaryTone}-900`)}>
+        {title}
+      </p>
+      {subtitle && (
+        <p className={clsx("text-xs font-medium", `text-${summaryTone}-700`)}>
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

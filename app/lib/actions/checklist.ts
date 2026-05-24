@@ -2,7 +2,7 @@
 
 import {
   ChecklistAnswersType,
-  ChecklistSupplyType,
+  AnswersChecklistSupplyType,
 } from "@/app/lib/definitions";
 import {
   ChecklistState,
@@ -40,7 +40,8 @@ export async function signCheckListAmbulance(
   formData: FormData,
 ): Promise<ChecklistState> {
   const endpoint = `/api/checklists/ambulance/${id}/sign`;
-  const action = new SignCheckListAction(id, endpoint);
+  console.log(id);
+  const action = new SignCheckListAction(endpoint);
   return action.execute(prevState, formData);
 }
 
@@ -50,7 +51,7 @@ export async function signCheckListSupply(
   formData: FormData,
 ): Promise<ChecklistState> {
   const endpoint = `/api/checklists/supply/${id}/sign`;
-  const action = new SignCheckListAction(id, endpoint);
+  const action = new SignCheckListAction(endpoint);
   return action.execute(prevState, formData);
 }
 
@@ -65,7 +66,7 @@ export async function createChecklistSupplies(
 export async function updateCheckListSupplyAnswers(
   id: string,
   prevState: ChecklistAnswersState,
-  answers: ChecklistSupplyType[],
+  answers: AnswersChecklistSupplyType[],
 ): Promise<ChecklistAnswersState> {
   const action = new UpdateCheckListSupplyAnswersAction(id, answers);
   return action.execute(prevState);
