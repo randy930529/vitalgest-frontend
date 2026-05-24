@@ -224,6 +224,17 @@ const FormSupplySchema = z.object({
     .nullable(),
 });
 
+const FormChecklistSignSchema = z.object({
+  recipientId: z.string().uuid(),
+  delivererId: z.string().uuid(),
+  notes: z
+    .string()
+    .trim()
+    .max(1000, { message: "Las notas no deben exceder los 1000 caracteres." })
+    .optional()
+    .nullable(),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -250,15 +261,7 @@ export const UpdateChecklist = FormChecklistSchema.omit({
   recipientId: true,
   gasFile: true,
 });
-export const SignChecklist = FormChecklistSchema.omit({
-  id: true,
-  gasFile: true,
-  ambulanceId: true,
-  km: true,
-  shiftId: true,
-  signOperatorFile: true,
-  signRecipientFile: true,
-});
+export const SignChecklist = FormChecklistSignSchema.omit({});
 
 export const CreateChecklistSupplies = FormChecklistSchema.omit({
   id: true,

@@ -108,7 +108,7 @@ export async function fetchChecklistSuppliesQuestions(
   }
 }
 
-export async function fetchChecklistSuppliesCompleted(
+export async function fetchChecklistSupplies(
   checklistId: string,
 ): Promise<CheckListSupplyType | undefined> {
   try {

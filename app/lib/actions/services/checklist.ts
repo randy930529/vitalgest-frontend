@@ -101,7 +101,7 @@ export class SignCheckListAction extends BaseServerAction<
   ChecklistAnswersType[],
   ChecklistState
 > {
-  constructor(id: string, endpoint: string) {
+  constructor(endpoint: string) {
     super({
       endpoint,
       method: "PUT",
@@ -117,25 +117,11 @@ export class SignCheckListAction extends BaseServerAction<
     try {
       const data = this.validate({
         recipientId: formData.get("write-in-signature"),
+        delivererId: formData.get("write-out-signature"),
         notes: formData.get("notes"),
-        signOperatorFile: formData.get("sign-write-out-signature"),
-        signRecipientFile: formData.get("sign-write-in-signature"),
       });
 
-      const bodyFormData = new FormData();
-
-      bodyFormData.append("recipientId", data.recipientId as string);
-      bodyFormData.append("notes", data.notes as string);
-      // bodyFormData.append(
-      //   "signOperatorFile",
-      //   formData.get("sign-write-out-signature") as File
-      // );
-      // bodyFormData.append(
-      //   "signRecipientFile",
-      //   formData.get("sign-write-in-signature") as File
-      // );
-
-      await this.fetchAPIWithFormData(bodyFormData);
+      await this.fetchAPI(data);
 
       return { message: "Checklist aprobado exitosamente." };
     } catch (error) {
@@ -208,6 +194,7 @@ export class UpdateCheckListSupplyAnswersAction extends BaseServerAction<
 
       return { message: "Checklist actualizado exitosamente." };
     } catch (error) {
+      console.log(error);
       return this.handleError(error);
     }
   }

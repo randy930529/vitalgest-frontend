@@ -41,7 +41,7 @@ export async function signCheckListAmbulance(
 ): Promise<ChecklistState> {
   const endpoint = `/api/checklists/ambulance/${id}/sign`;
   console.log(id);
-  const action = new SignCheckListAction(id, endpoint);
+  const action = new SignCheckListAction(endpoint);
   return action.execute(prevState, formData);
 }
 
@@ -51,7 +51,7 @@ export async function signCheckListSupply(
   formData: FormData,
 ): Promise<ChecklistState> {
   const endpoint = `/api/checklists/supply/${id}/sign`;
-  const action = new SignCheckListAction(id, endpoint);
+  const action = new SignCheckListAction(endpoint);
   return action.execute(prevState, formData);
 }
 
