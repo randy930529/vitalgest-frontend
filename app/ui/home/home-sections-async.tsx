@@ -11,12 +11,13 @@ export async function CurrentGuardSection({ user }: { user: UserType }) {
   if (inlineGuard?.shifts) {
     const isGuardCompleted = inlineGuard.shifts.every(
       ({ checklistAmbulance, checklistSupplies }) =>
-        checklistAmbulance?.recipient_id && checklistSupplies?.recipient_id,
+        checklistAmbulance?.sign_recipient_path &&
+        checklistSupplies?.sign_recipient_path,
     );
 
     if (isGuardCompleted) {
       inlineGuard.state = "Cerrada";
-      await closeGuard(inlineGuard.id, inlineGuard);
+      await closeGuard(inlineGuard.id, inlineGuard, {});
     }
   }
 
