@@ -4,9 +4,12 @@ import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
 import { GuardStats } from "@/app/ui/home/stast-home";
 import GuardsTableSection from "@/app/ui/home/guards-table-section";
 import { EmptyStateCard } from "@/app/ui/state-feedback";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 export async function CurrentGuardSection({ user }: { user: UserType }) {
   const [, inlineGuard] = await fetchGuardsAndInlineGuardByUserMe(user);
+  const isAdmin = ROLE_MANAGER.isAdmin(user.role);
+  const canCreateGuards = user.role === "head_guard" || isAdmin;
 
   if (inlineGuard?.shifts) {
     const isGuardCompleted = inlineGuard.shifts.every(
@@ -46,7 +49,8 @@ export async function CurrentGuardSection({ user }: { user: UserType }) {
           title="No tienes una guardia en curso."
           description="Crea una nueva guardia para habilitar el seguimiento de turnos y el avance de checklist de ambulancia e insumos."
           actionLabel="Crear guardia"
-          actionHref="/dashboard/guards"
+          actionHref={isAdmin ? "/dashboard/guards" : "#guardia-curso-title"}
+          disabled={!canCreateGuards}
         />
       )}
     </section>
