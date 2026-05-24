@@ -42,15 +42,7 @@ export class CreateChecklistAmbulanceAction extends BaseServerAction<
         gasFile: formData.get("gasFile"),
       });
 
-      const { ambulanceId, shiftId, km } = data;
-      const bodyFormData = new FormData();
-      bodyFormData.append("ambulanceId", ambulanceId);
-      bodyFormData.append("shiftId", shiftId);
-      bodyFormData.append("km", String(km));
-      bodyFormData.append("notes", "");
-      bodyFormData.append("gasFile", formData.get("gasFile") as File);
-
-      const checklist = await this.fetchAPIWithFormData(bodyFormData);
+      const checklist = await this.fetchAPI(data);
 
       return {
         message: "Checklist creado exitosamente.",
