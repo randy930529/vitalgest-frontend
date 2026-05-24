@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
   BellIcon,
@@ -8,6 +9,8 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import { UserType } from "@/app/lib/definitions";
+import { STYLES } from "@/app/lib/config/constants";
+import ModalTrigger from "@/app/ui/button-modal";
 import UserMenuDropdown from "@/app/ui/profile/user-menu-dropdown";
 
 export default function NavBar({
@@ -52,16 +55,12 @@ export default function NavBar({
         <Tooltip id="notification-tooltip" content="Notificaciones" />
       </button>
       {/* <!-- help --> */}
-      <button
-        type="button"
-        data-tooltip-id="question-tooltip"
-        className={iconButtonClass}
-      >
-        <span className="sr-only">View help</span>
-        {/* <!-- Bell icon --> */}
-        <QuestionMarkCircleIcon className="w-8 h-8" />
-        <Tooltip id="question-tooltip" content="Ayuda" />
-      </button>
+      <ModalTrigger
+        title="Manual de usuario"
+        type="info"
+        modelContent={<HelpManualContent />}
+        buttonToggle={<HelpButtonToggle className={iconButtonClass} />}
+      />
       <UserMenuDropdown
         key={`user-${id}`}
         id={id}
@@ -71,5 +70,40 @@ export default function NavBar({
         buttonClassName={iconButtonClass}
       />
     </nav>
+  );
+}
+
+function HelpManualContent({ onClose: _onClose }: { onClose?: () => void }) {
+  return (
+    <div className={clsx("space-y-4 mb-6", STYLES.boxShadow)}>
+      <div className="h-[70vh] w-full overflow-hidden rounded border border-slate-200">
+        <iframe
+          src="/docs/manual-usuario.pdf"
+          title="Manual de usuario"
+          className="h-full w-full"
+        />
+      </div>
+    </div>
+  );
+}
+
+function HelpButtonToggle({
+  onClose,
+  className,
+}: {
+  onClose?: () => void;
+  className: string;
+}) {
+  return (
+    <button
+      type="button"
+      data-tooltip-id="question-tooltip"
+      className={className}
+      onClick={onClose}
+    >
+      <span className="sr-only">View help</span>
+      <QuestionMarkCircleIcon className="w-8 h-8" />
+      <Tooltip id="question-tooltip" content="Ayuda" />
+    </button>
   );
 }

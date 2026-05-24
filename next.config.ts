@@ -16,7 +16,7 @@ const contentSecurityPolicy = [
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   connectSrc,
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self'",
   "form-action 'self'",
   "upgrade-insecure-requests",
 ].join("; ");
@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "X-Frame-Options",
-            value: "DENY",
+            value: "SAMEORIGIN",
           },
           {
             key: "Strict-Transport-Security",
