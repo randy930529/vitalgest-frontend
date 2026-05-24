@@ -16,10 +16,13 @@ export const metadata: Metadata = {
 
 export default async function ChecklistAmbulanceReportPage({
   params,
+  searchParams,
 }: {
-  params: Promise<{ checklistId: string; delegation: string }>;
+  params: Promise<{ checklistId: string }>;
+  searchParams: Promise<{ delegation: string }>;
 }) {
-  const { checklistId, delegation } = await params;
+  const { checklistId } = await params;
+  const { delegation } = await searchParams;
 
   const checklist = await fetchChecklistAmbulance(checklistId);
 
@@ -28,7 +31,7 @@ export default async function ChecklistAmbulanceReportPage({
   }
 
   const { guard, driver, paramedical } = checklist.shift;
-  const divisionName = delegation || "";
+  const divisionName = delegation?.replace("Delegación ", "") || "";
   const dateObj = new Date(checklist.updatedAt || Date.now());
 
   // Agrupar respuestas por categoría
@@ -229,7 +232,7 @@ export default async function ChecklistAmbulanceReportPage({
               </div>
             ))}
 
-            {/* Notas y Firmas Block (fills the remaining grid spaces if needed, or spans 3) */}
+            {/* Notas y Firmas Block */}
             <div className="col-span-3 border border-gray-300 rounded flex overflow-hidden">
               <div className="flex-1 p-4 border-r border-gray-300">
                 <div className="font-bold mb-2 uppercase">
@@ -296,6 +299,13 @@ export default async function ChecklistAmbulanceReportPage({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Footer Document Stamp */}
+        <div className="bg-gray-50 p-4 text-center border-t border-gray-200 text-[0.7rem] text-gray-400">
+          Documento generado electrónicamente por VitalGest. ID Control:{" "}
+          {checklist.id.toString().padStart(6, "0")} | Fecha de impresión:{" "}
+          {new Date().toLocaleDateString("es-MX")}
         </div>
 
         {/* Specific Print Styles */}

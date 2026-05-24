@@ -143,12 +143,14 @@ function GuardDetail({
                   typeChecklist="supplies"
                   checklist={chkSupplies}
                   guardState={guard.state}
+                  delegationName={guard.delegation.name}
                 />
                 <ChecklistCard
                   key={chkAmbulance?.id || "chkAmbulancia"}
                   typeChecklist="ambulance"
                   checklist={chkAmbulance}
                   guardState={guard.state}
+                  delegationName={guard.delegation.name}
                 />
               </div>
             </div>
@@ -219,10 +221,12 @@ function ChecklistCard({
   typeChecklist,
   checklist,
   guardState,
+  delegationName,
 }: {
   typeChecklist: "ambulance" | "supplies";
   checklist: CheckListSupplyType | CheckListAmbulanceType | undefined;
   guardState: GuardType["state"];
+  delegationName: string;
 }) {
   const isChkAmbulance = typeChecklist === "ambulance";
 
@@ -275,7 +279,7 @@ function ChecklistCard({
           </Link>
           {checklist.sign_recipient_path && (
             <Link
-              href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report`}
+              href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
               className={clsx(
                 "bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-md flex items-center",
                 isChkAmbulance

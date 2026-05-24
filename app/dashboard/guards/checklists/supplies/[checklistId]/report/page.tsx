@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { StepItemType } from "@/app/lib/definitions";
-import { fetchChecklistSuppliesCompleted } from "@/app/lib/data/checklist";
+import { fetchChecklistSupplies } from "@/app/lib/data/checklist";
+import { createSignatureURL } from "@/app/lib/utils";
 import { PrintButton } from "@/app/ui/components/checklists/print-button";
 import { ReportHeader } from "@/app/ui/components/checklists/report-header";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Reporte de Inspección de Insumos",
@@ -15,17 +15,21 @@ export const metadata: Metadata = {
 
 export default async function ChecklistSuppliesReportPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ checklistId: string }>;
+  searchParams: Promise<{ delegation: string }>;
 }) {
   const { checklistId } = await params;
-  const checklist = await fetchChecklistSuppliesCompleted(checklistId);
+  const { delegation } = await searchParams;
+  const checklist = await fetchChecklistSupplies(checklistId);
 
   if (!checklist) {
     notFound();
   }
 
-  const divisionName = `${"Ameca"}, ${"Jalisco"}`;
+  const { guard, paramedical } = checklist.shift;
+  const divisionName = delegation?.replace("Delegación ", "") || "";
 
   const areasItemsInit = new Map<
     string,
@@ -75,11 +79,11 @@ export default async function ChecklistSuppliesReportPage({
           <ChevronLeftIcon className="w-5 h-5" />
           Volver a la Guardia
         </Link>
-        <PrintButton />
+        <PrintButton name={`reporte_checklist_insumos`} />
       </div>
 
       {/* A4 Sheet */}
-      <div className="print-area max-w-[850px] mx-auto bg-white p-0 shadow-lg text-gray-800 font-sans">
+      <div className="print-area max-w-[864px] mx-auto bg-white p-8 shadow-lg text-gray-800 font-sans">
         {/* Official Header */}
         <ReportHeader divisionName={divisionName} />
 
@@ -87,7 +91,7 @@ export default async function ChecklistSuppliesReportPage({
         <div className="py-10 px-12">
           {/* Document Title & Meta */}
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-extrabold text-gray-900 m-0 mb-2 uppercase tracking-tight">
+            <h1 className="text-2xl font-extrabold text-gray-900 m-0 mb-2 uppercase tracking-tight">
               Reporte de Inspección de Insumos
             </h1>
             <p className="m-0 text-sm text-gray-500 font-medium">
@@ -129,7 +133,7 @@ export default async function ChecklistSuppliesReportPage({
 
                 <div className="text-gray-500 font-semibold">Hora Emisión:</div>
                 <div className="font-semibold text-gray-700">
-                  {checklist.recipient_id
+                  {checklist.recipient
                     ? new Date(checklist.updatedAt).toLocaleTimeString(
                         "es-MX",
                         { hour: "2-digit", minute: "2-digit", timeZone: "UTC" },
@@ -144,23 +148,23 @@ export default async function ChecklistSuppliesReportPage({
                   Jefe de Guardia:
                 </div>
                 <div className="font-bold text-gray-900">
-                  {checklist.id} // Nombre del jefe de guardia
-                  {checklist.id} // Apellido del jefe de guardia
+                  {`${guard.guardChief.name} ${guard.guardChief.lastname}`}
                 </div>
 
                 <div className="text-gray-500 font-semibold">
                   Técnico (TUM):
                 </div>
                 <div className="font-semibold text-gray-700">
-                  {checklist.id} {checklist.id} // Nombre y apellido del
-                  paramédico
+                  {checklist.shift
+                    ? `${paramedical.name} ${paramedical.lastname}`
+                    : "N/A"}
                 </div>
 
-                <div className="text-gray-500 font-semibold">Estado Doc.:</div>
+                <div className="text-gray-500 font-semibold">ESTADO:</div>
                 <div
-                  className={`font-bold uppercase ${checklist.recipient_id ? "text-green-600" : "text-orange-500"}`}
+                  className={`font-bold uppercase ${checklist.recipient ? "text-green-600" : "text-orange-500"}`}
                 >
-                  {checklist.recipient_id ? "COMPLETADO" : "PENDIENTE"}
+                  {checklist.recipient ? "COMPLETADO" : "PENDIENTE"}
                 </div>
               </div>
             </div>
@@ -254,22 +258,28 @@ export default async function ChecklistSuppliesReportPage({
             </p>
           </div>
 
-          {/* Signatures block */}
+          {/* Notas y Firmas Block */}
           <div className="grid grid-cols-2 gap-12 mx-8 page-break-inside-avoid">
             {/* TUM (Entrega) */}
             <div className="text-center flex flex-col items-center">
               <div className="h-24 flex items-end justify-center mb-2 w-full">
-                {checklist.sign_paramedical_path && (
-                  <img
-                    src={checklist.sign_paramedical_path}
+                {checklist.deliverer && (
+                  <Image
+                    src={
+                      createSignatureURL(checklist.sign_deliverer_path || "") ||
+                      ""
+                    }
                     alt="Firma TUM"
+                    width={120}
+                    height={60}
                     className="max-h-20 object-contain"
                   />
                 )}
               </div>
               <div className="border-t border-gray-400 w-full pt-2 text-center font-bold">
-                {checklist.id} {checklist.id} // Nombre y apellido del
-                paramédico
+                {checklist.deliverer
+                  ? `${checklist.deliverer.name} ${checklist.deliverer.lastname}`
+                  : "N/A"}
               </div>
               <div className="text-xs text-gray-500 font-semibold mt-1">
                 PARAMÉDICO (ENTREGA)
@@ -278,21 +288,26 @@ export default async function ChecklistSuppliesReportPage({
 
             <div className="text-center flex flex-col items-center">
               <div className="h-24 flex items-end justify-center mb-2 w-full">
-                {checklist.recipient_id && (
-                  <img
-                    src={checklist.sign_recipient_path}
-                    alt="Firma Jefe"
+                {checklist.recipient && (
+                  <Image
+                    src={
+                      createSignatureURL(checklist.sign_recipient_path || "") ||
+                      ""
+                    }
+                    alt="Firma Jefe Guardia"
+                    width={120}
+                    height={60}
                     className="max-h-20 object-contain"
                   />
                 )}
               </div>
               <div className="border-t border-gray-400 w-full pt-2 text-center font-bold">
-                {checklist.id} {checklist.id} // Nombre y apellido del jefe de
-                guardia
+                {checklist.recipient
+                  ? `${checklist.recipient.name} ${checklist.recipient.lastname}`
+                  : "N/A"}
               </div>
               <div className="text-xs text-gray-500 font-semibold mt-1">
-                {checklist.recipient_id ? checklist.id : "JEFE DE GUARDIA"}{" "}
-                (RECIBE)
+                JEFE DE GUARDIA (RECIBE)
               </div>
             </div>
           </div>

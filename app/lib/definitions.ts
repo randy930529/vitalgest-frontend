@@ -175,7 +175,7 @@ export type CheckListAmbulanceType = BaseType & {
 };
 
 export type CheckListSupplyType = BaseType & {
-  shift_id: string;
+  shift: ShiftType;
   sign_paramedical_path?: string;
   recipient?: UserType;
   deliverer?: UserType;
