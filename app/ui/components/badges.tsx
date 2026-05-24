@@ -39,7 +39,9 @@ export function Badge({
       )}
     >
       <span
-        className={clsx("me-1 h-2 w-2 rounded-full", `bg-${badgeTone}-600`)}
+        className={clsx("me-1 h-2 w-2 rounded-full", `bg-${badgeTone}-600`, {
+          "border border-slate-300": resolvedVariant === "neutral",
+        })}
       ></span>
       {title}
     </span>
