@@ -22,6 +22,7 @@ export default function ChecklistSupplySign({
   usersOptions: (CustomOptions & {
     position?: string;
     email?: string;
+    role?: string;
   })[];
 }) {
   const router = useRouter();

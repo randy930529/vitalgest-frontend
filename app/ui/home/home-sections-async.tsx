@@ -43,7 +43,7 @@ export async function CurrentGuardSection({ user }: { user: UserType }) {
       </header>
 
       {inlineGuard ? (
-        <GuardStats guard={inlineGuard} />
+        <GuardStats guard={inlineGuard} currentUserRole={user.role} />
       ) : (
         <EmptyStateCard
           title="No tienes una guardia en curso."

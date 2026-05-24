@@ -123,82 +123,102 @@ export function CheckListStats({
   ambulanceId,
   checklistAmbulance,
   checklistSupplies,
+  currentUserRole,
 }: {
   guardId: string;
   id: string;
   ambulanceId: string;
   checklistAmbulance: CheckListAmbulanceType | undefined;
   checklistSupplies: CheckListSupplyType | undefined;
+  currentUserRole: string;
 }) {
+  const accessChlAmbulance = [
+    "head_guard",
+    "admin",
+    "vehicle_operator",
+  ].includes(currentUserRole);
+  const accessChlSupplies = ["head_guard", "admin", "paramedical"].includes(
+    currentUserRole,
+  );
+
   return (
     <ol className="flex flex-col justify-between gap-2">
-      {checklistAmbulance ? (
+      {accessChlAmbulance && (
         <>
-          {checklistAmbulance.sign_recipient_path ? (
-            <li key={`checklists-link_ambulance-${id}`}>
-              <ChecklistsLinkCard
-                title="CheckList Ambulancia"
-                link=""
-                guardId={guardId}
-                id={id}
-                isChecked
-              />
-            </li>
+          {checklistAmbulance ? (
+            <>
+              {checklistAmbulance.sign_recipient_path ? (
+                <li key={`checklists-link_ambulance-${id}`}>
+                  <ChecklistsLinkCard
+                    title="CheckList Ambulancia"
+                    link=""
+                    guardId={guardId}
+                    id={id}
+                    isChecked
+                  />
+                </li>
+              ) : (
+                <li key={`checklists-link_ambulance-${id}`}>
+                  <ChecklistsLinkCard
+                    title="CheckList Ambulancia"
+                    link="ambulances"
+                    param="edit?step=1"
+                    guardId={guardId}
+                    id={id}
+                  />
+                </li>
+              )}
+            </>
           ) : (
             <li key={`checklists-link_ambulance-${id}`}>
               <ChecklistsLinkCard
                 title="CheckList Ambulancia"
                 link="ambulances"
-                param="edit?step=1"
                 guardId={guardId}
                 id={id}
               />
             </li>
           )}
         </>
-      ) : (
-        <li key={`checklists-link_ambulance-${id}`}>
-          <ChecklistsLinkCard
-            title="CheckList Ambulancia"
-            link="ambulances"
-            guardId={guardId}
-            id={id}
-          />
-        </li>
       )}
-      {checklistSupplies ? (
+
+      {accessChlSupplies && (
         <>
-          {checklistSupplies.sign_recipient_path ? (
-            <li key={`checklists-link_supplies-${id}`}>
-              <ChecklistsLinkCard
-                title="CheckList Insumos"
-                link=""
-                guardId={guardId}
-                id={id}
-                isChecked
-              />
-            </li>
+          {accessChlSupplies && checklistSupplies ? (
+            <>
+              {checklistSupplies.sign_recipient_path ? (
+                <li key={`checklists-link_supplies-${id}`}>
+                  <ChecklistsLinkCard
+                    title="CheckList Insumos"
+                    link=""
+                    guardId={guardId}
+                    id={id}
+                    isChecked
+                  />
+                </li>
+              ) : (
+                <li key={`checklists-link_supplies-${id}`}>
+                  <ChecklistsLinkCard
+                    title="CheckList Insumos"
+                    link="supplies"
+                    param={`edit?ambulance=${ambulanceId}&step=1`}
+                    guardId={guardId}
+                    id={id}
+                  />
+                </li>
+              )}
+            </>
           ) : (
             <li key={`checklists-link_supplies-${id}`}>
               <ChecklistsLinkCard
                 title="CheckList Insumos"
                 link="supplies"
-                param={`edit?ambulance=${ambulanceId}&step=1`}
                 guardId={guardId}
                 id={id}
               />
             </li>
           )}
         </>
-      ) : (
-        <li key={`checklists-link_supplies-${id}`}>
-          <ChecklistsLinkCard
-            title="CheckList Insumos"
-            link="supplies"
-            guardId={guardId}
-            id={id}
-          />
-        </li>
       )}
     </ol>
   );
@@ -207,9 +227,11 @@ export function CheckListStats({
 export function ShiftStats({
   guardId,
   shifts,
+  currentUserRole,
 }: {
   guardId: string;
   shifts: ShiftType[];
+  currentUserRole: string;
 }) {
   return (
     <ul
@@ -247,6 +269,7 @@ export function ShiftStats({
               ambulanceId={ambulance.id}
               checklistAmbulance={checklistAmbulance}
               checklistSupplies={checklistSupplies}
+              currentUserRole={currentUserRole}
             />
           </li>
         ),
@@ -255,7 +278,13 @@ export function ShiftStats({
   );
 }
 
-export function GuardStats({ guard }: { guard: GuardType }) {
+export function GuardStats({
+  guard,
+  currentUserRole,
+}: {
+  guard: GuardType;
+  currentUserRole: string;
+}) {
   const totalShifts = guard.shifts.length;
   const date = formatDateToDDMMYYYY(guard.date);
   const customCard: StatCardProps[] = [
@@ -293,7 +322,11 @@ export function GuardStats({ guard }: { guard: GuardType }) {
 
       <div className="flex flex-col justify-between items-center gap-4 md:flex-row md:gap-8">
         <ResourceStats cardItems={customCard} />
-        <ShiftStats guardId={guard.id} shifts={guard.shifts} />
+        <ShiftStats
+          guardId={guard.id}
+          shifts={guard.shifts}
+          currentUserRole={currentUserRole}
+        />
       </div>
     </section>
   );
