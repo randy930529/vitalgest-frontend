@@ -110,13 +110,15 @@ async function ChecklistSuppliesEditor({
     CustomOptions & {
       position?: string;
       email?: string;
+      role?: string;
     }
-  >(({ id, name, lastname, position, email }) => ({
+  >(({ id, name, lastname, position, email, role }) => ({
     id,
     label: `${name} ${lastname}`,
     value: id,
     position,
     email,
+    role,
   }));
 
   return (

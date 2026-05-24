@@ -10,7 +10,11 @@ import { PaginationChecklist } from "@/app/ui/components/pagination";
 export type NotesSignatureFormProps = {
   children?: React.ReactNode;
   title?: string;
-  usersOptions: (CustomOptions & { position?: string; email?: string })[];
+  usersOptions: (CustomOptions & {
+    position?: string;
+    email?: string;
+    role?: string;
+  })[];
   prepareAnswers: () => unknown;
   updateAction: (prevState: any, answers: any) => Promise<any>;
   signAction: (prevState: any, formData: FormData) => Promise<any>;
@@ -39,6 +43,16 @@ export default function NotesSignatureForm({
   const [state, formAction] = useActionState(updateAction, initialState);
   const [stateSign, formActionSign] = useActionState(signAction, initialState);
   const [isPending, startTransition] = useTransition();
+
+  const usersOptionsOut = usersOptions.filter(({ role }) => {
+    if (
+      role === "head_guard" ||
+      (link === "ambulances" && role === "vehicle_operator") ||
+      (link === "supplies" && role === "paramedical")
+    )
+      return true;
+    return false;
+  });
 
   useEffect(() => {
     if (state.message) {
@@ -121,7 +135,7 @@ export default function NotesSignatureForm({
               title="Entrega:"
               usersOptions={[
                 { id: "", value: "", label: "Seleccione quien entrega" },
-                ...usersOptions,
+                ...usersOptionsOut,
               ]}
               onSignedChange={setSignedDeliver}
             />
