@@ -182,7 +182,7 @@ export default async function ChecklistSuppliesReportPage({
                   key={index + "-" + area.label}
                   className="mb-8 page-break-inside-avoid"
                 >
-                  <div className="bg-gray-900 text-white px-4 py-2 text-sm font-bold rounded-t-md">
+                  <div className="bg-gray-700 text-white px-4 py-2 text-sm font-bold rounded-t-md">
                     {area.label}
                   </div>
                   <table className="w-full border-collapse text-sm">

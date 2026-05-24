@@ -4,8 +4,12 @@ import { UserType } from "@/app/lib/definitions";
 import { HeaderStats } from "@/app/ui/home/stast-home";
 import ImageLoading from "@/app/ui/components/image-loading";
 import HeaderStatsSkeleton from "@/app/ui/components/skeletons";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 export default async function Header({ user }: { user: UserType }) {
+  const isAdmin = ROLE_MANAGER.isAdmin(user.role);
+  const canCreateGuards = user.role === "head_guard" || isAdmin;
+
   return (
     <header className="relative isolate overflow-hidden md:pt-4" role="banner">
       <div className="absolute inset-0 -z-20">
@@ -42,12 +46,14 @@ export default async function Header({ user }: { user: UserType }) {
             </p>
 
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href="#guardia-curso-title"
-                className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100"
-              >
-                Crear guardia
-              </Link>
+              {canCreateGuards && (
+                <Link
+                  href="#guardia-curso-title"
+                  className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100"
+                >
+                  Crear guardia
+                </Link>
+              )}
               <Link
                 href="#guardia-curso-title"
                 className="inline-flex items-center rounded-xl border border-white/40 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
