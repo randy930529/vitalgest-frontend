@@ -161,13 +161,13 @@ export type CheckListSupplyAnswersType = {
 };
 
 export type CheckListAmbulanceType = BaseType & {
-  ambulance_id: string;
   shift: ShiftType;
   time: string;
   km: number;
   gas_path?: string;
-  sign_operator_path?: string;
   recipient?: UserType;
+  deliverer?: UserType;
+  sign_deliverer_path?: string;
   sign_recipient_path?: string;
   notes?: string;
   ambulance: AmbulanceType;
@@ -177,8 +177,10 @@ export type CheckListAmbulanceType = BaseType & {
 export type CheckListSupplyType = BaseType & {
   shift_id: string;
   sign_paramedical_path?: string;
-  recipient_id: string;
-  sign_recipient_path: string;
+  recipient?: UserType;
+  deliverer?: UserType;
+  sign_deliverer_path?: string;
+  sign_recipient_path?: string;
   notes: string;
   ambulance_id: string;
   answers: CheckListSupplyAnswersType[];

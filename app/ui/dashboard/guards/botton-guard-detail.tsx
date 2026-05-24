@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState } from "react";
+import clsx from "clsx";
 import Link from "next/link";
 import {
   EyeIcon,
@@ -10,7 +11,11 @@ import {
   XMarkIcon,
   NumberedListIcon,
 } from "@heroicons/react/24/outline";
-import { GuardType } from "@/app/lib/definitions";
+import {
+  CheckListAmbulanceType,
+  CheckListSupplyType,
+  GuardType,
+} from "@/app/lib/definitions";
 import { closeGuard, initGuard } from "@/app/lib/actions/guard";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -116,8 +121,8 @@ function GuardDetail({
         </h4>
 
         {guard.shifts.map((shift) => {
-          const chkInsumos = shift.checklistSupplies;
-          const chkAmbulancia = shift.checklistAmbulance;
+          const chkSupplies = shift.checklistSupplies;
+          const chkAmbulance = shift.checklistAmbulance;
           return (
             <div
               key={shift.id}
@@ -133,87 +138,18 @@ function GuardDetail({
                 </div>
               </div>
               <div className="flex gap-4 flex-wrap">
-                <div className="flex-1 bg-[#f0fdf4] border border-[#bbf7d0] p-4 rounded-lg flex flex-col justify-between items-center gap-2">
-                  <div>
-                    <div className="font-semibold text-xs text-[#166534]">
-                      Checklist de Insumos
-                    </div>
-                    <div className="text-xs text-[#15803d] mt-1">
-                      Estado:{" "}
-                      <strong>
-                        {chkInsumos?.recipient_id ? "Completado" : "Pendiente"}
-                      </strong>
-                    </div>
-                  </div>
-                  {chkInsumos && (
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/dashboard/guards/checklists/supplies/${chkInsumos.id}`}
-                        className="bg-white text-emerald-700 border border-[#bbf7d0] px-3 py-1.5 rounded-md text-xs font-medium flex items-center"
-                      >
-                        <NumberedListIcon className="w-4 h-4 mr-1" />
-                        {guard.state === "En curso" && chkInsumos.recipient_id
-                          ? "Llenar Checklist"
-                          : "Ver Detalles"}
-                      </Link>
-                      {chkInsumos.recipient_id && (
-                        <Link
-                          href={`/dashboard/guards/checklists/supplies/${chkInsumos.id}/report`}
-                          className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-md flex items-center"
-                          title="Informe del Checklist Insumos"
-                        >
-                          <DocumentTextIcon className="w-4 h-4" />
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                  {!chkInsumos && (
-                    <span className="text-[0.8rem] text-[#ef4444]">
-                      No generado
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex-1 bg-[#eff6ff] border border-[#bfdbfe] p-4 rounded-lg flex flex-col justify-between items-center gap-2">
-                  <div>
-                    <div className="font-semibold text-xs text-[#1d4ed8]">
-                      Checklist de Ambulancia
-                    </div>
-                    <div className="text-xs text-[#1e40af] mt-1">
-                      Estado:{" "}
-                      <strong>
-                        {chkAmbulancia?.recipient ? "Completado" : "Pendiente"}
-                      </strong>
-                    </div>
-                  </div>
-                  {chkAmbulancia && (
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/dashboard/guards/checklists/ambulance/${chkAmbulancia.id}`}
-                        className="bg-white text-blue-700 border border-[#bfdbfe] px-3 py-1.5 rounded-md text-xs font-medium flex items-center"
-                      >
-                        <NumberedListIcon className="w-4 h-4 mr-1" />
-                        {guard?.state === "En curso" && chkAmbulancia.recipient
-                          ? "Llenar Checklist"
-                          : "Ver Detalles"}
-                      </Link>
-                      {chkAmbulancia.recipient && (
-                        <Link
-                          href={`/dashboard/guards/checklists/ambulance/${chkAmbulancia.id}/report`}
-                          className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-md flex items-center"
-                          title="Informe del Checklist de Ambulancia"
-                        >
-                          <DocumentTextIcon className="w-4 h-4" />
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                  {!chkAmbulancia && (
-                    <span className="text-[0.8rem] text-[#ef4444]">
-                      No generado
-                    </span>
-                  )}
-                </div>
+                <ChecklistCard
+                  key={chkSupplies?.id || "chkSupplies"}
+                  typeChecklist="supplies"
+                  checklist={chkSupplies}
+                  guardState={guard.state}
+                />
+                <ChecklistCard
+                  key={chkAmbulance?.id || "chkAmbulancia"}
+                  typeChecklist="ambulance"
+                  checklist={chkAmbulance}
+                  guardState={guard.state}
+                />
               </div>
             </div>
           );
@@ -276,5 +212,90 @@ function ButtonToggleDetail({ onClose }: { onClose?: () => void }) {
       <span className="sr-only">Detalles</span>
       <EyeIcon className="w-4" />
     </button>
+  );
+}
+
+function ChecklistCard({
+  typeChecklist,
+  checklist,
+  guardState,
+}: {
+  typeChecklist: "ambulance" | "supplies";
+  checklist: CheckListSupplyType | CheckListAmbulanceType | undefined;
+  guardState: GuardType["state"];
+}) {
+  const isChkAmbulance = typeChecklist === "ambulance";
+
+  return (
+    <div
+      className={clsx(
+        "flex-1 p-4 rounded-lg",
+        isChkAmbulance
+          ? "bg-[#eff6ff] border-[#bfdbfe]"
+          : "bg-[#f0fdf4] border-[#bbf7d0]",
+        "border",
+      )}
+    >
+      <div>
+        <div
+          className={clsx(
+            "font-semibold text-xs",
+            isChkAmbulance ? "text-[#1d4ed8]" : "text-[#166534]",
+          )}
+        >
+          {isChkAmbulance ? "Checklist de Ambulancia" : "Checklist de Insumos"}
+        </div>
+        <div
+          className={clsx(
+            "text-xs mt-1",
+            isChkAmbulance ? "text-[#1e40af]" : "text-[#15803d]",
+          )}
+        >
+          Estado:{" "}
+          <strong>
+            {checklist?.sign_recipient_path ? "Completado" : "Pendiente"}
+          </strong>
+        </div>
+      </div>
+      {checklist && (
+        <div className="flex gap-2">
+          <Link
+            href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}`}
+            className={clsx(
+              "bg-white border px-3 py-1.5 rounded-md text-xs font-medium flex items-center",
+              isChkAmbulance
+                ? "text-blue-700 border-[#bfdbfe]"
+                : "text-emerald-700 border-[#bbf7d0]",
+            )}
+          >
+            <NumberedListIcon className="w-4 h-4 mr-1" />
+            {guardState === "En curso" && checklist.sign_recipient_path
+              ? "Llenar Checklist"
+              : "Ver Detalles"}
+          </Link>
+          {checklist.sign_recipient_path && (
+            <Link
+              href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report`}
+              className={clsx(
+                "bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-md flex items-center",
+                isChkAmbulance
+                  ? "text-blue-700 border-[#bfdbfe]"
+                  : "text-emerald-700 border-[#bbf7d0]",
+              )}
+              title={
+                isChkAmbulance
+                  ? "Informe del Checklist de Ambulancia"
+                  : "Informe del Checklist de Insumos"
+              }
+            >
+              <DocumentTextIcon className="w-4 h-4" />
+            </Link>
+          )}
+        </div>
+      )}
+      {!checklist && (
+        <span className="text-[0.8rem] text-[#ef4444]">No generado</span>
+      )}
+    </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { InboxArrowDownIcon, PrinterIcon } from "@heroicons/react/24/outline";
 
-export function PrintButton() {
+export function PrintButton({ name = "reporte" }: { name: string }) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -16,15 +16,24 @@ export function PrintButton() {
         const html2pdf = (await import("html2pdf.js")).default;
 
         const opt = {
-          margin: 0.5,
-          filename: "reporte_insumos.pdf",
+          margin: 10,
+          filename: `${name}.pdf`,
+
           image: { type: "jpeg" as const, quality: 0.98 },
-          html2canvas: { scale: 2 },
-          // ensure literal types for jsPDF options to satisfy Html2PdfOptions typings
+
+          // Opciones específicas para el renderizado de imágenes y HTML
+          html2canvas: {
+            scale: 2,
+            useCORS: false,
+            allowTaint: false,
+            logging: false,
+            imageTimeout: 15000,
+          },
+
           jsPDF: {
-            unit: "in" as const,
-            format: "letter" as const,
-            orientation: "portrait" as const,
+            unit: "mm" as const,
+            format: "a4" as const,
+            orientation: "landscape" as const,
           },
         };
 
