@@ -69,16 +69,14 @@ function SummaryCard({
   tint: string;
 }) {
   return (
-    <div className="rounded-[24px] border border-white/70 bg-white/90 p-4 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.4)] backdrop-blur-sm">
+    <div className="flex flex-col items-center text-center text-xs rounded-[24px] border border-white/70 bg-white/90 p-2 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.4)] backdrop-blur-sm">
       <div
-        className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+        className="inline-flex rounded-full px-3 py-1 font-semibold"
         style={{ backgroundColor: tint, color: "#0f172a" }}
       >
         {title}
       </div>
-      <p className="mt-3 text-lg font-semibold leading-7 text-slate-900 [overflow-wrap:anywhere]">
-        {value}
-      </p>
+      <p className="mt-3 text-slate-900 [overflow-wrap:anywhere]">{value}</p>
     </div>
   );
 }
@@ -118,7 +116,7 @@ export function ProfileEditView({
                   VitalGest
                 </div>
                 <div className="space-y-3">
-                  <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  <h1 className="text-sm font-semibold tracking-tight sm:text-lg">
                     {title}
                   </h1>
                   <p className="max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
@@ -134,8 +132,8 @@ export function ProfileEditView({
                   tint="rgba(167,139,250,0.30)"
                 />
                 <SummaryCard
-                  title="Delegacion"
-                  value={value.delegation || "Pendiente"}
+                  title="Delegación"
+                  value={value.delegation}
                   tint="rgba(134,239,172,0.32)"
                 />
                 <SummaryCard
@@ -178,7 +176,7 @@ export function ProfileEditView({
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
                   Cargo
                 </p>
-                <p className="mt-3 text-2xl font-semibold text-slate-900 [overflow-wrap:anywhere]">
+                <p className="mt-3 text-sm font-semibold text-slate-900 [overflow-wrap:anywhere]">
                   {userPosition || "Cargo pendiente"}
                 </p>
               </div>
@@ -211,7 +209,7 @@ export function ProfileEditView({
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="space-y-6 rounded-[28px] border border-slate-100 bg-slate-50/60 p-5">
                 <div className="space-y-1">
-                  <h2 className="text-xl font-semibold text-slate-900">
+                  <h2 className="text-sm font-semibold text-slate-900">
                     Informacion general
                   </h2>
                   <p className="text-sm text-slate-500">
@@ -241,7 +239,7 @@ export function ProfileEditView({
 
               <div className="space-y-6 rounded-[28px] border border-slate-100 bg-slate-50/60 p-5">
                 <div className="space-y-1">
-                  <h2 className="text-xl font-semibold text-slate-900">
+                  <h2 className="text-sm font-semibold text-slate-900">
                     Contacto
                   </h2>
                   <p className="text-sm text-slate-500">

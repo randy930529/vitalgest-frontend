@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { notFound } from "next/navigation";
 import { verifySession } from "@/app/lib/dal";
+import { UserType } from "@/app/lib/definitions";
+import { fetchDelegationById } from "@/app/lib/data/delegations";
+import { fetchUserById } from "@/app/lib/data/users";
+import { createSignatureURL } from "@/app/lib/utils";
+import Breadcrumbs from "@/app/ui/breadcrumbs";
 import ProfileForm from "@/app/ui/profile/profile-form";
 import { ProfileEditSkeleton } from "@/app/ui/components/skeletons";
-import { UserType } from "@/app/lib/definitions";
-import { fetchUserById } from "@/app/lib/data/users";
-import { notFound } from "next/navigation";
-import { createSignatureURL } from "@/app/lib/utils";
 
 export const metadata: Metadata = {
   title: "Mi Perfil",
@@ -46,6 +47,11 @@ async function LoadUserInfo({
 }) {
   const user = await fetchUserById(id);
   if (!user) notFound();
+
+  if (!user.delegation.name) {
+    const delegation = await fetchDelegationById(user.delegation.id);
+    user.delegation.name = delegation?.name || "N/A";
+  }
 
   if (user.signature) {
     user.signature = createSignatureURL(user.signature);

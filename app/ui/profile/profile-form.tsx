@@ -33,7 +33,7 @@ export default function ProfileForm({ user }: { user: UserType }) {
     status: profileUser.status,
     email: profileUser.email || "",
     phone: profileUser.phone || "",
-    delegation: profileUser.delegation?.name || "",
+    delegation: profileUser.delegation.name || "",
     avatar: profileUser.avatarUrl || null,
     signature: profileUser.signature || "",
   });

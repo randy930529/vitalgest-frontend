@@ -74,6 +74,7 @@ export default function SupplyForm({
       type: "number",
       name: "minQuantity",
       title: "Cantidad Mínima",
+      placeholder: "Mayor a 0",
       required: true,
     },
   ]);

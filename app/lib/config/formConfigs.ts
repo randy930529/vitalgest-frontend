@@ -86,14 +86,14 @@ export const formConfigs = {
       options: customUnits,
       required: true,
     },
-    expirationDate: {
-      type: "date",
-      title: "Fecha de Vencimiento",
-      required: true,
-    },
     avaibleQuantity: {
       type: "number",
       title: "Cantidad",
+      required: true,
+    },
+    expirationDate: {
+      type: "date",
+      title: "Fecha de Vencimiento",
       required: true,
     },
   } as const,

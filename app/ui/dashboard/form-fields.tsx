@@ -6,6 +6,7 @@ import {
   CustomOptions,
   FormInputType,
 } from "@/app/lib/definitions";
+import { STYLES } from "@/app/lib/config/constants";
 import { InlineErrors } from "@/app/ui/custom-errors";
 import Signit from "@/app/ui/components/signit";
 import { Button } from "@/app/ui/button";
@@ -37,7 +38,10 @@ export function FormInput({
         name={name}
         id={name}
         defaultValue={initialValue || ""}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        className={clsx(
+          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
+          STYLES.inputFocus,
+        )}
         placeholder={placeholder || title}
         required={required}
       />
@@ -102,6 +106,7 @@ export function FormSelect({
         className={clsx(
           "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
           { "block w-full p-2.5": !inline },
+          STYLES.inputFocus,
         )}
         required={required}
         disabled={disabled}
@@ -276,7 +281,7 @@ export function FormInputSingle({
       {title && (
         <label
           htmlFor={name}
-          className="text-sm font-medium text-gray-900 dark:text-white"
+          className="mb-1.5 mt-3 text-sm font-medium text-gray-900 dark:text-white sm:mb-2 sm:mt-4 block"
         >
           {title}
           {required && <span className="text-red-600"> *</span>}
@@ -288,7 +293,10 @@ export function FormInputSingle({
         name={name}
         id={name}
         defaultValue={initialValue || ""}
-        className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-0.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        className={clsx(
+          "w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
+          STYLES.inputFocus,
+        )}
         placeholder={placeholder || title}
         onChange={(e) =>
           handleOption && handleOption(e.target.name, e.target.value)
@@ -470,11 +478,11 @@ export function FormDatepicker({
   placeholder?: string;
 }) {
   return (
-    <>
+    <div>
       {title && (
         <label
           htmlFor={name}
-          className="text-sm font-medium me-2 text-gray-900 dark:text-white"
+          className="mb-1.5 mt-3 text-sm font-medium text-gray-900 dark:text-white sm:mb-2 sm:mt-4 block"
         >
           {title}
           {required && <span className="text-red-600"> *</span>}
@@ -488,7 +496,10 @@ export function FormDatepicker({
         defaultValue={initialDate}
         min={dateStart}
         max={dateEnd}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-0.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        className={clsx(
+          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
+          STYLES.inputFocus,
+        )}
         placeholder={placeholder || title}
         required={required}
       />
@@ -499,7 +510,7 @@ export function FormDatepicker({
           errors={errors}
         />
       )}
-    </>
+    </div>
   );
 }
 
