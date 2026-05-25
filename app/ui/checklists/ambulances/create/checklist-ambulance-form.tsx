@@ -71,7 +71,7 @@ export default function ChecklistAmbulanceForm({
           className="hidden"
         />
         <div className="grid gap-3 sm:mb-4 sm:grid-flow-row sm:grid-cols-3 sm:gap-4">
-          <p className="font-semibold text-center md:ms-6">
+          <section className="font-semibold text-center md:ms-6">
             Ambulancia: <span className="font-normal">{ambulance.number}</span>
             <input
               type="text"
@@ -79,15 +79,15 @@ export default function ChecklistAmbulanceForm({
               defaultValue={ambulance.id}
               className="hidden"
             />
-          </p>
-          <div className="flex flex-col items-center">
+          </section>
+          <section className="flex flex-col items-center">
             <p className="font-semibold text-center">
               Fecha:
               <span className="ms-1 font-normal">
                 {formatDateToDDMMYYYY(guard.date)}
               </span>
             </p>
-            <div className="flex w-full max-w-[220px] gap-2">
+            <div className="flex gap-1 flex-wrap items-center justify-center w-full max-w-[120px] sm:items-start sm:justify-start">
               <FormInputSingle
                 name="km"
                 type="number"
@@ -96,15 +96,15 @@ export default function ChecklistAmbulanceForm({
                 required
               />
             </div>
-          </div>
-          <div className="flex flex-col items-center md:items-start">
+          </section>
+          <section className="flex flex-col items-center md:items-start">
             <div className="flex w-full justify-center gap-1 font-semibold md:w-auto md:justify-start">
               <div>Hora:</div>
               <div>
                 <Timer />
               </div>
             </div>
-            <div className="flex gap-1 flex-col items-center md:flex-row">
+            <div className="flex gap-1 flex-col text-center items-center mt-3 md:text-start">
               <FormUploadFile
                 name="gasFile"
                 title="Vale de Gas:"
@@ -112,13 +112,13 @@ export default function ChecklistAmbulanceForm({
                 acceptFile=".jpg,.jpeg,.png,.pdf"
                 required
               />
+              <p className="mt-1 w-full text-center text-xs text-gray-500 dark:text-gray-300">
+                JPG, PNG o PDF
+              </p>
             </div>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-              JPG, PNG o PDF
-            </p>
-          </div>
+          </section>
 
-          <div className="flex flex-col gap-0.5 sm:gap-0">
+          <section className="flex flex-col gap-0.5 sm:gap-0">
             <FormSelect
               key={guardShif.id}
               name={guardShif.id}
@@ -158,7 +158,7 @@ export default function ChecklistAmbulanceForm({
               ]}
               defaultValue={paramedical.id}
             />
-          </div>
+          </section>
           <ChecklistStartButton pending={loading}>
             Comenzar revisión
           </ChecklistStartButton>

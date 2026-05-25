@@ -20,6 +20,7 @@ export default function ChecklistAmbulanceSign({
   usersOptions: (CustomOptions & {
     position?: string;
     email?: string;
+    role?: string;
   })[];
 }) {
   const router = useRouter();

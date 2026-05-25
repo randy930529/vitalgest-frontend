@@ -558,12 +558,16 @@ export function FormUploadFile({
 
       <label
         htmlFor={name}
-        className="group flex w-full min-w-0 cursor-pointer flex-col items-start gap-3 rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] transition hover:border-rose-300 hover:bg-slate-50/70 sm:flex-row sm:items-center sm:justify-between"
+        className={clsx(
+          "group flex w-full min-w-0 cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-700",
+          STYLES.boxShadow,
+          "transition hover:border-rose-300 hover:bg-slate-50/70",
+        )}
       >
         <span className="inline-flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1">
           <PaperClipIcon className="h-5 w-5 shrink-0 text-rose-500" />
           <span className="block max-w-full truncate text-slate-600">
-            {fileName || "Seleccione el archivo del vale"}
+            {fileName}
           </span>
         </span>
         <span className="inline-flex w-full items-center justify-center rounded-full border border-white/80 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition group-hover:text-rose-600 sm:w-auto sm:shrink-0">
