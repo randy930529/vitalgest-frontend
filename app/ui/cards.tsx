@@ -237,7 +237,11 @@ export function ChecklistsLinkCard({
   isChecked?: boolean;
   param?: string;
 }) {
-  const checklistStatus = isChecked ? "Finalizado" : "Pendiente";
+  const checklistStatus = isChecked
+    ? "Finalizado"
+    : param.startsWith("edit")
+      ? "Pendiente"
+      : "No generado";
   const checklistUrl = link
     ? `/checklists/${guardId}/${link}/${id}/${param}`
     : "#";
@@ -341,27 +345,51 @@ export function SummaryCard({
   summaryType: ToneVariants;
   summaryIcon?: React.ElementType;
 }) {
-  const summaryTone = {
-    success: "emerald",
-    warning: "orange",
-    danger: "rose",
-    neutral: "slate",
-    default: "sky",
-  }[summaryType];
-
   return (
     <div
-      className={clsx(
-        "rounded-2xl border p-3 text-center",
-        `border-${summaryTone}-100 bg-${summaryTone}-50/70 text-${summaryTone}-600`,
-      )}
+      className={clsx("rounded-2xl border p-3 text-center", {
+        "border-emerald-100 bg-emerald-50/70 text-emerald-600":
+          summaryType === "success",
+        "border-orange-100 bg-orange-50/70 text-orange-600":
+          summaryType === "warning",
+        "border-rose-100 bg-rose-50/70 text-rose-600": summaryType === "danger",
+        "border-slate-100 bg-slate-50/70 text-slate-600":
+          summaryType === "neutral",
+        "border-sky-100 bg-sky-50/70 text-sky-600": summaryType === "default",
+      })}
     >
-      {Icon && <Icon className="mx-auto mb-1 h-5 w-5" />}
-      <p className={clsx("text-2xl font-semibold", `text-${summaryTone}-900`)}>
+      {Icon && (
+        <Icon
+          className={clsx("mx-auto mb-1 h-5 w-5", {
+            "text-emerald-600": summaryType === "success",
+            "text-orange-600": summaryType === "warning",
+            "text-rose-600": summaryType === "danger",
+            "text-slate-600": summaryType === "neutral",
+            "text-sky-600": summaryType === "default",
+          })}
+        />
+      )}
+      <p
+        className={clsx("text-2xl font-semibold", {
+          "text-emerald-900": summaryType === "success",
+          "text-orange-900": summaryType === "warning",
+          "text-rose-900": summaryType === "danger",
+          "text-slate-900": summaryType === "neutral",
+          "text-sky-900": summaryType === "default",
+        })}
+      >
         {title}
       </p>
       {subtitle && (
-        <p className={clsx("text-xs font-medium", `text-${summaryTone}-700`)}>
+        <p
+          className={clsx("text-xs font-medium", {
+            "text-emerald-700": summaryType === "success",
+            "text-orange-700": summaryType === "warning",
+            "text-rose-700": summaryType === "danger",
+            "text-slate-700": summaryType === "neutral",
+            "text-sky-700": summaryType === "default",
+          })}
+        >
           {subtitle}
         </p>
       )}

@@ -164,7 +164,7 @@ export function CheckListStats({
                     link="ambulances"
                     param="edit?step=1"
                     guardId={guardId}
-                    id={id}
+                    id={checklistAmbulance.id}
                   />
                 </li>
               )}
@@ -184,7 +184,7 @@ export function CheckListStats({
 
       {accessChlSupplies && (
         <>
-          {accessChlSupplies && checklistSupplies ? (
+          {checklistSupplies ? (
             <>
               {checklistSupplies.sign_recipient_path ? (
                 <li key={`checklists-link_supplies-${id}`}>
@@ -203,7 +203,7 @@ export function CheckListStats({
                     link="supplies"
                     param={`edit?ambulance=${ambulanceId}&step=1`}
                     guardId={guardId}
-                    id={id}
+                    id={checklistSupplies.id}
                   />
                 </li>
               )}

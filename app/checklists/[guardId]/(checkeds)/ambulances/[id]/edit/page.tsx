@@ -103,13 +103,15 @@ async function ChecklistAmbulanceEditor({
     CustomOptions & {
       position?: string;
       email?: string;
+      role?: string;
     }
-  >(({ id, name, lastname, position, email }) => ({
+  >(({ id, name, lastname, position, email, role }) => ({
     id,
     label: `${name} ${lastname}`,
     value: id,
     email: email,
     position,
+    role,
   }));
 
   return (
