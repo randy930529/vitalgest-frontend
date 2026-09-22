@@ -119,3 +119,14 @@ export type UploadFileState = StateType<{
   file?: string[];
   success?: string[];
 }>;
+
+export type QuestionState = StateType<{
+  question?: string[];
+  name_category?: string[];
+  order_category?: string[];
+  order_question_category?: string[];
+  name_subcategory?: string[];
+  order_subcategory?: string[];
+  delegationId?: string[];
+  success?: string[];
+}>;

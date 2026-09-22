@@ -6,6 +6,7 @@ import {
   ShieldCheckIcon,
   BuildingOfficeIcon,
   TruckIcon,
+  QueueListIcon,
 } from "@heroicons/react/24/outline";
 import NavSubLinks from "@/app/ui/dashboard/nav-sublinks";
 
@@ -47,6 +48,11 @@ const links = [
         href: `/dashboard/supplies/ambulances`,
       },
     ],
+  },
+  {
+    name: "Preguntas",
+    href: "/dashboard/questions",
+    icon: QueueListIcon,
   },
 ];
 

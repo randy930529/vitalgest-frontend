@@ -29,6 +29,10 @@ const customSectionMeta: {
     title: "Gestión de Insumos",
     subtitle: "Administrar los insumos en el sistema",
   },
+  questions: {
+    title: "Gestión de Preguntas",
+    subtitle: "Administrar las preguntas de checklist en el sistema",
+  },
 };
 
 export default function SectionHeader() {

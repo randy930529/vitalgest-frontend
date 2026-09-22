@@ -48,4 +48,12 @@ export const modalComponents = {
       loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),
     },
   ),
+  questionForm: dynamic(
+    // TODO: Modificar para asociar contra el formulario para crear preguntas
+    () => import("@/app/ui/dashboard/questions/create/question-form"),
+    {
+      ssr: false,
+      loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),
+    },
+  ),
 };

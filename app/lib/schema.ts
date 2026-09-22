@@ -1,6 +1,9 @@
 import { File } from "buffer";
 import { z } from "zod";
-import { FILE_UPLOAD } from "@/app/lib/config/constants";
+import {
+  CHECKLIST_RESPONSE_TYPES,
+  FILE_UPLOAD,
+} from "@/app/lib/config/constants";
 
 const FormUserSchema = z.object({
   id: z.string().uuid(),
@@ -235,6 +238,40 @@ const FormChecklistSignSchema = z.object({
     .nullable(),
 });
 
+const FormQuestionSchema = z.object({
+  id: z.string().uuid(),
+  question: z.string({
+    invalid_type_error: "Por favor ingrese la pregunta.",
+  }),
+  name_category: z.string({
+    invalid_type_error: "Por favor seleccione una categoría.",
+  }),
+  order_category: z.number({
+    invalid_type_error: "Por favor ingrese el orden de la categoría.",
+  }),
+  order_question_category: z.number({
+    invalid_type_error:
+      "Por favor ingrese el orden de la pregunta en la categoría.",
+  }),
+  name_subcategory: z
+    .string({
+      invalid_type_error: "Por favor seleccione una subcategoría.",
+    })
+    .optional(),
+  order_subcategory: z
+    .number({
+      invalid_type_error: "Por favor ingrese el orden de la subcategoría.",
+    })
+    .optional(),
+  type_response: z.enum(CHECKLIST_RESPONSE_TYPES, {
+    invalid_type_error:
+      "Por favor seleccione un tipo de respuesta para la pregunta.",
+  }),
+  delegationId: z.string({
+    invalid_type_error: "Por favor seleccione una delegación.",
+  }),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -309,3 +346,6 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   specification: true,
   supplyId: true,
 });
+
+export const CreateQuestion = FormQuestionSchema.omit({ id: true });
+export const UpdateQuestion = FormQuestionSchema.omit({});
