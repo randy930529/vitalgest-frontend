@@ -3,7 +3,10 @@
  */
 
 import type { FormFieldType, FormInputType } from "@/app/lib/definitions";
-import { customUnits } from "./selectOptions";
+import {
+  customTypeResponse,
+  customUnits,
+} from "@/app/lib/config/selectOptions";
 
 export const formConfigs = {
   // Usuarios
@@ -109,6 +112,49 @@ export const formConfigs = {
       title: "Nueva contraseña",
       required: true,
       placeholder: "Entre la nueva contraseña",
+    },
+  } as const,
+  // Preguntas de Checklist
+  question: {
+    question: {
+      type: "text",
+      title: "Pregunta",
+      required: true,
+      placeholder: "¿Cuál es la capital de España?",
+    },
+    name_category: {
+      type: "text",
+      title: "Categoría",
+      required: true,
+      placeholder: "Categoría de la pregunta",
+    },
+    order_category: {
+      type: "number",
+      title: "Orden de la Categoría",
+      required: true,
+      placeholder: "1",
+    },
+    order_question_category: {
+      type: "number",
+      title: "Orden de la Pregunta en la Categoría",
+      required: true,
+      placeholder: "1",
+    },
+    name_subcategory: {
+      type: "text",
+      title: "Subcategoría",
+      placeholder: "Subcategoría de la pregunta",
+    },
+    order_subcategory: {
+      type: "number",
+      title: "Orden de la Subcategoría",
+      placeholder: "1",
+    },
+    type_response: {
+      type: "select",
+      title: "Tipo de Respuesta",
+      options: customTypeResponse,
+      required: true,
     },
   } as const,
 } as const;

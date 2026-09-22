@@ -14,6 +14,7 @@ import {
   StepItemType,
 } from "@/app/lib/definitions";
 import { UploadFileState } from "@/app/lib/config/stateConfigs";
+import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   if (totalPages <= 7) {
@@ -110,7 +111,7 @@ export const formatDateToDDMMYYYY = (dateString: string): string => {
  */
 export const createAnswer = (
   questionId: string,
-  type: ChecklistQuestionsType["type_response"],
+  type: CHECKLIST_RESPONSE_TYPE,
   answer: string,
 ): ChecklistAnswersType => {
   return {

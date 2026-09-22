@@ -150,3 +150,15 @@ export const STYLES = {
   inputFocus: "focus:border-rose-300 focus:ring-4 focus:ring-rose-100",
   boxShadow: "shadow-[0_20px_45px_-30px_rgba(244,63,94,0.45)]",
 } as const;
+
+export const CHECKLIST_RESPONSE_TYPES = {
+  text: "Texto",
+  bool: "S/N",
+  option: "Opciones",
+  bool_option: "S/N y Opciones",
+  bool_text: "S/N y Texto",
+  option_text: "Opciones y Texto",
+  bool_option_text: "S/N, Opciones y Texto",
+} as const;
+
+export type CHECKLIST_RESPONSE_TYPE = keyof typeof CHECKLIST_RESPONSE_TYPES;

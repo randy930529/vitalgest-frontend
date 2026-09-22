@@ -1,12 +1,8 @@
 import { ChangeEvent, JSX, useState } from "react";
 import clsx from "clsx";
 import { ArrowRightIcon, PaperClipIcon } from "@heroicons/react/24/outline";
-import {
-  ChecklistQuestionsType,
-  CustomOptions,
-  FormInputType,
-} from "@/app/lib/definitions";
-import { STYLES } from "@/app/lib/config/constants";
+import { CustomOptions, FormInputType } from "@/app/lib/definitions";
+import { CHECKLIST_RESPONSE_TYPE, STYLES } from "@/app/lib/config/constants";
 import { InlineErrors } from "@/app/ui/custom-errors";
 import Signit from "@/app/ui/components/signit";
 import { Button } from "@/app/ui/button";
@@ -332,7 +328,7 @@ export function FormInputSetter({
   name,
   title,
 }: {
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   name: string;
   title?: string;
 }): JSX.Element {

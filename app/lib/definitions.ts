@@ -1,4 +1,5 @@
 import { File } from "buffer";
+import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
 
 export type BaseType = {
   id: string;
@@ -131,7 +132,7 @@ export type AmbulanceAreaType = BaseType & {
 
 export type ChecklistAnswersComponentsType = {
   id: string;
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   value_bool: ChecklistAnswersType["valueBool"];
   value_option: ChecklistAnswersType["valueOption"];
   value_text: ChecklistAnswersType["valueText"];
@@ -207,14 +208,7 @@ export type ChecklistQuestionsType = BaseType & {
   order_question_category: number;
   name_subcategory?: string;
   order_subcategory?: number;
-  type_response:
-    | "bool"
-    | "option"
-    | "text"
-    | "bool_option"
-    | "bool_text"
-    | "option_text"
-    | "bool_option_text";
+  type_response: CHECKLIST_RESPONSE_TYPE;
 };
 
 export type ChecklistSuppliesType = BaseType & {
@@ -225,7 +219,7 @@ export type ChecklistSuppliesType = BaseType & {
 
 export type ChecklistAnswersType = {
   questionId: string;
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   valueBool?: boolean;
   valueOption?: string;
   valueText?: string;

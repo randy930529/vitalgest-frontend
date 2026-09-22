@@ -4,11 +4,12 @@ import Image from "next/image";
 import clsx from "clsx";
 import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { ChecklistQuestionsType, StepItemType } from "@/app/lib/definitions";
+import { StepItemType } from "@/app/lib/definitions";
 import { createSignatureURL } from "@/app/lib/utils";
 import { fetchChecklistAmbulance } from "@/app/lib/data/checklist";
 import { PrintButton } from "@/app/ui/components/checklists/print-button";
 import { ReportHeader } from "@/app/ui/components/checklists/report-header";
+import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
 
 export const metadata: Metadata = {
   title: "Reporte de Inspección de Ambulancia",
@@ -40,7 +41,7 @@ export default async function ChecklistAmbulanceReportPage({
     StepItemType & {
       answer: {
         question: string;
-        type: ChecklistQuestionsType["type_response"];
+        type: CHECKLIST_RESPONSE_TYPE;
         value: string;
       }[];
     }
