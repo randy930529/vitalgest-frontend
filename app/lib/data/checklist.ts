@@ -31,6 +31,19 @@ export async function fetchChecklistQuestions(
   }
 }
 
+export async function fetchQuestionById(
+  id: string,
+): Promise<ChecklistQuestionsType | undefined> {
+  try {
+    const checklistQuestions = await fetchChecklistQuestions();
+
+    return checklistQuestions.data.find((question) => question.id === id);
+  } catch (err) {
+    console.log("API Error[GET QUESTION BY ID]:", err);
+    return;
+  }
+}
+
 export async function fetchChecklistSteps(): Promise<[StepItemType[], number]> {
   try {
     const endPoint = "/api/checklists/ambulance/questions";

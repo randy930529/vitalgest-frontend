@@ -4,23 +4,23 @@ import { fetchDelegations } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/components/skeletons";
-import AmbulanceEditForm from "@/app/ui/dashboard/ambulances/edit/ambulance-edit-form";
-import { fetchAmbulanceById } from "@/app/lib/data/ambulances";
+import QuestionEditForm from "@/app/ui/dashboard/questions/edit/question-edit-form";
+import { fetchQuestionById } from "@/app/lib/data/checklist";
 
 export const metadata: Metadata = {
-  title: "Editar Ambulancia",
+  title: "Editar Pregunta",
 };
 
-export default async function EditAmbulancePage(props: {
+export default async function EditQuestionPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  // (Página) Editar Ambulancia - [SSR]
+  // (Página) Editar Pregunta - [SSR]
   const params = await props.params;
   const id = params.id;
 
-  const fetchAmbulanceByIdAndDelegations = async () =>
+  const fetchQuestionByIdAndDelegations = async () =>
     await Promise.all([
-      fetchAmbulanceById(id),
+      fetchQuestionById(id),
       fetchDelegations().then((result) => result.data),
     ]);
 
@@ -29,18 +29,18 @@ export default async function EditAmbulancePage(props: {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: "/dashboard" },
-          { label: "Ambulancias", href: "/dashboard/ambulances" },
+          { label: "Preguntas", href: "/dashboard/questions" },
           {
-            label: "Editar Ambulancia",
-            href: `/dashboard/ambulances/${id}/edit`,
+            label: "Editar Pregunta",
+            href: `/dashboard/questions/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/ambulances" />}>
+      <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/questions" />}>
         <WrapperForm
-          fetchData={fetchAmbulanceByIdAndDelegations}
-          WrappedComponent={AmbulanceEditForm}
+          fetchData={fetchQuestionByIdAndDelegations}
+          WrappedComponent={QuestionEditForm}
         />
       </Suspense>
     </section>
