@@ -14,7 +14,12 @@ import {
   StepItemType,
 } from "@/app/lib/definitions";
 import { UploadFileState } from "@/app/lib/config/stateConfigs";
-import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
+import {
+  CHECKLIST_RESPONSE_TYPE,
+  PAGINATION_ITEMS,
+} from "@/app/lib/config/constants";
+
+const { ITEMS_PER_PAGE } = PAGINATION_ITEMS;
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   if (totalPages <= 7) {
@@ -309,7 +314,7 @@ export const sanitizeTextInput = (value: string, maxLength = 255): string => {
  */
 export const calculateOffset = (
   pageNumber: number = 1,
-  limit: number = 10,
+  limit: number = ITEMS_PER_PAGE,
 ): number => {
   return (Math.max(1, pageNumber) - 1) * limit;
 };
@@ -317,10 +322,10 @@ export const calculateOffset = (
 export const getPaginationParams = (
   pageNumber?: number,
   itemsPerPage?: number,
-  defaultItemsPerPage = 6,
+  defaultItemsPerPage = ITEMS_PER_PAGE,
 ) => {
-  const limit = itemsPerPage ?? defaultItemsPerPage;
-  const offset = calculateOffset(pageNumber, limit);
+  const limit = itemsPerPage || defaultItemsPerPage;
+  const offset = calculateOffset(pageNumber || undefined, limit);
 
   return { offset, limit };
 };

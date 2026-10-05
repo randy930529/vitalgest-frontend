@@ -25,9 +25,11 @@ export default async function GuardsPage({
   // (Página) Gestionar guardias - [SSR]
 
   const { page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
+
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
-      fetchGuards(getPaginationParams(Number(page) || 1, Number(display) || 6)),
+      fetchGuards(params),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
       (async () => {

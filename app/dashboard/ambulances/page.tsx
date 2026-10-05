@@ -21,11 +21,11 @@ export default async function AmbulancePage({
   // (Página) Listado de ambulancias - [SSR]
 
   const { page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
+
   const fetchAmbulancesAndDelegations = async () =>
     await Promise.all([
-      fetchAmbulances(
-        getPaginationParams(Number(page) || 1, Number(display) || 6),
-      ),
+      fetchAmbulances(params),
       fetchDelegations().then((result) => result.data),
     ]);
 

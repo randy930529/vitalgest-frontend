@@ -7,7 +7,6 @@ import { TableSkeleton } from "@/app/ui/components/skeletons";
 import UserTable from "@/app/ui/dashboard/users/user-table";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import UserForm from "@/app/ui/dashboard/users/create/user-form";
-import type { UserType } from "@/app/lib/definitions";
 import { getPaginationParams } from "@/app/lib/utils";
 
 export const metadata: Metadata = {
@@ -22,9 +21,11 @@ export default async function UserPage({
   // (Página) Listado de usuarios - [SSR]
 
   const { page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
+
   const fetchDataUsersAndDelegations = async () =>
     await Promise.all([
-      fetchUsers(getPaginationParams(Number(page) || 1, Number(display) || 6)),
+      fetchUsers(params),
       fetchDelegations().then((result) => result.data),
     ]);
 

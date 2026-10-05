@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { verifyAuthorization, verifySession } from "@/app/lib/dal";
 import { ResponseAPIType, PaginatedResult } from "@/app/lib/definitions";
+import { PAGINATION_ITEMS } from "@/app/lib/config/constants";
 
-const ITEMS_PER_PAGE = Number(process.env.NEXTITEMS_PER_PAGE ?? "6");
+const { ITEMS_PER_PAGE } = PAGINATION_ITEMS;
 
 export class DataFetch<T> {
   private endPoint: string;

@@ -162,3 +162,11 @@ export const CHECKLIST_RESPONSE_TYPES = {
 } as const;
 
 export type CHECKLIST_RESPONSE_TYPE = keyof typeof CHECKLIST_RESPONSE_TYPES;
+
+const ITEMS_PER_PAGE_DEFAULT = 6 as const;
+export const PAGINATION_ITEMS = {
+  ITEMS_PER_PAGE_DEFAULT,
+  ITEMS_PER_PAGE: Number(
+    process.env.NEXTITEMS_PER_PAGE ?? ITEMS_PER_PAGE_DEFAULT,
+  ),
+} as const;
