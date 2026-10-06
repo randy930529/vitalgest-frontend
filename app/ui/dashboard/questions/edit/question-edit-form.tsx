@@ -19,6 +19,18 @@ export default function QuestionEditForm({
   const router = useRouter();
   const [question, delegations] = data;
 
+  if (!question) {
+    notFound();
+  }
+
+  const validFieldTypes = [
+    "text",
+    "email",
+    "password",
+    "number",
+    "select",
+    "date",
+  ];
   const customFormInput = getFormConfigFields("question", [
     {
       type: "select",
@@ -27,18 +39,18 @@ export default function QuestionEditForm({
       options: getCustomDelegations(delegations),
       required: true,
     },
-  ]);
+  ]).map((field) => {
+    if (validFieldTypes.includes(field.type)) {
+      return {
+        ...field,
+        defaultValue: String(
+          question[field.name as keyof ChecklistQuestionsType] ?? "",
+        ),
+      };
+    }
 
-  if (!question) {
-    notFound();
-  }
-
-  customFormInput.forEach(
-    (field) =>
-      (field["defaultValue"] = question[
-        field.name as keyof ChecklistQuestionsType
-      ] as string),
-  );
+    return field;
+  });
 
   const initialState: QuestionState = { errors: {}, message: null };
   const updateQuestionWithId = updateQuestion.bind(null, question?.id || "");

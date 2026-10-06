@@ -260,39 +260,40 @@ export type SupplyAmbulanceType = BaseType & {
   ambulance_id: string;
 };
 
+type BaseFormField = {
+  name: string;
+  title?: string;
+  required?: boolean;
+  defaultValue?: string;
+};
+
 export type FormFieldType =
-  | {
+  | (BaseFormField & {
       type: "text" | "email" | "password" | "number";
-      name: string;
-      title?: string;
-      required?: boolean;
       placeholder?: string;
-      defaultValue?: string;
-    }
-  | {
+    })
+  | (BaseFormField & {
       type: "select";
-      name: string;
-      title?: string;
-      required?: boolean;
       options: Array<{ id: string | number; value: string; label: string }>;
-      defaultValue?: string;
-    }
-  | {
+    })
+  | (BaseFormField & {
       type: "date";
+    })
+  | (BaseFormField & {
+      type: "textarea";
+      rows?: number;
+    })
+  | {
+      type: "checkbox";
       name: string;
-      title?: string;
-      required?: boolean;
-      defaultValue?: string;
+      title: string;
+      defaultChecked?: boolean;
     }
   | {
-      type: "textarea";
+      type: "custom";
       name: string;
-      title?: string;
-      required?: boolean;
-      rows?: number;
-    }
-  | { type: "checkbox"; name: string; title: string; defaultChecked?: boolean }
-  | { type: "custom"; name: string; component: React.ReactNode };
+      component: React.ReactNode;
+    };
 
 export type VerifySignatureResult = {
   approved: boolean;
