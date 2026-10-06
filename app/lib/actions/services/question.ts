@@ -25,10 +25,12 @@ export class CreateQuestionAction extends BaseServerAction<
       const data = this.validate({
         question: formData.get("question"),
         name_category: formData.get("name_category"),
-        order_category: formData.get("order_category"),
-        order_question_category: formData.get("order_question_category"),
+        order_category: Number(formData.get("order_category")),
+        order_question_category: Number(
+          formData.get("order_question_category"),
+        ),
         name_subcategory: formData.get("name_subcategory"),
-        order_subcategory: formData.get("order_subcategory"),
+        order_subcategory: Number(formData.get("order_subcategory")),
         type_response: formData.get("type_response"),
         delegationId: formData.get("delegation"),
       });
@@ -65,10 +67,12 @@ export class UpdateQuestionAction extends BaseServerAction<
       const data = this.validate({
         question: formData.get("question"),
         name_category: formData.get("name_category"),
-        order_category: formData.get("order_category"),
-        order_question_category: formData.get("order_question_category"),
+        order_category: Number(formData.get("order_category")),
+        order_question_category: Number(
+          formData.get("order_question_category"),
+        ),
         name_subcategory: formData.get("name_subcategory"),
-        order_subcategory: formData.get("order_subcategory"),
+        order_subcategory: Number(formData.get("order_subcategory")),
         type_response: formData.get("type_response"),
         delegationId: formData.get("delegation"),
       });

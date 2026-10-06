@@ -1,6 +1,7 @@
 import { File } from "buffer";
 import { z } from "zod";
 import {
+  CHECKLIST_RESPONSE_TYPE,
   CHECKLIST_RESPONSE_TYPES,
   FILE_UPLOAD,
 } from "@/app/lib/config/constants";
@@ -238,6 +239,11 @@ const FormChecklistSignSchema = z.object({
     .nullable(),
 });
 
+const typeResponseValues = Object.keys(CHECKLIST_RESPONSE_TYPES) as [
+  string,
+  ...CHECKLIST_RESPONSE_TYPE[],
+];
+
 const FormQuestionSchema = z.object({
   id: z.string().uuid(),
   question: z.string({
@@ -263,7 +269,7 @@ const FormQuestionSchema = z.object({
       invalid_type_error: "Por favor ingrese el orden de la subcategoría.",
     })
     .optional(),
-  type_response: z.enum(CHECKLIST_RESPONSE_TYPES, {
+  type_response: z.enum(typeResponseValues, {
     invalid_type_error:
       "Por favor seleccione un tipo de respuesta para la pregunta.",
   }),
