@@ -9,7 +9,7 @@ export class CreateQuestionAction extends BaseServerAction<
 > {
   constructor() {
     super({
-      endpoint: "/api/questions/create",
+      endpoint: "/api/questions",
       method: "POST",
       adminOnly: true,
       revalidatePathAfter: ["/dashboard/questions"],
@@ -24,15 +24,9 @@ export class CreateQuestionAction extends BaseServerAction<
     try {
       const data = this.validate({
         question: formData.get("question"),
-        name_category: formData.get("name_category"),
-        order_category: Number(formData.get("order_category")),
-        order_question_category: Number(
-          formData.get("order_question_category"),
-        ),
-        name_subcategory: formData.get("name_subcategory"),
-        order_subcategory: Number(formData.get("order_subcategory")),
-        type_response: formData.get("type_response"),
-        delegationId: formData.get("delegation"),
+        categoryId: formData.get("categoryId"),
+        subcategoryId: formData.get("subcategoryId") || null,
+        typeResponse: formData.get("typeResponse"),
       });
 
       await this.fetchAPI(data);
@@ -51,7 +45,7 @@ export class UpdateQuestionAction extends BaseServerAction<
 > {
   constructor(id: string) {
     super({
-      endpoint: `/api/questions/edit/${id}`,
+      endpoint: `/api/questions/${id}`,
       method: "PUT",
       adminOnly: true,
       revalidatePathAfter: ["/dashboard/questions"],
@@ -66,15 +60,12 @@ export class UpdateQuestionAction extends BaseServerAction<
     try {
       const data = this.validate({
         question: formData.get("question"),
-        name_category: formData.get("name_category"),
-        order_category: Number(formData.get("order_category")),
-        order_question_category: Number(
-          formData.get("order_question_category"),
-        ),
-        name_subcategory: formData.get("name_subcategory"),
-        order_subcategory: Number(formData.get("order_subcategory")),
-        type_response: formData.get("type_response"),
-        delegationId: formData.get("delegation"),
+        categoryId: formData.get("categoryId"),
+        subcategoryId: formData.get("subcategoryId") || null,
+        typeResponse: formData.get("typeResponse"),
+        order: formData.get("order")
+          ? Number(formData.get("order"))
+          : undefined,
       });
 
       await this.fetchAPI(data);
@@ -93,7 +84,7 @@ export class DeleteQuestionAction extends BaseServerAction<
 > {
   constructor(id: string) {
     super({
-      endpoint: `/api/questions/delete/${id}`,
+      endpoint: `/api/questions/${id}`,
       method: "DELETE",
       adminOnly: true,
       revalidatePathAfter: ["/dashboard/questions"],

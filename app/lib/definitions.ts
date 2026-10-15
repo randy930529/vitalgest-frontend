@@ -43,6 +43,17 @@ export type PaginatedResult<T> = {
   totalRecords: number;
 };
 
+export type QuestionCategoryType = BaseType & {
+  name: string;
+  order: number;
+};
+
+export type QuestionSubcategoryType = BaseType & {
+  category_id: string;
+  name: string;
+  order: number;
+};
+
 export type StateType<T> = {
   errors?: T;
   message?: string | null;
@@ -203,11 +214,15 @@ export type TimelinePropsType = {
 
 export type ChecklistQuestionsType = BaseType & {
   question: string;
+  category_id: string;
+  subcategory_id?: string | null;
+  category?: QuestionCategoryType;
+  subcategory?: QuestionSubcategoryType | null;
   name_category: string;
   order_category: number;
   order_question_category: number;
-  name_subcategory?: string;
-  order_subcategory?: number;
+  name_subcategory?: string | null;
+  order_subcategory?: number | null;
   type_response: CHECKLIST_RESPONSE_TYPE;
 };
 

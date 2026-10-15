@@ -2,6 +2,8 @@ import {
   AmbulanceAreaType,
   CheckListAmbulanceType,
   ChecklistQuestionsType,
+  QuestionCategoryType,
+  QuestionSubcategoryType,
   CheckListSupplyType,
   PaginatedResult,
   StepItemType,
@@ -35,13 +37,46 @@ export async function fetchQuestionById(
   id: string,
 ): Promise<ChecklistQuestionsType | undefined> {
   try {
-    const checklistQuestions = await fetchChecklistQuestions();
-
-    return checklistQuestions.data.find((question) => question.id === id);
+    const dataFetching = new DataFetch<ChecklistQuestionsType>(
+      `/api/questions/${id}`,
+    );
+    return await dataFetching.getOne();
   } catch (err) {
     console.log("API Error[GET QUESTION BY ID]:", err);
     return;
   }
+}
+
+export async function fetchQuestionCategories(): Promise<QuestionCategoryType[]> {
+  const dataFetching = new DataFetch<QuestionCategoryType>(
+    "/api/questions/categories",
+  );
+  const result = await dataFetching.getAll();
+  return result.data;
+}
+
+export async function fetchQuestionSubcategories(
+  categoryId?: string,
+): Promise<QuestionSubcategoryType[]> {
+  const dataFetching = new DataFetch<QuestionSubcategoryType>(
+    "/api/questions/subcategories",
+  );
+  const result = await dataFetching.getAll(
+    categoryId ? { categoryId } : undefined,
+  );
+  return result.data;
+}
+
+export async function fetchQuestions(
+  categoryId?: string,
+  subcategoryId?: string,
+): Promise<PaginatedResult<ChecklistQuestionsType>> {
+  const dataFetching = new DataFetch<ChecklistQuestionsType>("/api/questions");
+  const params = {
+    ...(categoryId ? { categoryId } : {}),
+    ...(subcategoryId ? { subcategoryId } : {}),
+  };
+  return dataFetching.getAll(params);
 }
 
 export async function fetchChecklistSteps(): Promise<[StepItemType[], number]> {

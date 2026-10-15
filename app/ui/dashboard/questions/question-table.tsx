@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import {
   ChecklistQuestionsType,
-  DelegationType,
+  QuestionCategoryType,
+  QuestionSubcategoryType,
   PaginatedResult,
 } from "@/app/lib/definitions";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -30,11 +31,15 @@ const customHeaders = [
 export default function QuestionTable({
   data,
 }: {
-  data: [PaginatedResult<ChecklistQuestionsType>, DelegationType[]];
+  data: [
+    PaginatedResult<ChecklistQuestionsType>,
+    QuestionCategoryType[],
+    QuestionSubcategoryType[],
+  ];
 }) {
   // (Component) Tabla interactiva de preguntas - [CSR]
 
-  const [{ data: questions, totalRecords }, delegations] = data;
+  const [{ data: questions, totalRecords }, categories, subcategories] = data;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const allSelected =
     questions.length > 0 && selectedIds.length === questions.length;
@@ -71,7 +76,9 @@ export default function QuestionTable({
         )}
         <ModalTrigger
           title="Crear Pregunta"
-          modelContent={<ModalComponent delegations={delegations} />}
+        modelContent={
+          <ModalComponent categories={categories} subcategories={subcategories} />
+        }
         />
       </Filters>
       <p className="px-4 py-2 text-xs text-slate-500" aria-live="polite">

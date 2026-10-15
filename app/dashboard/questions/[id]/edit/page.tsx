@@ -1,11 +1,14 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
 import { FormSkeleton } from "@/app/ui/components/skeletons";
 import QuestionEditForm from "@/app/ui/dashboard/questions/edit/question-edit-form";
-import { fetchQuestionById } from "@/app/lib/data/checklist";
+import {
+  fetchQuestionById,
+  fetchQuestionCategories,
+  fetchQuestionSubcategories,
+} from "@/app/lib/data/checklist";
 
 export const metadata: Metadata = {
   title: "Editar Pregunta",
@@ -18,10 +21,11 @@ export default async function EditQuestionPage(props: {
   const params = await props.params;
   const id = params.id;
 
-  const fetchQuestionByIdAndDelegations = async () =>
+  const fetchQuestionAndQuestionOptions = async () =>
     await Promise.all([
       fetchQuestionById(id),
-      fetchDelegations().then((result) => result.data),
+      fetchQuestionCategories(),
+      fetchQuestionSubcategories(),
     ]);
 
   return (
@@ -39,7 +43,7 @@ export default async function EditQuestionPage(props: {
       />
       <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/questions" />}>
         <WrapperForm
-          fetchData={fetchQuestionByIdAndDelegations}
+          fetchData={fetchQuestionAndQuestionOptions}
           WrappedComponent={QuestionEditForm}
         />
       </Suspense>

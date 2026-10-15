@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { fetchDelegations } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import QuestionForm from "@/app/ui/dashboard/questions/create/question-form";
-// import { getPaginationParams } from "@/app/lib/utils";
-import { fetchChecklistQuestions } from "@/app/lib/data/checklist";
+import {
+  fetchQuestionCategories,
+  fetchQuestionSubcategories,
+  fetchQuestions,
+} from "@/app/lib/data/checklist";
 import QuestionTable from "@/app/ui/dashboard/questions/question-table";
 
 export const metadata: Metadata = {
@@ -16,15 +18,21 @@ export const metadata: Metadata = {
 export default async function QuestionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; display?: string; category?: number }>;
+  searchParams: Promise<{
+    page?: string;
+    display?: string;
+    categoryId?: string;
+    subcategoryId?: string;
+  }>;
 }) {
   // (Página) Listado de preguntas - [SSR]
 
-  const { page, display, category } = await searchParams;
-  const fetchQuestionsAndDelegations = async () =>
+  const { categoryId, subcategoryId } = await searchParams;
+  const fetchQuestionsAndCategories = async () =>
     await Promise.all([
-      fetchChecklistQuestions(category),
-      fetchDelegations().then((result) => result.data),
+      fetchQuestions(categoryId, subcategoryId),
+      fetchQuestionCategories(),
+      fetchQuestionSubcategories(),
     ]);
 
   return (
@@ -39,12 +47,12 @@ export default async function QuestionPage({
         fallback={
           <TableSkeleton
             title="Crear Pregunta"
-            modelContent={<QuestionForm />}
+            modelContent={<QuestionForm categories={[]} subcategories={[]} />}
           />
         }
       >
         <WrapperTable
-          fetchData={fetchQuestionsAndDelegations}
+          fetchData={fetchQuestionsAndCategories}
           WrappedComponent={QuestionTable}
         />
       </Suspense>

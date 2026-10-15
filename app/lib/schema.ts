@@ -246,36 +246,24 @@ const typeResponseValues = Object.keys(CHECKLIST_RESPONSE_TYPES) as [
 
 const FormQuestionSchema = z.object({
   id: z.string().uuid(),
-  question: z.string({
-    invalid_type_error: "Por favor ingrese la pregunta.",
+  question: z
+    .string({ invalid_type_error: "Por favor ingrese la pregunta." })
+    .trim()
+    .min(1)
+    .max(255),
+  categoryId: z.string().uuid({
+    message: "Por favor seleccione una categoría válida.",
   }),
-  name_category: z.string({
-    invalid_type_error: "Por favor seleccione una categoría.",
-  }),
-  order_category: z.number({
-    invalid_type_error: "Por favor ingrese el orden de la categoría.",
-  }),
-  order_question_category: z.number({
-    invalid_type_error:
-      "Por favor ingrese el orden de la pregunta en la categoría.",
-  }),
-  name_subcategory: z
-    .string({
-      invalid_type_error: "Por favor seleccione una subcategoría.",
-    })
+  subcategoryId: z
+    .union([z.string().uuid(), z.literal("")])
+    .nullable()
+    .transform((value) => (value === "" ? null : value))
     .optional(),
-  order_subcategory: z
-    .number({
-      invalid_type_error: "Por favor ingrese el orden de la subcategoría.",
-    })
-    .optional(),
-  type_response: z.enum(typeResponseValues, {
+  typeResponse: z.enum(typeResponseValues, {
     invalid_type_error:
       "Por favor seleccione un tipo de respuesta para la pregunta.",
   }),
-  delegationId: z.string({
-    invalid_type_error: "Por favor seleccione una delegación.",
-  }),
+  order: z.number().int().min(1).optional(),
 });
 
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
@@ -353,5 +341,5 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   supplyId: true,
 });
 
-export const CreateQuestion = FormQuestionSchema.omit({ id: true });
-export const UpdateQuestion = FormQuestionSchema.omit({});
+export const CreateQuestion = FormQuestionSchema.omit({ id: true, order: true });
+export const UpdateQuestion = FormQuestionSchema.omit({ id: true }).partial();
