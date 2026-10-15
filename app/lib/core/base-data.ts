@@ -120,7 +120,7 @@ export class DataFetch<T> {
             success: false,
             data: [],
             error: "No se pudo obtener las datos desde la API.",
-            totalRecords: 0,
+            total: 0,
           };
         }
 
@@ -137,7 +137,7 @@ export class DataFetch<T> {
 
     return {
       data: result.data,
-      totalRecords: result.totalRecords ?? ITEMS_PER_PAGE,
+      totalRecords: result.total ?? ITEMS_PER_PAGE,
     };
   }
 }

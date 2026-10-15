@@ -35,7 +35,7 @@ export type ResponseAPIType<T> = {
   success: boolean;
   data: T;
   error?: string;
-  totalRecords?: number;
+  total?: number;
 };
 
 export type PaginatedResult<T> = {
