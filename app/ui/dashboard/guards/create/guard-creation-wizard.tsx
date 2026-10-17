@@ -16,6 +16,7 @@ import StepIndicator from "@/app/ui/dashboard/guards/create/step-indicator";
 import GuardCreationStep from "@/app/ui/dashboard/guards/create/steps/guard-creation-step";
 import ShiftsAssignmentStep from "@/app/ui/dashboard/guards/create/steps/shifts-assignment-step";
 import GuardSummaryStep from "@/app/ui/dashboard/guards/create/steps/guard-summary-step";
+import StepContent from "@/app/ui/components/step-content";
 
 type WizardStepType = 1 | 2 | 3;
 
@@ -164,13 +165,7 @@ export default function GuardCreationWizard({
       />
 
       {/* Step Content */}
-      <div
-        className={`rounded-2xl border border-slate-100 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] bg-white p-4 transition-all duration-300 ease-out sm:p-5 ${
-          isStepContentVisible
-            ? "translate-y-0 opacity-100"
-            : "translate-y-2 opacity-0"
-        }`}
-      >
+      <StepContent isStepContentVisible={isStepContentVisible}>
         {currentStep === 1 && (
           <GuardCreationStep
             guardChiefs={guardChiefs}
@@ -203,7 +198,7 @@ export default function GuardCreationWizard({
             onComplete={handleWizardComplete}
           />
         )}
-      </div>
+      </StepContent>
 
       {/* Navigation Buttons */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
