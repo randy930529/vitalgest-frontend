@@ -266,6 +266,19 @@ const FormQuestionSchema = z.object({
   order: z.number().int().min(1).optional(),
 });
 
+const FormQuestionCategorySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().trim().min(1).max(150),
+  order: z.number().int().min(1).optional(),
+});
+
+const FormQuestionSubcategorySchema = z.object({
+  id: z.string().uuid(),
+  categoryId: z.string().uuid(),
+  name: z.string().trim().min(1).max(150),
+  order: z.number().int().min(1).optional(),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -343,3 +356,17 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
 
 export const CreateQuestion = FormQuestionSchema.omit({ id: true, order: true });
 export const UpdateQuestion = FormQuestionSchema.omit({ id: true }).partial();
+export const CreateQuestionCategory = FormQuestionCategorySchema.omit({
+  id: true,
+  order: true,
+});
+export const UpdateQuestionCategory = FormQuestionCategorySchema.omit({
+  id: true,
+}).partial();
+export const CreateQuestionSubcategory = FormQuestionSubcategorySchema.omit({
+  id: true,
+  order: true,
+});
+export const UpdateQuestionSubcategory = FormQuestionSubcategorySchema.omit({
+  id: true,
+}).partial();

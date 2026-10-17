@@ -114,6 +114,7 @@ export const formConfigs = {
       placeholder: "Entre la nueva contraseña",
     },
   } as const,
+
   // Preguntas de Checklist
   question: {
     question: {
@@ -122,39 +123,43 @@ export const formConfigs = {
       required: true,
       placeholder: "¿Cuál es la capital de España?",
     },
-    name_category: {
-      type: "text",
-      title: "Categoría",
-      required: true,
-      placeholder: "Categoría de la pregunta",
-    },
-    order_category: {
-      type: "number",
-      title: "Orden de la Categoría",
-      required: true,
-      placeholder: "1",
-    },
-    order_question_category: {
-      type: "number",
-      title: "Orden de la Pregunta en la Categoría",
-      required: true,
-      placeholder: "1",
-    },
-    name_subcategory: {
-      type: "text",
-      title: "Subcategoría",
-      placeholder: "Subcategoría de la pregunta",
-    },
-    order_subcategory: {
-      type: "number",
-      title: "Orden de la Subcategoría",
-      placeholder: "1",
-    },
-    type_response: {
+    typeResponse: {
       type: "select",
       title: "Tipo de Respuesta",
       options: customTypeResponse,
       required: true,
+    },
+  } as const,
+
+  // Categorias de Preguntas
+  category: {
+    name: {
+      type: "text",
+      title: "Nombre",
+      required: true,
+      placeholder: "Nombre de la categoría",
+    },
+    order: {
+      type: "number",
+      title: "Orden",
+      required: true,
+      placeholder: "1",
+    },
+  } as const,
+
+  // Subcategorias de Preguntas
+  subcategory: {
+    name: {
+      type: "text",
+      title: "Nombre",
+      required: true,
+      placeholder: "Nombre de la subcategoría",
+    },
+    order: {
+      type: "number",
+      title: "Orden",
+      required: true,
+      placeholder: "1",
     },
   } as const,
 } as const;

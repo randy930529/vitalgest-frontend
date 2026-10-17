@@ -298,12 +298,10 @@ export type FormFieldType =
       type: "textarea";
       rows?: number;
     })
-  | {
+  | (BaseFormField & {
       type: "checkbox";
-      name: string;
-      title: string;
       defaultChecked?: boolean;
-    }
+    })
   | {
       type: "custom";
       name: string;

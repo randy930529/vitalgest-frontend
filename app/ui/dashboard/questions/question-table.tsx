@@ -76,9 +76,12 @@ export default function QuestionTable({
         )}
         <ModalTrigger
           title="Crear Pregunta"
-        modelContent={
-          <ModalComponent categories={categories} subcategories={subcategories} />
-        }
+          modelContent={
+            <ModalComponent
+              categories={categories}
+              subcategories={subcategories}
+            />
+          }
         />
       </Filters>
       <p className="px-4 py-2 text-xs text-slate-500" aria-live="polite">

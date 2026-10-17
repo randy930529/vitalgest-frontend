@@ -63,6 +63,8 @@ export function FormSelect({
   inline,
   contents,
   handleOption,
+  handlePin,
+  titlePin,
 }: {
   name: string;
   title?: string;
@@ -78,6 +80,8 @@ export function FormSelect({
   inline?: boolean;
   contents?: boolean;
   handleOption?: (name: string, value: string) => void;
+  handlePin?: () => void;
+  titlePin?: string;
 }) {
   return (
     <div
@@ -93,6 +97,16 @@ export function FormSelect({
         >
           {title}
           {required && <span className="text-red-600"> *</span>}
+          {handlePin && (
+            <button
+              type="button"
+              onClick={handlePin}
+              title={titlePin || "Agregar nueva opción"}
+              className="text-lg rounded-sm font-semibold ml-2 inline-flex h-4 items-center justify-center bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700"
+            >
+              +
+            </button>
+          )}
         </label>
       )}
       <select

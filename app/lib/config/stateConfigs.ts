@@ -128,3 +128,16 @@ export type QuestionState = StateType<{
   order?: string[];
   success?: string[];
 }>;
+
+export type QuestionCategoryState = StateType<{
+  name?: string[];
+  order?: string[];
+  success?: string[];
+}>;
+
+export type QuestionSubcategoryState = StateType<{
+  name?: string[];
+  categoryId?: string[];
+  order?: string[];
+  success?: string[];
+}>;
