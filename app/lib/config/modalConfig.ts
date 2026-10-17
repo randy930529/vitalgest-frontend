@@ -49,7 +49,6 @@ export const modalComponents = {
     },
   ),
   questionForm: dynamic(
-    // TODO: Modificar para asociar contra el formulario para crear preguntas
     () => import("@/app/ui/dashboard/questions/create/question-form"),
     {
       ssr: false,
