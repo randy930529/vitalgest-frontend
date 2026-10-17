@@ -21,13 +21,10 @@ export default async function DelegationsPage({
   // (Página) Gestionar delegaciones - [SSR]
 
   const { page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
+
   const fetchDataDelegationsAndMXStates = async () =>
-    await Promise.all([
-      fetchDelegations(
-        getPaginationParams(Number(page) || 1, Number(display) || 6),
-      ),
-      fetchMxStates(),
-    ]);
+    await Promise.all([fetchDelegations(params), fetchMxStates()]);
 
   return (
     <section className="vital-shell">

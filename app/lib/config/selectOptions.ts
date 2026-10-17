@@ -1,3 +1,5 @@
+import { CHECKLIST_RESPONSE_TYPES } from "@/app/lib/config/constants";
+
 export const customUnits = [
   {
     id: 0,
@@ -79,4 +81,17 @@ export const customUnits = [
     value: "tube",
     label: "Tubo",
   },
+] as const;
+
+export const customTypeResponse = [
+  {
+    id: 0,
+    value: "",
+    label: "Seleccione Tipo de Respuesta",
+  },
+  ...Object.entries(CHECKLIST_RESPONSE_TYPES).map(([value, label], index) => ({
+    id: index + 1,
+    value,
+    label,
+  })),
 ] as const;

@@ -6,8 +6,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { createPageURL, generatePagination } from "@/app/lib/utils";
 import { Button } from "@/app/ui/button";
+import { PAGINATION_ITEMS } from "@/app/lib/config/constants";
 
-const ITEMS_PER_PAGE = Number(process.env.NEXTITEMS_PER_PAGE ?? "10");
+const { ITEMS_PER_PAGE } = PAGINATION_ITEMS;
 
 export default function TablePagination({
   totalItems,

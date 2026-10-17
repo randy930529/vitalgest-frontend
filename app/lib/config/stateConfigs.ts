@@ -119,3 +119,25 @@ export type UploadFileState = StateType<{
   file?: string[];
   success?: string[];
 }>;
+
+export type QuestionState = StateType<{
+  question?: string[];
+  categoryId?: string[];
+  subcategoryId?: string[];
+  typeResponse?: string[];
+  order?: string[];
+  success?: string[];
+}>;
+
+export type QuestionCategoryState = StateType<{
+  name?: string[];
+  order?: string[];
+  success?: string[];
+}>;
+
+export type QuestionSubcategoryState = StateType<{
+  name?: string[];
+  categoryId?: string[];
+  order?: string[];
+  success?: string[];
+}>;

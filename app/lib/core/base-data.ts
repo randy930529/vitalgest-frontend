@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { verifyAuthorization, verifySession } from "@/app/lib/dal";
 import { ResponseAPIType, PaginatedResult } from "@/app/lib/definitions";
+import { PAGINATION_ITEMS } from "@/app/lib/config/constants";
 
-const ITEMS_PER_PAGE = Number(process.env.NEXTITEMS_PER_PAGE ?? "6");
+const { ITEMS_PER_PAGE } = PAGINATION_ITEMS;
 
 export class DataFetch<T> {
   private endPoint: string;
@@ -119,7 +120,7 @@ export class DataFetch<T> {
             success: false,
             data: [],
             error: "No se pudo obtener las datos desde la API.",
-            totalRecords: 0,
+            total: 0,
           };
         }
 
@@ -136,7 +137,7 @@ export class DataFetch<T> {
 
     return {
       data: result.data,
-      totalRecords: result.totalRecords ?? ITEMS_PER_PAGE,
+      totalRecords: result.total ?? ITEMS_PER_PAGE,
     };
   }
 }

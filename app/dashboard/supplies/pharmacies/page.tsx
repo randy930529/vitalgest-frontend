@@ -26,7 +26,8 @@ export default async function PharmacySuppliesPage({
 }) {
   // (Página) Gestionar insumos en farmacia - [SSR]
 
-  let { pharmacy: pharmacyId, page = 1, display = 6 } = await searchParams;
+  let { pharmacy: pharmacyId, page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
 
   const { data: delegations } = await fetchDelegations();
 
@@ -45,7 +46,7 @@ export default async function PharmacySuppliesPage({
 
   const fetchsuppliesByPharmacyId = async () =>
     Promise.all([
-      fetchSuppliesByPharmacyId(pharmacyId, getPaginationParams(page, display)),
+      fetchSuppliesByPharmacyId(pharmacyId, params),
       delegations,
       pharmacyId,
     ]);

@@ -1,12 +1,8 @@
 import { ChangeEvent, JSX, useState } from "react";
 import clsx from "clsx";
 import { ArrowRightIcon, PaperClipIcon } from "@heroicons/react/24/outline";
-import {
-  ChecklistQuestionsType,
-  CustomOptions,
-  FormInputType,
-} from "@/app/lib/definitions";
-import { STYLES } from "@/app/lib/config/constants";
+import { CustomOptions, FormInputType } from "@/app/lib/definitions";
+import { CHECKLIST_RESPONSE_TYPE, STYLES } from "@/app/lib/config/constants";
 import { InlineErrors } from "@/app/ui/custom-errors";
 import Signit from "@/app/ui/components/signit";
 import { Button } from "@/app/ui/button";
@@ -67,6 +63,8 @@ export function FormSelect({
   inline,
   contents,
   handleOption,
+  handlePin,
+  titlePin,
 }: {
   name: string;
   title?: string;
@@ -82,6 +80,8 @@ export function FormSelect({
   inline?: boolean;
   contents?: boolean;
   handleOption?: (name: string, value: string) => void;
+  handlePin?: () => void;
+  titlePin?: string;
 }) {
   return (
     <div
@@ -97,6 +97,16 @@ export function FormSelect({
         >
           {title}
           {required && <span className="text-red-600"> *</span>}
+          {handlePin && (
+            <button
+              type="button"
+              onClick={handlePin}
+              title={titlePin || "Agregar nueva opción"}
+              className="text-lg rounded-sm font-semibold ml-2 inline-flex h-4 items-center justify-center bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700"
+            >
+              +
+            </button>
+          )}
         </label>
       )}
       <select
@@ -332,7 +342,7 @@ export function FormInputSetter({
   name,
   title,
 }: {
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   name: string;
   title?: string;
 }): JSX.Element {

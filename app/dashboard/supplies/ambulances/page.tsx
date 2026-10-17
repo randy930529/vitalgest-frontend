@@ -38,6 +38,7 @@ export default async function AmbulancesSuppliesPage({
     page = 1,
     display = 6,
   } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
 
   if (!ambulanceId) {
     const [delegations, ambulances] = await Promise.all([
@@ -54,10 +55,7 @@ export default async function AmbulancesSuppliesPage({
   const fetchAmbulancesAndSupplies = async () =>
     await Promise.all([
       fetchAmbulances().then((result) => result.data),
-      fetchSuppliesByAmbulanceId(
-        ambulanceId,
-        getPaginationParams(page, display),
-      ),
+      fetchSuppliesByAmbulanceId(ambulanceId, params),
       ambulanceId,
       fetchAmbulanceAreas().then((result) => result.data),
       fetchSuppliesByPharmacyId(pharmacyId).then((result) => result.data),

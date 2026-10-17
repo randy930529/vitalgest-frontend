@@ -1,6 +1,10 @@
 import { File } from "buffer";
 import { z } from "zod";
-import { FILE_UPLOAD } from "@/app/lib/config/constants";
+import {
+  CHECKLIST_RESPONSE_TYPE,
+  CHECKLIST_RESPONSE_TYPES,
+  FILE_UPLOAD,
+} from "@/app/lib/config/constants";
 
 const FormUserSchema = z.object({
   id: z.string().uuid(),
@@ -235,6 +239,46 @@ const FormChecklistSignSchema = z.object({
     .nullable(),
 });
 
+const typeResponseValues = Object.keys(CHECKLIST_RESPONSE_TYPES) as [
+  string,
+  ...CHECKLIST_RESPONSE_TYPE[],
+];
+
+const FormQuestionSchema = z.object({
+  id: z.string().uuid(),
+  question: z
+    .string({ invalid_type_error: "Por favor ingrese la pregunta." })
+    .trim()
+    .min(1)
+    .max(255),
+  categoryId: z.string().uuid({
+    message: "Por favor seleccione una categoría válida.",
+  }),
+  subcategoryId: z
+    .union([z.string().uuid(), z.literal("")])
+    .nullable()
+    .transform((value) => (value === "" ? null : value))
+    .optional(),
+  typeResponse: z.enum(typeResponseValues, {
+    invalid_type_error:
+      "Por favor seleccione un tipo de respuesta para la pregunta.",
+  }),
+  order: z.number().int().min(1).optional(),
+});
+
+const FormQuestionCategorySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().trim().min(1).max(150),
+  order: z.number().int().min(1).optional(),
+});
+
+const FormQuestionSubcategorySchema = z.object({
+  id: z.string().uuid(),
+  categoryId: z.string().uuid(),
+  name: z.string().trim().min(1).max(150),
+  order: z.number().int().min(1).optional(),
+});
+
 export const CreateUser = FormUserSchema.omit({ id: true, status: true });
 export const UpdateUser = FormUserSchema.omit({ id: true, password: true });
 
@@ -309,3 +353,20 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   specification: true,
   supplyId: true,
 });
+
+export const CreateQuestion = FormQuestionSchema.omit({ id: true, order: true });
+export const UpdateQuestion = FormQuestionSchema.omit({ id: true }).partial();
+export const CreateQuestionCategory = FormQuestionCategorySchema.omit({
+  id: true,
+  order: true,
+});
+export const UpdateQuestionCategory = FormQuestionCategorySchema.omit({
+  id: true,
+}).partial();
+export const CreateQuestionSubcategory = FormQuestionSubcategorySchema.omit({
+  id: true,
+  order: true,
+});
+export const UpdateQuestionSubcategory = FormQuestionSubcategorySchema.omit({
+  id: true,
+}).partial();

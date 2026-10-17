@@ -1,4 +1,5 @@
 import { File } from "buffer";
+import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
 
 export type BaseType = {
   id: string;
@@ -34,12 +35,23 @@ export type ResponseAPIType<T> = {
   success: boolean;
   data: T;
   error?: string;
-  totalRecords?: number;
+  total?: number;
 };
 
 export type PaginatedResult<T> = {
   data: T[];
   totalRecords: number;
+};
+
+export type QuestionCategoryType = BaseType & {
+  name: string;
+  order: number;
+};
+
+export type QuestionSubcategoryType = BaseType & {
+  category_id: string;
+  name: string;
+  order: number;
 };
 
 export type StateType<T> = {
@@ -131,7 +143,7 @@ export type AmbulanceAreaType = BaseType & {
 
 export type ChecklistAnswersComponentsType = {
   id: string;
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   value_bool: ChecklistAnswersType["valueBool"];
   value_option: ChecklistAnswersType["valueOption"];
   value_text: ChecklistAnswersType["valueText"];
@@ -202,19 +214,16 @@ export type TimelinePropsType = {
 
 export type ChecklistQuestionsType = BaseType & {
   question: string;
+  category_id: string;
+  subcategory_id?: string | null;
+  category?: QuestionCategoryType;
+  subcategory?: QuestionSubcategoryType | null;
   name_category: string;
   order_category: number;
   order_question_category: number;
-  name_subcategory?: string;
-  order_subcategory?: number;
-  type_response:
-    | "bool"
-    | "option"
-    | "text"
-    | "bool_option"
-    | "bool_text"
-    | "option_text"
-    | "bool_option_text";
+  name_subcategory?: string | null;
+  order_subcategory?: number | null;
+  type_response: CHECKLIST_RESPONSE_TYPE;
 };
 
 export type ChecklistSuppliesType = BaseType & {
@@ -225,7 +234,7 @@ export type ChecklistSuppliesType = BaseType & {
 
 export type ChecklistAnswersType = {
   questionId: string;
-  type: ChecklistQuestionsType["type_response"];
+  type: CHECKLIST_RESPONSE_TYPE;
   valueBool?: boolean;
   valueOption?: string;
   valueText?: string;
@@ -266,39 +275,38 @@ export type SupplyAmbulanceType = BaseType & {
   ambulance_id: string;
 };
 
+type BaseFormField = {
+  name: string;
+  title?: string;
+  required?: boolean;
+  defaultValue?: string;
+};
+
 export type FormFieldType =
-  | {
+  | (BaseFormField & {
       type: "text" | "email" | "password" | "number";
-      name: string;
-      title?: string;
-      required?: boolean;
       placeholder?: string;
-      defaultValue?: string;
-    }
-  | {
+    })
+  | (BaseFormField & {
       type: "select";
-      name: string;
-      title?: string;
-      required?: boolean;
       options: Array<{ id: string | number; value: string; label: string }>;
-      defaultValue?: string;
-    }
-  | {
+    })
+  | (BaseFormField & {
       type: "date";
-      name: string;
-      title?: string;
-      required?: boolean;
-      defaultValue?: string;
-    }
-  | {
+    })
+  | (BaseFormField & {
       type: "textarea";
-      name: string;
-      title?: string;
-      required?: boolean;
       rows?: number;
-    }
-  | { type: "checkbox"; name: string; title: string; defaultChecked?: boolean }
-  | { type: "custom"; name: string; component: React.ReactNode };
+    })
+  | (BaseFormField & {
+      type: "checkbox";
+      defaultChecked?: boolean;
+    })
+  | {
+      type: "custom";
+      name: string;
+      component: React.ReactNode;
+    };
 
 export type VerifySignatureResult = {
   approved: boolean;
