@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
   CustomMxState,
   DelegationType,
   PaginatedResult,
 } from "@/app/lib/definitions";
+import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { STYLES } from "@/app/lib/config/constants";
+import { deleteDelegation } from "@/app/lib/actions/delegation";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/components/pagination";
@@ -15,9 +19,9 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
-import { deleteDelegation } from "@/app/lib/actions/delegation";
-import { modalComponents } from "@/app/lib/config/modalConfig";
 import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
+import EmptyTableRow from "@/app/ui/components/empty-table-row";
+import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
 
 const ModalComponent = modalComponents.delegationForm;
 const customHeaders = [
@@ -34,26 +38,17 @@ export default function DelegationTable({
 }) {
   // (Component) Lista de delegaciones existentes - [CSR]
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [{ data: delegations, totalRecords }, customMxStates] = data;
-  const allSelected =
-    delegations.length > 0 && selectedIds.length === delegations.length;
-
-  function handleCheckboxChange(checkedId: string, checked: boolean) {
-    if (checked) {
-      setSelectedIds([...selectedIds, checkedId]);
-    } else {
-      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
-    }
-  }
-
-  function handleSelectAllChange(checked: boolean) {
-    const ambulanceArray = delegations.map((r) => r.id);
-    setSelectedIds(checked ? ambulanceArray : []);
-  }
+  const {
+    selectedIds,
+    setSelectedIds,
+    allSelected,
+    handleCheckboxChange,
+    handleSelectAllChange,
+  } = useTableSelection(delegations);
 
   return (
-    <main className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+    <main className={clsx(STYLES.mainTable)}>
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -121,34 +116,24 @@ export default function DelegationTable({
             </tr>
           </thead>
           <tbody>
+            <EmptyTableRow
+              isListEmpty={!delegations.length}
+              colSpan={customHeaders.length + 2}
+            />
             {delegations?.map((delegation) => (
               <tr
                 key={delegation.id}
                 className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
               >
                 <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id={`checkbox-table-${delegation.id}`}
-                      type="checkbox"
-                      className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
-                      value={delegation.id}
-                      checked={selectedIds.includes(delegation.id)}
-                      aria-label={`Seleccionar delegación ${delegation.name}`}
-                      onChange={(event) => {
-                        handleCheckboxChange(
-                          delegation.id,
-                          event.target.checked,
-                        );
-                      }}
-                    />
-                    <label
-                      htmlFor={`checkbox-table-${delegation.id}`}
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
-                  </div>
+                  <TableCheckbox
+                    id={`checkbox-table-${delegation.id}`}
+                    checked={selectedIds.includes(delegation.id)}
+                    ariaLabel={`Seleccionar delegación ${delegation.name}`}
+                    onChange={(checked) =>
+                      handleCheckboxChange(delegation.id, checked)
+                    }
+                  />
                 </td>
                 <th
                   scope="row"

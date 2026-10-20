@@ -275,6 +275,20 @@ export type SupplyAmbulanceType = BaseType & {
   ambulance_id: string;
 };
 
+export type OrderDetailType = {
+  id: string;
+  category: string;
+  specification: string;
+  quantity: number;
+  notes?: string | null;
+};
+
+export type OrderType = BaseType & {
+  date: string;
+  ambulance: AmbulanceType;
+  details: OrderDetailType[];
+};
+
 type BaseFormField = {
   name: string;
   title?: string;

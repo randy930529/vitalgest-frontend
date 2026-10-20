@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
   DelegationType,
@@ -8,6 +8,8 @@ import {
   UserType,
 } from "@/app/lib/definitions";
 import { deleteUser } from "@/app/lib/actions/user";
+import { STYLES, ROLE_MANAGER } from "@/app/lib/config/constants";
+import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
@@ -16,8 +18,9 @@ import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import ModalTrigger from "@/app/ui/button-modal";
 import { modalComponents } from "@/app/lib/config/modalConfig";
-import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
+import EmptyTableRow from "@/app/ui/components/empty-table-row";
+import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
 
 const ModalComponent = modalComponents.userForm;
 
@@ -36,25 +39,17 @@ export default function UserTable({
 }) {
   // (Component) Tabla interactiva de usuarios - [CSR]
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [{ data: users, totalRecords }, delegations] = data;
-  const allSelected = users.length > 0 && selectedIds.length === users.length;
-
-  function handleCheckboxChange(checkedId: string, checked: boolean) {
-    if (checked) {
-      setSelectedIds([...selectedIds, checkedId]);
-    } else {
-      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
-    }
-  }
-
-  function handleSelectAllChange(checked: boolean) {
-    const ambulanceArray = users.map((r) => r.id);
-    setSelectedIds(checked ? ambulanceArray : []);
-  }
+  const {
+    selectedIds,
+    setSelectedIds,
+    allSelected,
+    handleCheckboxChange,
+    handleSelectAllChange,
+  } = useTableSelection(users);
 
   return (
-    <main className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+    <main className={clsx(STYLES.mainTable)}>
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -122,31 +117,25 @@ export default function UserTable({
             </tr>
           </thead>
           <tbody>
+            <EmptyTableRow
+              isListEmpty={!users.length}
+              colSpan={customHeaders.length + 2}
+              message="No hay usuarios en el sistema."
+            />
             {users?.map((user) => (
               <tr
                 key={user.id}
                 className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
               >
                 <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id={`checkbox-table-${user.id}`}
-                      type="checkbox"
-                      className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
-                      value={user.id}
-                      checked={selectedIds.includes(user.id)}
-                      aria-label={`Seleccionar usuario ${user.name} ${user.lastname}`}
-                      onChange={(event) => {
-                        handleCheckboxChange(user.id, event.target.checked);
-                      }}
-                    />
-                    <label
-                      htmlFor={`checkbox-table-${user.id}`}
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
-                  </div>
+                  <TableCheckbox
+                    id={`checkbox-table-${user.id}`}
+                    checked={selectedIds.includes(user.id)}
+                    ariaLabel={`Seleccionar usuario ${user.name} ${user.lastname}`}
+                    onChange={(checked) =>
+                      handleCheckboxChange(user.id, checked)
+                    }
+                  />
                 </td>
                 <th
                   scope="row"

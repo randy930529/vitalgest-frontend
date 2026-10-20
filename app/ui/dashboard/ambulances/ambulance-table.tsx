@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
   AmbulanceType,
   DelegationType,
   PaginatedResult,
 } from "@/app/lib/definitions";
+import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 import { deleteAmbulance } from "@/app/lib/actions/ambulance";
+import { STYLES } from "@/app/lib/config/constants";
 import ModalTrigger from "@/app/ui/button-modal";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TablePagination from "@/app/ui/components/pagination";
@@ -15,8 +18,9 @@ import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import { modalComponents } from "@/app/lib/config/modalConfig";
 import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
+import EmptyTableRow from "@/app/ui/components/empty-table-row";
+import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
 
 const ModalComponent = modalComponents.ambulanceForm;
 const customHeaders = [
@@ -34,25 +38,16 @@ export default function AmbulanceTable({
   // (Component) Tabla interactiva de ambulancias - [CSR]
 
   const [{ data: ambulances, totalRecords }, delegations] = data;
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const allSelected =
-    ambulances.length > 0 && selectedIds.length === ambulances.length;
-
-  function handleCheckboxChange(checkedId: string, checked: boolean) {
-    if (checked) {
-      setSelectedIds([...selectedIds, checkedId]);
-    } else {
-      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
-    }
-  }
-
-  function handleSelectAllChange(checked: boolean) {
-    const ambulanceArray = ambulances.map(({ id }) => id);
-    setSelectedIds(checked ? ambulanceArray : []);
-  }
+  const {
+    selectedIds,
+    setSelectedIds,
+    allSelected,
+    handleCheckboxChange,
+    handleSelectAllChange,
+  } = useTableSelection(ambulances);
 
   return (
-    <main className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+    <main className={clsx(STYLES.mainTable)}>
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -120,34 +115,24 @@ export default function AmbulanceTable({
             </tr>
           </thead>
           <tbody>
+            <EmptyTableRow
+              isListEmpty={!ambulances.length}
+              colSpan={customHeaders.length + 2}
+            />
             {ambulances?.map((ambulance) => (
               <tr
                 key={ambulance.id}
                 className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
               >
                 <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id={`checkbox-table-${ambulance.id}`}
-                      type="checkbox"
-                      className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
-                      value={ambulance.id}
-                      checked={selectedIds.includes(ambulance.id)}
-                      aria-label={`Seleccionar ambulancia ${ambulance.number}`}
-                      onChange={(event) => {
-                        handleCheckboxChange(
-                          ambulance.id,
-                          event.target.checked,
-                        );
-                      }}
-                    />
-                    <label
-                      htmlFor={`checkbox-table-${ambulance.id}`}
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
-                  </div>
+                  <TableCheckbox
+                    id={`checkbox-table-${ambulance.id}`}
+                    checked={selectedIds.includes(ambulance.id)}
+                    ariaLabel={`Seleccionar ambulancia ${ambulance.number}`}
+                    onChange={(checked) =>
+                      handleCheckboxChange(ambulance.id, checked)
+                    }
+                  />
                 </td>
                 <th
                   scope="row"
