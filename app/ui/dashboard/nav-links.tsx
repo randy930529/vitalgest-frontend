@@ -7,6 +7,7 @@ import {
   BuildingOfficeIcon,
   TruckIcon,
   ClipboardIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 import NavSubLinks from "@/app/ui/dashboard/nav-sublinks";
 
@@ -48,6 +49,11 @@ const links = [
         href: `/dashboard/supplies/ambulances`,
       },
     ],
+  },
+  {
+    name: "Pedidos",
+    href: "/dashboard/orders",
+    icon: ClipboardDocumentListIcon,
   },
   {
     name: "Preguntas",
