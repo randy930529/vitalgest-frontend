@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
   AmbulanceType,
@@ -9,8 +9,11 @@ import {
   GuardType,
   PaginatedResult,
 } from "@/app/lib/definitions";
+import { STYLES } from "@/app/lib/config/constants";
 import { deleteGuard } from "@/app/lib/actions/guard";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { modalComponents } from "@/app/lib/config/modalConfig";
+import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
 import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TablePagination from "@/app/ui/components/pagination";
@@ -18,9 +21,10 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import TableActionDeleteAllSelected from "@/app/ui/dashboard/button-delete-all";
-import { modalComponents } from "@/app/lib/config/modalConfig";
 import { Badge } from "@/app/ui/components/badges";
 import { TableActionDetail } from "@/app/ui/dashboard/guards/botton-guard-detail";
+import EmptyTableRow from "@/app/ui/components/empty-table-row";
+import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
 
 const ModalComponent = modalComponents.guardForm;
 const customHeaders = [
@@ -57,24 +61,16 @@ export default function GuardsTable({
     label: number,
     value: id,
   }));
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const allSelected = guards.length > 0 && selectedIds.length === guards.length;
-
-  function handleCheckboxChange(checkedId: string, checked: boolean) {
-    if (checked) {
-      setSelectedIds([...selectedIds, checkedId]);
-    } else {
-      setSelectedIds(selectedIds.filter((id) => id !== checkedId));
-    }
-  }
-
-  function handleSelectAllChange(checked: boolean) {
-    const guardsIdArray = guards.map(({ id }) => id);
-    setSelectedIds(checked ? guardsIdArray : []);
-  }
+  const {
+    selectedIds,
+    setSelectedIds,
+    allSelected,
+    handleCheckboxChange,
+    handleSelectAllChange,
+  } = useTableSelection(guards);
 
   return (
-    <main className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+    <main className={clsx(STYLES.mainTable)}>
       <Filters>
         {selectedIds.length > 0 && (
           <TableActionDeleteAllSelected
@@ -153,6 +149,10 @@ export default function GuardsTable({
             </tr>
           </thead>
           <tbody>
+            <EmptyTableRow
+              isListEmpty={!guards.length}
+              colSpan={customHeaders.length + (readonly ? 0 : 2)}
+            />
             {guards?.map((guard) => (
               <tr
                 key={guard.id}
@@ -160,25 +160,14 @@ export default function GuardsTable({
               >
                 {!readonly && (
                   <td className="w-4 p-4">
-                    <div className="flex items-center">
-                      <input
-                        id={`checkbox-table-${guard.id}`}
-                        type="checkbox"
-                        className="h-4 w-4 rounded-sm border-slate-300 bg-white text-rose-600 focus:ring-2 focus:ring-rose-300"
-                        value={guard.id}
-                        aria-label={`Seleccionar guardia de ${guard.guardChief?.name || "sin jefe"} con fecha ${formatDateToDDMMYYYY(guard.date)}`}
-                        checked={selectedIds.includes(guard.id)}
-                        onChange={(event) => {
-                          handleCheckboxChange(guard.id, event.target.checked);
-                        }}
-                      />
-                      <label
-                        htmlFor={`checkbox-table-${guard.id}`}
-                        className="sr-only"
-                      >
-                        checkbox
-                      </label>
-                    </div>
+                    <TableCheckbox
+                      id={`checkbox-table-${guard.id}`}
+                      checked={selectedIds.includes(guard.id)}
+                      ariaLabel={`Seleccionar guardia de ${guard.guardChief?.name || "sin jefe"} con fecha ${formatDateToDDMMYYYY(guard.date)}`}
+                      onChange={(checked) =>
+                        handleCheckboxChange(guard.id, checked)
+                      }
+                    />
                   </td>
                 )}
                 <th
