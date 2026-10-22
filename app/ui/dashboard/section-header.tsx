@@ -33,6 +33,10 @@ const customSectionMeta: {
     title: "Gestión de Preguntas",
     subtitle: "Administrar las preguntas de checklist en el sistema",
   },
+  orders: {
+    title: "Gestión de Pedidos",
+    subtitle: "Administrar los pedidos en el sistema",
+  },
 };
 
 export default function SectionHeader() {

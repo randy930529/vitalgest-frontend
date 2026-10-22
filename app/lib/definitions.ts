@@ -277,6 +277,8 @@ export type SupplyAmbulanceType = BaseType & {
 
 export type OrderDetailType = {
   id: string;
+  date: string;
+  ambulance: AmbulanceType;
   category: string;
   specification: string;
   quantity: number;
