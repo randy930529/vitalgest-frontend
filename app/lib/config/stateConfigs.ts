@@ -4,6 +4,7 @@ import {
   CheckListAmbulanceType,
   ChecklistSuppliesType,
   GuardType,
+  OrderType,
   ShiftType,
   SignatureType,
   StateType,
@@ -114,6 +115,12 @@ export type SupplyAmbulanceState = StateType<{
   supplyId?: string[];
   success?: string[];
 }>;
+
+export type OrderState = StateType<{
+  success?: string[];
+}> & {
+  order?: OrderType;
+};
 
 export type UploadFileState = StateType<{
   file?: string[];

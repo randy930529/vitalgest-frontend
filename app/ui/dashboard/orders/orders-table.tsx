@@ -2,17 +2,19 @@
 
 import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import { OrderType, PaginatedResult } from "@/app/lib/definitions";
 import { STYLES } from "@/app/lib/config/constants";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { deleteOrder } from "@/app/lib/actions/order";
 import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TablePagination from "@/app/ui/components/pagination";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
-import { TableActionDetail } from "../guards/botton-guard-detail";
 import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
+import TableActionDelete from "@/app/ui/dashboard/button-delete";
 
 const customHeaders = [
   { id: 0, label: "Fecha" },
@@ -109,12 +111,17 @@ export default function OrdersTable({
                 </td>
                 <td className="px-4 py-3.5">{order.ambulance.number}</td>
                 <TableActions>
-                  <TableActionDetail
-                    guard={{} as any}
-                    title="Detalles del pedido"
-                  />
                   <TableActionEdit
-                    editLink={`/dashboard/orders/${order.id}/edit`}
+                    editLink={`/dashboard/orders/${order.id}/details`}
+                    title="Editar Pedido"
+                    icon={EyeIcon}
+                    customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
+                  />
+                  <TableActionDelete
+                    id={order.id}
+                    title="Eliminar Pedido"
+                    question="¿Está seguro que desea eliminar el pedido?"
+                    actionDelete={deleteOrder}
                   />
                 </TableActions>
               </tr>
