@@ -3,9 +3,11 @@
 import { useActionState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 import ModalTrigger from "../button-modal";
 import { Button } from "../button";
 import { StateType } from "@/app/lib/definitions";
+import { STYLES } from "@/app/lib/config/constants";
 
 export default function TableActionDelete({
   id,
@@ -87,7 +89,10 @@ function ButtonToggleDelete({ onClose }: { onClose?: () => void }) {
   return (
     <button
       type="submit"
-      className="mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-300 bg-rose-50 text-rose-700 transition hover:bg-rose-100"
+      className={clsx(
+        STYLES.buttonTableAction,
+        "border border-rose-300 bg-rose-50 text-rose-700 transition hover:bg-rose-100",
+      )}
       onClick={onClose}
       aria-label="Eliminar registro"
     >

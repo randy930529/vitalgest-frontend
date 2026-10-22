@@ -1,14 +1,31 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import clsx from "clsx";
+import { PencilIcon } from "@heroicons/react/24/outline";
+import { STYLES } from "@/app/lib/config/constants";
 
-export default function TableActionEdit({ editLink }: { editLink: string }) {
+export type TableActionProps = {
+  editLink: string;
+  title?: string;
+  customStyle?: string;
+  icon?: React.ElementType;
+};
+
+const buttonStyle =
+  "border-slate-300 bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700";
+
+export default function TableActionEdit({
+  editLink,
+  title,
+  customStyle,
+  icon: Icon,
+}: TableActionProps) {
   return (
     <Link
       href={editLink}
-      className="mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700"
-      aria-label="Editar registro"
+      className={clsx(STYLES.buttonTableAction, customStyle || buttonStyle)}
+      aria-label={title || "Editar registro"}
     >
-      <PencilIcon className="w-4" />
+      {Icon ? <Icon className="w-4" /> : <PencilIcon className="w-4" />}
     </Link>
   );
 }

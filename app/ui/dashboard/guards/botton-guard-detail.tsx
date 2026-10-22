@@ -16,6 +16,7 @@ import {
   CheckListSupplyType,
   GuardType,
 } from "@/app/lib/definitions";
+import { STYLES } from "@/app/lib/config/constants";
 import { closeGuard, initGuard } from "@/app/lib/actions/guard";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import ModalTrigger from "@/app/ui/button-modal";
@@ -207,7 +208,10 @@ function ButtonToggleDetail({ onClose }: { onClose?: () => void }) {
   return (
     <button
       type="submit"
-      className="mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
+      className={clsx(
+        STYLES.buttonTableAction,
+        "border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100",
+      )}
       onClick={onClose}
       aria-label="Detalles del registro"
     >

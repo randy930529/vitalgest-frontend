@@ -151,6 +151,8 @@ export const STYLES = {
   boxShadow: "shadow-[0_20px_45px_-30px_rgba(244,63,94,0.45)]",
   mainTable:
     "relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm",
+  buttonTableAction:
+    "mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border",
 } as const;
 
 export const CHECKLIST_RESPONSE_TYPES = {
