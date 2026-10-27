@@ -25,6 +25,7 @@ import { Badge } from "@/app/ui/components/badges";
 import { TableActionDetail } from "@/app/ui/dashboard/guards/botton-guard-detail";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
+import InitGuardTrigger from "@/app/ui/components/guard/init-guard-trigger";
 
 const ModalComponent = modalComponents.guardForm;
 const customHeaders = [
@@ -181,7 +182,11 @@ export default function GuardsTable({
                 </td>
                 <td className="px-4 py-3.5">{"Turnos"}</td>
                 <td className="px-4 py-3.5">
-                  <GuardStateShow state={guard.state} />
+                  {guard.state === "Nueva" ? (
+                    <InitGuardTrigger guard={guard} isBadge />
+                  ) : (
+                    <GuardStateShow state={guard.state} />
+                  )}
                 </td>
                 {!readonly && (
                   <TableActions>

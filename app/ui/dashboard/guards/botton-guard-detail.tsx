@@ -19,6 +19,7 @@ import {
 import { STYLES } from "@/app/lib/config/constants";
 import { closeGuard, initGuard } from "@/app/lib/actions/guard";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
+import InitGuardTrigger from "@/app/ui/components/guard/init-guard-trigger";
 import ModalTrigger from "@/app/ui/button-modal";
 import { Button } from "@/app/ui/button";
 
@@ -159,17 +160,7 @@ function GuardDetail({
         })}
       </div>
       <div className="flex w-full flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
-        {guard.state === "Nueva" && (
-          <Button
-            type="submit"
-            variant="formPrimary"
-            onClick={handleInitGuard}
-            disabled={isLoadingInitialized}
-            isLoading={isLoadingInitialized}
-          >
-            Iniciar Guardia
-          </Button>
-        )}
+        {guard.state === "Nueva" && <InitGuardTrigger guard={guard} />}
         {guard.state === "En curso" && (
           <Button
             type="submit"
@@ -185,14 +176,6 @@ function GuardDetail({
           </Button>
         )}
 
-        {guard.state === "Cerrada" && (
-          <Link
-            href={`/dashboard/guards/${guard?.id}/dossier`}
-            className="action-btn bg-blue-500 text-white px-6 py-2 rounded-md font-medium no-underline"
-          >
-            Ver Informe Consolidado
-          </Link>
-        )}
         <Button type="reset" variant="formSecondary" onClick={onClose}>
           <span className="inline-flex">
             <XMarkIcon className="w-4 h-4 mr-1" />
