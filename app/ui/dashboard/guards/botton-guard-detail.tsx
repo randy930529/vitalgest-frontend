@@ -135,7 +135,7 @@ function GuardDetail({
                   Ambulancia {shift.ambulance.number}
                 </div>
                 <div className="text-xs text-slate-500">
-                  Op: {shift.driver.name} | TUM: {shift.paramedical.name}
+                  Op: {shift.driver.name} | Paramédico: {shift.paramedical.name}
                 </div>
               </div>
               <div className="flex gap-4 flex-wrap">
@@ -268,7 +268,7 @@ function ChecklistCard({
       {checklist && (
         <div className="flex gap-2">
           <Link
-            href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}`}
+            href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
             className={clsx(
               "bg-white border px-3 py-1.5 rounded-md text-xs font-medium flex items-center",
               isChkAmbulance

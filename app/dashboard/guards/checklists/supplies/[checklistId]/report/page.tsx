@@ -1,13 +1,12 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { StepItemType } from "@/app/lib/definitions";
 import { fetchChecklistSupplies } from "@/app/lib/data/checklist";
-import { createSignatureURL } from "@/app/lib/utils";
 import { PrintButton } from "@/app/ui/components/checklists/print-button";
 import { ReportHeader } from "@/app/ui/components/checklists/report-header";
+import { ReportSignature } from "@/app/ui/components/checklists/report-signature";
 
 export const metadata: Metadata = {
   title: "Reporte de Inspección de Insumos",
@@ -151,9 +150,7 @@ export default async function ChecklistSuppliesReportPage({
                   {`${guard.guardChief.name} ${guard.guardChief.lastname}`}
                 </div>
 
-                <div className="text-gray-500 font-semibold">
-                  Técnico (TUM):
-                </div>
+                <div className="text-gray-500 font-semibold">Paramédico:</div>
                 <div className="font-semibold text-gray-700">
                   {checklist.shift
                     ? `${paramedical.name} ${paramedical.lastname}`
@@ -260,21 +257,14 @@ export default async function ChecklistSuppliesReportPage({
 
           {/* Notas y Firmas Block */}
           <div className="grid grid-cols-2 gap-12 mx-8 page-break-inside-avoid">
-            {/* TUM (Entrega) */}
+            {/* Paramédico (Entrega) */}
             <div className="text-center flex flex-col items-center">
               <div className="h-24 flex items-end justify-center mb-2 w-full">
-                {checklist.deliverer && (
-                  <Image
-                    src={
-                      createSignatureURL(checklist.sign_deliverer_path || "") ||
-                      ""
-                    }
-                    alt="Firma TUM"
-                    width={120}
-                    height={60}
-                    className="max-h-20 object-contain"
-                  />
-                )}
+                <ReportSignature
+                  sign={checklist.deliverer}
+                  path={checklist.sign_deliverer_path}
+                  title="Firma Paramédico"
+                />
               </div>
               <div className="border-t border-gray-400 w-full pt-2 text-center font-bold">
                 {checklist.deliverer
@@ -288,18 +278,11 @@ export default async function ChecklistSuppliesReportPage({
 
             <div className="text-center flex flex-col items-center">
               <div className="h-24 flex items-end justify-center mb-2 w-full">
-                {checklist.recipient && (
-                  <Image
-                    src={
-                      createSignatureURL(checklist.sign_recipient_path || "") ||
-                      ""
-                    }
-                    alt="Firma Jefe Guardia"
-                    width={120}
-                    height={60}
-                    className="max-h-20 object-contain"
-                  />
-                )}
+                <ReportSignature
+                  sign={checklist.recipient}
+                  path={checklist.sign_recipient_path}
+                  title="Firma Jefe Guardia"
+                />
               </div>
               <div className="border-t border-gray-400 w-full pt-2 text-center font-bold">
                 {checklist.recipient
