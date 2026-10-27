@@ -9,12 +9,14 @@ export function Badge({
   pending,
   variant,
   extraClassName,
+  hiddenIcon,
 }: {
   title: string;
   success?: boolean;
   pending?: boolean;
   variant?: BadgeVariant;
   extraClassName?: string;
+  hiddenIcon?: boolean;
 }) {
   const resolvedVariant: BadgeVariant =
     variant ?? (success ? "success" : pending ? "warning" : "neutral");
@@ -45,6 +47,7 @@ export function Badge({
           "bg-rose-600": resolvedVariant === "danger",
           "bg-slate-600 border border-slate-300": resolvedVariant === "neutral",
           "bg-sky-600 border border-sky-300": resolvedVariant === "default",
+          invisible: hiddenIcon,
         })}
       ></span>
       {title}
