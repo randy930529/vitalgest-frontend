@@ -242,7 +242,7 @@ export type ChecklistAnswersType = {
 
 export type AnswersChecklistSupplyType = {
   supplyId: string;
-  requiredQuantity: number;
+  reportedQuantity: number;
 };
 
 export type ShiftType = BaseType & {
