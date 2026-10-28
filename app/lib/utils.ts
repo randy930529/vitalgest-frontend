@@ -167,7 +167,7 @@ export const createSupplyAnswer = (
 ): AnswersChecklistSupplyType => {
   return {
     supplyId: questionId,
-    requiredQuantity: Number(answer),
+    reportedQuantity: Number(answer),
   };
 };
 
