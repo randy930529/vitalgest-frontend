@@ -182,7 +182,7 @@ export default function GuardsTable({
                 </td>
                 <td className="px-4 py-3.5">{"Turnos"}</td>
                 <td className="px-4 py-3.5">
-                  {guard.state === "Nueva" ? (
+                  {guard.state === "Nueva" && !readonly ? (
                     <InitGuardTrigger guard={guard} isBadge />
                   ) : (
                     <GuardStateShow state={guard.state} />
