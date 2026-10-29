@@ -1,13 +1,23 @@
 "use client";
 
-import clsx from "clsx";
 import Link from "next/link";
-import { OrderType } from "@/app/lib/definitions";
-import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import EmptyTableRow from "@/app/ui/components/empty-table-row";
-import { STYLES } from "@/app/lib/config/constants";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
+import clsx from "clsx";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { OrderSupplyType, OrderType } from "@/app/lib/definitions";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { customUnits } from "@/app/lib/config/selectOptions";
+import { STYLES } from "@/app/lib/config/constants";
+import EmptyTableRow from "@/app/ui/components/empty-table-row";
+
+const customHeaders = [
+  { id: 0, label: "Insumo" },
+  { id: 1, label: "Especificación" },
+  { id: 2, label: "Cantidad" },
+  { id: 3, label: "Pedido" },
+  { id: 4, label: "Notas" },
+];
 
 export default function OrderDetailsTable({
   data,
@@ -15,6 +25,13 @@ export default function OrderDetailsTable({
   data: OrderType | undefined;
 }) {
   if (!data) notFound();
+
+  const ordersMap = new Map<string, OrderSupplyType[]>();
+  data.areas.forEach((area) => {
+    const existingSupplies = ordersMap.get(area.area_name) || [];
+    const updatedSupplies = [...existingSupplies, ...area.supplies];
+    ordersMap.set(area.area_name, updatedSupplies);
+  });
 
   return (
     <main className={clsx(STYLES.mainTable)}>
@@ -26,7 +43,7 @@ export default function OrderDetailsTable({
           <dl className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2 sm:gap-x-8">
             <div>
               <dt className="inline font-semibold text-slate-900">Fecha: </dt>
-              <dd className="inline">{formatDateToDDMMYYYY(data.date)}</dd>
+              <dd className="inline">{formatDateToDDMMYYYY(data.createdAt)}</dd>
             </div>
             <div>
               <dt className="inline font-semibold text-slate-900">
@@ -51,45 +68,68 @@ export default function OrderDetailsTable({
           </caption>
           <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
             <tr>
-              <th scope="col" className="px-4 py-3">
-                Categoría
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Especificación
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Cantidad
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Notas
-              </th>
+              {customHeaders.map((header) => (
+                <th key={header.id} scope="col" className="px-4 py-3">
+                  {header.label}
+                </th>
+              ))}
+              {/* Area de Acciones */}
             </tr>
           </thead>
           <tbody>
             <EmptyTableRow
-              isListEmpty={!data.details.length}
-              colSpan={4}
+              isListEmpty={!data.areas.length}
+              colSpan={customHeaders.length}
               message="No hay insumos en este pedido."
             />
-            {data.details.map((detail) => (
-              <tr
-                key={detail.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
-                <th
-                  scope="row"
-                  className="px-4 py-3.5 font-medium text-slate-900"
-                >
-                  {detail.category}
-                </th>
-                <td className="px-4 py-3.5">{detail.specification}</td>
-                <td className="px-4 py-3.5">{detail.quantity}</td>
-                <td className="px-4 py-3.5">{detail.notes || "Sin notas"}</td>
-              </tr>
-            ))}
+            <OrderDetailRow ordersMap={ordersMap} />
           </tbody>
         </table>
       </div>
     </main>
+  );
+}
+
+function OrderDetailRow({
+  ordersMap,
+}: {
+  ordersMap: Map<string, OrderSupplyType[]>;
+}) {
+  return (
+    <>
+      {Array.from(ordersMap.keys()).map((areaName, index) => (
+        <Fragment key={index + areaName}>
+          <tr className="border-b border-slate-200 transition-colors hover:bg-slate-50/70">
+            <th
+              scope="row"
+              colSpan={customHeaders.length}
+              className="px-4 py-3.5 font-medium bg-gray-700 text-white uppercase rounded-t-md"
+            >
+              {areaName}
+            </th>
+          </tr>
+          {ordersMap.get(areaName)?.map((orderDetail) => {
+            const umLabel =
+              customUnits.find(
+                ({ value }) => value === orderDetail.measurement_unit,
+              )?.label || orderDetail.measurement_unit;
+
+            return (
+              <tr key={orderDetail.id}>
+                <td className="px-4 py-3.5">{orderDetail.category}</td>
+                <td className="px-4 py-3.5">{orderDetail.specification}</td>
+                <td className="px-4 py-3.5">
+                  {`${orderDetail.reported_quantity} ${umLabel}`}
+                </td>
+                <td className="px-4 py-3.5">
+                  {`${orderDetail.required_quantity} ${umLabel}`}
+                </td>
+                <td className="px-4 py-3.5">{orderDetail.notes}</td>
+              </tr>
+            );
+          })}
+        </Fragment>
+      ))}
+    </>
   );
 }

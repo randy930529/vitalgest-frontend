@@ -5,7 +5,7 @@ export async function fetchOrders(
   params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<OrderType>> {
   try {
-    const dataFetching = new DataFetch<OrderType>("/api/orders", true);
+    const dataFetching = new DataFetch<OrderType>("/api/supply-reports", true);
     return await dataFetching.getAll(params);
   } catch (error) {
     console.log("API Error[GET ORDERS]:", error);
@@ -17,11 +17,13 @@ export async function fetchOrderById(
   id: string,
 ): Promise<OrderType | undefined> {
   try {
-    const dataFetching = new DataFetch<OrderType>(
-      `/api/orders/one/${id}`,
-      true,
-    );
-    return await dataFetching.getOne();
+    const dataFetching = new DataFetch<OrderType>("/api/supply-reports", true);
+    // return await dataFetching.getOne();
+    // TODO: Pedir implementación del endpoint para obtener orden por ID
+
+    const response = await dataFetching.getAll();
+    const order = response.data.find((order) => order.id === id);
+    return order;
   } catch (error) {
     console.log("API Error[GET ORDER]:", error);
     return;

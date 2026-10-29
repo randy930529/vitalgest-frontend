@@ -3,7 +3,11 @@
 import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { OrderType, PaginatedResult } from "@/app/lib/definitions";
+import {
+  OrderType,
+  PaginatedResult,
+  ToneVariants,
+} from "@/app/lib/definitions";
 import { STYLES } from "@/app/lib/config/constants";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { deleteOrder } from "@/app/lib/actions/order";
@@ -15,10 +19,12 @@ import TableActionEdit from "@/app/ui/dashboard/botton-edit";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
+import { Badge } from "@/app/ui/components/badges";
 
 const customHeaders = [
   { id: 0, label: "Fecha" },
   { id: 1, label: "Ambulancia" },
+  { id: 2, label: "Estado" },
 ];
 
 export default function OrdersTable({
@@ -107,9 +113,12 @@ export default function OrdersTable({
                   />
                 </td>
                 <td className="px-4 py-3.5">
-                  {formatDateToDDMMYYYY(order.date)}
+                  {formatDateToDDMMYYYY(order.createdAt)}
                 </td>
                 <td className="px-4 py-3.5">{order.ambulance.number}</td>
+                <td className="px-4 py-3.5">
+                  <OrderStatusShow status={order.status} />
+                </td>
                 <TableActions>
                   <TableActionEdit
                     editLink={`/dashboard/orders/${order.id}/details`}
@@ -132,4 +141,18 @@ export default function OrdersTable({
       <TablePagination totalItems={totalRecords} />
     </main>
   );
+}
+
+export function OrderStatusShow({ status }: { status: OrderType["status"] }) {
+  const variantMap: Record<
+    OrderType["status"],
+    { title: string; variant: ToneVariants }
+  > = {
+    pending: { title: "Pendiente", variant: "warning" },
+    attended: { title: "Atendido", variant: "success" },
+    cancelled: { title: "Cancelado", variant: "neutral" },
+  };
+
+  const { title, variant } = variantMap[status];
+  return <Badge title={title} variant={variant} />;
 }
