@@ -275,20 +275,35 @@ export type SupplyAmbulanceType = BaseType & {
   ambulance_id: string;
 };
 
-export type OrderDetailType = {
+export type OrderSupplyType = {
   id: string;
-  date: string;
-  ambulance: AmbulanceType;
   category: string;
   specification: string;
-  quantity: number;
-  notes?: string | null;
+  measurement_unit: string;
+  min_quantity: number;
+  reported_quantity: number;
+  required_quantity: number;
+  added_quantity: number;
+  current_quantity: number;
+  remaining_quantity: number;
+  is_resolved: boolean;
+  notes?: string; // TODO: Pendiente de confirmar si se necesita este campo en la respuesta de la API
+};
+
+export type OrderDetailType = {
+  area_id: number;
+  area_name: string;
+  section: string;
+  order: number;
+  supplies: OrderSupplyType[];
 };
 
 export type OrderType = BaseType & {
-  date: string;
+  checklist_id: string;
+  status: "pending" | "attended" | "cancelled";
+  attended_at?: string;
   ambulance: AmbulanceType;
-  details: OrderDetailType[];
+  areas: OrderDetailType[];
 };
 
 type BaseFormField = {
