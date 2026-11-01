@@ -1,14 +1,13 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import clsx from "clsx";
 import { notFound } from "next/navigation";
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { StepItemType } from "@/app/lib/definitions";
 import { fetchChecklistAmbulance } from "@/app/lib/data/checklist";
 import { PrintButton } from "@/app/ui/components/checklists/print-button";
 import { ReportHeader } from "@/app/ui/components/checklists/report-header";
 import { CHECKLIST_RESPONSE_TYPE } from "@/app/lib/config/constants";
 import { ReportSignature } from "@/app/ui/components/checklists/report-signature";
+import { ButtonFallback } from "@/app/ui/components/buttons";
 
 export const metadata: Metadata = {
   title: "Reporte de Inspección de Ambulancia",
@@ -78,13 +77,10 @@ export default async function ChecklistAmbulanceReportPage({
   return (
     <div className="bg-gray-100 min-h-screen py-8 px-4">
       <div className="no-print max-w-[1100px] mx-auto mb-6 flex justify-between">
-        <Link
-          href={`/dashboard/guards`}
-          className="btn-secondary px-3 py-2 rounded-md bg-white border border-gray-300 flex items-center gap-2 text-gray-700 font-semibold shadow-sm no-underline"
-        >
-          <ChevronLeftIcon className="w-5 h-5" />
-          Volver a la Guardia
-        </Link>
+        <ButtonFallback
+          title="Volver a la Guardia"
+          navigateTo={`/dashboard/guards`}
+        />
         <PrintButton
           name={`reporte_checklist_ambulancia-${checklist.ambulance.number}`}
         />

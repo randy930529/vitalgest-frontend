@@ -4,6 +4,8 @@ import SectionHeader from "@/app/ui/dashboard/section-header";
 import NavBar from "@/app/ui/dashboard/nav-bar";
 import SideNav from "@/app/ui/dashboard/sidenav";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {

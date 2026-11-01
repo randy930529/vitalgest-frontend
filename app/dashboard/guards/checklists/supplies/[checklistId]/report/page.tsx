@@ -1,9 +1,8 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { StepItemType } from "@/app/lib/definitions";
 import { fetchChecklistSupplies } from "@/app/lib/data/checklist";
+import { ButtonFallback } from "@/app/ui/components/buttons";
 import { PrintButton } from "@/app/ui/components/checklists/print-button";
 import { ReportHeader } from "@/app/ui/components/checklists/report-header";
 import { ReportSignature } from "@/app/ui/components/checklists/report-signature";
@@ -70,14 +69,12 @@ export default async function ChecklistSuppliesReportPage({
   return (
     <div className="bg-gray-200 min-h-screen py-8 px-4">
       {/* Toolbar No Print */}
+
       <div className="no-print max-w-[900px] mx-auto mb-6 flex justify-between items-center">
-        <Link
-          href={`/dashboard/guards`}
-          className="px-3 py-2 rounded-lg bg-white border border-gray-300 flex items-center gap-2 text-gray-700 font-semibold shadow-sm transition-all"
-        >
-          <ChevronLeftIcon className="w-5 h-5" />
-          Volver a la Guardia
-        </Link>
+        <ButtonFallback
+          title="Volver a la Guardia"
+          navigateTo={`/dashboard/guards`}
+        />
         <PrintButton name={`reporte_checklist_insumos`} />
       </div>
 
