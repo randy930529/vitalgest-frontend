@@ -1,15 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import clsx from "clsx";
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { OrderSupplyType, OrderType } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { customUnits } from "@/app/lib/config/selectOptions";
 import { STYLES } from "@/app/lib/config/constants";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
+import { ButtonFallback } from "@/app/ui/components/buttons";
 
 const customHeaders = [
   { id: 0, label: "Insumo" },
@@ -53,13 +52,10 @@ export default function OrderDetailsTable({
             </div>
           </dl>
         </div>
-        <Link
-          href="/dashboard/orders"
-          className="inline-flex w-fit rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
-        >
-          <ChevronLeftIcon className="w-5 h-5" />
-          Volver a pedidos
-        </Link>
+        <ButtonFallback
+          title="Volver a pedidos"
+          navigateTo={`/dashboard/orders`}
+        />
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
