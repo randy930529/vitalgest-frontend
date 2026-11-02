@@ -17,7 +17,7 @@ import { ButtonFallback } from "@/app/ui/components/buttons";
 const customHeaders = [
   { id: 0, label: "Insumo" },
   { id: 1, label: "Especificación" },
-  { id: 2, label: "Cantidad" },
+  { id: 2, label: "Reportado" },
   { id: 3, label: "Pedido" },
   { id: 4, label: "Notas" },
 ];
