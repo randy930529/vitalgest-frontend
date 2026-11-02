@@ -55,4 +55,11 @@ export const modalComponents = {
       loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),
     },
   ),
+  orderEditForm: dynamic(
+    () => import("@/app/ui/dashboard/orders/edit/order-edit-form"),
+    {
+      ssr: false,
+      loading: () => ModalFormSkeleton({ fields: 1, columns: 1 }),
+    },
+  ),
 };

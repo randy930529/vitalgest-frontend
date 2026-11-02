@@ -10,20 +10,12 @@ import TablePagination from "@/app/ui/components/pagination";
 const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
 
-export function TableSkeleton({
-  title,
-  modelContent,
-}: {
-  title: string;
-  modelContent: ReactElement<{ onClose: () => void }>;
-}) {
+export function TableSkeletonBase({ children }: { children?: ReactElement }) {
   return (
     <div
       className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
     >
-      <Filters>
-        <ModalTrigger title={title} modelContent={modelContent} />
-      </Filters>
+      {children}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-500">
           <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
@@ -56,6 +48,22 @@ export function TableSkeleton({
       </div>
       <TablePagination totalItems={0} />
     </div>
+  );
+}
+
+export function TableSkeleton({
+  title,
+  modelContent,
+}: {
+  title: string;
+  modelContent: ReactElement<{ onClose: () => void }>;
+}) {
+  return (
+    <TableSkeletonBase>
+      <Filters>
+        <ModalTrigger title={title} modelContent={modelContent} />
+      </Filters>
+    </TableSkeletonBase>
   );
 }
 

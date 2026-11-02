@@ -4,10 +4,19 @@ import { useActionState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-import ModalTrigger from "../button-modal";
-import { Button } from "../button";
 import { StateType } from "@/app/lib/definitions";
+import { Button } from "@/app/ui/button";
+import ModalTrigger from "@/app/ui/button-modal";
 import { STYLES } from "@/app/lib/config/constants";
+
+type TableActionDeleteProps = {
+  id: string;
+  title: string;
+  question?: string;
+  details?: string;
+  icon?: React.ElementType;
+  actionDelete: (id: string, prevState: StateType<{}>) => Promise<void | any>;
+};
 
 export default function TableActionDelete({
   id,
@@ -15,13 +24,8 @@ export default function TableActionDelete({
   question,
   details,
   actionDelete,
-}: {
-  id: string;
-  title: string;
-  question?: string;
-  details?: string;
-  actionDelete: (id: string, prevState: StateType<{}>) => Promise<void | any>;
-}) {
+  icon: Icon,
+}: TableActionDeleteProps) {
   return (
     <ModalTrigger
       title={title}
@@ -29,7 +33,7 @@ export default function TableActionDelete({
       question={question}
       details={details}
       modelContent={<DeleteForm actionDelete={actionDelete} id={id} />}
-      buttonToggle={<ButtonToggleDelete />}
+      buttonToggle={<ButtonToggleDelete icon={Icon} />}
     />
   );
 }
@@ -85,7 +89,13 @@ function DeleteForm({
   );
 }
 
-function ButtonToggleDelete({ onClose }: { onClose?: () => void }) {
+function ButtonToggleDelete({
+  onClose,
+  icon: Icon,
+}: {
+  onClose?: () => void;
+  icon?: React.ElementType;
+}) {
   return (
     <button
       type="submit"
@@ -97,7 +107,7 @@ function ButtonToggleDelete({ onClose }: { onClose?: () => void }) {
       aria-label="Eliminar registro"
     >
       <span className="sr-only">Eliminar</span>
-      <TrashIcon className="w-4" />
+      {Icon ? <Icon className="w-4" /> : <TrashIcon className="w-4" />}
     </button>
   );
 }

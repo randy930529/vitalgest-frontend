@@ -2,21 +2,27 @@
 
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { OrderSupplyType, OrderType } from "@/app/lib/definitions";
-import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { modalComponents } from "@/app/lib/config/modalConfig";
 import { customUnits } from "@/app/lib/config/selectOptions";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { STYLES } from "@/app/lib/config/constants";
+import ModalTrigger from "@/app/ui/button-modal";
+import TableActions from "@/app/ui/dashboard/tabla-actions";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import { ButtonFallback } from "@/app/ui/components/buttons";
 
 const customHeaders = [
   { id: 0, label: "Insumo" },
   { id: 1, label: "Especificación" },
-  { id: 2, label: "Cantidad" },
+  { id: 2, label: "Reportado" },
   { id: 3, label: "Pedido" },
   { id: 4, label: "Notas" },
 ];
+
+const ModalComponent = modalComponents.orderEditForm;
 
 export default function OrderDetailsTable({
   data,
@@ -46,7 +52,7 @@ export default function OrderDetailsTable({
             </div>
             <div>
               <dt className="inline font-semibold text-slate-900">
-                Ambulancia:{" "}
+                {`Ambulancia: `}
               </dt>
               <dd className="inline">{data.ambulance.number}</dd>
             </div>
@@ -69,7 +75,9 @@ export default function OrderDetailsTable({
                   {header.label}
                 </th>
               ))}
-              {/* Area de Acciones */}
+              <th scope="col" className="px-4 py-3 text-right">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +86,7 @@ export default function OrderDetailsTable({
               colSpan={customHeaders.length}
               message="No hay insumos en este pedido."
             />
-            <OrderDetailRow ordersMap={ordersMap} />
+            <OrderDetailRow orderId={data.id} ordersMap={ordersMap} />
           </tbody>
         </table>
       </div>
@@ -87,8 +95,10 @@ export default function OrderDetailsTable({
 }
 
 function OrderDetailRow({
+  orderId,
   ordersMap,
 }: {
+  orderId: string;
   ordersMap: Map<string, OrderSupplyType[]>;
 }) {
   return (
@@ -98,34 +108,74 @@ function OrderDetailRow({
           <tr className="border-b border-slate-200 transition-colors hover:bg-slate-50/70">
             <th
               scope="row"
-              colSpan={customHeaders.length}
+              colSpan={customHeaders.length + 1}
               className="px-4 py-3.5 font-medium bg-gray-700 text-white uppercase rounded-t-md"
             >
               {areaName}
             </th>
           </tr>
-          {ordersMap.get(areaName)?.map((orderDetail) => {
-            const umLabel =
-              customUnits.find(
-                ({ value }) => value === orderDetail.measurement_unit,
-              )?.label || orderDetail.measurement_unit;
+          {ordersMap
+            .get(areaName)
+            ?.map(
+              ({
+                id,
+                category,
+                specification,
+                reported_quantity,
+                required_quantity,
+                notes,
+                measurement_unit,
+              }) => {
+                const umLabel =
+                  customUnits.find(({ value }) => value === measurement_unit)
+                    ?.label || measurement_unit;
 
-            return (
-              <tr key={orderDetail.id}>
-                <td className="px-4 py-3.5">{orderDetail.category}</td>
-                <td className="px-4 py-3.5">{orderDetail.specification}</td>
-                <td className="px-4 py-3.5">
-                  {`${orderDetail.reported_quantity} ${umLabel}`}
-                </td>
-                <td className="px-4 py-3.5">
-                  {`${orderDetail.required_quantity} ${umLabel}`}
-                </td>
-                <td className="px-4 py-3.5">{orderDetail.notes}</td>
-              </tr>
-            );
-          })}
+                return (
+                  <tr key={id}>
+                    <td className="px-4 py-3.5">{category}</td>
+                    <td className="px-4 py-3.5">{specification}</td>
+                    <td className="px-4 py-3.5">
+                      {`${reported_quantity} ${umLabel}`}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {`${required_quantity} ${umLabel}`}
+                    </td>
+                    <td className="px-4 py-3.5">{notes}</td>
+                    <TableActions>
+                      <ModalTrigger
+                        title="Añadir insumo al pedido"
+                        modelContent={
+                          <ModalComponent
+                            orderId={orderId}
+                            itemId={id}
+                            reported={reported_quantity}
+                            um={umLabel}
+                          />
+                        }
+                        buttonToggle={<UpdateOrderButton />}
+                      />
+                    </TableActions>
+                  </tr>
+                );
+              },
+            )}
         </Fragment>
       ))}
     </>
+  );
+}
+
+function UpdateOrderButton({ onClose }: { onClose?: () => void }) {
+  return (
+    <button
+      className={clsx(
+        STYLES.buttonTableAction,
+        "border-slate-300 bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700",
+      )}
+      onClick={onClose}
+      aria-label="Editar insumo del pedido"
+    >
+      <PencilIcon className="w-4" />
+    </button>
   );
 }

@@ -5,7 +5,8 @@ import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import OrdersTable from "@/app/ui/dashboard/orders/orders-table";
-import { TableSkeleton } from "@/app/ui/components/skeletons";
+import { TableSkeletonBase } from "@/app/ui/components/skeletons";
+import Filters from "@/app/ui/dashboard/table-filters";
 
 export const metadata: Metadata = {
   title: "Pedidos a Farmacia",
@@ -33,7 +34,9 @@ export default async function OrdersPage({
       />
       <Suspense
         fallback={
-          <TableSkeleton title="Crear Ambulancia" modelContent={<div></div>} />
+          <TableSkeletonBase>
+            <Filters />
+          </TableSkeletonBase>
         }
       >
         <WrapperTable

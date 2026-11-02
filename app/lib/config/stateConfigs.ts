@@ -117,6 +117,8 @@ export type SupplyAmbulanceState = StateType<{
 }>;
 
 export type OrderState = StateType<{
+  itemId?: string[];
+  addedQuantity?: string[];
   success?: string[];
 }> & {
   order?: OrderType;
