@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import {
   OrderType,
   PaginatedResult,
@@ -10,7 +10,7 @@ import {
 } from "@/app/lib/definitions";
 import { STYLES } from "@/app/lib/config/constants";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
-import { deleteOrder } from "@/app/lib/actions/order";
+import { attendOrder } from "@/app/lib/actions/order";
 import { useTableSelection } from "@/app/lib/hooks/useTableSelection";
 import Filters from "@/app/ui/dashboard/table-filters";
 import TablePagination from "@/app/ui/components/pagination";
@@ -128,9 +128,10 @@ export default function OrdersTable({
                   />
                   <TableActionDelete
                     id={order.id}
-                    title="Eliminar Pedido"
-                    question="¿Está seguro que desea eliminar el pedido?"
-                    actionDelete={deleteOrder}
+                    title="Atender Pedido"
+                    question="¿Está seguro que desea marcar como atendido el pedido?"
+                    actionDelete={attendOrder}
+                    icon={CheckCircleIcon}
                   />
                 </TableActions>
               </tr>
