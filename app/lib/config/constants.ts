@@ -74,6 +74,10 @@ export const ERROR_MESSAGES = {
     DATE_EXPIRED: "La fecha ya expiró.",
     GUARD_ALREADY_EXISTS: "La guardia ya existe.",
     CHECKLIST_AMBULANCE_NOT_FOUND: "Checklist de ambulancia no encontrado.",
+
+    // * errores de los reportes de insumos
+    SUPPLY_REPORT_NOT_FOUND: "Reporte de insumos no encontrado.",
+    INVALID_REPORT_ITEM_ID: "ID de insumo en pedido inválido.",
   },
   get(code: string): string {
     return (
