@@ -31,7 +31,7 @@ export class CreateGuardAction extends BaseServerAction<GuardType, GuardState> {
 
       return { message: "Guardia creada exitosamente.", guard };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -65,7 +65,7 @@ export class UpdateGuardAction extends BaseServerAction<GuardType, GuardState> {
 
       return { message: "Guardia actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

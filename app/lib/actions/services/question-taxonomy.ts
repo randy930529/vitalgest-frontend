@@ -37,7 +37,7 @@ export class CreateQuestionCategoryAction extends BaseServerAction<
       await this.revalidate();
       return { message: "Categoría creada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -71,7 +71,7 @@ export class UpdateQuestionCategoryAction extends BaseServerAction<
       await this.revalidate();
       return { message: "Categoría actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -128,7 +128,7 @@ export class CreateQuestionSubcategoryAction extends BaseServerAction<
       await this.revalidate();
       return { message: "Subcategoría creada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -163,7 +163,7 @@ export class UpdateQuestionSubcategoryAction extends BaseServerAction<
       await this.revalidate();
       return { message: "Subcategoría actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

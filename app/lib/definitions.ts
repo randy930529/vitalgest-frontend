@@ -57,6 +57,7 @@ export type QuestionSubcategoryType = BaseType & {
 export type StateType<T> = {
   errors?: T;
   message?: string | null;
+  formData?: FormData;
 };
 
 export type SessionPayload = {

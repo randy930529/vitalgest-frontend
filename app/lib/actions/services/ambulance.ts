@@ -34,7 +34,7 @@ export class CreateAmbulanceAction extends BaseServerAction<
 
       return { message: "Ambulancia creada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -70,7 +70,7 @@ export class UpdateAmbulanceAction extends BaseServerAction<
 
       return { message: "Ambulancia actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

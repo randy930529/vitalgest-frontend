@@ -66,6 +66,20 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
     initialState as Awaited<T>,
   );
 
+  const getFormValue = (name: string) => {
+    const value = state.formData?.get(name);
+    return typeof value === "string" ? value : undefined;
+  };
+
+  const formKey = state.formData
+    ? Array.from(state.formData.entries())
+        .map(
+          ([name, value]) =>
+            `${name}:${typeof value === "string" ? value : value.name}`,
+        )
+        .join("|")
+    : "initial";
+
   // Usar hook de notificaciones
   useFormNotifications({
     state,
@@ -94,7 +108,7 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
                 placeholder: field.placeholder,
               },
             }}
-            initialValue={field.defaultValue}
+            initialValue={getFormValue(field.name) ?? field.defaultValue}
           />
         );
 
@@ -105,7 +119,7 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
             name={field.name}
             title={field.title}
             options={field.options}
-            defaultValue={field.defaultValue}
+            defaultValue={getFormValue(field.name) ?? field.defaultValue}
             errors={fieldError}
             required={field.required}
           />
@@ -118,7 +132,9 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
             key={field.name}
             name={field.name}
             title={field.title}
-            initialDate={field.defaultValue || dateStart}
+            initialDate={
+              getFormValue(field.name) || field.defaultValue || dateStart
+            }
             errors={fieldError}
             required={field.required}
           />
@@ -141,7 +157,7 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
   );
 
   return (
-    <form action={formAction}>
+    <form key={formKey} action={formAction}>
       <div className="grid gap-4 mb-4 sm:grid-cols-2">
         {visibleFields.map((field) =>
           renderField(field, (state.errors as any)?.[field.name as any]),

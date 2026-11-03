@@ -36,7 +36,7 @@ export class UpdateUserPasswordAction extends BaseServerAction<
 
       return { message: "Contraseña actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -64,7 +64,7 @@ export class UpdateProfileAction extends BaseServerAction<UserType, UserState> {
 
       return { message: "Perfil actualizado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -97,7 +97,7 @@ export class UploadSignatureAction extends BaseServerAction<
 
       return { message: "Firma subida exitosamente.", signature };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -129,7 +129,7 @@ export class UpdateSignatureAction extends BaseServerAction<
 
       return { message: "Firma actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
