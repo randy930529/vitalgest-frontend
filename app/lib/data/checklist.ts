@@ -47,7 +47,9 @@ export async function fetchQuestionById(
   }
 }
 
-export async function fetchQuestionCategories(): Promise<QuestionCategoryType[]> {
+export async function fetchQuestionCategories(): Promise<
+  QuestionCategoryType[]
+> {
   const dataFetching = new DataFetch<QuestionCategoryType>(
     "/api/questions/categories",
   );
@@ -68,14 +70,9 @@ export async function fetchQuestionSubcategories(
 }
 
 export async function fetchQuestions(
-  categoryId?: string,
-  subcategoryId?: string,
+  params?: Record<string, string | number | boolean>,
 ): Promise<PaginatedResult<ChecklistQuestionsType>> {
   const dataFetching = new DataFetch<ChecklistQuestionsType>("/api/questions");
-  const params = {
-    ...(categoryId ? { categoryId } : {}),
-    ...(subcategoryId ? { subcategoryId } : {}),
-  };
   return dataFetching.getAll(params);
 }
 
