@@ -31,8 +31,8 @@ const customHeaders = [
   { id: 2, label: "Correo" },
   { id: 3, label: "Rol" },
   { id: 4, label: "Estado" },
-  { id: 5, label: "Registro" },
-  { id: 6, label: "Actualizado" },
+  { id: 5, label: "Fecha de creación" },
+  { id: 6, label: "Fecha de última modificación" },
 ];
 
 export default function UserTable({
