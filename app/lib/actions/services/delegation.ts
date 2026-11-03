@@ -55,7 +55,10 @@ export class UpdateDelegationAction extends BaseServerAction<
       endpoint: `/api/delegations/edit/${id}`,
       method: "PUT",
       adminOnly: true,
-      revalidatePathAfter: ["/dashboard/delegations"],
+      revalidatePathAfter: [
+        "/dashboard/delegations",
+        `/dashboard/delegations/${id}/edit`,
+      ],
     });
     this.setSchema(UpdateDelegation);
   }
@@ -71,7 +74,14 @@ export class UpdateDelegationAction extends BaseServerAction<
         municipality: formData.get("municipality"),
       });
 
-      await this.fetchAPI(data);
+      const stateValues = data.state.split("-");
+      const municipalityValues = data.municipality.split("-");
+      const updatedDelegation = {
+        name: data.name,
+        stateId: Number(stateValues[0]),
+        municipalityId: Number(municipalityValues[0]),
+      };
+      await this.fetchAPI(updatedDelegation);
       await this.revalidate();
 
       return { message: "Delegación actualizada exitosamente." };
