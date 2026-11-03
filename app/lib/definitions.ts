@@ -9,7 +9,7 @@ export type BaseType = {
   updated_at: string;
 };
 
-export type UserType = {
+export type UserType = BaseType & {
   id: string;
   name: string;
   lastname: string;

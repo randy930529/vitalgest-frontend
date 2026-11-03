@@ -21,6 +21,7 @@ import { modalComponents } from "@/app/lib/config/modalConfig";
 import { runBulkDeleteWithFeedback } from "@/app/lib/bulk-delete-feedback";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import TableCheckbox from "@/app/ui/dashboard/table-checkbox";
+import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 
 const ModalComponent = modalComponents.userForm;
 
@@ -30,6 +31,8 @@ const customHeaders = [
   { id: 2, label: "Correo" },
   { id: 3, label: "Rol" },
   { id: 4, label: "Estado" },
+  { id: 5, label: "Registro" },
+  { id: 6, label: "Actualizado" },
 ];
 
 export default function UserTable({
@@ -150,6 +153,14 @@ export default function UserTable({
                 </td>
                 <td className="px-4 py-3.5">
                   <UserActive active={user.status} />
+                </td>
+                <td className="px-4 py-3.5">
+                  {formatDateToDDMMYYYY(user.createdAt)}
+                </td>
+                <td className="px-4 py-3.5">
+                  {user.updatedAt === user.createdAt
+                    ? "Sin modificaciones"
+                    : formatDateToDDMMYYYY(user.updatedAt)}
                 </td>
                 <TableActions>
                   <TableActionEdit
