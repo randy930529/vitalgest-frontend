@@ -45,7 +45,7 @@ export class CreateSupplyInPharmacyAction extends BaseServerAction<
 
       return { message: "Insumo agregado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -84,7 +84,7 @@ export class UpdateSupplyInPharmacyAction extends BaseServerAction<
 
       return { message: "Insumo actualizado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -155,7 +155,7 @@ export class CreateSupplyInAmbulanceAction extends BaseServerAction<
 
       return { message: "Insumo agregado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -193,7 +193,7 @@ export class UpdateSupplyInAmbulanceAction extends BaseServerAction<
 
       return { message: "Insumo actualizado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

@@ -34,7 +34,7 @@ export class CreateQuestionAction extends BaseServerAction<
 
       return { message: "Pregunta creada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -73,7 +73,7 @@ export class UpdateQuestionAction extends BaseServerAction<
 
       return { message: "Pregunta actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

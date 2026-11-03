@@ -31,7 +31,7 @@ export class CreateUserAction extends BaseServerAction<UserType, UserState> {
 
       return { message: "Usuario creado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -65,7 +65,7 @@ export class UpdateUserAction extends BaseServerAction<UserType, UserState> {
 
       return { message: "Usuario actualizado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

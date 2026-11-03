@@ -37,7 +37,7 @@ export class UpdateOrderAction extends BaseServerAction<
 
       return { message: "Pedido registrado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

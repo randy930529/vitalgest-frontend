@@ -10,6 +10,7 @@ import {
   fetchQuestions,
 } from "@/app/lib/data/checklist";
 import QuestionTable from "@/app/ui/dashboard/questions/question-table";
+import { getPaginationParams } from "@/app/lib/utils";
 
 export const metadata: Metadata = {
   title: "Gestión de Preguntas",
@@ -27,10 +28,15 @@ export default async function QuestionPage({
 }) {
   // (Página) Listado de preguntas - [SSR]
 
-  const { categoryId, subcategoryId } = await searchParams;
+  const { page, display, categoryId, subcategoryId } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
   const fetchQuestionsAndCategories = async () =>
     await Promise.all([
-      fetchQuestions(categoryId, subcategoryId),
+      fetchQuestions({
+        ...params,
+        ...(categoryId ? { categoryId } : {}),
+        ...(subcategoryId ? { subcategoryId } : {}),
+      }),
       fetchQuestionCategories(),
       fetchQuestionSubcategories(),
     ]);

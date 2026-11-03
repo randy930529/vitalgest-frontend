@@ -183,7 +183,7 @@ export abstract class BaseServerAction<TData, TState extends StateType<any>> {
   /**
    * Manejar errores y convertir a estado
    */
-  protected handleError(error: unknown): TState {
+  protected handleError(error: unknown, formData?: FormData): TState {
     let actionError: ActionError;
 
     if (error instanceof Object && "type" in error) {
@@ -200,6 +200,7 @@ export abstract class BaseServerAction<TData, TState extends StateType<any>> {
         success: [actionError.message],
         ...actionError.errors,
       },
+      formData,
     } as TState;
 
     return errorState;

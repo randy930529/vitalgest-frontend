@@ -49,7 +49,7 @@ export class CreateChecklistAmbulanceAction extends BaseServerAction<
         checklist: checklist,
       };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -117,7 +117,7 @@ export class SignCheckListAction extends BaseServerAction<
 
       return { message: "Checklist aprobado exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -151,7 +151,7 @@ export class CreateChecklistSuppliesAction extends BaseServerAction<
         checklist: checklist,
       };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

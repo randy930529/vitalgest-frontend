@@ -32,7 +32,6 @@ const customHeaders = [
   { id: 3, label: "Rol" },
   { id: 4, label: "Estado" },
   { id: 5, label: "Registro" },
-  { id: 6, label: "Actualizado" },
 ];
 
 export default function UserTable({
@@ -156,11 +155,6 @@ export default function UserTable({
                 </td>
                 <td className="px-4 py-3.5">
                   {formatDateToDDMMYYYY(user.createdAt)}
-                </td>
-                <td className="px-4 py-3.5">
-                  {user.updatedAt === user.createdAt
-                    ? "Sin modificaciones"
-                    : formatDateToDDMMYYYY(user.updatedAt)}
                 </td>
                 <TableActions>
                   <TableActionEdit

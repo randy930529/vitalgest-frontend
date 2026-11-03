@@ -31,7 +31,7 @@ export class CreateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
 
       return { message: "Turno asignado exitosamente.", shift };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -64,7 +64,7 @@ export class UpdateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
 
       return { message: "Turno actualizado exitosamente.", shift };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }

@@ -41,7 +41,7 @@ export class CreateDelegationAction extends BaseServerAction<
 
       return { message: "Delegación creada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
@@ -86,7 +86,7 @@ export class UpdateDelegationAction extends BaseServerAction<
 
       return { message: "Delegación actualizada exitosamente." };
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, formData);
     }
   }
 }
