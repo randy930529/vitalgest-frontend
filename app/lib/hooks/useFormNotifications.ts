@@ -41,11 +41,8 @@ export function useFormNotifications<T extends Record<string, string[]>>({
   useEffect(() => {
     if (!state.errors) return;
 
-    // Mostrar cada error como un toast separado
-    Object.values(state.errors).forEach((errorArray) => {
-      errorArray.forEach((error: string) => {
-        toast.error(error);
-      });
-    });
+    // Mostrar mensaje de error en un toast
+    const message = state.errors.success;
+    message && toast.error(message[0]);
   }, [state.errors]);
 }
