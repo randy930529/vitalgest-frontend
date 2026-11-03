@@ -27,7 +27,16 @@ export class CreateDelegationAction extends BaseServerAction<
         municipality: formData.get("municipality"),
       });
 
-      await this.fetchAPI(data);
+      const stateValues = data.state.split("-");
+      const municipalityValues = data.municipality.split("-");
+      const newDelegation = {
+        stateId: Number(stateValues[0]),
+        stateName: stateValues[1],
+        municipalityId: Number(municipalityValues[0]),
+        municipalityName: municipalityValues[1],
+      };
+
+      await this.fetchAPI(newDelegation);
       await this.revalidate();
 
       return { message: "Delegación creada exitosamente." };
