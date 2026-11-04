@@ -38,6 +38,7 @@ const customHeaders = [
 export default function GuardsTable({
   data,
   readonly,
+  userRole: currentUserRole,
   route,
 }: {
   data: [
@@ -48,6 +49,7 @@ export default function GuardsTable({
   ];
   readonly?: boolean;
   route?: string;
+  userRole?: string;
 }) {
   // (Component) Lista de guardias existentes - [CSR]
 
@@ -142,11 +144,9 @@ export default function GuardsTable({
                   {header.label}
                 </th>
               ))}
-              {!readonly && (
-                <th scope="col" className="px-4 py-3 text-right">
-                  Acciones
-                </th>
-              )}
+              <th scope="col" className="px-4 py-3 text-right">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -188,25 +188,29 @@ export default function GuardsTable({
                     <GuardStateShow state={guard.state} />
                   )}
                 </td>
-                {!readonly && (
-                  <TableActions>
-                    <TableActionDetail
-                      guard={guard}
-                      title="Detalles de la Guardia"
-                    />
-                    <TableActionEdit
-                      editLink={`${route ? route : "/dashboard/guards"}/${
-                        guard.id
-                      }/edit`}
-                    />
-                    <TableActionDelete
-                      id={guard.id}
-                      title="Eliminar Guardia"
-                      question="¿Está seguro que desea eliminar la guardia?"
-                      actionDelete={deleteGuard}
-                    />
-                  </TableActions>
-                )}
+                <TableActions>
+                  <TableActionDetail
+                    guard={guard}
+                    title="Detalles de la Guardia"
+                    readonly={!!readonly}
+                    currentUserRole={currentUserRole || ""}
+                  />
+                  {!readonly && (
+                    <>
+                      <TableActionEdit
+                        editLink={`${route ? route : "/dashboard/guards"}/${
+                          guard.id
+                        }/edit`}
+                      />
+                      <TableActionDelete
+                        id={guard.id}
+                        title="Eliminar Guardia"
+                        question="¿Está seguro que desea eliminar la guardia?"
+                        actionDelete={deleteGuard}
+                      />
+                    </>
+                  )}
+                </TableActions>
               </tr>
             ))}
           </tbody>

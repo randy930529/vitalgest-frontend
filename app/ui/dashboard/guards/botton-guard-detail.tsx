@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   EyeIcon,
   TruckIcon,
-  DocumentTextIcon,
   LockClosedIcon,
   XMarkIcon,
   NumberedListIcon,
@@ -16,30 +15,43 @@ import {
   CheckListSupplyType,
   GuardType,
 } from "@/app/lib/definitions";
-import { STYLES } from "@/app/lib/config/constants";
-import { closeGuard, initGuard } from "@/app/lib/actions/guard";
+import { ROLE_MANAGER, STYLES } from "@/app/lib/config/constants";
+import { closeGuard } from "@/app/lib/actions/guard";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import InitGuardTrigger from "@/app/ui/components/guard/init-guard-trigger";
 import ModalTrigger from "@/app/ui/button-modal";
 import { Button } from "@/app/ui/button";
 
+type GuardDetailProps = {
+  guard: GuardType;
+  title: string;
+  details?: string;
+  readonly: boolean;
+  currentUserRole: string;
+  onClose?: () => void;
+};
+
 export function TableActionDetail({
   guard,
   title,
   details,
+  readonly,
+  currentUserRole,
   onClose,
-}: {
-  guard: GuardType;
-  title: string;
-  details?: string;
-  onClose?: () => void;
-}) {
+}: GuardDetailProps) {
   return (
     <ModalTrigger
       title={title}
       type="info"
       details={details}
-      modelContent={<GuardDetail guard={guard} onClose={onClose} />}
+      modelContent={
+        <GuardDetail
+          guard={guard}
+          readonly={readonly}
+          currentUserRole={currentUserRole}
+          onClose={onClose}
+        />
+      }
       buttonToggle={<ButtonToggleDetail />}
     />
   );
@@ -47,26 +59,25 @@ export function TableActionDetail({
 
 function GuardDetail({
   guard,
+  readonly,
+  currentUserRole,
   onClose,
 }: {
   guard: GuardType;
+  readonly: boolean;
+  currentUserRole: string;
   onClose?: () => void;
 }) {
   const initialState = { errors: {}, message: null };
+  const { accessChlAmbulance, accessChlSupplies } = ROLE_MANAGER;
 
   const closeGuardAction = closeGuard.bind(null, guard.id, guard);
-  const initGuardAction = initGuard.bind(null, guard.id, guard);
 
   const [stateClosed, actionCloseGuard, isLoadingClosed] = useActionState(
     closeGuardAction,
     initialState,
   );
-  const [stateInitialized, actionInitGuard, isLoadingInitialized] =
-    useActionState(initGuardAction, initialState);
 
-  useFormNotifications({
-    state: stateInitialized,
-  });
   useFormNotifications({
     state: stateClosed,
   });
@@ -74,12 +85,6 @@ function GuardDetail({
   function handleCloseGuard() {
     startTransition(() => {
       actionCloseGuard();
-    });
-  }
-
-  function handleInitGuard() {
-    startTransition(() => {
-      actionInitGuard();
     });
   }
 
@@ -140,28 +145,36 @@ function GuardDetail({
                 </div>
               </div>
               <div className="flex gap-4 flex-wrap">
-                <ChecklistCard
-                  key={chkSupplies?.id || "chkSupplies"}
-                  typeChecklist="supplies"
-                  checklist={chkSupplies}
-                  guardState={guard.state}
-                  delegationName={guard.delegation.name}
-                />
-                <ChecklistCard
-                  key={chkAmbulance?.id || "chkAmbulancia"}
-                  typeChecklist="ambulance"
-                  checklist={chkAmbulance}
-                  guardState={guard.state}
-                  delegationName={guard.delegation.name}
-                />
+                {accessChlSupplies(currentUserRole, ["head_guard"]) && (
+                  <ChecklistCard
+                    key={chkSupplies?.id || "chkSupplies"}
+                    typeChecklist="supplies"
+                    checklist={chkSupplies}
+                    guardState={guard.state}
+                    delegationName={guard.delegation.name}
+                    readonly={readonly}
+                  />
+                )}
+                {accessChlAmbulance(currentUserRole, ["head_guard"]) && (
+                  <ChecklistCard
+                    key={chkAmbulance?.id || "chkAmbulancia"}
+                    typeChecklist="ambulance"
+                    checklist={chkAmbulance}
+                    guardState={guard.state}
+                    delegationName={guard.delegation.name}
+                    readonly={readonly}
+                  />
+                )}
               </div>
             </div>
           );
         })}
       </div>
       <div className="flex w-full flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
-        {guard.state === "Nueva" && <InitGuardTrigger guard={guard} />}
-        {guard.state === "En curso" && (
+        {!readonly && guard.state === "Nueva" && (
+          <InitGuardTrigger guard={guard} />
+        )}
+        {!readonly && guard.state === "En curso" && (
           <Button
             type="submit"
             variant="formPrimary"
@@ -209,13 +222,16 @@ function ChecklistCard({
   checklist,
   guardState,
   delegationName,
+  readonly,
 }: {
   typeChecklist: "ambulance" | "supplies";
   checklist: CheckListSupplyType | CheckListAmbulanceType | undefined;
   guardState: GuardType["state"];
   delegationName: string;
+  readonly: boolean;
 }) {
   const isChkAmbulance = typeChecklist === "ambulance";
+  const fragmentRoute = readonly ? "" : "/dashboard";
 
   return (
     <div
@@ -238,7 +254,7 @@ function ChecklistCard({
         </div>
         <div
           className={clsx(
-            "text-xs mt-1",
+            "text-xs m-1",
             isChkAmbulance ? "text-[#1e40af]" : "text-[#15803d]",
           )}
         >
@@ -251,7 +267,7 @@ function ChecklistCard({
       {checklist && (
         <div className="flex gap-2">
           <Link
-            href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
+            href={`${fragmentRoute}/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
             className={clsx(
               "bg-white border px-3 py-1.5 rounded-md text-xs font-medium flex items-center",
               isChkAmbulance
@@ -264,24 +280,6 @@ function ChecklistCard({
               ? "Llenar Checklist"
               : "Ver Detalles"}
           </Link>
-          {checklist.sign_recipient_path && (
-            <Link
-              href={`/dashboard/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
-              className={clsx(
-                "bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-md flex items-center",
-                isChkAmbulance
-                  ? "text-blue-700 border-[#bfdbfe]"
-                  : "text-emerald-700 border-[#bbf7d0]",
-              )}
-              title={
-                isChkAmbulance
-                  ? "Informe del Checklist de Ambulancia"
-                  : "Informe del Checklist de Insumos"
-              }
-            >
-              <DocumentTextIcon className="w-4 h-4" />
-            </Link>
-          )}
         </div>
       )}
       {!checklist && (

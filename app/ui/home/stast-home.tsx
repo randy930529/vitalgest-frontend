@@ -15,6 +15,7 @@ import {
 import { fetchDelegationById } from "@/app/lib/data/delegations";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { ChecklistsLinkCard, ResourceCard, ShiftCard } from "@/app/ui/cards";
 import {
   CardAmbulancesGuard,
@@ -132,18 +133,11 @@ export function CheckListStats({
   checklistSupplies: CheckListSupplyType | undefined;
   currentUserRole: string;
 }) {
-  const accessChlAmbulance = [
-    "head_guard",
-    "admin",
-    "vehicle_operator",
-  ].includes(currentUserRole);
-  const accessChlSupplies = ["head_guard", "admin", "paramedical"].includes(
-    currentUserRole,
-  );
+  const { accessChlAmbulance, accessChlSupplies } = ROLE_MANAGER;
 
   return (
     <ol className="flex flex-col justify-between gap-2">
-      {accessChlAmbulance && (
+      {accessChlAmbulance(currentUserRole) && (
         <>
           {checklistAmbulance ? (
             <>
@@ -182,7 +176,7 @@ export function CheckListStats({
         </>
       )}
 
-      {accessChlSupplies && (
+      {accessChlSupplies(currentUserRole) && (
         <>
           {checklistSupplies ? (
             <>
