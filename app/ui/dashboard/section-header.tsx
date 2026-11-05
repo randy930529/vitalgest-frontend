@@ -49,6 +49,10 @@ const customSectionMeta: {
     title: "Historial de Operaciones",
     subtitle: "Consulta el historial de operaciones",
   },
+  checklists: {
+    title: "Reporte de Checklists",
+    subtitle: "Consulta el reporte de inspectiones de checklists",
+  },
 } as const;
 
 function getSectionMeta(segments: string[]) {
