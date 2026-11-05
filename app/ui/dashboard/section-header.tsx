@@ -1,11 +1,15 @@
 "use client";
 
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useSelectedLayoutSegments } from "next/navigation";
 
 const customSectionMeta: {
   [key: string]: { title: string; subtitle: string };
 } = {
   null: {
+    title: "Centro Operativo Digital",
+    subtitle: "Cruz Roja Mexicana",
+  },
+  dashboard: {
     title: "Panel Administrativo",
     subtitle: "Resumen general operativo",
   },
@@ -37,11 +41,27 @@ const customSectionMeta: {
     title: "Gestión de Pedidos",
     subtitle: "Administrar los pedidos en el sistema",
   },
-};
+  profile: {
+    title: "Edición de Perfil",
+    subtitle: "Actualiza la información del usuario",
+  },
+} as const;
+
+function getSectionMeta(segments: string[]) {
+  const dashboardIndex = segments.indexOf("dashboard");
+  const profileIndex = segments.indexOf("profile");
+  const segment =
+    dashboardIndex === -1
+      ? profileIndex === -1
+        ? "null"
+        : "profile"
+      : segments[dashboardIndex + 1] || "dashboard";
+
+  return customSectionMeta[segment] || {};
+}
 
 export default function SectionHeader() {
-  const segment = useSelectedLayoutSegment() || "null";
-  const { title, subtitle } = customSectionMeta[segment] || {};
+  const { title, subtitle } = getSectionMeta(useSelectedLayoutSegments());
 
   return (
     <div className="text-center md:text-left">

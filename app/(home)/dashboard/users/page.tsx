@@ -2,12 +2,12 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchUsers } from "@/app/lib/data/users";
+import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeleton } from "@/app/ui/components/skeletons";
 import UserTable from "@/app/ui/dashboard/users/user-table";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
 import UserForm from "@/app/ui/dashboard/users/create/user-form";
-import { getPaginationParams } from "@/app/lib/utils";
 
 export const metadata: Metadata = {
   title: "Gestión de Usuarios",
