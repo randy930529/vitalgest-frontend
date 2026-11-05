@@ -39,6 +39,9 @@ function DashboardCardShell({
   return (
     <div className={wrapperClassName}>
       <div className={layoutClassName}>
+        <div className={`${color} ${iconContainerClassName} shrink-0`}>
+          <Icon className={iconClassName} />
+        </div>
         <div className={textContainerClassName}>
           <TitleTag
             className={`${titleClassName} ${titleWrapperClassName} truncate`}
@@ -48,9 +51,6 @@ function DashboardCardShell({
           <p className={`${valueClassName} ${valueWrapperClassName} truncate`}>
             {value}
           </p>
-        </div>
-        <div className={`${color} ${iconContainerClassName} shrink-0`}>
-          <Icon className={iconClassName} />
         </div>
       </div>
     </div>
@@ -84,15 +84,15 @@ export function StatCardHome({
       icon={Icon}
       color={color}
       titleTag="h2"
-      wrapperClassName="min-h-28 rounded-[24px] border border-white/80 bg-white/90 p-3 sm:p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_35px_65px_-45px_rgba(15,23,42,0.5)]"
+      wrapperClassName="rounded-[24px] border border-white/80 bg-white/90 p-3 sm:p-4 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm transition hover:shadow-[0_35px_65px_-45px_rgba(15,23,42,0.5)]"
       layoutClassName="flex items-center justify-between gap-3"
       textContainerClassName="min-w-0"
       titleWrapperClassName="hidden sm:block"
-      valueWrapperClassName="text-base sm:text-lg"
-      titleClassName="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500"
-      valueClassName="mt-0 sm:mt-1 font-semibold leading-tight text-slate-900"
+      valueWrapperClassName="text-sm"
+      titleClassName="text-sm font-semibold tracking-tight"
+      valueClassName="mt-0 tracking-tight text-slate-500 sm:mt-1"
       iconContainerClassName="rounded-2xl p-3.5 shadow-[0_20px_35px_-20px_rgba(15,23,42,0.6)]"
-      iconClassName="h-8 w-8 text-white"
+      iconClassName="h-6 w-6 text-white"
     />
   );
 }

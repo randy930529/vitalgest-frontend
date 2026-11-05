@@ -4,6 +4,7 @@ export async function WrapperTable<T>({
   onClose,
   readonly,
   route,
+  userRole,
 }: {
   fetchData: () => Promise<T>;
   WrappedComponent: React.ComponentType<{
@@ -11,10 +12,12 @@ export async function WrapperTable<T>({
     onClose?: () => void;
     readonly?: boolean;
     route?: string;
+    userRole?: string;
   }>;
   onClose?: () => void;
   readonly?: boolean;
   route?: string;
+  userRole?: string;
 }) {
   //(Component) Wrapper Tabla fetch data - [SSR]
 
@@ -26,6 +29,7 @@ export async function WrapperTable<T>({
       onClose={onClose}
       readonly={readonly}
       route={route}
+      userRole={userRole || ""}
     />
   );
 }

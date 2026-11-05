@@ -1,6 +1,7 @@
 import {
-  BuildingOffice2Icon,
   CalendarIcon,
+  HandRaisedIcon,
+  MapPinIcon,
   ShieldCheckIcon,
   TruckIcon,
   UsersIcon,
@@ -13,95 +14,36 @@ import {
   UserType,
 } from "@/app/lib/definitions";
 import { fetchDelegationById } from "@/app/lib/data/delegations";
-import { fetchGuards } from "@/app/lib/data/guards";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { ChecklistsLinkCard, ResourceCard, ShiftCard } from "@/app/ui/cards";
-import {
-  CardAmbulancesGuard,
-  StatCardHome,
-  StatCardProps,
-} from "@/app/ui/dashboard/cards";
+import { StatCardHome, StatCardProps } from "@/app/ui/dashboard/cards";
 
 export async function HeaderStats({ user }: { user: UserType }) {
   const delegationId = user.delegationId;
-  const [delegation, guards] = await Promise.all([
-    fetchDelegationById(delegationId),
-    fetchGuards().then((result) => result.data),
-  ]);
+  const [delegation] = await Promise.all([fetchDelegationById(delegationId)]);
   const delegationNameShort =
     delegation?.name?.replace("Delegación ", "") || "";
 
-  const guardOnly = guards.find(
-    ({ delegation, guardChief, shifts, state }) =>
-      delegation.id === delegationId &&
-      state === "En curso" &&
-      (guardChief.id === user.id ||
-        !!shifts.find(
-          ({ driver, paramedical }) =>
-            driver.id === user.id || paramedical.id === user.id,
-        )),
-  );
-
-  const [dateGuardOnly, guardChief, ambulance] = guardOnly
-    ? [
-        formatDateToDDMMYYYY(guardOnly.date),
-        guardOnly.guardChief.id === user.id,
-        guardOnly.shifts.find(
-          ({ driver, paramedical }) =>
-            driver.id === user.id || paramedical.id === user.id,
-        )?.ambulance,
-      ]
-    : ["", false, undefined];
-
-  const ambulancesInGuard =
-    guardOnly?.shifts?.reduce(
-      (acc, shift) => acc + shift.ambulance.number + ", ",
-      "",
-    ) || "";
-
   return (
-    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <li>
-        <StatCardHome
-          title="Delegación"
-          value={delegationNameShort}
-          icon={BuildingOffice2Icon}
-          color="bg-emerald-600"
-        />
-      </li>
-      {guardOnly && (
-        <>
-          <li>
-            <StatCardHome
-              title="Guardia Activa"
-              value={dateGuardOnly}
-              icon={ShieldCheckIcon}
-              color="bg-sky-600"
-            />
-          </li>
-          {ambulance && (
-            <li>
-              <StatCardHome
-                title="Ambulancia"
-                value={ambulance.number}
-                icon={TruckIcon}
-                color="bg-rose-500"
-              />
-            </li>
-          )}
-          {guardChief && (
-            <li>
-              <CardAmbulancesGuard
-                title="Ambulancias en turno"
-                value={ambulancesInGuard.trim().slice(0, -1)}
-                icon={TruckIcon}
-                color="bg-rose-500"
-              />
-            </li>
-          )}
-        </>
-      )}
-    </ul>
+    <div className="flex justify-between gap-3 w-full">
+      <div className="pt-6 sm:pt-8">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Hola, {user.name}
+          {/* Rota el icono unos 45 grados a la izquierda */}
+          <HandRaisedIcon className="ml-2 inline-block h-6 w-6 -rotate-[30deg] text-orange-400" />
+        </h2>
+        <p className="tracking-tight text-slate-400">
+          Gestiona tus guardias y manten tus checklists al día.
+        </p>
+      </div>
+      <StatCardHome
+        title={delegationNameShort}
+        value="Tu delegación actual"
+        icon={MapPinIcon}
+        color="bg-emerald-600"
+      />
+    </div>
   );
 }
 
@@ -132,18 +74,11 @@ export function CheckListStats({
   checklistSupplies: CheckListSupplyType | undefined;
   currentUserRole: string;
 }) {
-  const accessChlAmbulance = [
-    "head_guard",
-    "admin",
-    "vehicle_operator",
-  ].includes(currentUserRole);
-  const accessChlSupplies = ["head_guard", "admin", "paramedical"].includes(
-    currentUserRole,
-  );
+  const { accessChlAmbulance, accessChlSupplies } = ROLE_MANAGER;
 
   return (
     <ol className="flex flex-col justify-between gap-2">
-      {accessChlAmbulance && (
+      {accessChlAmbulance(currentUserRole) && (
         <>
           {checklistAmbulance ? (
             <>
@@ -182,7 +117,7 @@ export function CheckListStats({
         </>
       )}
 
-      {accessChlSupplies && (
+      {accessChlSupplies(currentUserRole) && (
         <>
           {checklistSupplies ? (
             <>

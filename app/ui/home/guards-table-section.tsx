@@ -88,6 +88,7 @@ export default async function GuardsTableSection({
             WrappedComponent={GuardsTable}
             readonly={isClient}
             route="/guards"
+            userRole={user.role}
           />
         </Suspense>
       )}

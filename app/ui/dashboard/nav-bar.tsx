@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
 import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
 import {
@@ -23,6 +24,8 @@ export default function NavBar({
   variant?: "light" | "dark";
 }) {
   const { id, email, name, lastname } = user;
+  const segment = useSelectedLayoutSegment();
+
   const iconButtonClass =
     variant === "dark"
       ? "mx-1 p-2 text-slate-100 rounded-lg hover:text-white hover:bg-white/15 focus:ring-2 focus:ring-white/35"
@@ -30,7 +33,9 @@ export default function NavBar({
 
   return (
     <nav className="relative flex w-full items-center justify-center md:w-auto md:justify-end lg:order-2">
-      {showCog && (
+      {/* Se va a mostrar solo cuando el usuario sea administrador y la ruta no 
+      sea /dashboard */}
+      {showCog && segment !== "dashboard" && (
         <Link
           href="/dashboard"
           data-tooltip-id="admin-tooltip"

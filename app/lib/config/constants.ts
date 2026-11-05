@@ -135,6 +135,38 @@ export const ROLE_MANAGER = {
     return this.adminRoles().has(normalized);
   },
 
+  accessChlAmbulance(
+    role?: string,
+    accessOtherRoles: (typeof this.roleCatalog)[number]["value"][] = [],
+  ): boolean {
+    if (!role) return false;
+
+    const normalized =
+      role.trim() as (typeof this.roleCatalog)[number]["value"];
+    return new Set([
+      "general_admin",
+      "admin",
+      "vehicle_operator",
+      ...accessOtherRoles,
+    ]).has(normalized);
+  },
+
+  accessChlSupplies(
+    role?: string,
+    accessOtherRoles: (typeof this.roleCatalog)[number]["value"][] = [],
+  ): boolean {
+    if (!role) return false;
+
+    const normalized =
+      role.trim() as (typeof this.roleCatalog)[number]["value"];
+    return new Set([
+      "general_admin",
+      "admin",
+      "paramedical",
+      ...accessOtherRoles,
+    ]).has(normalized);
+  },
+
   selectOptions() {
     return this.roleCatalog;
   },

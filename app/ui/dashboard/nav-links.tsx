@@ -15,9 +15,15 @@ export type LinkProp = {
   name: string;
   href: string;
   icon?: React.ElementType;
+  sublinks?: SublinkProp[];
 };
 
-const links = [
+type SublinkProp = {
+  name: string;
+  href: string;
+};
+
+const adminLinks = [
   { name: "Inicio", href: "/dashboard", icon: HomeIcon },
   { name: "Usuarios", href: "/dashboard/users", icon: UserGroupIcon },
   {
@@ -62,7 +68,17 @@ const links = [
   },
 ];
 
-export default function NavLinks() {
+const clientLinks = [
+  { name: "Inicio", href: "/", icon: HomeIcon },
+  {
+    name: "Guardias",
+    href: "/guards",
+    icon: ShieldCheckIcon,
+  },
+];
+
+export default function NavLinks({ isAdmin }: { isAdmin: boolean }) {
+  const links: LinkProp[] = isAdmin ? adminLinks : clientLinks;
   return (
     <>
       {links.map((link) => {
@@ -73,7 +89,7 @@ export default function NavLinks() {
           <NavSubLinks
             key={link.name}
             name={link.name}
-            icon={<LinkIcon className="w-6 h-6" />}
+            icon={LinkIcon ? <LinkIcon className="w-6 h-6" /> : <div></div>}
           >
             {link.sublinks.map((sublink) => (
               <li key={sublink.name} className="w-full">
