@@ -25,7 +25,7 @@ export default async function EditProfilePage() {
       <Breadcrumbs
         breadcrumbs={[
           { label: "", href: homeHref },
-          { label: "Mi perfil", href: "/profile/edit", active: true },
+          { label: "Mi perfil", href: "/user/profile/edit", active: true },
         ]}
       />
 

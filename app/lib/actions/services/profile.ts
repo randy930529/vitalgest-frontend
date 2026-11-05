@@ -16,7 +16,7 @@ export class UpdateUserPasswordAction extends BaseServerAction<
     super({
       endpoint: `/api/user/change/password/${id}`,
       method: "PATCH",
-      revalidatePathAfter: ["/profile", "/profile/edit"],
+      revalidatePathAfter: ["/profile", "/user/profile/edit"],
     });
     this.setSchema(UpdatePassword);
   }
@@ -46,7 +46,7 @@ export class UpdateProfileAction extends BaseServerAction<UserType, UserState> {
     super({
       endpoint: `/api/user/change/info/${id}`,
       method: "PATCH",
-      revalidatePathAfter: ["/profile", "/profile/edit"],
+      revalidatePathAfter: ["/profile", "/user/profile/edit"],
     });
     this.setSchema(UpdateProfile);
   }
@@ -77,7 +77,7 @@ export class UploadSignatureAction extends BaseServerAction<
     super({
       endpoint: `/api/user/${id}/upload/signature`,
       method: "POST",
-      revalidatePathAfter: ["/profile", "/profile/edit"],
+      revalidatePathAfter: ["/profile", "/user/profile/edit"],
     });
     this.setSchema(UploadSignature);
   }
@@ -110,7 +110,7 @@ export class UpdateSignatureAction extends BaseServerAction<
     super({
       endpoint: `/api/user/${id}/image/attach`,
       method: "PATCH",
-      revalidatePathAfter: ["/profile", "/profile/edit"],
+      revalidatePathAfter: ["/profile", "/user/profile/edit"],
     });
     this.setSchema(UpdateSignature);
   }
