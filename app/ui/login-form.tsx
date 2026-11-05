@@ -15,7 +15,7 @@ import { PasswordInput } from "@/app/ui/components/password-input";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl") || "";
   const [errorMessage, formLoginAction, isLoading] = useActionState(
     login,
     undefined,
@@ -60,7 +60,7 @@ export default function LoginForm() {
             />
           </div>
         </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <Button
           className="text-white inline-flex items-center bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-700 w-full mt-6"
           aria-disabled={isLoading}

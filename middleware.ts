@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import NextAuth from "next-auth";
-import { authConfig } from "@/auth.config";
+import { isDashboardRoute, isPublicRoute } from "@/auth.config";
 import { deleteSession, updateSession } from "@/app/lib/session";
 import { getSession } from "@/app/lib/dal";
-
-export default NextAuth(authConfig).auth;
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
@@ -12,21 +10,30 @@ export const config = {
   runtime: "nodejs",
 };
 
-const publicRoutes = ["/login", "/signup"];
-
-export async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isPublicRoute = publicRoutes.includes(path);
 
-  if (!isPublicRoute) {
-    const session = await getSession();
-    const upError = session && (await updateSession(session));
-
-    if (upError) {
-      console.log(upError);
-      await deleteSession();
-      return NextResponse.redirect(new URL("/login", req.nextUrl));
-    }
+  if (isPublicRoute(path)) {
+    return NextResponse.next();
   }
+
+  const session = await getSession();
+  if (!session) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", `${path}${req.nextUrl.search}`);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  const updateError = await updateSession(session);
+  if (updateError) {
+    console.log(updateError);
+    await deleteSession();
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (isDashboardRoute(path) && !ROLE_MANAGER.isAdmin(session.user.role)) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   return NextResponse.next();
 }
