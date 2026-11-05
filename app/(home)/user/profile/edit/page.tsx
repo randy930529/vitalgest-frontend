@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { verifySession } from "@/app/lib/dal";
+import { notFound, redirect } from "next/navigation";
+import { getSession } from "@/app/lib/dal";
 import { UserType } from "@/app/lib/definitions";
 import { fetchDelegationById } from "@/app/lib/data/delegations";
 import { fetchUserById } from "@/app/lib/data/users";
 import { createSignatureURL } from "@/app/lib/utils";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import ProfileForm from "@/app/ui/profile/profile-form";
 import { ProfileEditSkeleton } from "@/app/ui/components/skeletons";
@@ -15,9 +16,12 @@ export const metadata: Metadata = {
 };
 
 export default async function EditProfilePage() {
-  const session = await verifySession();
-  const isAdmin =
-    session.user.role === "admin" || session.user.role === "general_admin";
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const isAdmin = ROLE_MANAGER.isAdmin(session.user.role);
   const homeHref = isAdmin ? "/dashboard" : "/";
 
   return (
