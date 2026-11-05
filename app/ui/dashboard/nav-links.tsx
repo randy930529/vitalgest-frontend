@@ -72,8 +72,13 @@ const clientLinks = [
   { name: "Inicio", href: "/", icon: HomeIcon },
   {
     name: "Guardias",
-    href: "/guards",
+    href: "/history/guards",
     icon: ShieldCheckIcon,
+  },
+  {
+    name: "Checklist",
+    href: "/history/checklists",
+    icon: ClipboardDocumentListIcon,
   },
 ];
 
