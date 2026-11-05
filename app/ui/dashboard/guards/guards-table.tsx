@@ -72,6 +72,8 @@ export default function GuardsTable({
     handleSelectAllChange,
   } = useTableSelection(guards);
 
+  const fagmentRoute = route ? route : "/dashboard/guards";
+
   return (
     <main className={clsx(STYLES.mainTable)}>
       <Filters>
@@ -198,9 +200,7 @@ export default function GuardsTable({
                   {!readonly && (
                     <>
                       <TableActionEdit
-                        editLink={`${route ? route : "/dashboard/guards"}/${
-                          guard.id
-                        }/edit`}
+                        editLink={`${fagmentRoute}/${guard.id}/edit?goBack=${fagmentRoute}`}
                       />
                       <TableActionDelete
                         id={guard.id}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
@@ -34,6 +34,8 @@ export default function GuardEditForm({
   ];
 }) {
   // (Component) Formulario de edicion de guardias - [CSR]
+
+  const goBack = useSearchParams().get("goBack") || "/dashboard/guards";
 
   const [
     guard,
@@ -131,7 +133,7 @@ export default function GuardEditForm({
           </div>
           <div className="absolute w-3/5 bottom-4 flex justify-end gap-4">
             <Link
-              href="/dashboard/guards"
+              href={goBack}
               className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Regresar

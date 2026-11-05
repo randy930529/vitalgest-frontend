@@ -69,7 +69,7 @@ function GuardDetail({
   onClose?: () => void;
 }) {
   const initialState = { errors: {}, message: null };
-  const { accessChlAmbulance, accessChlSupplies } = ROLE_MANAGER;
+  const { accessChlAmbulance, accessChlSupplies, isHeadGuard } = ROLE_MANAGER;
 
   const closeGuardAction = closeGuard.bind(null, guard.id, guard);
 
@@ -152,7 +152,7 @@ function GuardDetail({
                     checklist={chkSupplies}
                     guardState={guard.state}
                     delegationName={guard.delegation.name}
-                    readonly={readonly}
+                    readonly={isHeadGuard(currentUserRole) || readonly}
                   />
                 )}
                 {accessChlAmbulance(currentUserRole, ["head_guard"]) && (
@@ -162,7 +162,7 @@ function GuardDetail({
                     checklist={chkAmbulance}
                     guardState={guard.state}
                     delegationName={guard.delegation.name}
-                    readonly={readonly}
+                    readonly={isHeadGuard(currentUserRole) || readonly}
                   />
                 )}
               </div>
@@ -231,7 +231,8 @@ function ChecklistCard({
   readonly: boolean;
 }) {
   const isChkAmbulance = typeChecklist === "ambulance";
-  const fragmentRoute = readonly ? "" : "/dashboard";
+  console.log(readonly);
+  const fragmentRoute = readonly ? "/history/guards" : "/dashboard/guards";
 
   return (
     <div
@@ -267,7 +268,7 @@ function ChecklistCard({
       {checklist && (
         <div className="flex gap-2">
           <Link
-            href={`${fragmentRoute}/guards/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}`}
+            href={`/history/checklists/${typeChecklist}/${checklist.id}/report?delegation=${delegationName}&goback=${fragmentRoute}`}
             className={clsx(
               "bg-white border px-3 py-1.5 rounded-md text-xs font-medium flex items-center",
               isChkAmbulance

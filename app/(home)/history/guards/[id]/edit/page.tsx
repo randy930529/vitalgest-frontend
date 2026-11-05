@@ -44,16 +44,16 @@ export default async function EditGuardPage(props: {
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <Breadcrumbs
         breadcrumbs={[
-          { label: "", href: "/dashboard" },
-          { label: "Guardias", href: "/dashboard/guards" },
+          { label: "", href: "/" },
+          { label: "Guardias", href: "/history/guards" },
           {
             label: "Editar Guardia",
-            href: `/dashboard/guards/${id}/edit`,
+            href: `/history/guards/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/users" />}>
+      <Suspense fallback={<FormSkeleton goBackUrl="/history/guards" />}>
         <WrapperForm
           fetchData={fetchGuardByIdAndMXStates}
           WrappedComponent={GuardEditForm}

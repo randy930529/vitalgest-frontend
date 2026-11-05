@@ -45,18 +45,18 @@ const customSectionMeta: {
     title: "Edición de Perfil",
     subtitle: "Actualiza la información del usuario",
   },
+  history: {
+    title: "Historial de Operaciones",
+    subtitle: "Consulta el historial de operaciones",
+  },
+  checklists: {
+    title: "Reporte de Checklists",
+    subtitle: "Consulta el reporte de inspectiones de checklists",
+  },
 } as const;
 
 function getSectionMeta(segments: string[]) {
-  const dashboardIndex = segments.indexOf("dashboard");
-  const profileIndex = segments.indexOf("profile");
-  const segment =
-    dashboardIndex === -1
-      ? profileIndex === -1
-        ? "null"
-        : "profile"
-      : segments[dashboardIndex + 1] || "dashboard";
-
+  const segment = segments.length === 0 ? "null" : segments[1] || "dashboard";
   return customSectionMeta[segment] || {};
 }
 

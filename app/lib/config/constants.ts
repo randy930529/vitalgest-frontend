@@ -135,6 +135,13 @@ export const ROLE_MANAGER = {
     return this.adminRoles().has(normalized);
   },
 
+  isHeadGuard(role?: string | null): boolean {
+    const normalized = (
+      role || ""
+    ).trim() as (typeof this.roleCatalog)[number]["value"];
+    return normalized === "head_guard";
+  },
+
   accessChlAmbulance(
     role?: string,
     accessOtherRoles: (typeof this.roleCatalog)[number]["value"][] = [],

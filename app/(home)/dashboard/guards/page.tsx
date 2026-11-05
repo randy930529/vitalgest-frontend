@@ -5,6 +5,7 @@ import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchStaffMembers } from "@/app/lib/data/users";
 import { fetchDelegations } from "@/app/lib/data/delegations";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { getPaginationParams } from "@/app/lib/utils";
 import { getSession } from "@/app/lib/dal";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
@@ -23,6 +24,13 @@ export default async function GuardsPage({
   searchParams: Promise<{ page?: string; display?: string }>;
 }) {
   // (Página) Gestionar guardias - [SSR]
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const userRole = session.user?.role;
+  const isAdmin = ROLE_MANAGER.isAdmin(userRole);
 
   const { page, display } = await searchParams;
   const params = getPaginationParams(Number(page), Number(display));
@@ -32,14 +40,7 @@ export default async function GuardsPage({
       fetchGuards(params),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
-      (async () => {
-        const session = await getSession();
-        if (!session) {
-          redirect("/login");
-        }
-        const authorizedUser = session.user;
-        return fetchStaffMembers(authorizedUser.delegationId);
-      })(),
+      fetchStaffMembers(session.user.delegationId),
     ]);
 
   return (
@@ -69,6 +70,8 @@ export default async function GuardsPage({
         <WrapperTable
           fetchData={fetchGuardsGuardChiefsAndDelegations}
           WrappedComponent={GuardsTable}
+          readonly={!isAdmin}
+          userRole={userRole}
         />
       </Suspense>
     </section>
