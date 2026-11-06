@@ -17,13 +17,9 @@ export async function fetchOrderById(
   id: string,
 ): Promise<OrderType | undefined> {
   try {
-    const dataFetching = new DataFetch<OrderType>("/api/supply-reports", true);
-    // return await dataFetching.getOne();
-    // TODO: Pedir implementación del endpoint para obtener orden por ID
-
-    const response = await dataFetching.getAll();
-    const order = response.data.find((order) => order.id === id);
-    return order;
+    const endPoint = `/api/supply-reports/${id}`;
+    const dataFetching = new DataFetch<OrderType>(endPoint, true);
+    return await dataFetching.getOne();
   } catch (error) {
     console.log("API Error[GET ORDER]:", error);
     return;
