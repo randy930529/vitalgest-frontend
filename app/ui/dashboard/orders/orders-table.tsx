@@ -126,13 +126,17 @@ export default function OrdersTable({
                     icon={EyeIcon}
                     customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
                   />
-                  <TableActionDelete
-                    id={order.id}
-                    title="Atender Pedido"
-                    question="¿Está seguro que desea marcar como atendido el pedido?"
-                    actionDelete={attendOrder}
-                    icon={CheckCircleIcon}
-                  />
+                  {order.status === "pending" && (
+                    <TableActionDelete
+                      id={order.id}
+                      title="Atender Pedido"
+                      question="¿Está seguro que desea marcar como atendido el pedido?"
+                      actionDelete={() =>
+                        attendOrder(order.id, order.ambulance.id, order.areas)
+                      }
+                      icon={CheckCircleIcon}
+                    />
+                  )}
                 </TableActions>
               </tr>
             ))}

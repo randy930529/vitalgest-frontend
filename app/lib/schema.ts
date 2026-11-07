@@ -207,7 +207,7 @@ const FormSupplySchema = z.object({
     .number({
       invalid_type_error: "Por favor ingrese un cantidad.",
     })
-    .min(1, { message: "La cantidad no puede ser menor que 1." }),
+    .min(0, { message: "La cantidad no puede ser negativa." }),
   minQuantity: z
     .number({
       invalid_type_error: "Por favor ingrese un cantidad mínima.",
