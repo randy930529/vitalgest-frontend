@@ -21,7 +21,6 @@ const customHeaders = [
   { id: 1, label: "Especificación" },
   { id: 2, label: "Reportado" },
   { id: 3, label: "Pedido" },
-  { id: 4, label: "Notas" },
 ];
 
 const ModalComponent = modalComponents.orderEditForm;
@@ -125,7 +124,6 @@ function OrderDetailRow({
                 specification,
                 reported_quantity,
                 required_quantity,
-                notes,
                 measurement_unit,
                 added_quantity,
                 is_resolved,
@@ -164,7 +162,6 @@ function OrderDetailRow({
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3.5">{notes}</td>
                     <TableActions>
                       <ModalTrigger
                         title="Añadir insumo al pedido"

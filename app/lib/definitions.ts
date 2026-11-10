@@ -289,7 +289,6 @@ export type OrderSupplyType = {
   current_quantity: number;
   remaining_quantity: number;
   is_resolved: boolean;
-  notes?: string; // TODO: Pendiente de confirmar si se necesita este campo en la respuesta de la API
 };
 
 export type OrderDetailType = {
@@ -306,6 +305,7 @@ export type OrderType = BaseType & {
   attended_at?: string;
   ambulance: AmbulanceType;
   areas: OrderDetailType[];
+  notes?: string;
 };
 
 type BaseFormField = {
