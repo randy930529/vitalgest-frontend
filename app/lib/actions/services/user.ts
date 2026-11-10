@@ -23,10 +23,10 @@ export class CreateUserAction extends BaseServerAction<UserType, UserState> {
         password: formData.get("password"),
         position: formData.get("position"),
         role: formData.get("role"),
-        delegation: formData.get("delegation"),
+        delegationId: formData.get("delegation"),
       });
 
-      await this.fetchAPI({ ...data, delegationId: data.delegation });
+      await this.fetchAPI(data);
       await this.revalidate();
 
       return { message: "Usuario creado exitosamente." };
@@ -57,7 +57,7 @@ export class UpdateUserAction extends BaseServerAction<UserType, UserState> {
         role: formData.get("role"),
         position: formData.get("position"),
         status: formData.get("status") === "on",
-        delegation: formData.get("delegation"),
+        delegationId: formData.get("delegation"),
       });
 
       await this.fetchAPI(data);
