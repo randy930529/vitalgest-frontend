@@ -231,7 +231,6 @@ function ChecklistCard({
   readonly: boolean;
 }) {
   const isChkAmbulance = typeChecklist === "ambulance";
-  console.log(readonly);
   const fragmentRoute = readonly ? "/history/guards" : "/dashboard/guards";
 
   return (

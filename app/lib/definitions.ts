@@ -161,12 +161,13 @@ export type CheckListSupplyAnswersType = {
   checklist_id: string;
   category: string;
   specification: string;
+  reported_quantity: number;
   avaible_quantity: number;
   min_quantity: number;
   required_quantity: number;
   measurement_unit: string;
-  area_id: number;
   area: {
+    id: number;
     name: string;
     section: string;
     order: number;
