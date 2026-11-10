@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { Tooltip } from "react-tooltip";
 import { OrderSupplyType, OrderType } from "@/app/lib/definitions";
 import { modalComponents } from "@/app/lib/config/modalConfig";
 import { customUnits } from "@/app/lib/config/selectOptions";
@@ -13,6 +14,7 @@ import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import { ButtonFallback } from "@/app/ui/components/buttons";
+import { CountBadge } from "@/app/ui/components/badges";
 
 const customHeaders = [
   { id: 0, label: "Insumo" },
@@ -125,6 +127,8 @@ function OrderDetailRow({
                 required_quantity,
                 notes,
                 measurement_unit,
+                added_quantity,
+                is_resolved,
               }) => {
                 const umLabel =
                   customUnits.find(({ value }) => value === measurement_unit)
@@ -138,7 +142,27 @@ function OrderDetailRow({
                       {`${reported_quantity} ${umLabel}`}
                     </td>
                     <td className="px-4 py-3.5">
-                      {`${required_quantity} ${umLabel}`}
+                      <div className="flex relative w-fit items-center gap-2 pr-1">
+                        <p className="whitespace-nowrap">{`${required_quantity} ${umLabel}`}</p>
+                        {!!added_quantity && (
+                          <div
+                            aria-expanded="false"
+                            data-tooltip-id={`added-${id}-tooltip`}
+                          >
+                            <Tooltip id={`added-${id}-tooltip`} place="top">
+                              <div className="max-w-min text-sm">
+                                {is_resolved
+                                  ? `Se atendió el pedido con ${added_quantity} ${category}`
+                                  : `Se atendió parcialmente el pedido con ${added_quantity} ${category}`}
+                              </div>
+                            </Tooltip>
+                            <CountBadge
+                              count={added_quantity}
+                              variant={is_resolved ? "success" : "warning"}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3.5">{notes}</td>
                     <TableActions>
@@ -149,6 +173,7 @@ function OrderDetailRow({
                             orderId={orderId}
                             itemId={id}
                             reported={reported_quantity}
+                            added={added_quantity}
                             um={umLabel}
                           />
                         }

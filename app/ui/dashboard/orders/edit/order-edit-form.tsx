@@ -5,19 +5,23 @@ import { updateOrder } from "@/app/lib/actions/order";
 import { OrderState } from "@/app/lib/config/stateConfigs";
 import { GenericForm } from "@/app/ui/components/generic-form";
 
+type OrderEditFormProps = {
+  orderId: string;
+  itemId: string;
+  reported?: number;
+  um?: string;
+  added?: number;
+  onClose?: () => void;
+};
+
 export default function OrderEditForm({
   orderId,
   itemId,
   reported,
   um,
+  added,
   onClose,
-}: {
-  orderId: string;
-  itemId: string;
-  reported?: number;
-  um?: string;
-  onClose?: () => void;
-}) {
+}: OrderEditFormProps) {
   // (Component) Formulario de Pedido - [CSR]
 
   const fields: FormFieldType[] = [
@@ -25,7 +29,7 @@ export default function OrderEditForm({
       title: "Cantidad de insumos a agregar",
       name: "addedQuantity",
       type: "number",
-      defaultValue: "1",
+      defaultValue: !!added ? added?.toString() : "1",
       required: true,
     },
   ];
