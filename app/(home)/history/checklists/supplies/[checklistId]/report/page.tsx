@@ -55,9 +55,9 @@ export default async function ChecklistSuppliesReportPage({
     acc.get(categoryKey)?.answer.push({
       category: answer.category,
       specification: answer.specification,
-      avaibleQuantity: answer.avaible_quantity,
+      avaibleQuantity: answer.reported_quantity,
       minQuantity: answer.min_quantity,
-      deficitCalculado: answer.min_quantity - answer.avaible_quantity,
+      deficitCalculado: answer.min_quantity - answer.reported_quantity,
     });
     return acc;
   }, areasItemsInit);

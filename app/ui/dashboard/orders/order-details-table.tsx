@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { Tooltip } from "react-tooltip";
 import { OrderSupplyType, OrderType } from "@/app/lib/definitions";
 import { modalComponents } from "@/app/lib/config/modalConfig";
 import { customUnits } from "@/app/lib/config/selectOptions";
@@ -13,13 +14,13 @@ import ModalTrigger from "@/app/ui/button-modal";
 import TableActions from "@/app/ui/dashboard/tabla-actions";
 import EmptyTableRow from "@/app/ui/components/empty-table-row";
 import { ButtonFallback } from "@/app/ui/components/buttons";
+import { CountBadge } from "@/app/ui/components/badges";
 
 const customHeaders = [
   { id: 0, label: "Insumo" },
   { id: 1, label: "Especificación" },
   { id: 2, label: "Reportado" },
   { id: 3, label: "Pedido" },
-  { id: 4, label: "Notas" },
 ];
 
 const ModalComponent = modalComponents.orderEditForm;
@@ -64,11 +65,11 @@ export default function OrderDetailsTable({
         />
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Insumos solicitados en el pedido seleccionado.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               {customHeaders.map((header) => (
                 <th key={header.id} scope="col" className="px-4 py-3">
@@ -105,7 +106,7 @@ function OrderDetailRow({
     <>
       {Array.from(ordersMap.keys()).map((areaName, index) => (
         <Fragment key={index + areaName}>
-          <tr className="border-b border-slate-200 transition-colors hover:bg-slate-50/70">
+          <tr className={clsx(STYLES.rowTable)}>
             <th
               scope="row"
               colSpan={customHeaders.length + 1}
@@ -123,8 +124,9 @@ function OrderDetailRow({
                 specification,
                 reported_quantity,
                 required_quantity,
-                notes,
                 measurement_unit,
+                added_quantity,
+                is_resolved,
               }) => {
                 const umLabel =
                   customUnits.find(({ value }) => value === measurement_unit)
@@ -138,9 +140,28 @@ function OrderDetailRow({
                       {`${reported_quantity} ${umLabel}`}
                     </td>
                     <td className="px-4 py-3.5">
-                      {`${required_quantity} ${umLabel}`}
+                      <div className="flex relative w-fit items-center gap-2 pr-1">
+                        <p className="whitespace-nowrap">{`${required_quantity} ${umLabel}`}</p>
+                        {!!added_quantity && (
+                          <div
+                            aria-expanded="false"
+                            data-tooltip-id={`added-${id}-tooltip`}
+                          >
+                            <Tooltip id={`added-${id}-tooltip`} place="top">
+                              <div className="max-w-min text-sm">
+                                {is_resolved
+                                  ? `Se atendió el pedido con ${added_quantity} ${category}`
+                                  : `Se atendió parcialmente el pedido con ${added_quantity} ${category}`}
+                              </div>
+                            </Tooltip>
+                            <CountBadge
+                              count={added_quantity}
+                              variant={is_resolved ? "success" : "warning"}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </td>
-                    <td className="px-4 py-3.5">{notes}</td>
                     <TableActions>
                       <ModalTrigger
                         title="Añadir insumo al pedido"
@@ -149,6 +170,7 @@ function OrderDetailRow({
                             orderId={orderId}
                             itemId={id}
                             reported={reported_quantity}
+                            added={added_quantity}
                             um={umLabel}
                           />
                         }

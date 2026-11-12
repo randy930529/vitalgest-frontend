@@ -10,16 +10,21 @@ const FormUserSchema = z.object({
   id: z.string().uuid(),
   name: z
     .string({
-      invalid_type_error: "Por favor ingrese el nombre del usuario.",
+      required_error: "Por favor ingrese el nombre del usuario.",
     })
     .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
+    .max(100, { message: "El nombre no debe exceder los 100 caracteres." })
+    .regex(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/, {
+      message:
+        "El nombre solo puede contener letras, espacios, guiones o apóstrofes",
+    })
     .trim(),
   lastname: z
     .string({
       required_error: "Por favor ingrese los apellidos del usuario.",
     })
     .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
-    .max(50, { message: "El apellido no debe exceder los 50 caracteres." })
+    .max(250, { message: "El apellido no debe exceder los 250 caracteres." })
     .regex(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/, {
       message:
         "El apellido solo puede contener letras, espacios, guiones o apóstrofes",
@@ -54,7 +59,7 @@ const FormUserSchema = z.object({
   position: z.string({
     invalid_type_error: "Por favor ingrese el cargo del usuario.",
   }),
-  delegation: z.string({
+  delegationId: z.string({
     invalid_type_error: "Por favor seleccione una delegación.",
   }),
 });
@@ -207,7 +212,7 @@ const FormSupplySchema = z.object({
     .number({
       invalid_type_error: "Por favor ingrese un cantidad.",
     })
-    .min(1, { message: "La cantidad no puede ser menor que 1." }),
+    .min(0, { message: "La cantidad no puede ser negativa." }),
   minQuantity: z
     .number({
       invalid_type_error: "Por favor ingrese un cantidad mínima.",
@@ -354,7 +359,10 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   supplyId: true,
 });
 
-export const CreateQuestion = FormQuestionSchema.omit({ id: true, order: true });
+export const CreateQuestion = FormQuestionSchema.omit({
+  id: true,
+  order: true,
+});
 export const UpdateQuestion = FormQuestionSchema.omit({ id: true }).partial();
 export const CreateQuestionCategory = FormQuestionCategorySchema.omit({
   id: true,

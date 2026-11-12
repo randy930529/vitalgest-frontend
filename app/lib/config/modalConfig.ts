@@ -62,4 +62,11 @@ export const modalComponents = {
       loading: () => ModalFormSkeleton({ fields: 1, columns: 1 }),
     },
   ),
+  logsFiltersForm: dynamic(
+    () => import("@/app/ui/dashboard/logs/logs-filters-form"),
+    {
+      ssr: false,
+      loading: () => ModalFormSkeleton({ fields: 6, columns: 2 }),
+    },
+  ),
 };

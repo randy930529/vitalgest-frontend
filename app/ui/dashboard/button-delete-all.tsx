@@ -1,5 +1,6 @@
 import { Tooltip } from "react-tooltip";
 import TableActionDelete from "@/app/ui/dashboard/button-delete";
+import { CountBadge } from "@/app/ui/components/badges";
 
 export default function TableActionDeleteAllSelected({
   selectedIds,
@@ -27,9 +28,7 @@ export default function TableActionDeleteAllSelected({
         question="¿Está seguro de que desea eliminar los elementos seleccionados?"
         actionDelete={handleDelete}
       />
-      <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-rose-600 text-xs font-bold text-white">
-        {selectedIds.length}
-      </div>
+      <CountBadge count={selectedIds.length} />
     </div>
   );
 }

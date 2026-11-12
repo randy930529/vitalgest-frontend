@@ -54,3 +54,37 @@ export function Badge({
     </span>
   );
 }
+
+/**
+ * Muestra un indicador de cantidad en forma circular sobre un elemento.
+ *
+ * El elemento padre debe incluir la clase `relative` para que la posición
+ * absoluta del indicador se calcule respecto a ese contenedor.
+ */
+export function CountBadge({
+  count,
+  variant = "danger",
+  extraClassName,
+}: {
+  count: number;
+  variant?: BadgeVariant;
+  extraClassName?: string;
+}) {
+  return (
+    <span
+      className={clsx(
+        "absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white",
+        {
+          "bg-emerald-500": variant === "success",
+          "bg-orange-500": variant === "warning",
+          "bg-rose-600": variant === "danger",
+          "bg-slate-600": variant === "neutral",
+          "bg-sky-600": variant === "default",
+        },
+        extraClassName,
+      )}
+    >
+      {count}
+    </span>
+  );
+}

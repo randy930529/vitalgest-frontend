@@ -192,8 +192,12 @@ export const FILE_UPLOAD = {
 export const STYLES = {
   inputFocus: "focus:border-rose-300 focus:ring-4 focus:ring-rose-100",
   boxShadow: "shadow-[0_20px_45px_-30px_rgba(244,63,94,0.45)]",
+  table: "w-full text-left text-sm text-slate-600",
   mainTable:
     "relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm",
+  headerTable:
+    "bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600",
+  rowTable: "border-b border-slate-200 transition-colors hover:bg-slate-50/70",
   buttonTableAction:
     "mr-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border",
 } as const;

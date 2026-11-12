@@ -9,6 +9,12 @@ export type BaseType = {
   updated_at: string;
 };
 
+export type QueryParamsType = {
+  query?: string;
+  page?: string;
+  display?: string;
+};
+
 export type UserType = BaseType & {
   id: string;
   name: string;
@@ -41,6 +47,26 @@ export type ResponseAPIType<T> = {
 export type PaginatedResult<T> = {
   data: T[];
   totalRecords: number;
+};
+
+export type AuditLogType = {
+  id: string;
+  userId: string;
+  user: UserType;
+  affected: string;
+  entity: string;
+  action: string;
+  description: string;
+  createdAt: string;
+};
+
+export type AuditLogCategoryType = {
+  entity: string;
+  actions: string[];
+};
+
+export type AuditLogsFiltersType = {
+  categories: AuditLogCategoryType[];
 };
 
 export type QuestionCategoryType = BaseType & {
@@ -161,12 +187,13 @@ export type CheckListSupplyAnswersType = {
   checklist_id: string;
   category: string;
   specification: string;
+  reported_quantity: number;
   avaible_quantity: number;
   min_quantity: number;
   required_quantity: number;
   measurement_unit: string;
-  area_id: number;
   area: {
+    id: number;
     name: string;
     section: string;
     order: number;
@@ -288,7 +315,6 @@ export type OrderSupplyType = {
   current_quantity: number;
   remaining_quantity: number;
   is_resolved: boolean;
-  notes?: string; // TODO: Pendiente de confirmar si se necesita este campo en la respuesta de la API
 };
 
 export type OrderDetailType = {
@@ -305,6 +331,7 @@ export type OrderType = BaseType & {
   attended_at?: string;
   ambulance: AmbulanceType;
   areas: OrderDetailType[];
+  notes?: string;
 };
 
 type BaseFormField = {

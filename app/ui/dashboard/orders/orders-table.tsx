@@ -25,6 +25,7 @@ const customHeaders = [
   { id: 0, label: "Fecha" },
   { id: 1, label: "Ambulancia" },
   { id: 2, label: "Estado" },
+  { id: 3, label: "Notas" },
 ];
 
 export default function OrdersTable({
@@ -52,11 +53,11 @@ export default function OrdersTable({
           : "Selecciona pedidos para acciones masivas"}
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de pedidos realizados a farmacia.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
@@ -98,10 +99,7 @@ export default function OrdersTable({
               message="No hay pedidos para mostrar."
             />
             {orders?.map((order) => (
-              <tr
-                key={order.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
+              <tr key={order.id} className={clsx(STYLES.rowTable)}>
                 <td className="w-4 p-4">
                   <TableCheckbox
                     id={`checkbox-table-${order.id}`}
@@ -119,6 +117,7 @@ export default function OrdersTable({
                 <td className="px-4 py-3.5">
                   <OrderStatusShow status={order.status} />
                 </td>
+                <td className="px-4 py-3.5">{order.notes}</td>
                 <TableActions>
                   <TableActionEdit
                     editLink={`/dashboard/orders/${order.id}/details`}
@@ -126,13 +125,17 @@ export default function OrdersTable({
                     icon={EyeIcon}
                     customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
                   />
-                  <TableActionDelete
-                    id={order.id}
-                    title="Atender Pedido"
-                    question="¿Está seguro que desea marcar como atendido el pedido?"
-                    actionDelete={attendOrder}
-                    icon={CheckCircleIcon}
-                  />
+                  {order.status === "pending" && (
+                    <TableActionDelete
+                      id={order.id}
+                      title="Atender Pedido"
+                      question="¿Está seguro que desea marcar como atendido el pedido?"
+                      actionDelete={() =>
+                        attendOrder(order.id, order.ambulance.id, order.areas)
+                      }
+                      icon={CheckCircleIcon}
+                    />
+                  )}
                 </TableActions>
               </tr>
             ))}

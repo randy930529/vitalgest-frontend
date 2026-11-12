@@ -5,6 +5,7 @@ import {
   AttendedOrderAction,
   UpdateOrderAction,
 } from "@/app/lib/actions/services/order";
+import { OrderDetailType } from "@/app/lib/definitions";
 
 export async function updateOrder(
   id: string,
@@ -15,7 +16,11 @@ export async function updateOrder(
   return action.execute(prevState, formData);
 }
 
-export async function attendOrder(id: string): Promise<OrderState> {
-  const action = new AttendedOrderAction(id);
+export async function attendOrder(
+  id: string,
+  ambulanceId: string,
+  orders: OrderDetailType[],
+): Promise<OrderState> {
+  const action = new AttendedOrderAction(id, ambulanceId, orders);
   return action.execute();
 }

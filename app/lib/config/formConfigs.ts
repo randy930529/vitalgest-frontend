@@ -162,6 +162,9 @@ export const formConfigs = {
       placeholder: "1",
     },
   } as const,
+
+  // Filtros de logs
+  logsFilters: {} as const,
 } as const;
 
 /**
