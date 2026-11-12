@@ -8,6 +8,7 @@ import {
   TruckIcon,
   ClipboardIcon,
   ClipboardDocumentListIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import NavSubLinks from "@/app/ui/dashboard/nav-sublinks";
 
@@ -66,6 +67,11 @@ const adminLinks = [
     href: "/dashboard/questions",
     icon: ClipboardIcon,
   },
+  {
+    name: "Logs",
+    href: "/dashboard/logs",
+    icon: DocumentTextIcon,
+  },
 ];
 
 const clientLinks = [
@@ -78,6 +84,12 @@ const clientLinks = [
   {
     name: "Checklist",
     href: "/history/checklists",
+    icon: ClipboardDocumentListIcon,
+  },
+  // TODO: Controlar si el usuario tiene permisos para editar la sección de pedidos
+  {
+    name: "Pedidos",
+    href: "/dashboard/orders",
     icon: ClipboardDocumentListIcon,
   },
 ];

@@ -9,6 +9,12 @@ export type BaseType = {
   updated_at: string;
 };
 
+export type QueryParamsType = {
+  query?: string;
+  page?: string;
+  display?: string;
+};
+
 export type UserType = BaseType & {
   id: string;
   name: string;
@@ -41,6 +47,26 @@ export type ResponseAPIType<T> = {
 export type PaginatedResult<T> = {
   data: T[];
   totalRecords: number;
+};
+
+export type AuditLogType = {
+  id: string;
+  userId: string;
+  user: UserType;
+  affected: string;
+  entity: string;
+  action: string;
+  description: string;
+  createdAt: string;
+};
+
+export type AuditLogCategoryType = {
+  entity: string;
+  actions: string[];
+};
+
+export type AuditLogsFiltersType = {
+  categories: AuditLogCategoryType[];
 };
 
 export type QuestionCategoryType = BaseType & {

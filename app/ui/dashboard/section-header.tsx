@@ -37,6 +37,10 @@ const customSectionMeta: {
     title: "Gestión de Preguntas",
     subtitle: "Administrar las preguntas de checklist en el sistema",
   },
+  logs: {
+    title: "Historial de Registros",
+    subtitle: "Consulta los registros del sistema",
+  },
   orders: {
     title: "Gestión de Pedidos",
     subtitle: "Administrar los pedidos en el sistema",
