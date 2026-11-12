@@ -84,12 +84,12 @@ export default function QuestionTable({
           : "Selecciona preguntas para acciones masivas"}
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de preguntas con selección y acciones de edición o
             eliminación.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
@@ -130,10 +130,7 @@ export default function QuestionTable({
               colSpan={customHeaders.length + 2}
             />
             {questions?.map((question) => (
-              <tr
-                key={question.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
+              <tr key={question.id} className={clsx(STYLES.rowTable)}>
                 <td className="w-4 p-4">
                   <TableCheckbox
                     id={`checkbox-table-${question.id}`}

@@ -65,11 +65,11 @@ export default function OrderDetailsTable({
         />
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Insumos solicitados en el pedido seleccionado.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               {customHeaders.map((header) => (
                 <th key={header.id} scope="col" className="px-4 py-3">
@@ -106,7 +106,7 @@ function OrderDetailRow({
     <>
       {Array.from(ordersMap.keys()).map((areaName, index) => (
         <Fragment key={index + areaName}>
-          <tr className="border-b border-slate-200 transition-colors hover:bg-slate-50/70">
+          <tr className={clsx(STYLES.rowTable)}>
             <th
               scope="row"
               colSpan={customHeaders.length + 1}

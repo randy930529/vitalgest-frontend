@@ -74,12 +74,12 @@ export default function AmbulanceTable({
           : "Selecciona ambulancias para acciones masivas"}
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de ambulancias con selección y acciones de edición o
             eliminación.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
@@ -120,10 +120,7 @@ export default function AmbulanceTable({
               colSpan={customHeaders.length + 2}
             />
             {ambulances?.map((ambulance) => (
-              <tr
-                key={ambulance.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
+              <tr key={ambulance.id} className={clsx(STYLES.rowTable)}>
                 <td className="w-4 p-4">
                   <TableCheckbox
                     id={`checkbox-table-${ambulance.id}`}

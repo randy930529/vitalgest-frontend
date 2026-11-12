@@ -53,11 +53,11 @@ export default function OrdersTable({
           : "Selecciona pedidos para acciones masivas"}
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de pedidos realizados a farmacia.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
@@ -99,10 +99,7 @@ export default function OrdersTable({
               message="No hay pedidos para mostrar."
             />
             {orders?.map((order) => (
-              <tr
-                key={order.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
+              <tr key={order.id} className={clsx(STYLES.rowTable)}>
                 <td className="w-4 p-4">
                   <TableCheckbox
                     id={`checkbox-table-${order.id}`}

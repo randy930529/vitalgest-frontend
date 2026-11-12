@@ -109,12 +109,12 @@ export default function GuardsTable({
         </p>
       )}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de historial de guardias con selección, estado y acciones de
             edición o eliminación.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               {!readonly && (
                 <th scope="col" className="px-4 py-3">
@@ -157,10 +157,7 @@ export default function GuardsTable({
               colSpan={customHeaders.length + (readonly ? 0 : 2)}
             />
             {guards?.map((guard) => (
-              <tr
-                key={guard.id}
-                className="border-b border-slate-200 transition-colors hover:bg-slate-50/70"
-              >
+              <tr key={guard.id} className={clsx(STYLES.rowTable)}>
                 {!readonly && (
                   <td className="w-4 p-4">
                     <TableCheckbox

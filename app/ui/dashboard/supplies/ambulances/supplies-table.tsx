@@ -146,12 +146,12 @@ export default function AmbulanceSuppliesTable({
           : "Selecciona insumos para acciones masivas"}
       </p>
       <div ref={tableWrapperRef} className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-600">
+        <table className={clsx(STYLES.table)}>
           <caption className="sr-only">
             Tabla de insumos en ambulancia con selección y acciones de edición o
             eliminación.
           </caption>
-          <thead className="bg-slate-100/80 text-xs uppercase tracking-[0.08em] text-slate-600">
+          <thead className={clsx(STYLES.headerTable)}>
             <tr>
               <th scope="col" className="px-4 py-3">
                 <div className="flex items-center">
