@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { fetchOrderById } from "@/app/lib/data/orders";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
+import { getSession } from "@/app/lib/dal";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { TableSkeletonBase } from "@/app/ui/components/skeletons";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
@@ -14,7 +17,16 @@ export const metadata: Metadata = {
 export default async function OrderDetailsPage(props: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
   const { id } = await props.params;
+  const user = session.user;
+  const readonly = !ROLE_MANAGER.isAdmin(user.role);
+  const fetchOrderByIdWithReadonly = async () =>
+    await Promise.all([fetchOrderById(id), readonly]);
 
   return (
     <main className="vital-shell">
@@ -31,7 +43,7 @@ export default async function OrderDetailsPage(props: {
       />
       <Suspense fallback={<OrderDetailsSkeleton />}>
         <WrapperForm
-          fetchData={() => fetchOrderById(id)}
+          fetchData={fetchOrderByIdWithReadonly}
           WrappedComponent={OrderDetailsTable}
         />
       </Suspense>

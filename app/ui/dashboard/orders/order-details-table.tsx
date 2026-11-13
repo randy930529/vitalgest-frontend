@@ -28,12 +28,15 @@ const ModalComponent = modalComponents.orderEditForm;
 export default function OrderDetailsTable({
   data,
 }: {
-  data: OrderType | undefined;
+  data: [OrderType | undefined, boolean];
 }) {
-  if (!data) notFound();
+  const [order, readonly] = data;
 
+  if (!order) notFound();
+
+  const segment = readonly ? "history" : "dashboard";
   const ordersMap = new Map<string, OrderSupplyType[]>();
-  data.areas.forEach((area) => {
+  order.areas.forEach((area) => {
     const existingSupplies = ordersMap.get(area.area_name) || [];
     const updatedSupplies = [...existingSupplies, ...area.supplies];
     ordersMap.set(area.area_name, updatedSupplies);
@@ -49,19 +52,21 @@ export default function OrderDetailsTable({
           <dl className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2 sm:gap-x-8">
             <div>
               <dt className="inline font-semibold text-slate-900">Fecha: </dt>
-              <dd className="inline">{formatDateToDDMMYYYY(data.createdAt)}</dd>
+              <dd className="inline">
+                {formatDateToDDMMYYYY(order.createdAt)}
+              </dd>
             </div>
             <div>
               <dt className="inline font-semibold text-slate-900">
                 {`Ambulancia: `}
               </dt>
-              <dd className="inline">{data.ambulance.number}</dd>
+              <dd className="inline">{order.ambulance.number}</dd>
             </div>
           </dl>
         </div>
         <ButtonFallback
           title="Volver a pedidos"
-          navigateTo={`/dashboard/orders`}
+          navigateTo={`/${segment}/orders`}
         />
       </div>
       <div className="overflow-x-auto">
@@ -76,18 +81,24 @@ export default function OrderDetailsTable({
                   {header.label}
                 </th>
               ))}
-              <th scope="col" className="px-4 py-3 text-right">
-                Acciones
-              </th>
+              {!readonly && (
+                <th scope="col" className="px-4 py-3 text-right">
+                  Acciones
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             <EmptyTableRow
-              isListEmpty={!data.areas.length}
+              isListEmpty={!order.areas.length}
               colSpan={customHeaders.length}
               message="No hay insumos en este pedido."
             />
-            <OrderDetailRow orderId={data.id} ordersMap={ordersMap} />
+            <OrderDetailRow
+              orderId={order.id}
+              ordersMap={ordersMap}
+              readonly={readonly}
+            />
           </tbody>
         </table>
       </div>
@@ -98,9 +109,11 @@ export default function OrderDetailsTable({
 function OrderDetailRow({
   orderId,
   ordersMap,
+  readonly,
 }: {
   orderId: string;
   ordersMap: Map<string, OrderSupplyType[]>;
+  readonly: boolean;
 }) {
   return (
     <>
@@ -162,21 +175,23 @@ function OrderDetailRow({
                         )}
                       </div>
                     </td>
-                    <TableActions>
-                      <ModalTrigger
-                        title="Añadir insumo al pedido"
-                        modelContent={
-                          <ModalComponent
-                            orderId={orderId}
-                            itemId={id}
-                            reported={reported_quantity}
-                            added={added_quantity}
-                            um={umLabel}
-                          />
-                        }
-                        buttonToggle={<UpdateOrderButton />}
-                      />
-                    </TableActions>
+                    {!readonly && (
+                      <TableActions>
+                        <ModalTrigger
+                          title="Añadir insumo al pedido"
+                          modelContent={
+                            <ModalComponent
+                              orderId={orderId}
+                              itemId={id}
+                              reported={reported_quantity}
+                              added={added_quantity}
+                              um={umLabel}
+                            />
+                          }
+                          buttonToggle={<UpdateOrderButton />}
+                        />
+                      </TableActions>
+                    )}
                   </tr>
                 );
               },
