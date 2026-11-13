@@ -134,20 +134,23 @@ function CustomFiles({
         required
       />
 
-      {avaibleQuantity && (
-        <div className="w-6/12 md:w-5/12">
-          <p className="mt-4 mb-4 text-sm font-medium text-gray-900 dark:text-white block">
-            Disponibilidad
-          </p>
+      <div>
+        <p className="mb-1.5 mt-3 text-sm font-medium text-gray-900 dark:text-white sm:mb-2 sm:mt-4 block">
+          Disponibilidad
+        </p>
+        {avaibleQuantity ? (
           <Badge
             title={String(quantity)}
             success={quantity ? quantity > 5 : false}
             pending={quantity ? quantity <= 5 : undefined}
           />
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Seleccione un insumo para ver la disponibilidad
+          </p>
+        )}
+      </div>
 
-      <div></div>
       <div className="w-5/12 md:w-4/12">
         <FormInputSingle
           key={`input-avaibleQuantity-${avaibleQuantity}`}
@@ -157,10 +160,10 @@ function CustomFiles({
           placeholder="0"
           initialValue={String(0)}
           handleOption={handleAvaibleQuantitySupply}
+          disabled={!avaibleQuantity}
           required
         />
       </div>
-      {!avaibleQuantity && <div></div>}
     </>
   );
 }
