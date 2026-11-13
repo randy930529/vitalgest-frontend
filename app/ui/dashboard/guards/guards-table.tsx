@@ -8,6 +8,7 @@ import {
   DelegationType,
   GuardType,
   PaginatedResult,
+  ShiftType,
 } from "@/app/lib/definitions";
 import { STYLES } from "@/app/lib/config/constants";
 import { deleteGuard } from "@/app/lib/actions/guard";
@@ -73,6 +74,10 @@ export default function GuardsTable({
   } = useTableSelection(guards);
 
   const fagmentRoute = route ? route : "/dashboard/guards";
+  const ambulancesToString = (shifts: ShiftType[]): string => {
+    if (shifts.length === 0) return "-";
+    return shifts.map(({ ambulance }) => ambulance.number).join(", ");
+  };
 
   return (
     <main className={clsx(STYLES.mainTable)}>
@@ -179,7 +184,9 @@ export default function GuardsTable({
                 <td className="px-4 py-3.5">
                   {formatDateToDDMMYYYY(guard.date)}
                 </td>
-                <td className="px-4 py-3.5">{"Turnos"}</td>
+                <td className="px-4 py-3.5 text-xs text-ellipsis max-w-[200px]">
+                  {ambulancesToString(guard.shifts)}
+                </td>
                 <td className="px-4 py-3.5">
                   {guard.state === "Nueva" && !readonly ? (
                     <InitGuardTrigger guard={guard} isBadge />
