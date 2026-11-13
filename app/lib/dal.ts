@@ -1,14 +1,10 @@
 import "server-only";
 import { cache } from "react";
 import { cookies } from "next/headers";
-import { SessionPayload, SessionType, UserType } from "@/app/lib/definitions";
-import { decrypt } from "@/app/lib/session";
 import { redirect } from "next/navigation";
-
-export const customErrorCodes = {
-  NO_TOKEN_PROVIDED: "",
-  INVALID_TOKEN: "",
-};
+import { SessionPayload, SessionType, UserType } from "@/app/lib/definitions";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
+import { decrypt } from "@/app/lib/session";
 
 export const getSession = cache(
   async (): Promise<SessionPayload | undefined> => {
@@ -41,12 +37,9 @@ export const verifyAuthorization = cache((session: SessionType) => {
   }
 
   if (
-    session?.isAuth &&
-    session?.user &&
-    !session?.user?.status &&
-    !(
-      session?.user?.role === "admin" || session?.user?.role === "general_admin"
-    )
+    !session?.user ||
+    !session?.user?.status ||
+    !ROLE_MANAGER.isAdmin(session?.user?.role)
   ) {
     console.log("User NO autorizado");
     return false;

@@ -30,8 +30,10 @@ const customHeaders = [
 
 export default function OrdersTable({
   data,
+  readonly,
 }: {
   data: PaginatedResult<OrderType>;
+  readonly?: boolean;
 }) {
   // (Component) Tabla interactiva de pedidos - [CSR]
 
@@ -43,6 +45,7 @@ export default function OrdersTable({
     handleCheckboxChange,
     handleSelectAllChange,
   } = useTableSelection(orders);
+  const segment = readonly ? "history" : "dashboard";
 
   return (
     <main className={clsx(STYLES.mainTable)}>
@@ -120,12 +123,12 @@ export default function OrdersTable({
                 <td className="px-4 py-3.5">{order.notes}</td>
                 <TableActions>
                   <TableActionEdit
-                    editLink={`/dashboard/orders/${order.id}/details`}
+                    editLink={`/${segment}/orders/${order.id}/details`}
                     title="Editar Pedido"
                     icon={EyeIcon}
                     customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
                   />
-                  {order.status === "pending" && (
+                  {!readonly && order.status === "pending" && (
                     <TableActionDelete
                       id={order.id}
                       title="Atender Pedido"

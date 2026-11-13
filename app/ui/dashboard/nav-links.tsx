@@ -86,10 +86,9 @@ const clientLinks = [
     href: "/history/checklists",
     icon: ClipboardDocumentListIcon,
   },
-  // TODO: Controlar si el usuario tiene permisos para editar la sección de pedidos
   {
     name: "Pedidos",
-    href: "/dashboard/orders",
+    href: "/history/orders",
     icon: ClipboardDocumentListIcon,
   },
 ];
