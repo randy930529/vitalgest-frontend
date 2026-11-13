@@ -34,10 +34,10 @@ export default function SupplyForm({
     label: number,
   }));
   const customSelectedSuppliesPharmacy = suppliesPharmacy.map(
-    ({ id, category }) => ({
+    ({ id, category, specification }) => ({
       id,
       value: id,
-      label: category,
+      label: `${category} - ${specification}`,
     }),
   );
   const customSelectedAreas = areas.map(({ id, name }) => ({
