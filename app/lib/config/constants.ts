@@ -78,6 +78,11 @@ export const ERROR_MESSAGES = {
     // * errores de los reportes de insumos
     SUPPLY_REPORT_NOT_FOUND: "Reporte de insumos no encontrado.",
     INVALID_REPORT_ITEM_ID: "ID de insumo en pedido inválido.",
+
+    // * errores de los reportes de ambulancia
+    AMBULANCE_EXISTS: "La ambulancia ya existe.",
+    AMBULANCE_NOT_FOUND: "Ambulancia no encontrada.",
+    INVALID_AMBULANCE_ID: "ID de ambulancia inválido.",
   },
   get(code: string): string {
     return (

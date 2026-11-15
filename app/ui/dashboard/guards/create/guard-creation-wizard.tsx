@@ -136,9 +136,9 @@ export default function GuardCreationWizard({
     });
   };
 
-  const handleShiftRemoved = (shiftId: string) => {
+  const handleShiftRemoved = (shiftId: string, message: string) => {
     setShifts((prev) => prev.filter((s) => s.id !== shiftId));
-    toast.success("Turno eliminado");
+    toast.success(message);
   };
 
   const handleWizardComplete = () => {
