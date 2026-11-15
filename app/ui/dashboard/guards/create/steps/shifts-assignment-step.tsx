@@ -10,9 +10,9 @@ import {
   CheckCircleIcon,
   PencilSquareIcon,
   PlusIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import ShiftAssignmentForm from "@/app/ui/dashboard/guards/create/steps/shift-assignment-form";
+import ShiftDeleteButton from "./shift-delete-button";
 
 interface ShiftsAssignmentStepProps {
   guard: GuardType;
@@ -22,7 +22,7 @@ interface ShiftsAssignmentStepProps {
   guardDisplayInfo?: GuardDisplayInfo;
   shifts: ShiftType[];
   onShiftAdded: (shift: ShiftType) => void;
-  onShiftRemoved: (shiftId: string) => void;
+  onShiftRemoved: (shiftId: string, message: string) => void;
   setIsLoading?: (loading: boolean) => void;
 }
 
@@ -102,7 +102,9 @@ export default function ShiftsAssignmentStep({
                 shift={shift}
                 isEditing={editingShiftId === shift.id}
                 onEdit={() => handleEditShift(shift.id)}
-                onRemove={() => onShiftRemoved(shift.id)}
+                onRemove={(message: string) =>
+                  onShiftRemoved(shift.id, message)
+                }
               />
             ))}
           </div>
@@ -163,7 +165,7 @@ function ShiftCard({
   shift: ShiftType;
   isEditing?: boolean;
   onEdit: () => void;
-  onRemove: () => void;
+  onRemove: (message: string) => void;
 }) {
   return (
     <div
@@ -181,17 +183,7 @@ function ShiftCard({
       }}
       title="Editar turno"
     >
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          onRemove();
-        }}
-        className="absolute right-2 top-2 text-slate-400 transition-colors hover:text-red-500"
-        title="Eliminar turno"
-      >
-        <XMarkIcon className="h-5 w-5" />
-      </button>
+      <ShiftDeleteButton id={shift.id} onRemove={onRemove} />
 
       <div className="space-y-2 pr-6">
         <div>
