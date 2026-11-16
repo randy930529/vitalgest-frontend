@@ -3,17 +3,16 @@
 import { useState } from "react";
 import clsx from "clsx";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { NAV_ICONS, type NavIconName } from "@/app/ui/components/navigation";
 
-export default function NavSubLinks({
-  name,
-  icon,
-  children,
-}: {
+export interface NavSubLinksProps {
   name: string;
-  icon: React.ReactElement;
+  iconName?: NavIconName;
   children?: React.ReactNode;
-}) {
+}
+export function NavSubLinks({ name, iconName, children }: NavSubLinksProps) {
   const [dropdown, setDropdown] = useState(true);
+  const Icon = iconName ? NAV_ICONS[iconName] : undefined;
   const controlsId = `${name.toLowerCase().replace(/\s+/g, "-")}-submenu`;
 
   return (
@@ -32,7 +31,7 @@ export default function NavSubLinks({
         className="group relative z-[71] flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3"
         onClick={() => setDropdown(!dropdown)}
       >
-        {icon && icon}
+        {Icon && <Icon aria-hidden="true" className="h-6 w-6" />}
         <span className="hidden whitespace-nowrap text-center md:block">
           {name}
         </span>

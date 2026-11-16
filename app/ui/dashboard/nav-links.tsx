@@ -1,147 +1,36 @@
-import Link from "next/link";
+import { NAVLINKS } from "@/app/lib/config/constants";
 import {
-  UserGroupIcon,
-  HomeIcon,
-  DocumentDuplicateIcon,
-  ShieldCheckIcon,
-  BuildingOfficeIcon,
-  TruckIcon,
-  ClipboardIcon,
-  ClipboardDocumentListIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/outline";
-import NavSubLinks from "@/app/ui/dashboard/nav-sublinks";
+  NavLink,
+  NavSubLinks,
+  type NavLinkData,
+} from "@/app/ui/components/navigation";
 
-export type LinkProp = {
-  name: string;
-  href: string;
-  icon?: React.ElementType;
-  sublinks?: SublinkProp[];
+type LinkProp = NavLinkData & {
+  sublinks?: readonly {
+    name: string;
+    href: string;
+  }[];
 };
-
-type SublinkProp = {
-  name: string;
-  href: string;
-};
-
-const adminLinks = [
-  { name: "Inicio", href: "/dashboard", icon: HomeIcon },
-  { name: "Usuarios", href: "/dashboard/users", icon: UserGroupIcon },
-  {
-    name: "Delegaciones",
-    href: "/dashboard/delegations",
-    icon: BuildingOfficeIcon,
-  },
-  {
-    name: "Ambulancias",
-    href: "/dashboard/ambulances",
-    icon: TruckIcon,
-  },
-  {
-    name: "Guardias",
-    href: "/dashboard/guards",
-    icon: ShieldCheckIcon,
-  },
-  {
-    name: "Insumos",
-    href: "",
-    icon: DocumentDuplicateIcon,
-    sublinks: [
-      {
-        name: "Farmacias",
-        href: `/dashboard/supplies/pharmacies`,
-      },
-      {
-        name: "Ambulancias",
-        href: `/dashboard/supplies/ambulances`,
-      },
-    ],
-  },
-  {
-    name: "Pedidos",
-    href: "/dashboard/orders",
-    icon: ClipboardDocumentListIcon,
-  },
-  {
-    name: "Preguntas",
-    href: "/dashboard/questions",
-    icon: ClipboardIcon,
-  },
-  {
-    name: "Logs",
-    href: "/dashboard/logs",
-    icon: DocumentTextIcon,
-  },
-];
-
-const clientLinks = [
-  { name: "Inicio", href: "/", icon: HomeIcon },
-  {
-    name: "Guardias",
-    href: "/history/guards",
-    icon: ShieldCheckIcon,
-  },
-  {
-    name: "Checklist",
-    href: "/history/checklists",
-    icon: ClipboardDocumentListIcon,
-  },
-  {
-    name: "Pedidos",
-    href: "/history/orders",
-    icon: ClipboardDocumentListIcon,
-  },
-];
 
 export default function NavLinks({ isAdmin }: { isAdmin: boolean }) {
-  const links: LinkProp[] = isAdmin ? adminLinks : clientLinks;
+  const { adminLinks, clientLinks } = NAVLINKS;
+  const links: readonly LinkProp[] = isAdmin ? adminLinks : clientLinks;
+
   return (
     <>
       {links.map((link) => {
         if (!link.sublinks) return <NavLink key={link.name} link={link} />;
 
-        const LinkIcon = link.icon;
         return (
-          <NavSubLinks
-            key={link.name}
-            name={link.name}
-            icon={LinkIcon ? <LinkIcon className="w-6 h-6" /> : <div></div>}
-          >
+          <NavSubLinks key={link.name} name={link.name} iconName={link.icon}>
             {link.sublinks.map((sublink) => (
               <li key={sublink.name} className="w-full">
-                <NavLink key={"sub-" + sublink.name} link={sublink} />
+                <NavLink key={`sub-${sublink.name}`} link={sublink} />
               </li>
             ))}
           </NavSubLinks>
         );
       })}
     </>
-  );
-}
-
-function NavLink({ link }: { link: LinkProp }) {
-  const LinkIcon = link.icon;
-  const labelClass = LinkIcon ? "sr-only md:not-sr-only md:block" : "block";
-  const isSubLink = !LinkIcon;
-  const linkClass = isSubLink
-    ? "group flex h-[48px] w-full items-center justify-start gap-2 rounded-2xl bg-slate-50 px-4 text-sm font-semibold text-slate-800 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:justify-start md:px-3"
-    : "group flex h-[52px] w-[52px] flex-none items-center justify-center gap-2 rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 md:h-[48px] md:w-full md:justify-start md:px-3";
-
-  return (
-    <Link
-      key={link.name}
-      href={link.href}
-      className={linkClass}
-      aria-label={link.name}
-      title={link.name}
-    >
-      {LinkIcon && (
-        <LinkIcon
-          aria-hidden="true"
-          className="h-5 w-5 text-slate-700 transition group-hover:text-rose-600"
-        />
-      )}
-      <p className={labelClass}>{link.name}</p>
-    </Link>
   );
 }

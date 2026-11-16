@@ -1,5 +1,4 @@
 import { CustomOptions } from "@/app/lib/definitions";
-
 export const ERROR_MESSAGES = {
   errorCodeList: {
     INVALID_CREDENTIALS: "Credenciales inválidas.",
@@ -74,6 +73,8 @@ export const ERROR_MESSAGES = {
     DATE_EXPIRED: "La fecha ya expiró.",
     GUARD_ALREADY_EXISTS: "La guardia ya existe.",
     CHECKLIST_AMBULANCE_NOT_FOUND: "Checklist de ambulancia no encontrado.",
+
+    SHIFT_NOT_FOUND: "Turno no encontrado.",
 
     // * errores de los reportes de insumos
     SUPPLY_REPORT_NOT_FOUND: "Reporte de insumos no encontrado.",
@@ -182,6 +183,76 @@ export const ROLE_MANAGER = {
   selectOptions() {
     return this.roleCatalog;
   },
+} as const;
+
+export const NAVLINKS = {
+  adminLinks: [
+    { name: "Inicio", href: "/dashboard", icon: "Home" },
+    { name: "Usuarios", href: "/dashboard/users", icon: "UserGroup" },
+    {
+      name: "Delegaciones",
+      href: "/dashboard/delegations",
+      icon: "BuildingOffice",
+    },
+    {
+      name: "Ambulancias",
+      href: "/dashboard/ambulances",
+      icon: "Truck",
+    },
+    {
+      name: "Guardias",
+      href: "/dashboard/guards",
+      icon: "ShieldCheck",
+    },
+    {
+      name: "Insumos",
+      href: "",
+      icon: "DocumentDuplicate",
+      sublinks: [
+        {
+          name: "Farmacias",
+          href: `/dashboard/supplies/pharmacies`,
+        },
+        {
+          name: "Ambulancias",
+          href: `/dashboard/supplies/ambulances`,
+        },
+      ],
+    },
+    {
+      name: "Pedidos",
+      href: "/dashboard/orders",
+      icon: "ClipboardDocument",
+    },
+    {
+      name: "Preguntas",
+      href: "/dashboard/questions",
+      icon: "Clipboard",
+    },
+    {
+      name: "Logs",
+      href: "/dashboard/logs",
+      icon: "DocumentText",
+    },
+  ],
+  clientLinks: [
+    { name: "Inicio", href: "/", icon: "Home" },
+    {
+      name: "Guardias",
+      href: "/history/guards",
+      icon: "ShieldCheck",
+    },
+    {
+      name: "Checklist",
+      href: "/history/checklists",
+      icon: "ClipboardDocument",
+    },
+    {
+      name: "Pedidos",
+      href: "/history/orders",
+      icon: "ClipboardDocument",
+    },
+  ],
 } as const;
 
 export const FILE_UPLOAD = {
