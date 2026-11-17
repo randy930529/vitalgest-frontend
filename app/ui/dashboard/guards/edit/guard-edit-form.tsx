@@ -8,6 +8,7 @@ import {
   DelegationType,
   GuardType,
   ShiftType,
+  UserType,
 } from "@/app/lib/definitions";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import GuardEditionWizard from "./guard-edition-wizard";
@@ -20,7 +21,7 @@ export default function GuardEditForm({
     ShiftType[],
     AmbulanceType[],
     DelegationType[],
-    [CustomOptions[], CustomOptions[], CustomOptions[]],
+    [UserType[], UserType[], UserType[]],
   ];
 }) {
   // (Component) Formulario de edicion de guardias - [CSR]

@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
-import { CustomOptions, ShiftType } from "@/app/lib/definitions";
+import { CustomOptions, ShiftType, UserType } from "@/app/lib/definitions";
 import { ShiftState } from "@/app/lib/config/stateConfigs";
 import { createShift, updateShift } from "@/app/lib/actions/shift";
 import { Button } from "@/app/ui/button";
@@ -13,8 +13,8 @@ type ShiftAssignmentFormProps = {
   guardId: string;
   shifts: ShiftType[];
   ambulances: CustomOptions[];
-  drivers: CustomOptions[];
-  paramedics: CustomOptions[];
+  drivers: UserType[];
+  paramedics: UserType[];
   editingShift?: ShiftType;
   onSaved: (shift: ShiftType, mode: "create" | "edit") => void;
   onCancel: () => void;
@@ -91,7 +91,7 @@ export default function ShiftAssignmentForm({
       : "";
 
     return drivers.filter((option) => {
-      const optionId = String(option.value);
+      const optionId = String(option.id);
       return (
         optionId === currentDriverId || !usedResourceIds.driverIds.has(optionId)
       );
@@ -104,7 +104,7 @@ export default function ShiftAssignmentForm({
       : "";
 
     return paramedics.filter((option) => {
-      const optionId = String(option.value);
+      const optionId = String(option.id);
       return (
         optionId === currentParamedicId ||
         !usedResourceIds.paramedicIds.has(optionId)
@@ -169,7 +169,11 @@ export default function ShiftAssignmentForm({
             title="Chofer"
             options={[
               { id: "", label: "Seleccione Chofer", value: "" },
-              ...availableDrivers,
+              ...availableDrivers.map((driver) => ({
+                id: driver.id,
+                label: `${driver.name} ${driver.lastname}`,
+                value: driver.id,
+              })),
             ]}
             defaultValue={editingShift?.driver?.id}
             required
@@ -181,7 +185,11 @@ export default function ShiftAssignmentForm({
             title="Paramédico"
             options={[
               { id: "", label: "Seleccione Paramédico", value: "" },
-              ...availableParamedics,
+              ...availableParamedics.map((paramedic) => ({
+                id: paramedic.id,
+                label: `${paramedic.name} ${paramedic.lastname}`,
+                value: paramedic.id,
+              })),
             ]}
             defaultValue={editingShift?.paramedical?.id}
             required

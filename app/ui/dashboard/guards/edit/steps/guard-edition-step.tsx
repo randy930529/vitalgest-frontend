@@ -1,21 +1,17 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import {
-  CustomOptions,
-  DelegationType,
-  GuardType,
-} from "@/app/lib/definitions";
+import { DelegationType, GuardType, UserType } from "@/app/lib/definitions";
 import { updateGuard } from "@/app/lib/actions/guard";
 import { GuardState } from "@/app/lib/config/stateConfigs";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
-import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
+import { DelegationGuardChiefSelector } from "@/app/ui/dashboard/guards/create/steps/guard-creation-step";
 import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
 import { SaveIcon } from "@/app/ui/components/icons";
 import { Button } from "@/app/ui/button";
 
 interface GuardEditionStepProps {
-  guardChiefs: CustomOptions[];
+  guardChiefs: UserType[];
   delegations: DelegationType[];
   existingGuard: GuardType;
 }
@@ -64,25 +60,10 @@ export default function GuardEditionStep({
             Datos Generales
           </h4>
 
-          {delegations && (
-            <DelegationsSelector
-              delegations={delegations}
-              defaultValue={existingGuard.delegation?.id || ""}
-              errors={state.errors?.delegationId}
-            />
-          )}
-
-          <FormSelect
-            key={"guardChief" + existingGuard.guardChief?.id}
-            name="guardChief"
-            title="Jefe de Guardia"
-            options={[
-              { id: "", label: "Seleccione Jefe de Guardia", value: "" },
-              ...guardChiefs,
-            ]}
-            defaultValue={existingGuard.guardChief.id}
-            errors={state.errors?.guardChief}
-            required
+          <DelegationGuardChiefSelector
+            delegations={delegations}
+            guardChiefs={guardChiefs}
+            state={{ ...state, guard: existingGuard }}
           />
 
           <div className="relative max-w-sm mt-4 mb-2">

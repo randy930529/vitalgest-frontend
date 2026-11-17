@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/app/lib/dal";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { fetchDelegations } from "@/app/lib/data/delegations";
 import { fetchGuardById } from "@/app/lib/data/guards";
 import { fetchShiftsByGuardId } from "@/app/lib/data/shifts";
@@ -21,6 +22,14 @@ export default async function EditGuardPage(props: {
 }) {
   // (Página) Editar Guardia - [SSR]
 
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const userRole = session.user?.role;
+  const isAdmin = ROLE_MANAGER.isAdmin(userRole);
+
   const params = await props.params;
   const id = params.id;
 
@@ -30,14 +39,7 @@ export default async function EditGuardPage(props: {
       fetchShiftsByGuardId(id),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
-      (async () => {
-        const session = await getSession();
-        if (!session) {
-          redirect("/login");
-        }
-        const authorizedUser = session.user;
-        return fetchStaffMembers(authorizedUser.delegationId);
-      })(),
+      fetchStaffMembers(session.user?.delegationId, isAdmin),
     ]);
 
   return (

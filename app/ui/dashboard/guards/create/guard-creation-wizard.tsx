@@ -9,6 +9,7 @@ import {
   GuardType,
   ShiftType,
   StepItemType,
+  UserType,
 } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { GuardDisplayInfo } from "./guard-info-card";
@@ -28,11 +29,11 @@ export default function GuardCreationWizard({
   paramedicals,
   onClose,
 }: {
-  guardChiefs: CustomOptions[];
+  guardChiefs: UserType[];
   delegations: DelegationType[];
   ambulances: CustomOptions[];
-  drivers: CustomOptions[];
-  paramedicals: CustomOptions[];
+  drivers: UserType[];
+  paramedicals: UserType[];
   onClose?: () => void;
 }) {
   // (Component) Asistente de creación de guardias - [CSR]

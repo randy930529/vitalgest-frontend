@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { QueryParamsType } from "@/app/lib/definitions";
 import { fetchGuards } from "@/app/lib/data/guards";
 import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchStaffMembers } from "@/app/lib/data/users";
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default async function GuardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; display?: string }>;
+  searchParams: Promise<QueryParamsType>;
 }) {
   // (Página) Gestionar guardias - [SSR]
   const session = await getSession();
@@ -40,7 +41,7 @@ export default async function GuardsPage({
       fetchGuards(params),
       fetchAmbulances().then((result) => result.data),
       fetchDelegations().then((result) => result.data),
-      fetchStaffMembers(session.user.delegationId),
+      fetchStaffMembers(session.user?.delegationId, isAdmin),
     ]);
 
   return (

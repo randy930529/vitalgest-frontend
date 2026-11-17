@@ -42,7 +42,7 @@ export async function fetchAmbulancesByDelegationId(
   try {
     const endPoint = "/api/ambulances/many";
 
-    const dataFetching = new DataFetch<AmbulanceType>(endPoint, true);
+    const dataFetching = new DataFetch<AmbulanceType>(endPoint);
     const ambulances = await dataFetching.getAll();
 
     return {

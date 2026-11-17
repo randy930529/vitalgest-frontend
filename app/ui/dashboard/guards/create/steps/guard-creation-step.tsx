@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { SaveIcon } from "@/app/ui/components/icons";
 import {
   CustomOptions,
   DelegationType,
   GuardType,
+  UserType,
 } from "@/app/lib/definitions";
 import { createGuard } from "@/app/lib/actions/guard";
 import { GuardState } from "@/app/lib/config/stateConfigs";
@@ -15,10 +16,9 @@ import GuardInfoCard, {
   GuardDisplayInfo,
 } from "@/app/ui/dashboard/guards/create/guard-info-card";
 import { FormDatepicker, FormSelect } from "@/app/ui/dashboard/form-fields";
-import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
 interface GuardCreationStepProps {
-  guardChiefs: CustomOptions[];
+  guardChiefs: UserType[];
   delegations: DelegationType[];
   onGuardCreated: (guard: GuardType, displayInfo?: GuardDisplayInfo) => void;
   existingGuard?: GuardType;
@@ -102,23 +102,10 @@ export default function GuardCreationStep({
               Datos Generales
             </h4>
 
-            <DelegationsSelector
+            <DelegationGuardChiefSelector
               delegations={delegations}
-              defaultValue={state.guard?.delegation?.id}
-              errors={state.errors?.delegationId}
-            />
-
-            <FormSelect
-              key={"guardChief" + state.guard?.guardChief?.id}
-              name="guardChief"
-              title="Jefe de Guardia"
-              options={[
-                { id: "", label: "Seleccione Jefe de Guardia", value: "" },
-                ...guardChiefs,
-              ]}
-              defaultValue={state.guard?.guardChief?.id}
-              errors={state.errors?.guardChief}
-              required
+              guardChiefs={guardChiefs}
+              state={state}
             />
 
             <div className="relative max-w-sm mt-4 mb-2">
@@ -158,5 +145,87 @@ export default function GuardCreationStep({
         )}
       </form>
     </div>
+  );
+}
+
+interface DelegationGuardChiefSelectorProps {
+  delegations: DelegationType[];
+  guardChiefs: UserType[];
+  state: GuardState;
+}
+
+export function DelegationGuardChiefSelector({
+  delegations,
+  guardChiefs,
+  state,
+}: DelegationGuardChiefSelectorProps) {
+  const [delegationId, setDelegation] = useState(
+    state.guard?.delegation?.id || "",
+  );
+  const [guardChiefId, setGuardChief] = useState(
+    state.guard?.guardChief?.id || "",
+  );
+
+  const selectedGuardChiefs = () =>
+    guardChiefs.reduce((acc: CustomOptions[], { id, delegation, name }) => {
+      if (delegation.id === delegationId) {
+        acc.push({
+          id,
+          value: id,
+          label: name,
+        });
+      }
+      return acc;
+    }, [] as CustomOptions[]);
+
+  const guardChiefsDelegations = useMemo(
+    () => [
+      {
+        id: 0,
+        value: "",
+        label: "Seleccione Jefe de Guardia",
+      },
+      ...selectedGuardChiefs(),
+    ],
+    [delegationId, guardChiefs],
+  );
+
+  function handleOption(name: string, value: string) {
+    setDelegation(value);
+    setGuardChief("");
+  }
+
+  return (
+    <>
+      <FormSelect
+        key={`delegation-select-${delegationId}`}
+        name="delegation"
+        title="Delegación"
+        options={[
+          { id: 0, label: "Seleccione la Delegación", value: "" },
+          ...delegations.map((delegation) => ({
+            id: delegation.id,
+            label: delegation.name,
+            value: delegation.id,
+          })),
+        ]}
+        handleOption={handleOption}
+        defaultValue={delegationId}
+        errors={state.errors?.delegationId}
+        required
+      />
+
+      <FormSelect
+        key={`guardChief-select-${guardChiefId}`}
+        name="guardChief"
+        title="Jefe de Guardia"
+        defaultValue={guardChiefId}
+        options={guardChiefsDelegations}
+        handleOption={(name, value) => setGuardChief(value)}
+        errors={state.errors?.guardChief}
+        disabled={!delegationId}
+        required
+      />
+    </>
   );
 }
