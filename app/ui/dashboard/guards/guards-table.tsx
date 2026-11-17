@@ -9,6 +9,7 @@ import {
   GuardType,
   PaginatedResult,
   ShiftType,
+  UserType,
 } from "@/app/lib/definitions";
 import { STYLES } from "@/app/lib/config/constants";
 import { deleteGuard } from "@/app/lib/actions/guard";
@@ -46,7 +47,7 @@ export default function GuardsTable({
     PaginatedResult<GuardType>,
     AmbulanceType[],
     DelegationType[],
-    [CustomOptions[], CustomOptions[], CustomOptions[]],
+    [UserType[], UserType[], UserType[]],
   ];
   readonly?: boolean;
   route?: string;

@@ -21,6 +21,31 @@ export async function fetchDelegations(
   }
 }
 
+/**
+ * Utilizar para campos de formulario.
+ * Nota: Esta función no acepta paginación.
+ */
+export async function fetchDelegationsByIds(
+  ids: string[] = [],
+): Promise<PaginatedResult<DelegationType>> {
+  try {
+    const endPoint = "/api/delegations/many";
+
+    const dataFetching = new DataFetch<DelegationType>(endPoint);
+    const delegations = await dataFetching.getAll();
+
+    return {
+      data: delegations.data.filter((delegation) =>
+        ids.includes(delegation.id),
+      ),
+      totalRecords: delegations.totalRecords,
+    };
+  } catch (err) {
+    console.log("API Error[GET DELEGATIONS]:", err);
+    return { data: [], totalRecords: 0 };
+  }
+}
+
 export async function fetchDelegationById(
   id: string,
 ): Promise<DelegationType | undefined> {

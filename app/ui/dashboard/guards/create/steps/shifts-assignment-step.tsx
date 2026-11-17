@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CustomOptions, GuardType, ShiftType } from "@/app/lib/definitions";
+import {
+  CustomOptions,
+  GuardType,
+  ShiftType,
+  UserType,
+} from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import GuardInfoCard, {
   GuardDisplayInfo,
@@ -17,8 +22,8 @@ import ShiftDeleteButton from "./shift-delete-button";
 interface ShiftsAssignmentStepProps {
   guard: GuardType;
   ambulances: CustomOptions[];
-  drivers: CustomOptions[];
-  paramedics: CustomOptions[];
+  drivers: UserType[];
+  paramedics: UserType[];
   guardDisplayInfo?: GuardDisplayInfo;
   shifts: ShiftType[];
   onShiftAdded: (shift: ShiftType) => void;

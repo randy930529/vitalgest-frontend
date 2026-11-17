@@ -23,7 +23,7 @@ export async function fetchGuardById(
   try {
     const endPoint = `/api/guards/one/${id}`;
 
-    const dataFetching = new DataFetch<GuardType>(endPoint, true);
+    const dataFetching = new DataFetch<GuardType>(endPoint);
     const guard = await dataFetching.getOne();
 
     return guard;

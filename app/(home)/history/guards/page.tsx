@@ -1,12 +1,20 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { QueryParamsType, UserType } from "@/app/lib/definitions";
 import { fetchGuardsAndInlineGuardByUserMe } from "@/app/lib/data/guards";
 import { getSession } from "@/app/lib/dal";
+import { getPaginationParams } from "@/app/lib/utils";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { fetchStaffMembers } from "@/app/lib/data/users";
-import { fetchAmbulances } from "@/app/lib/data/ambulances";
-import { fetchDelegations } from "@/app/lib/data/delegations";
+import {
+  fetchAmbulances,
+  fetchAmbulancesByDelegationId,
+} from "@/app/lib/data/ambulances";
+import {
+  fetchDelegations,
+  fetchDelegationsByIds,
+} from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
 import { TableSkeleton } from "@/app/ui/components/skeletons";
@@ -20,7 +28,7 @@ export const metadata: Metadata = {
 export default async function GuardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; display?: string }>;
+  searchParams: Promise<QueryParamsType>;
 }) {
   // (Página) Gestionar guardias - [SSR]
 
@@ -30,15 +38,35 @@ export default async function GuardsPage({
   }
 
   const user = session.user;
-  const readonly =
-    !ROLE_MANAGER.isHeadGuard(user.role) && !ROLE_MANAGER.isAdmin(user.role);
+  const isAdmin = ROLE_MANAGER.isAdmin(user.role);
+  const readonly = !ROLE_MANAGER.isHeadGuard(user.role) && !isAdmin;
+
+  const { page, display } = await searchParams;
+  const params = getPaginationParams(Number(page), Number(display));
+
+  const getAmbulances = isAdmin
+    ? () => fetchAmbulances()
+    : () => fetchAmbulancesByDelegationId(user.delegationId);
+  const getDelegations = isAdmin
+    ? () => fetchDelegations()
+    : () => fetchDelegationsByIds([user.delegationId]);
 
   const fetchGuardsGuardChiefsAndDelegations = async () =>
     await Promise.all([
       fetchGuardsAndInlineGuardByUserMe(user).then((result) => result[0]),
-      fetchAmbulances().then((result) => result.data),
-      fetchDelegations().then((result) => result.data),
-      fetchStaffMembers(user.delegationId),
+      getAmbulances().then((result) => result.data),
+      getDelegations().then((result) => result.data),
+      fetchStaffMembers(user.delegationId, isAdmin).then<
+        [UserType[], UserType[], UserType[]]
+      >(([guardChiefs, drivers, paramedicals]) =>
+        isAdmin
+          ? [guardChiefs, drivers, paramedicals]
+          : [
+              guardChiefs.filter((g) => g.id === user.id),
+              drivers,
+              paramedicals,
+            ],
+      ),
     ]);
 
   return (

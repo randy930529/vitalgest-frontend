@@ -9,9 +9,9 @@ import {
   GuardType,
   ShiftType,
   StepItemType,
+  UserType,
 } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
-import { GuardDisplayInfo } from "@/app/ui/dashboard/guards/create/guard-info-card";
 import StepIndicator from "@/app/ui/dashboard/guards/create/step-indicator";
 import ShiftsAssignmentStep from "@/app/ui/dashboard/guards/create/steps/shifts-assignment-step";
 import GuardSummaryStep from "@/app/ui/dashboard/guards/create/steps/guard-summary-step";
@@ -20,11 +20,11 @@ import GuardEditionStep from "./steps/guard-edition-step";
 
 type WizardStepType = 1 | 2 | 3;
 type GuardEditionWizardProps = {
-  guardChiefs: CustomOptions[];
+  guardChiefs: UserType[];
   delegations: DelegationType[];
   ambulances: CustomOptions[];
-  drivers: CustomOptions[];
-  paramedicals: CustomOptions[];
+  drivers: UserType[];
+  paramedicals: UserType[];
   currentGuard: GuardType;
   currentShifts: ShiftType[];
   onClose?: () => void;
@@ -43,8 +43,6 @@ export default function GuardEditionWizard({
   // (Component) Asistente de edición de guardias - [CSR]
 
   const [currentStep, setCurrentStep] = useState<WizardStepType>(1);
-  const [guard, setGuard] = useState<GuardType>(currentGuard);
-  const [guardDisplayInfo, setGuardDisplayInfo] = useState<GuardDisplayInfo>();
   const [isLoading, setIsLoading] = useState(false);
   const [shifts, setShifts] = useState<ShiftType[]>(currentShifts || []);
   const [isStepContentVisible, setIsStepContentVisible] = useState(false);
@@ -76,16 +74,16 @@ export default function GuardEditionWizard({
       id: 1,
       label: "Crear Guardia",
       details: "Información básica",
-      status: guard ? "completed" : "pending",
+      status: currentGuard ? "completed" : "pending",
     },
     {
       id: 2,
       label: "Asignar Turnos",
       details: "Ambulancias y personal",
       status:
-        guard && shifts.length > 0
+        currentGuard && shifts.length > 0
           ? "completed"
-          : guard
+          : currentGuard
             ? "pending"
             : "pending",
     },
@@ -94,12 +92,16 @@ export default function GuardEditionWizard({
       label: "Resumen",
       details: "Confirmación final",
       status:
-        guard && shifts.length > 0 ? "pending" : guard ? "pending" : "pending",
+        currentGuard && shifts.length > 0
+          ? "pending"
+          : currentGuard
+            ? "pending"
+            : "pending",
     },
   ];
 
   const handleNextStep = () => {
-    if (currentStep === 1 && !guard) {
+    if (currentStep === 1 && !currentGuard) {
       toast.error("Debes crear la guardia primero");
       return;
     }
@@ -138,7 +140,7 @@ export default function GuardEditionWizard({
   };
 
   const handleWizardComplete = () => {
-    toast.success("¡Guardia creada exitosamente!");
+    toast.success("¡Guardia guardada exitosamente!");
     onClose?.();
   };
 
@@ -166,14 +168,13 @@ export default function GuardEditionWizard({
           <GuardEditionStep
             guardChiefs={guardChiefs}
             delegations={delegations}
-            existingGuard={guard || undefined}
+            existingGuard={currentGuard || undefined}
           />
         )}
 
-        {currentStep === 2 && guard && (
+        {currentStep === 2 && currentGuard && (
           <ShiftsAssignmentStep
-            guard={guard}
-            guardDisplayInfo={guardDisplayInfo}
+            guard={currentGuard}
             ambulances={ambulances}
             drivers={drivers}
             paramedics={paramedicals}
@@ -184,10 +185,9 @@ export default function GuardEditionWizard({
           />
         )}
 
-        {currentStep === 3 && guard && (
+        {currentStep === 3 && currentGuard && (
           <GuardSummaryStep
-            guard={guard}
-            guardDisplayInfo={guardDisplayInfo}
+            guard={currentGuard}
             shifts={shifts}
             onComplete={handleWizardComplete}
           />
@@ -218,7 +218,7 @@ export default function GuardEditionWizard({
           <Button
             onClick={handleNextStep}
             disabled={
-              (currentStep === 1 && !guard) ||
+              (currentStep === 1 && !currentGuard) ||
               (currentStep === 2 && shifts.length === 0) ||
               isLoading
             }

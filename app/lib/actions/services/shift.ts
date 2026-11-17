@@ -8,7 +8,7 @@ export class CreateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
     super({
       endpoint: "/api/shifts/create",
       method: "POST",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards"],
     });
     this.setSchema(CreateShift);
@@ -41,7 +41,7 @@ export class UpdateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
     super({
       endpoint: `/api/shifts/edit/${id}`,
       method: "PUT",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards"],
     });
     this.setSchema(CreateShift);
@@ -74,7 +74,7 @@ export class DeleteShiftAction extends BaseServerAction<ShiftType, ShiftState> {
     super({
       endpoint: `/api/shifts/delete/${id}`,
       method: "DELETE",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards"],
     });
   }

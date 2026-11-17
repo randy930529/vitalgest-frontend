@@ -75,22 +75,23 @@ export async function fetchUserById(id: string): Promise<UserType | undefined> {
 
 export async function fetchStaffMembers(
   delegationId: string,
-): Promise<[CustomOptions[], CustomOptions[], CustomOptions[]]> {
+  isAdmin: boolean = false,
+): Promise<[UserType[], UserType[], UserType[]]> {
   try {
-    const endPoint = `/api/delegations/members/${delegationId}`;
+    const endPoint = isAdmin
+      ? "/api/adm/get-all/users"
+      : `/api/delegations/members/${delegationId}`;
 
-    const dataFetching = new DataFetch<UserType>(endPoint, true);
+    const dataFetching = new DataFetch<UserType>(endPoint, isAdmin);
     const { data: users } = await dataFetching.getAll();
 
-    const userByRolesMap = new Map<string, CustomOptions[]>();
-    users.forEach(({ id, role, name, lastname }) => {
-      const customUsers = userByRolesMap.get(role) ?? [];
-      customUsers.push({
-        id,
-        value: id,
-        label: `${name} ${lastname}`,
-      });
-      userByRolesMap.set(role, customUsers);
+    const userByRolesMap = new Map<string, UserType[]>();
+    users.forEach((user) => {
+      if (!user.status) return;
+      const customUsers = userByRolesMap.get(user.role) ?? [];
+      customUsers.push(user);
+      userByRolesMap.set(user.role, customUsers);
+      userByRolesMap.set(user.role, customUsers);
     });
 
     return [

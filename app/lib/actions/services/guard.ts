@@ -8,7 +8,7 @@ export class CreateGuardAction extends BaseServerAction<GuardType, GuardState> {
     super({
       endpoint: "/api/guards/create",
       method: "POST",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards", "/history/guards"],
     });
     this.setSchema(CreateGuard);
@@ -41,7 +41,7 @@ export class UpdateGuardAction extends BaseServerAction<GuardType, GuardState> {
     super({
       endpoint: `/api/guards/edit/${id}`,
       method: "PUT",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards", "/history/guards"],
     });
     this.setSchema(UpdateGuard);
@@ -75,7 +75,7 @@ export class DeleteGuardAction extends BaseServerAction<GuardType, GuardState> {
     super({
       endpoint: `/api/guards/delete/${id}`,
       method: "DELETE",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards", "/history/guards"],
     });
   }
@@ -102,7 +102,7 @@ export class GuardSetStateAction extends BaseServerAction<
     super({
       endpoint: `/api/guards/edit/${id}`,
       method: "PUT",
-      adminOnly: true,
+      adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards", "/history/guards"],
     });
     this.setSchema(CreateGuard);
