@@ -61,7 +61,7 @@ export default async function GuardsTableSection({
               title="No se obtuvieron guardias para mostrar."
               description="Crea una guardia para comenzar a registrar turnos y su operación diaria."
               actionLabel="Ir a crear guardia"
-              actionHref="/dashboard/guards"
+              actionHref="/history/guards"
             />
           </div>
         )}

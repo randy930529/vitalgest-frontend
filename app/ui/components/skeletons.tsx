@@ -468,25 +468,77 @@ export function SkeletonBlock({ className }: { className?: string }) {
 
 export default function HeaderStatsSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <SkeletonBlock
+    <SkeletonBlock
+      className={clsx("relative h-20 w-60 overflow-hidden", shimmer)}
+    />
+  );
+}
+
+export function GuardFormSkeleton({
+  goBackUrl,
+  onClose,
+}: {
+  goBackUrl: string;
+  onClose?: () => void;
+}) {
+  return (
+    <section
+      className={`relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
+    >
+      <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
+        <PencilSquareIcon className="w-6 h-6" />
+        <SkeletonLine
+          className={clsx("relative w-4/5 h-6 overflow-hidden", shimmer)}
+        />
+      </h2>
+      <SkeletonLine
         className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
+          "relative w-1/2 h-4 ms-6 my-2 overflow-hidden",
           shimmer,
         )}
       />
-      <SkeletonBlock
-        className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
-          shimmer,
-        )}
-      />
-      <SkeletonBlock
-        className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
-          shimmer,
-        )}
-      />
-    </div>
+      <div className="flex flex-col items-center justify-center space-y-6 p-8 sm:p-10">
+        <SkeletonBlock
+          className={clsx(
+            "relative h-[140px] w-full overflow-hidden shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)]",
+            shimmer,
+          )}
+        />
+        <div className="w-full p-4 space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 sm:p-5">
+          <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Datos Generales
+          </h4>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={"guard-input-sk" + index}>
+              <SkeletonLine
+                className={clsx(
+                  "relative w-1/3 h-4 ms-6 my-2 overflow-hidden",
+                  shimmer,
+                )}
+              />
+              <SkeletonLine
+                className={clsx(
+                  "relative w-4/5 h-9 ms-6 my-2 overflow-hidden",
+                  shimmer,
+                )}
+              />
+            </div>
+          ))}
+          <div className="flex w-full justify-center">
+            <SkeletonBlock className={clsx("relative h-12 w-44", shimmer)} />
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
+            <div></div>
+            <Link
+              href={goBackUrl}
+              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+              Regresar
+            </Link>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -10,7 +10,7 @@ import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchStaffMembers } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton } from "@/app/ui/components/skeletons";
+import { FormSkeleton, GuardFormSkeleton } from "@/app/ui/components/skeletons";
 import GuardEditForm from "@/app/ui/dashboard/guards/edit/guard-edit-form";
 
 export const metadata: Metadata = {
@@ -55,7 +55,7 @@ export default async function EditGuardPage(props: {
           },
         ]}
       />
-      <Suspense fallback={<FormSkeleton goBackUrl="/dashboard/users" />}>
+      <Suspense fallback={<GuardFormSkeleton goBackUrl="/dashboard/guards" />}>
         <WrapperForm
           fetchData={fetchGuardByIdAndMXStates}
           WrappedComponent={GuardEditForm}

@@ -49,7 +49,7 @@ export async function CurrentGuardSection({ user }: { user: UserType }) {
           title="No tienes una guardia en curso."
           description="Crea una nueva guardia para habilitar el seguimiento de turnos y el avance de checklist de ambulancia e insumos."
           actionLabel="Crear guardia"
-          actionHref={isAdmin ? "/dashboard/guards" : "#guardia-curso-title"}
+          actionHref={isAdmin ? "/dashboard/guards" : "/history/guards"}
           disabled={!canCreateGuards}
         />
       )}

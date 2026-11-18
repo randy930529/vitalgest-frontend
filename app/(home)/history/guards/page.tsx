@@ -17,9 +17,11 @@ import {
 } from "@/app/lib/data/delegations";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import GuardsTable from "@/app/ui/dashboard/guards/guards-table";
-import { TableSkeleton } from "@/app/ui/components/skeletons";
+import {
+  GuardFormSkeleton,
+  TableSkeleton,
+} from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
-import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 
 export const metadata: Metadata = {
   title: "Historial de Guardias",
@@ -81,15 +83,7 @@ export default async function GuardsPage({
         fallback={
           <TableSkeleton
             title="Crear Guardia"
-            modelContent={
-              <GuardForm
-                guardChiefs={[]}
-                delegations={[]}
-                ambulances={[]}
-                drivers={[]}
-                paramedicals={[]}
-              />
-            }
+            modelContent={<GuardFormSkeleton goBackUrl="/history/guards" />}
           />
         }
       >
