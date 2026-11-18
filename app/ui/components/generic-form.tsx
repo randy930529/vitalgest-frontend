@@ -9,6 +9,7 @@ import {
   FormDatepicker,
 } from "@/app/ui/dashboard/form-fields";
 import { FormButtons } from "@/app/ui/button";
+import { PasswordInput } from "@/app/ui/components/password-input";
 
 export interface GenericFormProps<
   T extends StateType<Record<string, string[]>>,
@@ -93,7 +94,6 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
     switch (field.type) {
       case "text":
       case "email":
-      case "password":
       case "number":
         return (
           <FormInput
@@ -109,6 +109,23 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
               },
             }}
             initialValue={getFormValue(field.name) ?? field.defaultValue}
+          />
+        );
+
+      case "password":
+        return (
+          <PasswordInput
+            key={field.name}
+            id={field.name}
+            name={field.name}
+            minLength={6}
+            errors={fieldError}
+            placeholder={field.placeholder}
+            required={field.required}
+            requiredShow={field.required}
+            defaultValue={getFormValue(field.name) ?? field.defaultValue}
+            classNameLabel="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            classNameInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full py-[9px] pl-10 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
           />
         );
 

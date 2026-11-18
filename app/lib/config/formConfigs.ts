@@ -7,6 +7,7 @@ import {
   customTypeResponse,
   customUnits,
 } from "@/app/lib/config/selectOptions";
+import { ROLE_MANAGER } from "@/app/lib/config/constants";
 
 export const formConfigs = {
   // Usuarios
@@ -40,6 +41,12 @@ export const formConfigs = {
       title: "Cargo Laboral",
       required: true,
       placeholder: "Paramédico",
+    },
+    role: {
+      type: "select",
+      title: "Rol",
+      options: [...ROLE_MANAGER.selectOptions()],
+      required: true,
     },
   } as const,
 
