@@ -468,26 +468,9 @@ export function SkeletonBlock({ className }: { className?: string }) {
 
 export default function HeaderStatsSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <SkeletonBlock
-        className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
-          shimmer,
-        )}
-      />
-      <SkeletonBlock
-        className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
-          shimmer,
-        )}
-      />
-      <SkeletonBlock
-        className={clsx(
-          "relative h-[200px] max-h-28 max-w-48 overflow-hidden",
-          shimmer,
-        )}
-      />
-    </div>
+    <SkeletonBlock
+      className={clsx("relative h-20 w-60 overflow-hidden", shimmer)}
+    />
   );
 }
 

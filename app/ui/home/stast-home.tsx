@@ -1,7 +1,5 @@
 import {
   CalendarIcon,
-  HandRaisedIcon,
-  MapPinIcon,
   ShieldCheckIcon,
   TruckIcon,
   UsersIcon,
@@ -11,41 +9,11 @@ import {
   CheckListSupplyType,
   GuardType,
   ShiftType,
-  UserType,
 } from "@/app/lib/definitions";
-import { fetchDelegationById } from "@/app/lib/data/delegations";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
 import { ChecklistsLinkCard, ResourceCard, ShiftCard } from "@/app/ui/cards";
-import { StatCardHome, StatCardProps } from "@/app/ui/dashboard/cards";
-
-export async function HeaderStats({ user }: { user: UserType }) {
-  const delegationId = user.delegationId;
-  const [delegation] = await Promise.all([fetchDelegationById(delegationId)]);
-  const delegationNameShort =
-    delegation?.name?.replace("Delegación ", "") || "";
-
-  return (
-    <div className="flex justify-between gap-3 w-full">
-      <div className="pt-6 sm:pt-8">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Hola, {user.name}
-          {/* Rota el icono unos 45 grados a la izquierda */}
-          <HandRaisedIcon className="ml-2 inline-block h-6 w-6 -rotate-[30deg] text-orange-400" />
-        </h2>
-        <p className="tracking-tight text-slate-400">
-          Gestiona tus guardias y manten tus checklists al día.
-        </p>
-      </div>
-      <StatCardHome
-        title={delegationNameShort}
-        value="Tu delegación actual"
-        icon={MapPinIcon}
-        color="bg-emerald-600"
-      />
-    </div>
-  );
-}
+import { StatCardProps } from "@/app/ui/dashboard/cards";
 
 export function ResourceStats({ cardItems }: { cardItems: StatCardProps[] }) {
   return (
