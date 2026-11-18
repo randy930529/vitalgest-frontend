@@ -339,10 +339,12 @@ export function DashboardChartsSkeleton() {
       <div
         className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
       >
-        <div className="p-4">
+        <div className="p-4 h-56">
           <div className="h-4 w-36 rounded bg-slate-200" />
           <div className="mt-2 h-3 w-52 rounded bg-slate-200" />
-          <div className="mt-5 h-[230px] rounded-full bg-slate-200/80" />
+          <div className="flex justify-center items-center w-full h-full">
+            <div className="h-40 w-40 rounded-full bg-slate-200/80" />
+          </div>
         </div>
       </div>
       <div
