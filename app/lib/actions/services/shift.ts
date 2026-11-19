@@ -1,7 +1,7 @@
 import { ShiftType } from "@/app/lib/definitions";
 import { BaseServerAction } from "@/app/lib/core/base-action";
 import { ShiftState } from "@/app/lib/config/stateConfigs";
-import { CreateShift } from "@/app/lib/schema";
+import { CreateShift, UpdateShift } from "@/app/lib/schema";
 
 export class CreateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
   constructor() {
@@ -29,7 +29,7 @@ export class CreateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
       const shift = await this.fetchAPI(data);
       await this.revalidate();
 
-      return { message: "Turno asignado exitosamente.", shift };
+      return { message: "Turno asignado exitosamente.", shift, formData };
     } catch (error) {
       return this.handleError(error, formData);
     }
@@ -44,7 +44,7 @@ export class UpdateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
       adminOnly: false,
       revalidatePathAfter: ["/dashboard/guards"],
     });
-    this.setSchema(CreateShift);
+    this.setSchema(UpdateShift);
   }
 
   async execute(
@@ -53,16 +53,17 @@ export class UpdateShiftAction extends BaseServerAction<ShiftType, ShiftState> {
   ): Promise<ShiftState> {
     try {
       const data = this.validate({
+        name: formData.get("name"),
         ambulanceId: formData.get("ambulance"),
         guardId: formData.get("guard"),
         paramedicalId: formData.get("paramedical"),
         driverId: formData.get("driver"),
       });
 
-      const shift = await this.fetchAPI(data);
+      await this.fetchAPI(data);
       await this.revalidate();
 
-      return { message: "Turno actualizado exitosamente.", shift };
+      return { message: "Turno actualizado exitosamente.", formData };
     } catch (error) {
       return this.handleError(error, formData);
     }

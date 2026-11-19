@@ -1,10 +1,10 @@
 "use client";
 
 import { useActionState, useEffect, useMemo } from "react";
-import toast from "react-hot-toast";
 import { CustomOptions, ShiftType, UserType } from "@/app/lib/definitions";
 import { ShiftState } from "@/app/lib/config/stateConfigs";
 import { createShift, updateShift } from "@/app/lib/actions/shift";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import { Button } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import { SaveIcon } from "@/app/ui/components/icons";
@@ -21,8 +21,6 @@ type ShiftAssignmentFormProps = {
   setIsLoading?: (loading: boolean) => void;
 };
 
-const initialState: ShiftState = { errors: {}, message: null };
-
 export default function ShiftAssignmentForm({
   guardId,
   shifts,
@@ -34,6 +32,7 @@ export default function ShiftAssignmentForm({
   onCancel,
   setIsLoading,
 }: ShiftAssignmentFormProps) {
+  const initialState: ShiftState = { errors: {}, message: null };
   const mode = editingShift ? "edit" : "create";
 
   const [state, formAction, isLoading] = useActionState(
@@ -112,21 +111,64 @@ export default function ShiftAssignmentForm({
     });
   }, [paramedics, editingShift?.paramedical?.id, usedResourceIds.paramedicIds]);
 
-  useEffect(() => {
-    if (state.shift) {
-      toast.success(
-        state.message ||
-          (mode === "edit"
-            ? "Turno actualizado correctamente"
-            : "Turno asignado correctamente"),
-      );
-      onSaved(state.shift, mode);
-    }
-  }, [state.shift, state.message, mode, onSaved]);
+  const ambulance = useMemo(() => {
+    const shift = state.shift || editingShift;
+    const ambulanceId = state.formData?.get("ambulance") as string | null;
+    const selctedAmbulance = ambulances.find((a) => a.value === ambulanceId);
 
-  useEffect(() => {
-    state.errors?.success?.forEach((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+    if (shift && selctedAmbulance) {
+      return {
+        ...shift.ambulance,
+        id: selctedAmbulance.id as string,
+        number: selctedAmbulance.label,
+      };
+    }
+  }, [
+    ambulances,
+    editingShift?.ambulance.id,
+    state.shift?.ambulance.id,
+    state.formData,
+  ]);
+
+  const paramedical = useMemo(() => {
+    const shift = state.shift || editingShift;
+    const paramedicalId = state.formData?.get("paramedical") as string | null;
+    const selctedParamedical = paramedics.find((p) => p.id === paramedicalId);
+
+    if (shift && selctedParamedical) {
+      return selctedParamedical;
+    }
+  }, [
+    editingShift?.paramedical.id,
+    state.shift?.paramedical.id,
+    state.formData,
+    paramedics,
+  ]);
+
+  const driver = useMemo(() => {
+    const shift = state.shift || editingShift;
+    const driverId = state.formData?.get("driver") as string | null;
+    const selctedDriver = drivers.find((p) => p.id === driverId);
+
+    if (shift && selctedDriver) {
+      return selctedDriver;
+    }
+  }, [
+    editingShift?.driver.id,
+    state.shift?.driver.id,
+    state.formData,
+    drivers,
+  ]);
+
+  useFormNotifications({
+    state,
+    onSuccess: () => {
+      const shift = state.shift || editingShift;
+      if (shift && ambulance && paramedical && driver) {
+        onSaved({ ...shift, ambulance, paramedical, driver }, mode);
+      }
+    },
+  });
 
   useEffect(() => {
     setIsLoading?.(isLoading);
@@ -145,26 +187,34 @@ export default function ShiftAssignmentForm({
 
         <input
           type="text"
+          name="name"
+          defaultValue={editingShift?.name || ""}
+          className="hidden"
+        />
+
+        <input
+          type="text"
           name="guard"
           defaultValue={guardId}
           className="hidden"
         />
 
         <FormSelect
-          key={`ambulance-${editingShift?.id || "new"}`}
+          key={`ambulance-${ambulance?.id || editingShift?.id || "new"}`}
           name="ambulance"
           title="Ambulancia"
           options={[
             { id: "", label: "Seleccione Ambulancia", value: "" },
             ...availableAmbulances,
           ]}
-          defaultValue={editingShift?.ambulance?.id}
+          defaultValue={ambulance?.id || editingShift?.ambulance?.id}
+          errors={state.errors?.ambulanceId}
           required
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormSelect
-            key={`driver-${editingShift?.id || "new"}`}
+            key={`driver-${driver?.id || editingShift?.id || "new"}`}
             name="driver"
             title="Chofer"
             options={[
@@ -175,12 +225,13 @@ export default function ShiftAssignmentForm({
                 value: driver.id,
               })),
             ]}
-            defaultValue={editingShift?.driver?.id}
+            defaultValue={driver?.id || editingShift?.driver?.id}
+            errors={state.errors?.driverId}
             required
           />
 
           <FormSelect
-            key={`paramedic-${editingShift?.id || "new"}`}
+            key={`paramedic-${paramedical?.id || editingShift?.id || "new"}`}
             name="paramedical"
             title="Paramédico"
             options={[
@@ -191,7 +242,8 @@ export default function ShiftAssignmentForm({
                 value: paramedic.id,
               })),
             ]}
-            defaultValue={editingShift?.paramedical?.id}
+            defaultValue={paramedical?.id || editingShift?.paramedical?.id}
+            errors={state.errors?.paramedicalId}
             required
           />
         </div>
