@@ -23,8 +23,15 @@ export default function NavLinks({ isAdmin }: { isAdmin: boolean }) {
 
         return (
           <NavSubLinks key={link.name} name={link.name} iconName={link.icon}>
-            {link.sublinks.map((sublink) => (
-              <li key={sublink.name} className="w-full">
+            {link.sublinks.map((sublink, index) => (
+              <li
+                key={sublink.name}
+                className="animate-submenu-enter w-full motion-reduce:animate-none"
+                style={{
+                  animationDelay: `${index * 55}ms`,
+                  animationFillMode: "both",
+                }}
+              >
                 <NavLink key={`sub-${sublink.name}`} link={sublink} />
               </li>
             ))}

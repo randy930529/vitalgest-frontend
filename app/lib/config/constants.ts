@@ -207,27 +207,28 @@ export const NAVLINKS = {
     {
       name: "Insumos",
       href: "",
-      icon: "DocumentDuplicate",
       sublinks: [
         {
           name: "Farmacias",
           href: `/dashboard/supplies/pharmacies`,
+          icon: "ArchiveBox",
         },
         {
           name: "Ambulancias",
           href: `/dashboard/supplies/ambulances`,
+          icon: "Truck",
         },
       ],
     },
     {
       name: "Pedidos",
       href: "/dashboard/orders",
-      icon: "ClipboardDocument",
+      icon: "InboxArrowDown",
     },
     {
       name: "Preguntas",
       href: "/dashboard/questions",
-      icon: "Clipboard",
+      icon: "ClipboardDocument",
     },
     {
       name: "Logs",
@@ -245,12 +246,12 @@ export const NAVLINKS = {
     {
       name: "Checklist",
       href: "/history/checklists",
-      icon: "ClipboardDocument",
+      icon: "ClipboardDocumentCheck",
     },
     {
       name: "Pedidos",
       href: "/history/orders",
-      icon: "ClipboardDocument",
+      icon: "InboxArrowDown",
     },
   ],
 } as const;
