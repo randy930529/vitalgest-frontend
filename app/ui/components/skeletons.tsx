@@ -6,41 +6,35 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import ModalTrigger from "@/app/ui/button-modal";
 import TablePagination from "@/app/ui/components/pagination";
 
-// Shared loading animation class
-const shimmer =
-  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
-
 export function TableSkeletonBase({ children }: { children?: ReactElement }) {
   return (
-    <div
-      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
-    >
+    <div className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
       {children}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-500">
           <thead className="bg-slate-100/80 text-xs uppercase text-slate-600">
             <tr>
               <th scope="col" className="px-6 py-3">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </th>
               <th scope="col" className="px-6 py-3">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </th>
               <th scope="col" className="px-6 py-3">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td className="px-6 py-4">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </td>
               <td className="px-6 py-4">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </td>
               <td className="px-6 py-4">
-                <div className="h-4 bg-gray-300 rounded" />
+                <SkeletonLine className="h-4" />
               </td>
             </tr>
           </tbody>
@@ -70,7 +64,7 @@ export function TableSkeleton({
 export function FormSkeleton({ goBackUrl }: { goBackUrl: string }) {
   return (
     <section
-      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
+      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm animate-pulse`}
     >
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />
@@ -112,7 +106,7 @@ export function ModalFormSkeleton({
 
   return (
     <section
-      className={`mt-7 dark:bg-gray-800 relative overflow-hidden ${shimmer}`}
+      className={`mt-7 dark:bg-gray-800 relative overflow-hidden animate-pulse`}
     >
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-full" action="">
@@ -137,7 +131,7 @@ export function ModalFormSkeleton({
 export function ChecklistCreateSkeleton() {
   return (
     <section
-      className={`relative mt-5 overflow-hidden rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-4 shadow-sm sm:p-6 ${shimmer}`}
+      className={`relative mt-5 overflow-hidden rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-4 shadow-sm sm:p-6 animate-pulse`}
     >
       <div className="grid gap-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -170,7 +164,7 @@ export function ChecklistCreateSkeleton() {
 
 export function ChecklistQuestionsSkeleton() {
   return (
-    <section className={`relative md:space-y-0 p-4 ${shimmer}`}>
+    <section className={`relative md:space-y-0 p-4 animate-pulse`}>
       <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
         <div className="p-4 md:col-span-1 md:row-span-1">
           <ol className="flex flex-col justify-evenly gap-2 relative">
@@ -211,7 +205,9 @@ export function ChecklistQuestionsSkeleton() {
 
 export function ChecklistNotesSkeleton() {
   return (
-    <section className={`relative overflow-hidden md:space-y-0 p-4 ${shimmer}`}>
+    <section
+      className={`relative overflow-hidden md:space-y-0 p-4 animate-pulse`}
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
         <div className="p-4 md:col-span-1 md:row-span-1">
           <ol className="flex flex-col justify-evenly gap-2 relative">
@@ -265,7 +261,7 @@ export function DashboardKpiCardsSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className={`relative h-28 overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+          className={`relative h-28 overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
         >
           <div className="flex h-full items-center justify-between p-5">
             <div className="space-y-3">
@@ -284,7 +280,7 @@ export function DashboardChartsSkeleton() {
   return (
     <section className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
       <div
-        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-2 ${shimmer}`}
+        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-2 animate-pulse`}
       >
         <div className="p-4">
           <div className="h-4 w-40 rounded bg-slate-200" />
@@ -298,7 +294,7 @@ export function DashboardChartsSkeleton() {
         </div>
       </div>
       <div
-        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
       >
         <div className="p-4 h-56">
           <div className="h-4 w-36 rounded bg-slate-200" />
@@ -309,7 +305,7 @@ export function DashboardChartsSkeleton() {
         </div>
       </div>
       <div
-        className={`relative min-h-[340px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-3 ${shimmer}`}
+        className={`relative min-h-[340px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-3 animate-pulse`}
       >
         <div className="p-4">
           <div className="h-4 w-48 rounded bg-slate-200" />
@@ -340,7 +336,7 @@ export function DashboardOperationalSkeleton() {
   return (
     <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
       <div
-        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
       >
         <div className="p-6">
           <div className="h-6 w-48 rounded bg-slate-200" />
@@ -359,7 +355,7 @@ export function DashboardOperationalSkeleton() {
         </div>
       </div>
       <div
-        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] ${shimmer}`}
+        className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
       >
         <div className="p-6">
           <div className="h-6 w-48 rounded bg-slate-200" />
@@ -387,9 +383,7 @@ export function ImageLoadingSkeleton({
   return (
     <div
       className={clsx(
-        `flex items-center justify-center absolute inset-0`,
-        shimmer,
-        "bg-slate-200",
+        `flex items-center justify-center absolute inset-0 animate-pulse bg-slate-200`,
         skeletonClassName,
       )}
       aria-hidden="true"
@@ -422,17 +416,31 @@ export function SkeletonPanel({
 }
 
 export function SkeletonLine({ className }: { className?: string }) {
-  return <div className={clsx("rounded bg-slate-200", className)} />;
+  return (
+    <div
+      className={clsx(
+        "rounded bg-slate-200 animate-pulse overflow-hidden",
+        className,
+      )}
+    />
+  );
 }
 
 export function SkeletonBlock({ className }: { className?: string }) {
-  return <div className={clsx("rounded-2xl bg-slate-200/80", className)} />;
+  return (
+    <div
+      className={clsx(
+        "rounded-2xl bg-slate-200/80 animate-pulse overflow-hidden",
+        className,
+      )}
+    />
+  );
 }
 
 export default function HeaderStatsSkeleton() {
   return (
     <SkeletonBlock
-      className={clsx("relative h-20 w-60 overflow-hidden", shimmer)}
+      className={clsx("relative h-20 w-60 overflow-hidden animate-pulse")}
     />
   );
 }
@@ -446,25 +454,23 @@ export function GuardFormSkeleton({
 }) {
   return (
     <section
-      className={`relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm ${shimmer}`}
+      className={`relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm animate-pulse`}
     >
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />
         <SkeletonLine
-          className={clsx("relative w-4/5 h-6 overflow-hidden", shimmer)}
+          className={clsx("relative w-4/5 h-6 overflow-hidden animate-pulse")}
         />
       </h2>
       <SkeletonLine
         className={clsx(
-          "relative w-1/2 h-4 ms-6 my-2 overflow-hidden",
-          shimmer,
+          "relative w-1/2 h-4 ms-6 my-2 overflow-hidden animate-pulse",
         )}
       />
       <div className="flex flex-col items-center justify-center space-y-6 p-8 sm:p-10">
         <SkeletonBlock
           className={clsx(
-            "relative h-[140px] w-full overflow-hidden shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)]",
-            shimmer,
+            "relative h-[140px] w-full overflow-hidden shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] animate-pulse",
           )}
         />
         <div className="w-full p-4 space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 sm:p-5">
@@ -475,20 +481,20 @@ export function GuardFormSkeleton({
             <div key={"guard-input-sk" + index}>
               <SkeletonLine
                 className={clsx(
-                  "relative w-1/3 h-4 ms-6 my-2 overflow-hidden",
-                  shimmer,
+                  "relative w-1/3 h-4 ms-6 my-2 overflow-hidden animate-pulse",
                 )}
               />
               <SkeletonLine
                 className={clsx(
-                  "relative w-4/5 h-9 ms-6 my-2 overflow-hidden",
-                  shimmer,
+                  "relative w-4/5 h-9 ms-6 my-2 overflow-hidden animate-pulse",
                 )}
               />
             </div>
           ))}
           <div className="flex w-full justify-center">
-            <SkeletonBlock className={clsx("relative h-12 w-44", shimmer)} />
+            <SkeletonBlock
+              className={clsx("relative h-12 w-44 animate-pulse")}
+            />
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
             <div></div>

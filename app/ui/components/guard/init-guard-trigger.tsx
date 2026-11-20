@@ -82,7 +82,7 @@ function ButtonBadge({
       )}
     >
       {isLoading ? (
-        <p className="bg-transparent text-xs font-medium text-slate-700">
+        <p className="bg-transparent text-xs font-medium text-slate-700 animate-pulse">
           Iniciando...
         </p>
       ) : (
@@ -90,12 +90,12 @@ function ButtonBadge({
           <Badge
             title="Nueva"
             variant={variant}
-            extraClassName="min-w-20 transition duration-500 ease-in-out group-hover:animate-pulse group-hover:border-orange-300 group-hover:bg-orange-500 group-hover:text-transparent"
+            extraClassName="min-w-20 transition duration-500 ease-in-out group-hover:border-orange-300 group-hover:bg-orange-500 group-hover:text-transparent"
           />
           <Badge
             title="Iniciar"
             variant={variant}
-            extraClassName="min-w-20 absolute inset-0 -translate-x-full transition duration-500 ease-in-out group-hover:translate-x-0 group-hover:animate-pulse group-hover:bg-transparent group-hover:text-white group-hover:ring-0 group-hover:ring-transparent group-hover:border-transparent"
+            extraClassName="min-w-20 absolute inset-0 -translate-x-full transition duration-500 ease-in-out group-hover:translate-x-0 group-hover:bg-transparent group-hover:text-white group-hover:ring-0 group-hover:ring-transparent group-hover:border-transparent"
             hiddenIcon
           />
         </>
