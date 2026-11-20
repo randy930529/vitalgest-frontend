@@ -210,6 +210,7 @@ function ButtonToggleDetail({ onClose }: { onClose?: () => void }) {
       )}
       onClick={onClose}
       aria-label="Detalles del registro"
+      title="Detalles"
     >
       <span className="sr-only">Detalles</span>
       <EyeIcon className="w-4" />

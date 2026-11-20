@@ -24,6 +24,7 @@ export default function TableActionEdit({
       href={editLink}
       className={clsx(STYLES.buttonTableAction, customStyle || buttonStyle)}
       aria-label={title || "Editar registro"}
+      title={title || "Editar"}
     >
       {Icon ? <Icon className="w-4" /> : <PencilIcon className="w-4" />}
     </Link>
