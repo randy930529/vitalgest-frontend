@@ -77,59 +77,20 @@ export function FormSkeleton({ goBackUrl }: { goBackUrl: string }) {
         <span className="w-1/3 h-6 bg-gray-300 rounded" />
       </h2>
       <p className="ms-6 my-2 font-semibold w-1/3 h-4 bg-gray-300 text-gray-500 dark:text-gray-400 text-center md:text-left rounded"></p>
-      <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
-        <form action="">
-          <div className="grid gap-4 mb-4 sm:grid-cols-2">
-            <div>
-              <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded"></label>
-              <input
-                type="text"
-                disabled
-                className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              />
-            </div>
-            <div>
-              <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded"></label>
-              <input
-                type="text"
-                disabled
-                className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <div>
-                <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded"></label>
-                <input
-                  type="text"
-                  disabled
-                  className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                />
-              </div>
-              <div>
-                <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded"></label>
-                <input
-                  type="text"
-                  disabled
-                  className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-4">
+      <div className="flex flex-col items-center justify-center md:space-y-0 p-4">
+        <div>
+          <ModalFormSkeleton fields={4} columns={2} />
+          <div className="flex flex-wrap items-center justify-end w-full gap-3 border-t border-slate-200 pt-6">
+            <div></div>
             <Link
               href={goBackUrl}
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
             >
               Regresar
             </Link>
-            <Link
-              href={goBackUrl}
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Link>
+            <div></div>
           </div>
-        </form>
+        </div>
       </div>
     </section>
   );
