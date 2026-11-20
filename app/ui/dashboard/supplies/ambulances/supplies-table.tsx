@@ -190,6 +190,7 @@ export default function AmbulanceSuppliesTable({
             <EmptyTableRow
               isListEmpty={!suppliesAmbulance.length}
               colSpan={customHeaders.length + 2}
+              message="No hay insumos en esta ambulancia."
             />
             {suppliesAmbulance?.map((supply) => (
               <tr
