@@ -186,6 +186,7 @@ function OrderDetailRow({
                               reported={reported_quantity}
                               added={added_quantity}
                               um={umLabel}
+                              nameSupply={`${category} / ${specification}`}
                             />
                           }
                           buttonToggle={<UpdateOrderButton />}

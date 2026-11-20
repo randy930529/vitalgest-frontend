@@ -1,9 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { useActionState, useState } from "react";
+import { notFound, useRouter } from "next/navigation";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import {
   CustomMxState,
@@ -12,9 +10,10 @@ import {
 } from "@/app/lib/definitions";
 import { updateDelegation } from "@/app/lib/actions/delegation";
 import { DelegationState } from "@/app/lib/config/stateConfigs";
-import { Button } from "@/app/ui/button";
+import { FormButtons } from "@/app/ui/button";
 import { FormSelect } from "@/app/ui/dashboard/form-fields";
 import { getMunicipalitiesOfState } from "@/app/lib/utils";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 
 export default function DelegationEditForm({
   data,
@@ -22,9 +21,8 @@ export default function DelegationEditForm({
   data: [DelegationType | undefined, CustomMxState[]];
 }) {
   // (Component) Formulario de delegación - [CSR]
-
+  const router = useRouter();
   const [delegation, customMxStates] = data;
-  console.log(customMxStates);
 
   if (!delegation) {
     notFound();
@@ -35,7 +33,7 @@ export default function DelegationEditForm({
     null,
     delegation?.id || "",
   );
-  const [state, formAction] = useActionState(
+  const [state, formAction, isLoading] = useActionState(
     updateDelegationWithId,
     initialState,
   );
@@ -54,16 +52,9 @@ export default function DelegationEditForm({
     CustomOptions[]
   >(getMunicipalitiesOfState(mxStateId, customMxStates));
 
-  useEffect(() => {
-    setCustomMunicipalities(
-      getMunicipalitiesOfState(mxStateId, customMxStates),
-    );
-  }, [mxStateId]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+  useFormNotifications({
+    state,
+  });
 
   function handleOption(name: string, value: string) {
     setMxStateId(value);
@@ -86,7 +77,7 @@ export default function DelegationEditForm({
             className="hidden"
             defaultValue={delegation.name}
           />
-          <div className="grid gap-4 mb-4 sm:grid-cols-1">
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
             <FormSelect
               key="state"
               name="state"
@@ -119,20 +110,12 @@ export default function DelegationEditForm({
               disabled={!mxStateId}
             />
           </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href="/dashboard/delegations"
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <FormButtons
+            onCancel={() => router.push("/dashboard/delegations")}
+            submitText="Guardar"
+            cancelText="Regresar"
+            isLoading={isLoading}
+          />
         </form>
       </div>
     </main>

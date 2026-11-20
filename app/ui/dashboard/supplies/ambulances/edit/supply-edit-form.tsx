@@ -1,8 +1,7 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { useActionState } from "react";
+import { useRouter } from "next/navigation";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import {
   AmbulanceAreaType,
@@ -12,8 +11,9 @@ import {
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { updateSupplyInAmbulance } from "@/app/lib/actions/supply";
 import { SupplyAmbulanceState } from "@/app/lib/config/stateConfigs";
-import { Button } from "@/app/ui/button";
 import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
+import { FormButtons } from "@/app/ui/button";
 
 export default function SupplyEditForm({
   data,
@@ -27,6 +27,7 @@ export default function SupplyEditForm({
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
 
+  const router = useRouter();
   const [supply, ambulanceId, ambulances, areas] = data;
 
   if (!supply) {
@@ -50,16 +51,12 @@ export default function SupplyEditForm({
     null,
     supply?.id || "",
   );
-  const [state, formAction] = useActionState(updateSupplyWithId, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    updateSupplyWithId,
+    initialState,
+  );
 
-  useEffect(() => {
-    state.message && toast.success(state.message) && (state.message = null);
-  }, [state.message]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+  useFormNotifications({ state });
 
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -74,7 +71,7 @@ export default function SupplyEditForm({
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-3/5" action={formAction}>
-          <div className="grid gap-4 mb-4 sm:grid-cols-1">
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
             <FormSelect
               key="select-ambulance"
               name="ambulance"
@@ -109,7 +106,7 @@ export default function SupplyEditForm({
               required
             />
 
-            <div className="w-3/12 md:w-2/12">
+            <div className="w-5/12">
               <FormInputSingle
                 key="input-avaibleQuantity"
                 type="number"
@@ -122,7 +119,7 @@ export default function SupplyEditForm({
               />
             </div>
 
-            <div className="w-5/12 md:w-3/12">
+            <div className="w-5/12">
               <FormInputSingle
                 key="input-minQuantity"
                 type="number"
@@ -135,20 +132,12 @@ export default function SupplyEditForm({
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href={`/dashboard/supplies/ambulances?ambulance=${supply.ambulance_id}`}
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <FormButtons
+            onCancel={() => router.push("/dashboard/ambulances")}
+            submitText="Guardar"
+            cancelText="Regresar"
+            isLoading={isLoading}
+          />
         </form>
       </div>
     </main>

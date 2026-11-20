@@ -1,18 +1,17 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import toast from "react-hot-toast";
+import { useActionState } from "react";
+import { notFound, useRouter } from "next/navigation";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { DelegationType, SupplyPharmacyType } from "@/app/lib/definitions";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import { formatDateToDDMMYYYY } from "@/app/lib/utils";
 import { updateSupplyInPharmacy } from "@/app/lib/actions/supply";
 import { SupplyPharmacyState } from "@/app/lib/config/stateConfigs";
-import { Button } from "@/app/ui/button";
+import { FormButtons } from "@/app/ui/button";
 import {
   FormDatepicker,
-  FormInputSingle,
+  FormInput,
   FormSelect,
 } from "@/app/ui/dashboard/form-fields";
 import { customUnits } from "@/app/lib/config/selectOptions";
@@ -24,6 +23,7 @@ export default function SupplyEditForm({
 }) {
   // (Componente) Formulario de edición de insumo - [CSR]
 
+  const router = useRouter();
   const [supply, delegations] = data;
 
   const customSelectedDelegations = delegations.map(
@@ -43,16 +43,12 @@ export default function SupplyEditForm({
     null,
     supply?.id || "",
   );
-  const [state, formAction] = useActionState(updateSupplyWithId, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    updateSupplyWithId,
+    initialState,
+  );
 
-  useEffect(() => {
-    state.message && toast.success(state.message) && (state.message = null);
-  }, [state.message]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+  useFormNotifications({ state });
 
   const datePicker = new Date(supply.expiration_date)
     .toISOString()
@@ -72,40 +68,49 @@ export default function SupplyEditForm({
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-3/5" action={formAction}>
-          <div className="grid gap-4 mb-4 sm:grid-cols-1">
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
             <FormSelect
               key={supply.pharmacy_id}
               name="pharmacy"
-              title="Delegación"
+              title="Farmacia"
               options={[
                 {
                   id: 0,
                   value: "",
-                  label: "Seleccione la Delegación",
+                  label: "Seleccione la Farmacia",
                 },
                 ...customSelectedDelegations,
               ]}
+              required
               defaultValue={supply.pharmacy_id}
             />
 
-            <FormInputSingle
-              key="select-category"
-              type="text"
+            <FormInput
+              key="category"
               name="category"
-              title="Categoría"
-              initialValue={supply.category}
+              initialValue={String(supply.category)}
               errors={state.errors?.category}
-              required
+              customFormInput={{
+                category: {
+                  type: "text",
+                  title: "Categoría",
+                  required: true,
+                },
+              }}
             />
 
-            <FormInputSingle
-              key="select-specification"
-              type="text"
+            <FormInput
+              key="specification"
               name="specification"
-              title="Especificación"
-              initialValue={supply.specification}
+              initialValue={String(supply.specification)}
               errors={state.errors?.specification}
-              required
+              customFormInput={{
+                specification: {
+                  type: "text",
+                  title: "Especificación",
+                  required: true,
+                },
+              }}
             />
 
             <FormSelect
@@ -118,45 +123,38 @@ export default function SupplyEditForm({
               required
             />
 
-            <div className="flex flex-col gap-2 w-2/5">
-              <FormDatepicker
-                key="datepicker-expirationDate"
-                name="expirationDate"
-                title="Fecha de Caducidad"
-                initialDate={datePicker}
-                dateStart={dateStart}
-                errors={state.errors?.expirationDate}
-                required
-              />
-            </div>
+            <FormDatepicker
+              key="datepicker-expirationDate"
+              name="expirationDate"
+              title="Fecha de Caducidad"
+              initialDate={datePicker}
+              dateStart={dateStart}
+              errors={state.errors?.expirationDate}
+              required
+            />
 
-            <div className="w-2/12">
-              <FormInputSingle
-                key="input-avaibleQuantity"
-                type="number"
+            <div className="w-5/12">
+              <FormInput
+                key="avaibleQuantity"
                 name="avaibleQuantity"
-                title="Cantidad"
-                placeholder="0"
                 initialValue={String(supply.avaible_quantity)}
                 errors={state.errors?.avaibleQuantity}
-                required
+                customFormInput={{
+                  avaibleQuantity: {
+                    type: "number",
+                    title: "Cantidad",
+                    required: true,
+                  },
+                }}
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href={`/dashboard/supplies/pharmacies?pharmacy=${supply.pharmacy_id}`}
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <FormButtons
+            onCancel={() => router.push("/dashboard/ambulances")}
+            submitText="Guardar"
+            cancelText="Regresar"
+            isLoading={isLoading}
+          />
         </form>
       </div>
     </main>
