@@ -347,7 +347,6 @@ export const CreateSupplyAmbulance = FormSupplySchema.omit({
   category: true,
   expirationDate: true,
   measurementUnit: true,
-  pharmacyId: true,
   notes: true,
   specification: true,
 });
@@ -356,7 +355,6 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   category: true,
   expirationDate: true,
   measurementUnit: true,
-  pharmacyId: true,
   notes: true,
   specification: true,
   supplyId: true,

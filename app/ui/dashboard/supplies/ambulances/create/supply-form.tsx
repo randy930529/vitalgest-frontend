@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   AmbulanceAreaType,
   AmbulanceType,
@@ -8,25 +9,28 @@ import {
   SupplyPharmacyType,
 } from "@/app/lib/definitions";
 import { createSupplyInAmbulance } from "@/app/lib/actions/supply";
-import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
+import { getFormConfigFields } from "@/app/lib/config/formConfigs";
 import { Badge } from "@/app/ui/components/badges";
 import { GenericForm } from "@/app/ui/components/generic-form";
-import { getFormConfigFields } from "@/app/lib/config/formConfigs";
+import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
 
 export default function SupplyForm({
-  ambulanceId,
   ambulances,
   areas,
   suppliesPharmacy,
   onClose,
 }: {
-  ambulanceId: string | number;
   ambulances: AmbulanceType[];
   areas: AmbulanceAreaType[];
   suppliesPharmacy: SupplyPharmacyType[];
   onClose?: () => void;
 }) {
   // (Component) Formulario de Insumos - [CSR]
+
+  const searchParams = useSearchParams();
+  const ambulanceId = searchParams.get("ambulance") || "";
+  const pharmacyId = searchParams.get("pharmacy") || "";
+  const pharmacyName = searchParams.get("pharmacyName") || "";
 
   const customSelectedAmbulances = ambulances.map(({ id, number }) => ({
     id,
@@ -51,15 +55,29 @@ export default function SupplyForm({
       type: "select",
       name: "ambulance",
       title: "Ambulancia",
-      options: customSelectedAmbulances,
-      defaultValue: String(ambulanceId),
+      options: [
+        {
+          id: 0,
+          value: "",
+          label: "Seleccione una Ambulancia",
+        },
+        ...customSelectedAmbulances,
+      ],
+      defaultValue: ambulanceId,
       required: true,
     },
     {
       type: "select",
       name: "area",
       title: "Área en la Ambulancia",
-      options: customSelectedAreas,
+      options: [
+        {
+          id: 0,
+          value: "",
+          label: "Seleccione un Área",
+        },
+        ...customSelectedAreas,
+      ],
       required: true,
     },
     {
@@ -77,15 +95,32 @@ export default function SupplyForm({
       placeholder: "Mayor a 0",
       required: true,
     },
+    {
+      type: "custom",
+      name: "pharmacyId",
+      component: (
+        <FormInputSingle
+          key="input-pharmacyId"
+          type="hidden"
+          name="pharmacy"
+          initialValue={pharmacyId}
+        />
+      ),
+    },
   ]);
 
   return (
-    <GenericForm
-      fields={fields}
-      onSubmit={createSupplyInAmbulance}
-      initialState={{ errors: {}, message: null }}
-      onCancel={onClose}
-    />
+    <>
+      <div className="mb-4 text-sm">
+        <h3 className="font-semibold text-slate-700 uppercase">{`De farmacia ${pharmacyName}:`}</h3>
+      </div>
+      <GenericForm
+        fields={fields}
+        onSubmit={createSupplyInAmbulance}
+        initialState={{ errors: {}, message: null }}
+        onCancel={onClose}
+      />
+    </>
   );
 }
 

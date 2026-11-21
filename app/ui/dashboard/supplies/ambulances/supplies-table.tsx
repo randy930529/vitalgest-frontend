@@ -132,7 +132,6 @@ export default function AmbulanceSuppliesTable({
           title="Crear Insumo"
           modelContent={
             <ModalComponent
-              ambulanceId={ambulanceId}
               ambulances={ambulances}
               areas={areas}
               suppliesPharmacy={suppliesPharmacy}
