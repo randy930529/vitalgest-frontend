@@ -1,10 +1,12 @@
 import {
+  ArchiveBoxIcon,
   BuildingOfficeIcon,
+  ClipboardDocumentCheckIcon,
   ClipboardDocumentListIcon,
-  ClipboardIcon,
   DocumentDuplicateIcon,
   DocumentTextIcon,
   HomeIcon,
+  InboxArrowDownIcon,
   ShieldCheckIcon,
   TruckIcon,
   UserGroupIcon,
@@ -18,9 +20,11 @@ export const NAV_ICONS = {
   ShieldCheck: ShieldCheckIcon,
   Home: HomeIcon,
   DocumentText: DocumentTextIcon,
-  Clipboard: ClipboardIcon,
   DocumentDuplicate: DocumentDuplicateIcon,
   UserGroup: UserGroupIcon,
+  InboxArrowDown: InboxArrowDownIcon,
+  ClipboardDocumentCheck: ClipboardDocumentCheckIcon,
+  ArchiveBox: ArchiveBoxIcon,
 } as const satisfies Record<string, ComponentType<SVGProps<SVGSVGElement>>>;
 
 export type NavIconName = keyof typeof NAV_ICONS;

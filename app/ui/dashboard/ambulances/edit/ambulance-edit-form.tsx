@@ -1,14 +1,13 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { useActionState } from "react";
+import { notFound, useRouter } from "next/navigation";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { AmbulanceType, DelegationType } from "@/app/lib/definitions";
 import { updateAmbulance } from "@/app/lib/actions/ambulance";
 import { AmbulanceState } from "@/app/lib/config/stateConfigs";
-import { Button } from "@/app/ui/button";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
+import { FormButtons } from "@/app/ui/button";
 import { FormInput } from "@/app/ui/dashboard/form-fields";
 import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
@@ -25,6 +24,7 @@ export default function AmbulanceEditForm({
 }) {
   // (Component) Formulario de ambulancia - [CSR]
 
+  const router = useRouter();
   const [ambulance, delegations] = data;
 
   if (!ambulance) {
@@ -33,19 +33,14 @@ export default function AmbulanceEditForm({
 
   const initialState: AmbulanceState = { errors: {}, message: null };
   const updateAmbulanceWithId = updateAmbulance.bind(null, ambulance?.id || "");
-  const [state, formAction] = useActionState(
+  const [state, formAction, isLoading] = useActionState(
     updateAmbulanceWithId,
     initialState,
   );
 
-  useEffect(() => {
-    state.message && toast.success(state.message) && (state.message = null);
-  }, [state.message]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+  useFormNotifications({
+    state,
+  });
 
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -58,7 +53,7 @@ export default function AmbulanceEditForm({
       </p>
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
         <form className="w-3/5" action={formAction}>
-          <div className="grid gap-4 mb-4 sm:grid-cols-1">
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
             {Object.keys(customFormInput).map((name) => (
               <FormInput
                 key={name}
@@ -77,20 +72,12 @@ export default function AmbulanceEditForm({
               />
             )}
           </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href="/dashboard/ambulances"
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <FormButtons
+            onCancel={() => router.push("/dashboard/ambulances")}
+            submitText="Guardar"
+            cancelText="Regresar"
+            isLoading={isLoading}
+          />
         </form>
       </div>
     </main>

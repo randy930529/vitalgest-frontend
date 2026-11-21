@@ -11,6 +11,7 @@ type OrderEditFormProps = {
   reported?: number;
   um?: string;
   added?: number;
+  nameSupply?: string;
   onClose?: () => void;
 };
 
@@ -20,13 +21,14 @@ export default function OrderEditForm({
   reported,
   um,
   added,
+  nameSupply,
   onClose,
 }: OrderEditFormProps) {
   // (Component) Formulario de Pedido - [CSR]
 
   const fields: FormFieldType[] = [
     {
-      title: "Cantidad de insumos a agregar",
+      title: "Cantidad",
       name: "addedQuantity",
       type: "number",
       defaultValue: !!added ? added?.toString() : "1",
@@ -42,9 +44,8 @@ export default function OrderEditForm({
   return (
     <>
       <div className="mb-4 text-sm text-slate-700">
-        <dt className="inline text-slate-700">
-          Cantidad de insumos reportados:
-        </dt>
+        <h3 className="font-semibold text-slate-700">{nameSupply}</h3>
+        <dt className="inline text-slate-700">Cantidad reportada:</dt>
         <dd className="inline font-semibold text-rose-500">{` ${reported ?? 0} ${um ?? ""}`}</dd>
       </div>
       <GenericForm

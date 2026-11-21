@@ -72,6 +72,8 @@ export function SearchPharmacieSupplies({
     } else {
       params.delete("pharmacy");
     }
+    params.delete("page");
+    params.delete("display");
     replace(`${pathname}?${params.toString()}`);
   };
 
@@ -130,6 +132,9 @@ export function SearchAmbulanceSupplies({
       params.delete("ambulance");
       params.delete("pharmacy");
     }
+
+    params.delete("page");
+    params.delete("display");
     replace(`${pathname}?${params.toString()}`);
   };
 

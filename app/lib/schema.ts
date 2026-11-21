@@ -113,6 +113,9 @@ const FormAmbulanceSchema = z.object({
 
 const FormShiftSchema = z.object({
   id: z.string().uuid(),
+  name: z.string({
+    invalid_type_error: "Por favor ingrese el nombre del turno.",
+  }),
   ambulanceId: z.string({
     invalid_type_error: "Por favor seleccione una ambulancia.",
   }),
@@ -296,7 +299,7 @@ export const UpdateGuard = FormGuardSchema.omit({ id: true });
 export const CreateAmbulance = FormAmbulanceSchema.omit({ id: true });
 export const UpdateAmbulance = FormAmbulanceSchema.omit({ id: true });
 
-export const CreateShift = FormShiftSchema.omit({ id: true });
+export const CreateShift = FormShiftSchema.omit({ id: true, name: true });
 export const UpdateShift = FormShiftSchema.omit({ id: true });
 
 export const CreateChecklist = FormChecklistSchema.omit({

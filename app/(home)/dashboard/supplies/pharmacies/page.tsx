@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { fetchDelegations } from "@/app/lib/data/delegations";
-import { getSession } from "@/app/lib/dal";
 import { fetchSuppliesByPharmacyId } from "@/app/lib/data/supplies";
 import { getPaginationParams } from "@/app/lib/utils";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
@@ -29,25 +27,10 @@ export default async function PharmacySuppliesPage({
   let { pharmacy: pharmacyId, page, display } = await searchParams;
   const params = getPaginationParams(Number(page), Number(display));
 
-  const { data: delegations } = await fetchDelegations();
-
-  if (!pharmacyId) {
-    const delegationId = (await getSession())?.user.delegationId;
-
-    if (delegationId) {
-      pharmacyId =
-        delegations.find(({ id }) => id === delegationId)?.pharmacy.id || "";
-    }
-  }
-
-  if (!pharmacyId) {
-    return notFound();
-  }
-
   const fetchsuppliesByPharmacyId = async () =>
     Promise.all([
       fetchSuppliesByPharmacyId(pharmacyId, params),
-      delegations,
+      fetchDelegations().then((result) => result.data),
       pharmacyId,
     ]);
 
@@ -68,7 +51,7 @@ export default async function PharmacySuppliesPage({
           <TableSkeleton
             title="Crear Ambulancia"
             modelContent={
-              <SupplyForm pharmacyId={pharmacyId} delegations={delegations} />
+              <SupplyForm pharmacyId={pharmacyId} delegations={[]} />
             }
           />
         }

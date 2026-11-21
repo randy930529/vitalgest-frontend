@@ -35,22 +35,10 @@ export default async function AmbulancesSuppliesPage({
   let {
     ambulance: ambulanceId,
     pharmacy: pharmacyId,
-    page = 1,
-    display = 6,
+    page,
+    display,
   } = await searchParams;
   const params = getPaginationParams(Number(page), Number(display));
-
-  if (!ambulanceId) {
-    const [delegations, ambulances] = await Promise.all([
-      fetchDelegations().then((result) => result.data),
-      fetchAmbulances().then((result) => result.data),
-    ]);
-    ambulanceId = ambulances[0]?.id || "";
-
-    const delegationId = ambulances[0]?.delegation?.id || "";
-    pharmacyId =
-      delegations.find(({ id }) => id === delegationId)?.pharmacy.id || "";
-  }
 
   const fetchAmbulancesAndSupplies = async () =>
     await Promise.all([

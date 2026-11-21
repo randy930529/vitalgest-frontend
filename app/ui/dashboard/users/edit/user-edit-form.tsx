@@ -1,18 +1,18 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { useActionState } from "react";
+import { notFound, useRouter } from "next/navigation";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { updateUser } from "@/app/lib/actions/user";
-import { UserState } from "@/app/lib/config/stateConfigs";
 import { DelegationType, UserType } from "@/app/lib/definitions";
-import { Button } from "@/app/ui/button";
-import { FormInput } from "@/app/ui/dashboard/form-fields";
-import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
+import { UserState } from "@/app/lib/config/stateConfigs";
 import { ROLE_MANAGER } from "@/app/lib/config/constants";
+import { updateUser } from "@/app/lib/actions/user";
+import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
+import { PasswordInput } from "@/app/ui/components/password-input";
+import { FormInput } from "@/app/ui/dashboard/form-fields";
 import { InlineErrors } from "@/app/ui/custom-errors";
+import { FormButtons } from "@/app/ui/button";
+import DelegationsSelector from "@/app/ui/dashboard/delegations/delegations-selector";
 
 const customFormInput = {
   name: { type: "text", title: "Nombre", required: true },
@@ -27,8 +27,9 @@ export default function UserEditForm({
 }: {
   data: [UserType | undefined, DelegationType[]];
 }) {
-  // <div>(Component) Formulario de usuario - [CSR]</div>
+  // (Component) Formulario de usuario - [CSR]
 
+  const router = useRouter();
   const [user, delegations] = data;
 
   if (!user) {
@@ -37,16 +38,14 @@ export default function UserEditForm({
 
   const initialState: UserState = { errors: {}, message: null };
   const updateUserWithId = updateUser.bind(null, user?.id || "");
-  const [state, formAction] = useActionState(updateUserWithId, initialState);
+  const [state, formAction, isLoading] = useActionState(
+    updateUserWithId,
+    initialState,
+  );
 
-  useEffect(() => {
-    state.message && toast.success(state.message) && (state.message = null);
-  }, [state.message]);
-
-  useEffect(() => {
-    state.errors?.success &&
-      state.errors?.success.map((error: string) => toast.error(error));
-  }, [state.errors?.success]);
+  useFormNotifications({
+    state,
+  });
 
   return (
     <main className="bg-white mt-7 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -72,57 +71,56 @@ export default function UserEditForm({
                 />
               ))}
 
-            <div className="sm:col-span-2">
-              {Object.keys(customFormInput)
-                .filter(
-                  (key) =>
-                    key === "email" || key === "password" || key === "position",
-                )
-                .map((name) => (
-                  <FormInput
-                    key={name}
-                    name={name}
-                    initialValue={
-                      user?.[name as "email" | "password" | "position"]
-                    }
-                    errors={
-                      state.errors?.[name as "email" | "password" | "position"]
-                    }
-                    customFormInput={customFormInput}
-                  />
-                ))}
+            <FormInput
+              key="email"
+              name="email"
+              initialValue={user?.email}
+              errors={state.errors?.email}
+              customFormInput={customFormInput}
+            />
 
-              {delegations && (
-                <DelegationsSelector
-                  delegations={delegations}
-                  defaultValue={user.delegation.id}
-                  errors={state.errors?.delegation}
-                />
-              )}
+            <PasswordInput
+              key="password"
+              id="password"
+              name="password"
+              minLength={6}
+              errors={state.errors?.password}
+              placeholder="Contraseña"
+              defaultValue=""
+              classNameLabel="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              classNameInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full py-[9px] pl-10 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            />
 
-              <UserRolesSelect
-                errors={state.errors?.role}
-                defaultValue={user?.role}
-                required
+            {delegations && (
+              <DelegationsSelector
+                delegations={delegations}
+                defaultValue={user.delegation.id}
+                errors={state.errors?.delegation}
               />
+            )}
 
-              <UserStatusChecked status={user?.status} />
-            </div>
+            <FormInput
+              key="position"
+              name="position"
+              initialValue={user?.position}
+              errors={state.errors?.position}
+              customFormInput={customFormInput}
+            />
+
+            <UserRolesSelect
+              errors={state.errors?.role}
+              defaultValue={user?.role}
+              required
+            />
+
+            <UserStatusChecked status={user?.status} />
           </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Link
-              href="/dashboard/users"
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <Button
-              type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Guardar
-            </Button>
-          </div>
+          <FormButtons
+            onCancel={() => router.push("/dashboard/users")}
+            submitText="Guardar"
+            cancelText="Regresar"
+            isLoading={isLoading}
+          />
         </form>
       </div>
     </main>

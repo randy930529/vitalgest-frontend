@@ -130,7 +130,7 @@ export default function PharmacySuppliesTable({
             <EmptyTableRow
               isListEmpty={!supplies.length}
               colSpan={customHeaders.length + 2}
-              message="No hay insumos en esta farmacia."
+              message="No hay insumos para esta farmacia."
             />
             {supplies?.map((supply) => (
               <tr key={supply.id} className={clsx(STYLES.rowTable)}>

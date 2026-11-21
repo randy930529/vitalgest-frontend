@@ -4,17 +4,26 @@ import { useState } from "react";
 import clsx from "clsx";
 import { EyeIcon, EyeSlashIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { STYLES } from "@/app/lib/config/constants";
+import { InlineErrors } from "@/app/ui/custom-errors";
 
 interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  errors?: string[];
+  classNameLabel?: string;
+  classNameInput?: string;
+  requiredShow?: boolean;
 }
 
 export function PasswordInput({
   label = "Contraseña",
   error,
+  errors,
   id = "password",
   placeholder = "Ingrese su contraseña",
+  classNameLabel,
+  classNameInput,
+  requiredShow,
   ...props
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,16 +36,23 @@ export function PasswordInput({
     <div className="w-full">
       {label && (
         <label
-          className="mb-3 block text-xs font-medium text-gray-900"
+          className={clsx(classNameLabel, {
+            "mb-3 block text-xs font-medium text-gray-900": !classNameLabel,
+          })}
           htmlFor={id}
         >
           {label}
+          {requiredShow && <span className="text-red-600"> *</span>}
         </label>
       )}
       <div className="relative">
         <input
           className={clsx(
-            "peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 pr-10 text-sm outline-2 placeholder:text-gray-500",
+            classNameInput,
+            {
+              "peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 pr-10 text-sm outline-2 placeholder:text-gray-500":
+                !classNameInput,
+            },
             STYLES.inputFocus,
           )}
           id={id}
@@ -61,6 +77,13 @@ export function PasswordInput({
         </button>
       </div>
       {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+      {errors && (
+        <InlineErrors
+          key={`${id}-error`}
+          errorId={`${id}-error`}
+          errors={errors}
+        />
+      )}
     </div>
   );
 }

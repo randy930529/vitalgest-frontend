@@ -186,6 +186,7 @@ function OrderDetailRow({
                               reported={reported_quantity}
                               added={added_quantity}
                               um={umLabel}
+                              nameSupply={`${category} / ${specification}`}
                             />
                           }
                           buttonToggle={<UpdateOrderButton />}
@@ -210,7 +211,8 @@ function UpdateOrderButton({ onClose }: { onClose?: () => void }) {
         "border-slate-300 bg-white text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700",
       )}
       onClick={onClose}
-      aria-label="Editar insumo del pedido"
+      aria-label="Añadir Insumos"
+      title="Añadir"
     >
       <PencilIcon className="w-4" />
     </button>

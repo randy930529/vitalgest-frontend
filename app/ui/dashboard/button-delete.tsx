@@ -33,7 +33,7 @@ export default function TableActionDelete({
       question={question}
       details={details}
       modelContent={<DeleteForm actionDelete={actionDelete} id={id} />}
-      buttonToggle={<ButtonToggleDelete icon={Icon} />}
+      buttonToggle={<ButtonToggleDelete icon={Icon} title={title} />}
     />
   );
 }
@@ -90,9 +90,11 @@ function DeleteForm({
 }
 
 function ButtonToggleDelete({
+  title,
   onClose,
   icon: Icon,
 }: {
+  title?: string;
   onClose?: () => void;
   icon?: React.ElementType;
 }) {
@@ -104,7 +106,8 @@ function ButtonToggleDelete({
         "border border-rose-300 bg-rose-50 text-rose-700 transition hover:bg-rose-100",
       )}
       onClick={onClose}
-      aria-label="Eliminar registro"
+      aria-label={title || "Eliminar registro"}
+      title={title || "Eliminar"}
     >
       <span className="sr-only">Eliminar</span>
       {Icon ? <Icon className="w-4" /> : <TrashIcon className="w-4" />}
