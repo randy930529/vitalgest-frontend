@@ -83,7 +83,7 @@ export default async function GuardsPage({
         fallback={
           <TableSkeleton
             title="Crear Guardia"
-            modelContent={<GuardFormSkeleton goBackUrl="/history/guards" />}
+            modelContent={<GuardFormSkeleton />}
           />
         }
       >
