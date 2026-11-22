@@ -42,7 +42,7 @@ export default function LogsFiltersForm({
     {
       type: "custom",
       name: "name",
-      component: CustomFilters({ categories: filters?.categories ?? [] }),
+      component: <CustomFilters categories={filters?.categories ?? []} />,
     },
 
     {
@@ -87,6 +87,7 @@ export default function LogsFiltersForm({
 
   return (
     <GenericForm
+      key="form-logs-filters"
       fields={fields}
       onSubmit={handleFilters}
       initialState={{ errors: {}, message: null }}
@@ -115,7 +116,7 @@ function CustomFilters({ categories }: { categories: AuditLogCategoryType[] }) {
   }
 
   return (
-    <>
+    <div key="custom-files" className="contents">
       <FormSelect
         key="entity"
         name="entity"
@@ -150,6 +151,6 @@ function CustomFilters({ categories }: { categories: AuditLogCategoryType[] }) {
         required
         disabled={!entity}
       />
-    </>
+    </div>
   );
 }

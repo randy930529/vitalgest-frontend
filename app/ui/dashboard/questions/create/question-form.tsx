@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   QuestionCategoryType,
   QuestionSubcategoryType,
@@ -25,28 +25,36 @@ export default function QuestionForm({
 }) {
   // (Component) Formulario de Pregunta de Checklist - [CSR]
 
-  const initialState: QuestionState = { errors: {}, message: null };
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
+  const [isStepContentVisible, setIsStepContentVisible] = useState(false);
+
+  useEffect(() => {
+    setIsStepContentVisible(false);
+    const timeoutId = setTimeout(() => setIsStepContentVisible(true), 200);
+
+    return () => clearTimeout(timeoutId);
+  }, [showCategoryForm, showSubcategoryForm]);
 
   const fields = getFormConfigFields("question", [
     {
       type: "custom",
       name: "taxonomy",
-      component: CustomFiles({
-        categories,
-        subcategories,
-        state: initialState,
-        setShowCategoryForm,
-        setShowSubcategoryForm,
-      }),
+      component: (
+        <CustomFiles
+          categories={categories}
+          subcategories={subcategories}
+          setShowCategoryForm={setShowCategoryForm}
+          setShowSubcategoryForm={setShowSubcategoryForm}
+        />
+      ),
     },
   ]);
 
   return (
     <>
       {showCategoryForm && (
-        <StepContent isStepContentVisible={showCategoryForm}>
+        <StepContent isStepContentVisible={isStepContentVisible}>
           <h3 className="text-lg font-semibold text-gray-600 dark:text-white">
             Crear Categoría
           </h3>
@@ -54,7 +62,7 @@ export default function QuestionForm({
         </StepContent>
       )}
       {showSubcategoryForm && (
-        <StepContent isStepContentVisible={showSubcategoryForm}>
+        <StepContent isStepContentVisible={isStepContentVisible}>
           <h3 className="text-lg font-semibold text-gray-600 dark:text-white">
             Crear Subcategoría
           </h3>
@@ -66,9 +74,10 @@ export default function QuestionForm({
       )}
 
       <GenericForm
+        key="form-question"
         fields={fields}
         onSubmit={createQuestion}
-        initialState={initialState}
+        initialState={{ errors: {}, message: null }}
         onCancel={onClose}
       />
     </>
@@ -84,7 +93,7 @@ function CustomFiles({
 }: {
   categories?: QuestionCategoryType[];
   subcategories?: QuestionSubcategoryType[];
-  state: QuestionState;
+  state?: QuestionState;
   setShowCategoryForm?: (show: boolean) => void;
   setShowSubcategoryForm?: (show: boolean) => void;
 }) {
@@ -104,7 +113,7 @@ function CustomFiles({
   );
 
   return (
-    <>
+    <div key="custom-files" className="contents">
       <FormSelect
         name="categoryId"
         title="Categoría"
@@ -114,7 +123,7 @@ function CustomFiles({
           value: category.id,
           label: category.name,
         }))}
-        errors={state.errors?.categoryId}
+        errors={state?.errors?.categoryId}
         handleOption={(_, value) => setCategoryId(value)}
         handlePin={() => {
           setShowSubcategoryForm?.(false);
@@ -126,13 +135,13 @@ function CustomFiles({
         name="subcategoryId"
         title="Subcategoría"
         options={subcategoryOptions}
-        errors={state.errors?.subcategoryId}
+        errors={state?.errors?.subcategoryId}
         handlePin={() => {
           setShowCategoryForm?.(false);
           setShowSubcategoryForm?.(true);
         }}
         titlePin="Crear Subcategoría"
       />
-    </>
+    </div>
   );
 }

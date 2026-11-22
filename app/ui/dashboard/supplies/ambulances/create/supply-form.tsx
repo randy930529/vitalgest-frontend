@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AmbulanceAreaType,
@@ -10,6 +10,7 @@ import {
 } from "@/app/lib/definitions";
 import { createSupplyInAmbulance } from "@/app/lib/actions/supply";
 import { getFormConfigFields } from "@/app/lib/config/formConfigs";
+import { SupplyAmbulanceState } from "@/app/lib/config/stateConfigs";
 import { Badge } from "@/app/ui/components/badges";
 import { GenericForm } from "@/app/ui/components/generic-form";
 import { FormInputSingle, FormSelect } from "@/app/ui/dashboard/form-fields";
@@ -83,10 +84,12 @@ export default function SupplyForm({
     {
       type: "custom",
       name: "customFiles",
-      component: CustomFiles({
-        suppliesPharmacy,
-        customSelectedSuppliesPharmacy,
-      }),
+      component: (
+        <CustomFiles
+          suppliesPharmacy={suppliesPharmacy}
+          customSelectedSuppliesPharmacy={customSelectedSuppliesPharmacy}
+        />
+      ),
     },
     {
       type: "number",
@@ -115,6 +118,7 @@ export default function SupplyForm({
         <h3 className="font-semibold text-slate-700 uppercase">{`De farmacia ${pharmacyName}:`}</h3>
       </div>
       <GenericForm
+        key="form-supply-ambulance"
         fields={fields}
         onSubmit={createSupplyInAmbulance}
         initialState={{ errors: {}, message: null }}
@@ -127,35 +131,57 @@ export default function SupplyForm({
 function CustomFiles({
   suppliesPharmacy,
   customSelectedSuppliesPharmacy,
+  state,
 }: {
   suppliesPharmacy: SupplyPharmacyType[];
   customSelectedSuppliesPharmacy: CustomOptions[];
+  state?: SupplyAmbulanceState;
 }) {
-  const [quantity, setQuantity] = useState<number | null>(null);
-  const [avaibleQuantity, setAvaibleQuantity] = useState<number | null>(null);
+  const [selectedSupplyId, setSelectedSupplyId] = useState(
+    String(state?.formData?.get("supplyId") || ""),
+  );
+  const [requestedQuantity, setRequestedQuantity] = useState(
+    Number(state?.formData?.get("avaibleQuantity") || "") || 0,
+  );
+
+  const avaibleQuantity = useMemo(
+    () =>
+      suppliesPharmacy.find(({ id }) => id === selectedSupplyId)
+        ?.avaible_quantity ?? null,
+    [selectedSupplyId, suppliesPharmacy],
+  );
+  const quantity = useMemo(
+    () =>
+      avaibleQuantity === null
+        ? null
+        : Math.max(avaibleQuantity - requestedQuantity, 0),
+    [avaibleQuantity, requestedQuantity],
+  );
 
   function handleSupply(name: string, supplyId: string) {
-    const { avaible_quantity } =
-      suppliesPharmacy.find(({ id }) => id === supplyId) || {};
-
-    setAvaibleQuantity(avaible_quantity || null);
-    setQuantity(avaible_quantity || null);
+    setSelectedSupplyId(supplyId);
+    setRequestedQuantity(0);
   }
 
   function handleAvaibleQuantitySupply(name: string, value: string) {
-    if (value && avaibleQuantity) {
-      const rest = Number(avaibleQuantity) - Number(value);
+    const requested = Number(value);
 
-      if (Number(value) >= 0 && rest >= 0) {
-        setQuantity(rest);
-      }
+    if (
+      value &&
+      avaibleQuantity !== null &&
+      Number.isFinite(requested) &&
+      requested >= 0 &&
+      requested <= avaibleQuantity
+    ) {
+      setRequestedQuantity(requested);
     }
   }
+
   return (
-    <>
+    <div key="custom-files" className="contents">
       <FormSelect
-        key="select-supply"
-        name="supply"
+        key={`select-supply ${String(state?.formData?.get("supplyId") || "")}`}
+        name="supplyId"
         title="Insumo"
         options={[
           {
@@ -166,6 +192,8 @@ function CustomFiles({
           ...customSelectedSuppliesPharmacy,
         ]}
         handleOption={handleSupply}
+        defaultValue={String(state?.formData?.get("supplyId") || "")}
+        errors={state?.errors?.supplyId}
         required
       />
 
@@ -173,7 +201,7 @@ function CustomFiles({
         <p className="mb-1.5 mt-3 text-sm font-medium text-gray-900 dark:text-white sm:mb-2 sm:mt-4 block">
           Disponibilidad
         </p>
-        {avaibleQuantity ? (
+        {avaibleQuantity !== null ? (
           <Badge
             title={String(quantity)}
             success={quantity ? quantity > 5 : false}
@@ -186,19 +214,20 @@ function CustomFiles({
         )}
       </div>
 
-      <div className="w-5/12 md:w-4/12">
+      <div className="grid grid-cols-2 grid-rows-3 [&>*:nth-child(1)]:col-span-2 [&>*:nth-child(2)]:col-start-1 [&>*:nth-child(3)]:col-span-2">
         <FormInputSingle
           key={`input-avaibleQuantity-${avaibleQuantity}`}
           type="number"
           name="avaibleQuantity"
           title="Cantidad"
           placeholder="0"
-          initialValue={String(0)}
+          initialValue={String(state?.formData?.get("avaibleQuantity") || "")}
           handleOption={handleAvaibleQuantitySupply}
-          disabled={!avaibleQuantity}
+          disabled={!state?.errors?.avaibleQuantity && !avaibleQuantity}
+          errors={state?.errors?.avaibleQuantity}
           required
         />
       </div>
-    </>
+    </div>
   );
 }

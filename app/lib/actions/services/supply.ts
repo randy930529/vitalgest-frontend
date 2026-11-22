@@ -143,7 +143,7 @@ export class CreateSupplyInAmbulanceAction extends BaseServerAction<
       const data = this.validate({
         ambulanceId: formData.get("ambulance"),
         pharmacyId: formData.get("pharmacy"),
-        supplyId: formData.get("supply"),
+        supplyId: formData.get("supplyId"),
         areaId: Number(formData.get("area")),
         avaibleQuantity: Number(formData.get("avaibleQuantity")),
         minQuantity: Number(formData.get("minQuantity")),
