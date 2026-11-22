@@ -412,13 +412,7 @@ export default function HeaderStatsSkeleton() {
   return <SkeletonBlock className="relative h-20 w-60" />;
 }
 
-export function GuardFormSkeleton({
-  goBackUrl,
-  onClose,
-}: {
-  goBackUrl?: string;
-  onClose?: () => void;
-}) {
+export function GuardFormSkeleton({ goBackUrl }: { goBackUrl?: string }) {
   return (
     <section className="relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
       {goBackUrl && (
@@ -447,23 +441,18 @@ export function GuardFormSkeleton({
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
             <SkeletonBlock className="inline-flex border border-slate-200 bg-white transition hover:border-slate-300 hover:bg-slate-50 h-11 w-24 rounded-xl px-4 text-sm opacity-50 cursor-not-allowed" />
-            {goBackUrl && (
+            {goBackUrl ? (
               <Link
                 href={goBackUrl}
                 className="inline-flex items-center justify-center border border-slate-200 bg-white font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 h-11 rounded-xl px-4 text-sm"
               >
                 Regresar
               </Link>
+            ) : (
+              <div className="inline-flex items-center justify-center border border-slate-200 bg-white font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 h-11 rounded-xl px-4 text-sm">
+                Cancelar
+              </div>
             )}
-            :(
-            <button
-              type="button"
-              onClick={() => onClose?.()}
-              className="inline-flex items-center justify-center border border-slate-200 bg-white font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 h-11 rounded-xl px-4 text-sm"
-            >
-              Cancelar
-            </button>
-            )
             <SkeletonBlock className="inline-flex border border-rose-200 !bg-rose-500 transition hover:border-rose-300 h-11 w-24 rounded-xl px-4 text-sm opacity-50 cursor-not-allowed" />
           </div>
         </div>
