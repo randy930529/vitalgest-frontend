@@ -101,47 +101,60 @@ export default function OrdersTable({
               colSpan={customHeaders.length + 2}
               message="No hay pedidos para mostrar."
             />
-            {orders?.map((order) => (
-              <tr key={order.id} className={clsx(STYLES.rowTable)}>
-                <td className="w-4 p-4">
-                  <TableCheckbox
-                    id={`checkbox-table-${order.id}`}
-                    checked={selectedIds.includes(order.id)}
-                    ariaLabel={`Seleccionar pedido ${order.id}`}
-                    onChange={(checked) =>
-                      handleCheckboxChange(order.id, checked)
-                    }
-                  />
-                </td>
-                <td className="px-4 py-3.5">
-                  {formatDateToDDMMYYYY(order.createdAt)}
-                </td>
-                <td className="px-4 py-3.5">{order.ambulance.number}</td>
-                <td className="px-4 py-3.5">
-                  <OrderStatusShow status={order.status} />
-                </td>
-                <td className="px-4 py-3.5">{order.notes}</td>
-                <TableActions>
-                  <TableActionEdit
-                    editLink={`/${segment}/orders/${order.id}/details`}
-                    title="Editar Pedido"
-                    icon={EyeIcon}
-                    customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
-                  />
-                  {!readonly && order.status === "pending" && (
-                    <TableActionDelete
-                      id={order.id}
-                      title="Atender Pedido"
-                      question="¿Está seguro que desea marcar como atendido el pedido?"
-                      actionDelete={() =>
-                        attendOrder(order.id, order.ambulance.id, order.areas)
-                      }
-                      icon={CheckCircleIcon}
+            {orders?.map(
+              ({
+                id,
+                createdAt,
+                ambulance,
+                delegation,
+                status,
+                notes,
+                areas,
+              }) => (
+                <tr key={id} className={clsx(STYLES.rowTable)}>
+                  <td className="w-4 p-4">
+                    <TableCheckbox
+                      id={`checkbox-table-${id}`}
+                      checked={selectedIds.includes(id)}
+                      ariaLabel={`Seleccionar pedido ${id}`}
+                      onChange={(checked) => handleCheckboxChange(id, checked)}
                     />
-                  )}
-                </TableActions>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3.5">
+                    {formatDateToDDMMYYYY(createdAt)}
+                  </td>
+                  <td className="px-4 py-3.5">{ambulance.number}</td>
+                  <td className="px-4 py-3.5">
+                    <OrderStatusShow status={status} />
+                  </td>
+                  <td className="px-4 py-3.5">{notes}</td>
+                  <TableActions>
+                    <TableActionEdit
+                      editLink={`/${segment}/orders/${id}/details`}
+                      title="Editar Pedido"
+                      icon={EyeIcon}
+                      customStyle="border-sky-300 bg-sky-50 text-sky-700 transition hover:bg-sky-100"
+                    />
+                    {!readonly && status === "pending" && (
+                      <TableActionDelete
+                        id={id}
+                        title="Atender Pedido"
+                        question="¿Está seguro que desea marcar como atendido el pedido?"
+                        actionDelete={() =>
+                          attendOrder(
+                            id,
+                            ambulance.id,
+                            delegation.pharmacy.id,
+                            areas,
+                          )
+                        }
+                        icon={CheckCircleIcon}
+                      />
+                    )}
+                  </TableActions>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>
