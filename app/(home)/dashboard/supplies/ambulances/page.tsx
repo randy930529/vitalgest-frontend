@@ -67,12 +67,7 @@ export default async function AmbulancesSuppliesPage({
           <TableSkeleton
             title="Crear Ambulancia"
             modelContent={
-              <SupplyForm
-                ambulanceId={ambulanceId}
-                ambulances={[]}
-                areas={[]}
-                suppliesPharmacy={[]}
-              />
+              <SupplyForm ambulances={[]} areas={[]} suppliesPharmacy={[]} />
             }
           />
         }

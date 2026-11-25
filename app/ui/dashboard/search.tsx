@@ -122,15 +122,17 @@ export function SearchAmbulanceSupplies({
     if (ambulanceId) {
       params.set("ambulance", ambulanceId);
 
-      const delegationId =
-        ambulances.find(({ id }) => id === params.get("ambulance"))?.delegation
-          .id || "";
+      const { id: delegationId, name } =
+        ambulances.find(({ id }) => id === params.get("ambulance"))
+          ?.delegation || {};
       const pharmacyId =
         delegations.find(({ id }) => id === delegationId)?.pharmacy.id || "";
       params.set("pharmacy", pharmacyId);
+      params.set("pharmacyName", name || "");
     } else {
       params.delete("ambulance");
       params.delete("pharmacy");
+      params.delete("pharmacyName");
     }
 
     params.delete("page");

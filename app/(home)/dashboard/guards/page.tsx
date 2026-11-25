@@ -16,7 +16,6 @@ import {
   TableSkeleton,
 } from "@/app/ui/components/skeletons";
 import { WrapperTable } from "@/app/ui/dashboard/wrappers";
-import GuardForm from "@/app/ui/dashboard/guards/create/guard-form";
 
 export const metadata: Metadata = {
   title: "Gestión de Guardias",
@@ -59,7 +58,7 @@ export default async function GuardsPage({
         fallback={
           <TableSkeleton
             title="Crear Guardia"
-            modelContent={<GuardFormSkeleton goBackUrl="/dashboard/guards" />}
+            modelContent={<GuardFormSkeleton />}
           />
         }
       >

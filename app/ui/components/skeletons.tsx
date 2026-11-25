@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { PencilSquareIcon, PhotoIcon } from "@heroicons/react/24/outline";
@@ -6,7 +5,33 @@ import Filters from "@/app/ui/dashboard/table-filters";
 import ModalTrigger from "@/app/ui/button-modal";
 import TablePagination from "@/app/ui/components/pagination";
 
-export function TableSkeletonBase({ children }: { children?: ReactElement }) {
+export function SkeletonLine({ className }: { className?: string }) {
+  return (
+    <div
+      className={clsx(
+        "rounded bg-slate-200 animate-pulse overflow-hidden",
+        className,
+      )}
+    />
+  );
+}
+
+export function SkeletonBlock({ className }: { className?: string }) {
+  return (
+    <div
+      className={clsx(
+        "rounded-2xl bg-slate-200/80 animate-pulse overflow-hidden",
+        className,
+      )}
+    />
+  );
+}
+
+export function TableSkeletonBase({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   return (
     <div className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
       {children}
@@ -50,7 +75,7 @@ export function TableSkeleton({
   modelContent,
 }: {
   title: string;
-  modelContent: ReactElement<{ onClose: () => void }>;
+  modelContent: React.ReactElement<{ onClose: () => void }>;
 }) {
   return (
     <TableSkeletonBase>
@@ -63,9 +88,7 @@ export function TableSkeleton({
 
 export function FormSkeleton({ goBackUrl }: { goBackUrl: string }) {
   return (
-    <section
-      className={`relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm animate-pulse`}
-    >
+    <section className="relative mt-7 overflow-hidden rounded-[26px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
       <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
         <PencilSquareIcon className="w-6 h-6" />
         <span className="w-1/3 h-6 bg-gray-300 rounded" />
@@ -105,24 +128,18 @@ export function ModalFormSkeleton({
   };
 
   return (
-    <section
-      className={`mt-7 dark:bg-gray-800 relative overflow-hidden animate-pulse`}
-    >
+    <section className="mt-7 dark:bg-gray-800 relative overflow-hidden">
       <div className="flex md:flex-row items-center justify-center md:space-y-0 p-4">
-        <form className="w-full" action="">
+        <div className="w-full">
           <div className={`grid gap-4 mb-4 ${columnClasses[columns]}`}>
             {Array.from({ length: fields }).map((_, index) => (
               <div key={index}>
-                <label className="block h-4 bg-gray-300 mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white rounded w-1/2" />
-                <input
-                  type="text"
-                  disabled
-                  className="bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                />
+                <SkeletonLine className="h-4 mt-4 mb-2 w-1/2" />
+                <SkeletonBlock className="block h-10 w-full p-2.5 !rounded" />
               </div>
             ))}
           </div>
-        </form>
+        </div>
       </div>
     </section>
   );
@@ -130,15 +147,13 @@ export function ModalFormSkeleton({
 
 export function ChecklistCreateSkeleton() {
   return (
-    <section
-      className={`relative mt-5 overflow-hidden rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-4 shadow-sm sm:p-6 animate-pulse`}
-    >
+    <section className="relative mt-5 overflow-hidden rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-4 shadow-sm sm:p-6">
       <div className="grid gap-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="space-y-2 text-center">
-              <div className="mx-auto h-4 w-24 rounded bg-slate-200" />
-              <div className="mx-auto h-6 w-36 rounded bg-slate-300" />
+              <SkeletonLine className="mx-auto h-4 w-24" />
+              <SkeletonLine className="mx-auto h-6 w-36" />
             </div>
           ))}
         </div>
@@ -147,14 +162,14 @@ export function ChecklistCreateSkeleton() {
           <div className="space-y-6">
             {Array.from({ length: 2 }).map((_, index) => (
               <div key={index} className="space-y-3">
-                <div className="h-5 w-36 rounded bg-slate-200" />
-                <div className="h-12 w-full rounded-xl border border-slate-200 bg-white/80" />
+                <SkeletonLine className="h-5 w-36" />
+                <SkeletonBlock className="h-12 w-full border border-slate-300" />
               </div>
             ))}
           </div>
 
           <div className="flex items-center justify-center lg:justify-center">
-            <div className="h-14 w-full max-w-[250px] rounded-2xl bg-rose-300/90" />
+            <SkeletonBlock className="h-14 w-full max-w-[250px] bg-rose-300/90" />
           </div>
         </div>
       </div>
@@ -164,20 +179,20 @@ export function ChecklistCreateSkeleton() {
 
 export function ChecklistQuestionsSkeleton() {
   return (
-    <section className={`relative md:space-y-0 p-4 animate-pulse`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
+    <section className="relative md:space-y-0 p-4 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg">
         <div className="p-4 md:col-span-1 md:row-span-1">
           <ol className="flex flex-col justify-evenly gap-2 relative">
             {Array.from({ length: 4 }).map((_, index) => (
               <li key={index} className="flex flex-row gap-2 items-center">
-                <div className="h-6 w-6 rounded-full border border-slate-300 bg-white" />
-                <div className="h-6 flex-1 rounded-[10px] bg-slate-200/90" />
+                <SkeletonLine className="h-6 w-6 rounded-full" />
+                <SkeletonLine className="h-6 flex-1" />
               </li>
             ))}
           </ol>
         </div>
         <div className="flex flex-col gap-2 p-4 md:col-span-3 md:row-span-1">
-          <div className="h-7 w-[360px] max-w-full rounded bg-slate-300" />
+          <SkeletonLine className="h-7 w-[360px] max-w-full" />
           <div className="space-y-4 px-3 py-3 md:px-6">
             {Array.from({ length: 4 }).map((_, index) => (
               <div
@@ -185,18 +200,17 @@ export function ChecklistQuestionsSkeleton() {
                 className="grid grid-cols-[52px,minmax(0,1fr),104px] items-center gap-3 md:gap-4"
               >
                 <div className="flex justify-center">
-                  <div className="h-5 w-10 rounded-full bg-slate-300 md:w-12" />
+                  <SkeletonLine className="h-5 w-10 rounded-full md:w-12" />
                 </div>
-                <div className="h-4 rounded w-16 bg-slate-200/90 md:w-[min(340px,80%)]" />
-                <div className="justify-self-end h-5 w-14 rounded-xl border border-slate-200 bg-white/90 md:w-[104px]" />
+                <SkeletonLine className="h-4 w-16 md:w-[min(340px,80%)]" />
+                <SkeletonLine className="justify-self-end h-5 w-14 md:w-[104px]" />
               </div>
             ))}
           </div>
-
-          <div className="mt-8 flex items-center justify-between gap-4 pt-2">
-            <div className="h-11 w-[110px] rounded-lg bg-slate-300" />
-            <div className="h-11 w-[110px] rounded-lg bg-slate-200/90" />
-          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4 px-4 mt-10 sm:col-span-4 md:pr-10">
+          <SkeletonBlock className="h-11 w-28" />
+          <SkeletonBlock className="h-11 w-28" />
         </div>
       </div>
     </section>
@@ -205,37 +219,31 @@ export function ChecklistQuestionsSkeleton() {
 
 export function ChecklistNotesSkeleton() {
   return (
-    <section
-      className={`relative overflow-hidden md:space-y-0 p-4 animate-pulse`}
-    >
+    <section className={`relative overflow-hidden md:space-y-0 p-4`}>
       <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-auto gap-4 p-4 shadow-md sm:rounded-lg overflow-hidden">
         <div className="p-4 md:col-span-1 md:row-span-1">
           <ol className="flex flex-col justify-evenly gap-2 relative">
             {Array.from({ length: 4 }).map((_, index) => (
               <li key={index} className="flex flex-row gap-2 items-center">
-                <div className="h-6 w-6 rounded-full border border-slate-300 bg-white" />
-                <div className="h-6 flex-1 rounded-[10px] bg-slate-200/90" />
+                <SkeletonLine className="h-6 w-6 rounded-full" />
+                <SkeletonLine className="h-6 flex-1" />
               </li>
             ))}
           </ol>
         </div>
 
         <div className="flex flex-col gap-2 p-4 md:col-span-3 md:row-span-1">
-          <div className="h-7 w-[360px] max-w-full rounded bg-slate-300" />
-          <div className="h-32 rounded-2xl bg-slate-200/90" />
+          <SkeletonLine className="h-7 w-[360px] max-w-full" />
+          <SkeletonBlock className="h-32" />
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div className="space-y-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-              <div className="h-20 rounded-2xl bg-slate-200" />
-            </div>
-            <div className="space-y-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-              <div className="h-20 rounded-2xl bg-slate-200" />
-            </div>
+            <SkeletonBlock className="h-28" />
+            <SkeletonBlock className="h-28" />
           </div>
 
           <div className="mt-8 flex items-center justify-between gap-4 pt-2">
-            <div className="h-11 w-[110px] rounded-lg bg-slate-300" />
-            <div className="h-11 w-[110px] rounded-lg bg-slate-200/90" />
+            <SkeletonBlock className="h-11 w-28" />
+            <SkeletonBlock className="h-11 w-28" />
           </div>
         </div>
       </div>
@@ -245,11 +253,11 @@ export function ChecklistNotesSkeleton() {
 
 export function ProfileEditSkeleton() {
   return (
-    <section className="mt-7 animate-pulse space-y-6">
-      <div className="h-64 rounded-[36px] bg-slate-200/70" />
+    <section className="mt-7 space-y-6">
+      <SkeletonBlock className="h-64" />
       <div className="grid gap-6 xl:grid-cols-[380px,minmax(0,1fr)]">
-        <div className="h-[520px] rounded-[32px] bg-slate-200/70" />
-        <div className="h-[520px] rounded-[32px] bg-slate-200/70" />
+        <SkeletonBlock className="h-[520px]" />
+        <SkeletonBlock className="h-[520px]" />
       </div>
     </section>
   );
@@ -261,14 +269,14 @@ export function DashboardKpiCardsSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className={`relative h-28 overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
+          className="relative h-28 overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)]"
         >
           <div className="flex h-full items-center justify-between p-5">
+            <SkeletonBlock className="h-12 w-12" />
             <div className="space-y-3">
-              <div className="h-3 w-24 rounded bg-slate-200" />
-              <div className="h-8 w-16 rounded bg-slate-300" />
+              <SkeletonLine className="h-3 w-24" />
+              <SkeletonLine className="h-8 w-16" />
             </div>
-            <div className="h-12 w-12 rounded-2xl bg-slate-300" />
           </div>
         </div>
       ))}
@@ -279,53 +287,37 @@ export function DashboardKpiCardsSkeleton() {
 export function DashboardChartsSkeleton() {
   return (
     <section className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
-      <div
-        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-2 animate-pulse`}
-      >
+      <div className="relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-2">
         <div className="p-4">
-          <div className="h-4 w-40 rounded bg-slate-200" />
-          <div className="mt-2 h-3 w-64 rounded bg-slate-200" />
+          <SkeletonLine className="h-5 w-72" />
+          <SkeletonLine className="mt-2 h-3 w-80" />
           <div className="mt-4 flex gap-2">
-            <div className="h-7 w-14 rounded-full bg-slate-200" />
-            <div className="h-7 w-16 rounded-full bg-slate-200" />
-            <div className="h-7 w-16 rounded-full bg-slate-200" />
+            <SkeletonBlock className="h-7 w-14" />
+            <SkeletonBlock className="h-7 w-16" />
+            <SkeletonBlock className="h-7 w-16" />
           </div>
-          <div className="mt-5 h-[230px] rounded-2xl bg-slate-200/80" />
+          <SkeletonBlock className="mt-5 h-60" />
         </div>
       </div>
-      <div
-        className={`relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
-      >
-        <div className="p-4 h-56">
-          <div className="h-4 w-36 rounded bg-slate-200" />
-          <div className="mt-2 h-3 w-52 rounded bg-slate-200" />
+      <div className="relative min-h-[320px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)]">
+        <div className="p-4 h-full">
+          <SkeletonLine className="h-5 w-44" />
+          <SkeletonLine className="mt-2 h-3 w-64" />
           <div className="flex justify-center items-center w-full h-full">
-            <div className="h-40 w-40 rounded-full bg-slate-200/80" />
+            <SkeletonBlock className="h-40 w-40 rounded-full" />
           </div>
         </div>
       </div>
-      <div
-        className={`relative min-h-[340px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-3 animate-pulse`}
-      >
+      <div className="relative min-h-[340px] overflow-hidden rounded-[24px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] xl:col-span-3">
         <div className="p-4">
-          <div className="h-4 w-48 rounded bg-slate-200" />
+          <SkeletonLine className="h-5 w-72" />
+          <SkeletonLine className="mt-2 h-3 w-80" />
           <div className="mt-4 flex gap-2">
-            <div className="h-7 w-14 rounded-full bg-slate-200" />
-            <div className="h-7 w-16 rounded-full bg-slate-200" />
-            <div className="h-7 w-16 rounded-full bg-slate-200" />
+            <SkeletonBlock className="h-7 w-14" />
+            <SkeletonBlock className="h-7 w-16" />
+            <SkeletonBlock className="h-7 w-16" />
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-2 py-1"
-              >
-                <div className="h-2.5 w-2.5 rounded-sm bg-slate-300" />
-                <div className="h-2.5 flex-1 rounded bg-slate-200" />
-              </div>
-            ))}
-          </div>
-          <div className="mt-5 h-[230px] rounded-2xl bg-slate-200/80" />
+          <SkeletonBlock className="mt-5 h-60" />
         </div>
       </div>
     </section>
@@ -333,14 +325,15 @@ export function DashboardChartsSkeleton() {
 }
 
 export function DashboardOperationalSkeleton() {
+  // TODO: Actualizar el diseño cuando realice las notificaciones y el panel de operaciones
   return (
     <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
       <div
         className={`relative h-[520px] overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] animate-pulse`}
       >
         <div className="p-6">
-          <div className="h-6 w-48 rounded bg-slate-200" />
-          <div className="mt-2 h-4 w-72 rounded bg-slate-200" />
+          <SkeletonLine className="h-5 w-72" />
+          <SkeletonLine className="mt-2 h-3 w-80" />
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="h-24 rounded-2xl bg-slate-200/80" />
             <div className="h-24 rounded-2xl bg-slate-200/80" />
@@ -383,12 +376,12 @@ export function ImageLoadingSkeleton({
   return (
     <div
       className={clsx(
-        `flex items-center justify-center absolute inset-0 animate-pulse bg-slate-200`,
+        `flex items-center justify-center absolute inset-0 bg-slate-200`,
         skeletonClassName,
       )}
       aria-hidden="true"
     >
-      <PhotoIcon className="h-12 w-12 text-slate-400" />
+      <PhotoIcon className="h-12 w-12 text-slate-400 animate-pulse" />
     </div>
   );
 }
@@ -410,101 +403,57 @@ export function SkeletonPanel({
         className,
       )}
     >
-      <div className="animate-pulse space-y-4">{children}</div>
+      <div className="space-y-4">{children}</div>
     </section>
   );
 }
 
-export function SkeletonLine({ className }: { className?: string }) {
-  return (
-    <div
-      className={clsx(
-        "rounded bg-slate-200 animate-pulse overflow-hidden",
-        className,
-      )}
-    />
-  );
-}
-
-export function SkeletonBlock({ className }: { className?: string }) {
-  return (
-    <div
-      className={clsx(
-        "rounded-2xl bg-slate-200/80 animate-pulse overflow-hidden",
-        className,
-      )}
-    />
-  );
-}
-
 export default function HeaderStatsSkeleton() {
-  return (
-    <SkeletonBlock
-      className={clsx("relative h-20 w-60 overflow-hidden animate-pulse")}
-    />
-  );
+  return <SkeletonBlock className="relative h-20 w-60" />;
 }
 
-export function GuardFormSkeleton({
-  goBackUrl,
-  onClose,
-}: {
-  goBackUrl: string;
-  onClose?: () => void;
-}) {
+export function GuardFormSkeleton({ goBackUrl }: { goBackUrl?: string }) {
   return (
-    <section
-      className={`relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm animate-pulse`}
-    >
-      <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
-        <PencilSquareIcon className="w-6 h-6" />
-        <SkeletonLine
-          className={clsx("relative w-4/5 h-6 overflow-hidden animate-pulse")}
-        />
-      </h2>
-      <SkeletonLine
-        className={clsx(
-          "relative w-1/2 h-4 ms-6 my-2 overflow-hidden animate-pulse",
-        )}
-      />
+    <section className="relative mt-7 overflow-hidden rounded-lg border border-white/80 bg-white/90 shadow-[0_25px_60px_-40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+      {goBackUrl && (
+        <>
+          <h2 className="flex gap-2 items-center ms-6 text-xl md:text-2xl font-bold dark:text-white text-center md:text-left">
+            <PencilSquareIcon className="w-6 h-6" />
+            <SkeletonLine className="relative w-4/5 h-6" />
+          </h2>
+          <SkeletonLine className="relative w-1/2 h-4 ms-6 my-2" />
+        </>
+      )}
       <div className="flex flex-col items-center justify-center space-y-6 p-8 sm:p-10">
-        <SkeletonBlock
-          className={clsx(
-            "relative h-[140px] w-full overflow-hidden shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] animate-pulse",
-          )}
-        />
+        <SkeletonBlock className="relative h-[140px] w-full shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)]" />
         <div className="w-full p-4 space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 sm:p-5">
           <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
             Datos Generales
           </h4>
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={"guard-input-sk" + index}>
-              <SkeletonLine
-                className={clsx(
-                  "relative w-1/3 h-4 ms-6 my-2 overflow-hidden animate-pulse",
-                )}
-              />
-              <SkeletonLine
-                className={clsx(
-                  "relative w-4/5 h-9 ms-6 my-2 overflow-hidden animate-pulse",
-                )}
-              />
+              <SkeletonLine className="relative w-1/3 h-4 ms-6 my-2" />
+              <SkeletonLine className="relative w-4/5 h-9 ms-6 my-2" />
             </div>
           ))}
           <div className="flex w-full justify-center">
-            <SkeletonBlock
-              className={clsx("relative h-12 w-44 animate-pulse")}
-            />
+            <SkeletonBlock className="relative h-12 w-44" />
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
-            <div></div>
-            <Link
-              href={goBackUrl}
-              className="text-white inline-flex items-center bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Regresar
-            </Link>
-            <div></div>
+            <SkeletonBlock className="inline-flex border border-slate-200 bg-white transition hover:border-slate-300 hover:bg-slate-50 h-11 w-24 rounded-xl px-4 text-sm opacity-50 cursor-not-allowed" />
+            {goBackUrl ? (
+              <Link
+                href={goBackUrl}
+                className="inline-flex items-center justify-center border border-slate-200 bg-white font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 h-11 rounded-xl px-4 text-sm"
+              >
+                Regresar
+              </Link>
+            ) : (
+              <div className="inline-flex items-center justify-center border border-slate-200 bg-white font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 h-11 rounded-xl px-4 text-sm">
+                Cancelar
+              </div>
+            )}
+            <SkeletonBlock className="inline-flex border border-rose-200 !bg-rose-500 transition hover:border-rose-300 h-11 w-24 rounded-xl px-4 text-sm opacity-50 cursor-not-allowed" />
           </div>
         </div>
       </div>

@@ -315,6 +315,9 @@ export type OrderSupplyType = {
   current_quantity: number;
   remaining_quantity: number;
   is_resolved: boolean;
+  pharmacy_supply_id: string;
+  ambulance_supply_id: string;
+  checklist_answer_id: string;
 };
 
 export type OrderDetailType = {
@@ -330,6 +333,7 @@ export type OrderType = BaseType & {
   status: "pending" | "attended" | "cancelled";
   attended_at?: string;
   ambulance: AmbulanceType;
+  delegation: DelegationType;
   areas: OrderDetailType[];
   notes?: string;
 };
@@ -364,7 +368,9 @@ export type FormFieldType =
   | {
       type: "custom";
       name: string;
-      component: React.ReactNode;
+      component: React.ReactElement<{
+        state: StateType<Record<string, string[]>>;
+      }>;
     };
 
 export type VerifySignatureResult = {
@@ -399,3 +405,19 @@ export type ToneVariants =
   | "danger"
   | "neutral"
   | "default";
+
+export type CriticalSuppliesType = {
+  supplyId: string;
+  ambulanceId: string;
+  ambulanceNumber: string;
+  pharmacyId: string;
+  name: string;
+  deficit: number;
+};
+
+export type PendingOrdersType = {
+  orderId: string;
+  orderDate: string;
+  ambulanceNumber: string;
+  notes: string;
+};

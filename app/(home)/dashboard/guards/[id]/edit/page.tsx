@@ -10,7 +10,7 @@ import { fetchAmbulances } from "@/app/lib/data/ambulances";
 import { fetchStaffMembers } from "@/app/lib/data/users";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import { WrapperForm } from "@/app/ui/dashboard/wrappers";
-import { FormSkeleton, GuardFormSkeleton } from "@/app/ui/components/skeletons";
+import { GuardFormSkeleton } from "@/app/ui/components/skeletons";
 import GuardEditForm from "@/app/ui/dashboard/guards/edit/guard-edit-form";
 
 export const metadata: Metadata = {

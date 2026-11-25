@@ -19,8 +19,9 @@ export async function updateOrder(
 export async function attendOrder(
   id: string,
   ambulanceId: string,
+  pharmacyId: string,
   orders: OrderDetailType[],
 ): Promise<OrderState> {
-  const action = new AttendedOrderAction(id, ambulanceId, orders);
+  const action = new AttendedOrderAction(id, ambulanceId, pharmacyId, orders);
   return action.execute();
 }

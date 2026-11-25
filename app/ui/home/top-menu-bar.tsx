@@ -25,7 +25,7 @@ export default function TopMenuBar({ user }: { user: UserType }) {
         </div>
 
         <div aria-label="Navegación principal del sistema">
-          <NavBar user={user} showCog={isAdmin} variant="dark" />
+          <NavBar user={user} isAdmin={isAdmin} variant="dark" />
         </div>
       </div>
     </div>

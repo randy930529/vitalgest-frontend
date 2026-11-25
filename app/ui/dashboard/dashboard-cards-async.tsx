@@ -130,18 +130,13 @@ export async function DashboardChartsCards() {
 }
 
 export async function DashboardOperationalCards() {
-  const [
-    { guards, delegations, ambulances },
-    { criticalUnitCount, topCriticalSupplies },
-  ] = await Promise.all([getDashboardCoreData(), getDashboardSuppliesData()]);
+  const { guards, delegations, ambulances } = await getDashboardCoreData();
 
   return (
     <DashboardSections
       guards={guards}
       delegations={delegations}
       ambulances={ambulances}
-      criticalUnitCount={criticalUnitCount}
-      topCriticalSupplies={topCriticalSupplies}
     />
   );
 }

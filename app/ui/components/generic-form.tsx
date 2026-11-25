@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { cloneElement, useActionState } from "react";
 import type { FormFieldType, StateType } from "@/app/lib/definitions";
 import { useFormNotifications } from "@/app/lib/hooks/useFormNotifications";
 import {
@@ -158,9 +158,10 @@ export function GenericForm<T extends StateType<Record<string, string[]>>>({
         );
 
       case "custom":
+        const CustomComponent = cloneElement(field.component, { state });
         return (
           <div className="contents" key={field.name}>
-            {field.component}
+            {CustomComponent}
           </div>
         );
 

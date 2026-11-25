@@ -84,6 +84,9 @@ export const ERROR_MESSAGES = {
     AMBULANCE_EXISTS: "La ambulancia ya existe.",
     AMBULANCE_NOT_FOUND: "Ambulancia no encontrada.",
     INVALID_AMBULANCE_ID: "ID de ambulancia inválido.",
+
+    // * errores de los insumos de farmacia
+    QUANTITY_NOT_EXIST: "Cantidad solicitada no disponible en farmacia.",
   },
   get(code: string): string {
     return (

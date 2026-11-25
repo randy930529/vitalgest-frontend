@@ -6,7 +6,7 @@ export const modalComponents = {
     () => import("@/app/ui/dashboard/guards/create/guard-creation-wizard"),
     {
       ssr: false,
-      loading: () => ModalFormSkeleton({ fields: 2, columns: 1 }),
+      loading: () => ModalFormSkeleton({ fields: 3, columns: 1 }),
     },
   ),
   ambulanceForm: dynamic(
@@ -18,7 +18,7 @@ export const modalComponents = {
   ),
   userForm: dynamic(() => import("@/app/ui/dashboard/users/create/user-form"), {
     ssr: false,
-    loading: () => ModalFormSkeleton({ fields: 6, columns: 2 }),
+    loading: () => ModalFormSkeleton({ fields: 7, columns: 2 }),
   }),
   delegationForm: dynamic(
     () => import("@/app/ui/dashboard/delegations/create/delegation-form"),

@@ -1,5 +1,6 @@
 import {
   OrderDetailType,
+  OrderSupplyType,
   SupplyAmbulanceType,
   SupplyPharmacyType,
 } from "@/app/lib/definitions";
@@ -14,11 +15,11 @@ import {
 } from "@/app/lib/config/stateConfigs";
 
 export class InventoryAdmin {
-  private notebookInventory: string[] = [];
+  private readonly notebookInventory = new Set<string>();
 
   constructor(private readonly inventoryStock: InventoryStock) {}
 
-  private async setSupplyInPharmacy({
+  async setSupplyInPharmacy({
     supply,
     quantity,
   }: {
@@ -34,7 +35,7 @@ export class InventoryAdmin {
     });
   }
 
-  private async setSupplyInAmbulance({
+  async setSupplyInAmbulance({
     supply,
     quantity,
   }: {
@@ -71,7 +72,7 @@ export class InventoryAdmin {
       }
 
       // Registrar el suministro en el cuaderno de inventario.
-      this.notebookInventory.push(supply.id);
+      this.notebookInventory.add(supply.id);
 
       return await update(supply.id, this.getFormData(supply));
     } catch (error) {
@@ -95,32 +96,38 @@ export class InventoryAdmin {
 
   private async auditInventory() {
     try {
-      this.notebookInventory.forEach(async (supplyId) => {
-        const pharmacySupply = this.inventoryStock.getOneSupplyFromStock(
-          supplyId,
-          "pharmacy",
-        );
-        const ambulanceSupply = this.inventoryStock.getOneSupplyFromStock(
-          supplyId,
-          "ambulance",
-        );
+      await Promise.all(
+        Array.from(this.notebookInventory).map(async (supplyId) => {
+          const pharmacySupply = this.inventoryStock.getOneSupplyFromStock(
+            supplyId,
+            "pharmacy",
+          );
+          const ambulanceSupply = this.inventoryStock.getOneSupplyFromStock(
+            supplyId,
+            "ambulance",
+          );
 
-        if (!pharmacySupply || !ambulanceSupply) return;
+          if (!pharmacySupply || !ambulanceSupply) return;
 
-        await Promise.all([
-          this.setSupplyInPharmacy({
-            supply: pharmacySupply as SupplyPharmacyType,
-            quantity: pharmacySupply.avaible_quantity,
-          }),
-          this.setSupplyInAmbulance({
-            supply: ambulanceSupply as SupplyAmbulanceType,
-            quantity: ambulanceSupply.avaible_quantity,
-          }),
-        ]);
-      });
+          await Promise.all([
+            this.setSupplyInPharmacy({
+              supply: pharmacySupply as SupplyPharmacyType,
+              quantity: pharmacySupply.avaible_quantity,
+            }),
+            this.setSupplyInAmbulance({
+              supply: ambulanceSupply as SupplyAmbulanceType,
+              quantity: ambulanceSupply.avaible_quantity,
+            }),
+          ]);
+        }),
+      );
     } catch (error) {
       console.error("Error al auditar el inventario:", error);
-      throw new Error("Fallo en la auditoría de inventario.");
+      throw new Error(
+        error instanceof Error
+          ? `Fallo en la auditoría de inventario: ${error.message}`
+          : "Fallo en la auditoría de inventario.",
+      );
     }
   }
 
@@ -128,47 +135,20 @@ export class InventoryAdmin {
     // TODO: Resolver en el backend los id de los suministros en farmacia,
     // ambulancia y pedido deben ser el mismo.
     try {
-      orders.forEach(async ({ supplies }) => {
-        supplies.forEach(async (supply) => {
-          const pharmacySupply = this.inventoryStock.getOneSupplyFromStock(
-            supply.id,
-            "pharmacy",
-          );
-          const ambulanceSupply = this.inventoryStock.getOneSupplyFromStock(
-            supply.id,
-            "ambulance",
-          );
-
-          if (!pharmacySupply)
-            throw new Error(
-              `No hay "${supply.category}" disponibles en la farmacia.`,
-            );
-
-          if (!ambulanceSupply)
-            throw new Error(
-              `El suministro "${supply.category}" no está asignado en la ambulancia.`,
-            );
-
-          if (pharmacySupply.avaible_quantity < supply.added_quantity)
-            throw new Error(
-              `No hay suficientes "${supply.category}" en la farmacia para cubrir el pedido.`,
-            );
-
-          await Promise.all([
-            this.setSupplyInPharmacy({
-              supply: pharmacySupply as SupplyPharmacyType,
-              quantity: pharmacySupply.avaible_quantity - supply.added_quantity,
-            }),
-            this.setSupplyInAmbulance({
-              supply: ambulanceSupply as SupplyAmbulanceType,
-              quantity:
-                ambulanceSupply.avaible_quantity + supply.added_quantity,
-            }),
-          ]);
-        });
-      });
+      for (const { supplies } of orders) {
+        await this.processSupplyUpdates(supplies);
+      }
     } catch (error) {
-      this.auditInventory();
+      try {
+        await this.auditInventory();
+      } catch (auditError) {
+        console.error("Error al restaurar el inventario:", auditError);
+        throw new Error(
+          auditError instanceof Error
+            ? auditError.message
+            : "No pudimos restaurar el inventario.",
+        );
+      }
 
       throw new Error(
         error instanceof Error
@@ -176,7 +156,57 @@ export class InventoryAdmin {
           : "No pudimos atender el pedido.",
       );
     } finally {
-      this.notebookInventory = [];
+      this.notebookInventory.clear();
     }
+  }
+
+  private async processSupplyUpdates(supplies: OrderSupplyType[]) {
+    for (const supply of supplies) {
+      const { pharmacySupply, ambulanceSupply } =
+        this.getPharmacyAndAmbulanceSupplies(supply);
+
+      await Promise.all([
+        this.setSupplyInPharmacy({
+          supply: pharmacySupply as SupplyPharmacyType,
+          quantity: pharmacySupply.avaible_quantity - supply.added_quantity,
+        }),
+        this.setSupplyInAmbulance({
+          supply: ambulanceSupply as SupplyAmbulanceType,
+          quantity: ambulanceSupply.avaible_quantity + supply.added_quantity,
+        }),
+      ]);
+    }
+  }
+
+  private getPharmacyAndAmbulanceSupplies(supply: OrderSupplyType) {
+    // TODO: Resolver en el backend los id de los suministros en farmacia biene null
+    console.log(supply.pharmacy_supply_id);
+    const pharmacySupply = this.inventoryStock.getOneSupplyFromStock(
+      supply.pharmacy_supply_id,
+      "pharmacy",
+    );
+    const ambulanceSupply = this.inventoryStock.getOneSupplyFromStock(
+      supply.ambulance_supply_id,
+      "ambulance",
+    );
+
+    if (!pharmacySupply) {
+      throw new Error(
+        `No hay "${supply.category}" disponibles en la farmacia.`,
+      );
+    }
+
+    if (!ambulanceSupply) {
+      throw new Error(
+        `El suministro "${supply.category}" no está asignado en la ambulancia.`,
+      );
+    }
+
+    if (pharmacySupply.avaible_quantity < supply.added_quantity) {
+      throw new Error(
+        `No hay suficientes "${supply.category}" en la farmacia para cubrir el pedido.`,
+      );
+    }
+    return { pharmacySupply, ambulanceSupply };
   }
 }

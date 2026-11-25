@@ -2,8 +2,6 @@ import { OrderDetailType, OrderSupplyType } from "@/app/lib/definitions";
 import { OrderState } from "@/app/lib/config/stateConfigs";
 import { BaseServerAction } from "@/app/lib/core/base-action";
 import { UpdateOrder } from "@/app/lib/schemas/order";
-import { fetchAmbulanceById } from "@/app/lib/data/ambulances";
-import { fetchDelegationById } from "@/app/lib/data/delegations";
 import { InventoryStock } from "@/app/lib/controllers/inventory-stock";
 import { InventoryAdmin } from "@/app/lib/controllers/inventory-admin";
 
@@ -52,8 +50,14 @@ export class AttendedOrderAction extends BaseServerAction<
 > {
   private readonly ambulanceId: string;
   private readonly orders: OrderDetailType[];
+  private readonly pharmacyId: string;
 
-  constructor(id: string, ambulanceId: string, orders: OrderDetailType[]) {
+  constructor(
+    id: string,
+    ambulanceId: string,
+    pharmacyId: string,
+    orders: OrderDetailType[],
+  ) {
     super({
       endpoint: `/api/supply-reports/${id}/attend`,
       method: "PUT",
@@ -65,34 +69,20 @@ export class AttendedOrderAction extends BaseServerAction<
     });
     this.ambulanceId = ambulanceId;
     this.orders = orders;
+    this.pharmacyId = pharmacyId;
   }
 
   async execute(): Promise<OrderState> {
     try {
-      // TODO: Pedir agregar el dato de la delegacion+farmacia dentro de la orden
-      const delegationId = await fetchAmbulanceById(this.ambulanceId).then(
-        (ambulance) => ambulance?.delegation.id,
-      );
-
-      if (!delegationId) {
-        throw new Error("No se pudo obtener la delegación de la ambulancia.");
-      }
-      const pharmacyId = await fetchDelegationById(delegationId).then(
-        (delegation) => delegation?.pharmacy.id,
-      );
-
-      if (!pharmacyId) {
-        throw new Error("No se pudo obtener la farmacia de la delegación.");
-      }
-      //
-
-      const inventory = new InventoryStock(pharmacyId, this.ambulanceId);
+      const inventory = new InventoryStock(this.pharmacyId, this.ambulanceId);
       await inventory.fetchInventoryStock();
       const administrator = new InventoryAdmin(inventory);
 
+      console.log(inventory.ambulanceSupplies, inventory.pharmacySupplies);
+
       await administrator.attendOrders(this.orders);
 
-      // Este endpoint cambia el estado del pedido después de ajustar ambos inventarios.
+      // Cambia el estado del pedido después de ajustar ambos inventarios.
       await this.fetchAPI();
       await this.revalidate();
 
