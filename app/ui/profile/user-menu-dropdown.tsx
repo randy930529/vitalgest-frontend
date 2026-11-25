@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Tooltip } from "react-tooltip";
 import clsx from "clsx";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { LinkSignout } from "@/app/ui/button-signout";
@@ -52,19 +51,18 @@ export default function UserMenuDropdown({
         id="user-menu-button"
         name="user"
         type="button"
+        title="Menú de Usuario"
         className={
           buttonClassName ||
           "p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
         }
         aria-expanded="false"
-        data-tooltip-id="user-menu-tooltip"
         data-dropdown-toggle="user-menu-dropdown"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <span className="sr-only">Open user menu</span>
         {/* <!-- User icon --> */}
         <UserIcon className="w-8 h-8" />
-        <Tooltip id="user-menu-tooltip" content="Menú de Usuario" />
       </button>
       {/* <!-- Dropdown menu --> */}
       <div
@@ -97,11 +95,6 @@ export default function UserMenuDropdown({
               Mi perfil
             </Link>
           </li>
-        </ul>
-        <ul
-          className="py-1 text-gray-700 dark:text-gray-300"
-          aria-labelledby="dropdown"
-        >
           <li>
             <LinkSignout key={`user-dropdown-${id}`} />
           </li>
