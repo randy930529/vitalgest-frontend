@@ -358,6 +358,7 @@ export const UpdateSupplyAmbulance = FormSupplySchema.omit({
   notes: true,
   specification: true,
   supplyId: true,
+  pharmacyId: true,
 });
 
 export const CreateQuestion = FormQuestionSchema.omit({
