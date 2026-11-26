@@ -26,11 +26,24 @@ export class InventoryAdmin {
     supply: SupplyPharmacyType;
     quantity: number;
   }) {
+    const formData = this.getFormData({
+      pharmacy: supply.pharmacy_id,
+      category: supply.category,
+      specification: supply.specification,
+      avaibleQuantity: quantity,
+      expirationDate: supply.expiration_date,
+      measurementUnit: supply.measurement_unit,
+    });
+
     return this.updateSupply({
-      supply,
+      supplyId: supply.id,
       quantity,
-      update: (id, formData) =>
-        updateSupplyInPharmacy(id, { errors: {}, message: null }, formData),
+      update: () =>
+        updateSupplyInPharmacy(
+          supply.id,
+          { errors: {}, message: null },
+          formData,
+        ),
       errorMessage: "Error al actualizar el suministro en la farmacia.",
     });
   }
@@ -42,39 +55,46 @@ export class InventoryAdmin {
     supply: SupplyAmbulanceType;
     quantity: number;
   }) {
+    const formData = this.getFormData({
+      ambulance: supply.ambulance_id,
+      area: supply.area_id,
+      avaibleQuantity: quantity,
+      minQuantity: supply.min_quantity,
+    });
+
     return this.updateSupply({
-      supply,
+      supplyId: supply.id,
       quantity,
-      update: (id, formData) =>
-        updateSupplyInAmbulance(id, { errors: {}, message: null }, formData),
+      update: () =>
+        updateSupplyInAmbulance(
+          supply.id,
+          { errors: {}, message: null },
+          formData,
+        ),
       errorMessage: "Error al actualizar el suministro en la ambulancia.",
     });
   }
 
   private async updateSupply({
-    supply,
+    supplyId,
     quantity,
     update,
     errorMessage,
   }: {
-    supply: SupplyPharmacyType | SupplyAmbulanceType;
+    supplyId: string;
     quantity: number;
-    update: (
-      id: string,
-      formData: FormData,
-    ) => Promise<SupplyPharmacyState | SupplyAmbulanceState>;
+    update: () => Promise<SupplyPharmacyState | SupplyAmbulanceState>;
     errorMessage: string;
   }) {
     try {
-      if (!supply) return;
+      if (!supplyId) return;
       if (quantity < 1) {
         throw new Error("La cantidad del suministro no puede ser menor a 1.");
       }
-
       // Registrar el suministro en el cuaderno de inventario.
-      this.notebookInventory.add(supply.id);
+      this.notebookInventory.add(supplyId);
 
-      return await update(supply.id, this.getFormData(supply));
+      return await update();
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : errorMessage);
     }
@@ -107,17 +127,17 @@ export class InventoryAdmin {
             "ambulance",
           );
 
-          if (!pharmacySupply || !ambulanceSupply) return;
-
           await Promise.all([
-            this.setSupplyInPharmacy({
-              supply: pharmacySupply as SupplyPharmacyType,
-              quantity: pharmacySupply.avaible_quantity,
-            }),
-            this.setSupplyInAmbulance({
-              supply: ambulanceSupply as SupplyAmbulanceType,
-              quantity: ambulanceSupply.avaible_quantity,
-            }),
+            pharmacySupply &&
+              this.setSupplyInPharmacy({
+                supply: pharmacySupply as SupplyPharmacyType,
+                quantity: pharmacySupply.avaible_quantity,
+              }),
+            ambulanceSupply &&
+              this.setSupplyInAmbulance({
+                supply: ambulanceSupply as SupplyAmbulanceType,
+                quantity: ambulanceSupply.avaible_quantity,
+              }),
           ]);
         }),
       );
@@ -132,8 +152,6 @@ export class InventoryAdmin {
   }
 
   async attendOrders(orders: OrderDetailType[]) {
-    // TODO: Resolver en el backend los id de los suministros en farmacia,
-    // ambulancia y pedido deben ser el mismo.
     try {
       for (const { supplies } of orders) {
         await this.processSupplyUpdates(supplies);
@@ -165,7 +183,7 @@ export class InventoryAdmin {
       const { pharmacySupply, ambulanceSupply } =
         this.getPharmacyAndAmbulanceSupplies(supply);
 
-      await Promise.all([
+      const [supplyPharmacyState, supplyAmbulanceState] = await Promise.all([
         this.setSupplyInPharmacy({
           supply: pharmacySupply as SupplyPharmacyType,
           quantity: pharmacySupply.avaible_quantity - supply.added_quantity,
@@ -175,12 +193,16 @@ export class InventoryAdmin {
           quantity: ambulanceSupply.avaible_quantity + supply.added_quantity,
         }),
       ]);
+
+      if (supplyPharmacyState?.errors || supplyAmbulanceState?.errors) {
+        throw new Error(
+          `Farmacia: ${supplyPharmacyState?.errors?.success || "Ninguno"}. Ambulancia: ${supplyAmbulanceState?.errors?.success || "Ninguno"}`,
+        );
+      }
     }
   }
 
   private getPharmacyAndAmbulanceSupplies(supply: OrderSupplyType) {
-    // TODO: Resolver en el backend los id de los suministros en farmacia biene null
-    console.log(supply.pharmacy_supply_id);
     const pharmacySupply = this.inventoryStock.getOneSupplyFromStock(
       supply.pharmacy_supply_id,
       "pharmacy",

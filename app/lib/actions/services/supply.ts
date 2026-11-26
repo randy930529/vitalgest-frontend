@@ -10,8 +10,6 @@ import {
   UpdateSupplyAmbulance,
   UpdateSupplyPharmacy,
 } from "@/app/lib/schema";
-import { InventoryStock } from "@/app/lib/controllers/inventory-stock";
-import { InventoryAdmin } from "@/app/lib/controllers/inventory-admin";
 
 /*--------------Gestión de insumos en las farmacias----------------------*/
 export class CreateSupplyInPharmacyAction extends BaseServerAction<
@@ -147,20 +145,6 @@ export class CreateSupplyInAmbulanceAction extends BaseServerAction<
         areaId: Number(formData.get("area")),
         avaibleQuantity: Number(formData.get("avaibleQuantity")),
         minQuantity: Number(formData.get("minQuantity")),
-      });
-
-      const inventory = new InventoryStock(data.pharmacyId, data.ambulanceId);
-      await inventory.fetchInventoryStock();
-      const administrator = new InventoryAdmin(inventory);
-      const pharmacySupply = inventory.getOneSupplyFromStock(
-        data.supplyId as string,
-        "pharmacy",
-      ) as SupplyPharmacyType;
-
-      administrator.setSupplyInPharmacy({
-        supply: pharmacySupply,
-        quantity:
-          pharmacySupply.avaible_quantity - Number(data.avaibleQuantity),
       });
 
       await this.fetchAPI({
